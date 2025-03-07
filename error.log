@@ -1,0 +1,322 @@
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-02-27T08:01:58.315Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-02-27T08:02:34.698Z"}
+{"level":"error","message":"Unexpected non-whitespace character after JSON at position 53 - POST /auth/login","timestamp":"2025-02-27T08:07:48.192Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-02-27T08:08:10.796Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /customers","timestamp":"2025-02-27T08:17:18.266Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-02-27T08:32:01.295Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T06:38:44.785Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T08:04:53.643Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T08:12:50.532Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /orders?user_id=7","timestamp":"2025-03-01T08:27:38.513Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T12:40:16.280Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T13:43:53.892Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T14:51:58.290Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:38:14.262Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T15:38:58.173Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T15:38:59.867Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:42:35.783Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:42:40.524Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:42:43.710Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:29.649Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:33.965Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:37.290Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:41.328Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:44.433Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:46.697Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:47:52.065Z"}
+{"level":"error","message":"Error creating query: Connection terminated due to connection timeout","timestamp":"2025-03-01T15:56:40.708Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /queries","timestamp":"2025-03-01T15:56:40.712Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:57:28.024Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:57:31.172Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:57:33.974Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /auth/login","timestamp":"2025-03-01T15:57:36.631Z"}
+{"level":"error","message":"Invalid credentials - POST /auth/login","timestamp":"2025-03-01T15:57:42.147Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /api/auth/login","timestamp":"2025-03-02T18:24:24.149Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-02T18:24:52.200Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-02T18:24:52.590Z"}
+{"level":"error","message":"Invalid credentials - POST /api/auth/login","timestamp":"2025-03-03T06:55:52.007Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T06:56:29.520Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T06:56:29.925Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:01:16.528Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:01:16.907Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:01:39.330Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:01:39.701Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/queries","timestamp":"2025-03-03T07:01:43.100Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:01:44.132Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:02:17.144Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:02:17.147Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:02:18.183Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:02:18.184Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:02:18.951Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:02:18.953Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:02:19.317Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:02:19.319Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:01.365Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:01.366Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:01.778Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:01.779Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:09.562Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:09.563Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:09.941Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:09.941Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:11.079Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:11.079Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:11.484Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:11.485Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:12.272Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:12.273Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:12.666Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:12.667Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:58.096Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:58.096Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:03:59.533Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:03:59.534Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:04:05.062Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:04:05.063Z"}
+{"level":"error","message":"Error fetching queries: column q.order_id does not exist","timestamp":"2025-03-03T07:04:05.451Z"}
+{"level":"error","message":"column q.order_id does not exist - GET /api/queries","timestamp":"2025-03-03T07:04:05.451Z"}
+{"level":"error","message":"Invalid credentials - POST /api/auth/login","timestamp":"2025-03-03T07:13:36.083Z"}
+{"level":"error","message":"pool is not defined - GET /api/customers","timestamp":"2025-03-03T07:14:47.578Z"}
+{"level":"error","message":"pool is not defined - GET /api/customers","timestamp":"2025-03-03T07:14:47.639Z"}
+{"level":"error","message":"Error in PUT /api/queries/:id/cancel: new row for relation \"queries\" violates check constraint \"queries_query_status_check\"","timestamp":"2025-03-03T07:49:54.311Z"}
+{"level":"error","message":"new row for relation \"queries\" violates check constraint \"queries_query_status_check\" - PUT /api/queries/2/cancel","timestamp":"2025-03-03T07:49:54.312Z"}
+{"level":"error","message":"Error in PUT /api/queries/:id/cancel: new row for relation \"queries\" violates check constraint \"queries_query_status_check\"","timestamp":"2025-03-03T07:50:30.250Z"}
+{"level":"error","message":"new row for relation \"queries\" violates check constraint \"queries_query_status_check\" - PUT /api/queries/10/cancel","timestamp":"2025-03-03T07:50:30.251Z"}
+{"level":"error","message":"Error in PUT /api/queries/:id/cancel: new row for relation \"queries\" violates check constraint \"queries_query_status_check\"","timestamp":"2025-03-03T07:56:14.810Z"}
+{"level":"error","message":"new row for relation \"queries\" violates check constraint \"queries_query_status_check\" - PUT /api/queries/10/cancel","timestamp":"2025-03-03T07:56:14.812Z"}
+{"level":"error","message":"Error in PUT /api/queries/:id/cancel: new row for relation \"queries\" violates check constraint \"queries_query_status_check\"","timestamp":"2025-03-03T07:57:00.642Z"}
+{"level":"error","message":"new row for relation \"queries\" violates check constraint \"queries_query_status_check\" - PUT /api/queries/10/cancel","timestamp":"2025-03-03T07:57:00.643Z"}
+{"level":"error","message":"Invalid credentials - POST /api/auth/login","timestamp":"2025-03-03T08:30:55.493Z"}
+{"level":"error","message":"Login error: data and hash arguments required","timestamp":"2025-03-03T11:45:09.598Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:55:37.923Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:55:40.350Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:55:42.638Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:56:45.951Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:56:59.722Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:57:02.230Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:57:02.744Z"}
+{"level":"error","message":"User test@example.com has no password set","timestamp":"2025-03-03T11:57:02.934Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:00:24.857Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:00:26.329Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:00:27.479Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:01:13.014Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:04:20.637Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:04:25.805Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:05:15.899Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:05:18.036Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:05:19.132Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:05:43.966Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:05:47.274Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:10:20.104Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:10:52.249Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:14:17.220Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:14:19.238Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:15:26.856Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:19:41.725Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:19:44.202Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:19:45.550Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:20:21.871Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:21:50.205Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:21:51.964Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:22:16.640Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:28:36.526Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:28:38.658Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:28:52.894Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:28:58.928Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:29:34.380Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:29:36.006Z"}
+{"level":"error","message":"API Error: Connection terminated due to connection timeout","timestamp":"2025-03-03T12:43:05.167Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:43:34.633Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:50:02.661Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:50:04.917Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:50:06.233Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:51:44.650Z"}
+{"level":"error","message":"API Error: column \"can_update\" does not exist","timestamp":"2025-03-03T12:53:46.962Z"}
+{"level":"error","message":"Error in setInProgress for query 11: column \"description\" of relation \"activity_logs\" does not exist","timestamp":"2025-03-03T12:56:47.551Z"}
+{"level":"error","message":"API Error: column \"description\" of relation \"activity_logs\" does not exist","timestamp":"2025-03-03T12:56:47.606Z"}
+{"level":"error","message":"Error in respondToQuery for query 11: column \"description\" of relation \"activity_logs\" does not exist","timestamp":"2025-03-03T12:56:55.947Z"}
+{"level":"error","message":"API Error: column \"description\" of relation \"activity_logs\" does not exist","timestamp":"2025-03-03T12:56:56.001Z"}
+{"level":"error","message":"Login error: Connection terminated due to connection timeout","timestamp":"2025-03-03T14:00:45.220Z"}
+{"level":"error","message":"Error in setInProgress for query 11: Query is already In Progress","timestamp":"2025-03-03T14:00:57.645Z"}
+{"level":"error","message":"API Error: Query is already In Progress","timestamp":"2025-03-03T14:00:57.696Z"}
+{"level":"error","message":"Error in setInProgress for query 11: Query is already In Progress","timestamp":"2025-03-03T14:00:59.927Z"}
+{"level":"error","message":"API Error: Query is already In Progress","timestamp":"2025-03-03T14:00:59.980Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - POST /api/orders","timestamp":"2025-03-03T14:36:18.333Z"}
+{"level":"error","message":"Error in respondToQuery for query 45: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:14:36.274Z"}
+{"level":"error","message":"API Error: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:14:36.275Z"}
+{"level":"error","message":"Error in respondToQuery for query 45: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:14:38.364Z"}
+{"level":"error","message":"API Error: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:14:38.365Z"}
+{"level":"error","message":"Error in setInProgress for query 45: Query is already In Progress","timestamp":"2025-03-04T06:14:41.004Z"}
+{"level":"error","message":"API Error: Query is already In Progress","timestamp":"2025-03-04T06:14:41.004Z"}
+{"level":"error","message":"Error in setInProgress for query 45: Query is already In Progress","timestamp":"2025-03-04T06:14:42.065Z"}
+{"level":"error","message":"API Error: Query is already In Progress","timestamp":"2025-03-04T06:14:42.066Z"}
+{"level":"error","message":"Error in setInProgress for query 44: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:14:54.925Z"}
+{"level":"error","message":"API Error: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:14:54.926Z"}
+{"level":"error","message":"Error creating query: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:16:27.692Z"}
+{"level":"error","message":"API Error: redisClient.delPattern is not a function","timestamp":"2025-03-04T06:16:27.692Z"}
+{"level":"error","message":"Login error: Connection terminated due to connection timeout","timestamp":"2025-03-04T06:31:26.857Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/5/accept","timestamp":"2025-03-05T07:12:13.463Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/5/accept","timestamp":"2025-03-05T07:12:15.477Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:15:30.775Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:15:30.784Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:15:34.086Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:15:34.096Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:17:15.482Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:17:15.496Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:17:16.554Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:17:16.573Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:17:34.115Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/inventory/available","timestamp":"2025-03-05T07:17:34.127Z"}
+{"level":"error","message":"Insufficient stock for 1 - POST /api/orders","timestamp":"2025-03-05T07:46:26.732Z"}
+{"level":"error","message":"Insufficient stock for 1 - POST /api/orders","timestamp":"2025-03-05T07:46:36.118Z"}
+{"level":"error","message":"Error in POST /api/orders for user 8: Insufficient stock for product 1","timestamp":"2025-03-05T07:59:59.546Z"}
+{"level":"error","message":"Insufficient stock for product 1 - POST /api/orders","timestamp":"2025-03-05T07:59:59.549Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders","timestamp":"2025-03-05T08:26:26.270Z"}
+{"level":"error","message":"Error in GET /api/inventory/available: Connection terminated due to connection timeout","timestamp":"2025-03-05T08:26:26.275Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/inventory/available","timestamp":"2025-03-05T08:26:26.276Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/5/accept","timestamp":"2025-03-05T08:42:20.130Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/14/accept","timestamp":"2025-03-05T08:58:18.295Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders","timestamp":"2025-03-05T09:08:19.333Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/14/accept","timestamp":"2025-03-05T09:08:38.758Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/15/accept","timestamp":"2025-03-05T09:33:54.112Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/15/accept","timestamp":"2025-03-05T09:33:57.766Z"}
+{"level":"error","message":"column \"last_updated\" of relation \"orders\" does not exist - PUT /api/orders/15/accept","timestamp":"2025-03-05T09:33:59.749Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/users/customers","timestamp":"2025-03-05T10:25:50.532Z"}
+{"level":"error","message":"column \"can_create\" does not exist - POST /api/orders","timestamp":"2025-03-05T11:10:15.115Z"}
+{"level":"error","message":"column \"can_create\" does not exist - POST /api/orders","timestamp":"2025-03-05T11:12:34.885Z"}
+{"level":"error","message":"Error fetching orders: timeout exceeded when trying to connect","timestamp":"2025-03-05T11:19:09.849Z"}
+{"level":"error","message":"timeout exceeded when trying to connect - GET /api/orders","timestamp":"2025-03-05T11:19:09.851Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/users/customers","timestamp":"2025-03-05T14:47:02.409Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders","timestamp":"2025-03-05T15:21:18.349Z"}
+{"level":"error","message":"Error in GET /api/inventory/available: Connection terminated due to connection timeout","timestamp":"2025-03-05T15:21:18.362Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/inventory/available","timestamp":"2025-03-05T15:21:18.363Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/users/customers","timestamp":"2025-03-05T15:21:18.367Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders","timestamp":"2025-03-05T16:26:21.875Z"}
+{"level":"error","message":"Error in GET /api/inventory/available: Connection terminated due to connection timeout","timestamp":"2025-03-05T16:26:21.886Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/inventory/available","timestamp":"2025-03-05T16:26:21.887Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/users/customers","timestamp":"2025-03-05T16:26:21.891Z"}
+{"level":"error","message":"Error in PUT /api/orders/38/update for user 7 Insufficient stock for 3","stack":"Error: Insufficient stock for 3\n    at Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:103:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:157:19","timestamp":"2025-03-05T17:03:01.004Z"}
+{"level":"error","message":"Error in PUT /api/orders/38/update for user 7 Insufficient stock for 3","stack":"Error: Insufficient stock for 3\n    at Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:103:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:157:19","timestamp":"2025-03-05T17:03:07.633Z"}
+{"level":"error","message":"Error in PUT /api/orders/38/update for user 7 Insufficient stock for 2","stack":"Error: Insufficient stock for 2\n    at Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:103:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:157:19","timestamp":"2025-03-05T17:03:12.344Z"}
+{"level":"error","message":"Error in PUT /api/orders/38/update for user 7 Insufficient stock for 3","stack":"Error: Insufficient stock for 3\n    at Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:103:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:157:19","timestamp":"2025-03-05T17:05:36.455Z"}
+{"level":"error","message":"Error in PUT /api/orders/38/update for user 7 Insufficient stock for 3","stack":"Error: Insufficient stock for 3\n    at Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:103:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:157:19","timestamp":"2025-03-05T17:08:44.832Z"}
+{"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-03-05T17:28:46.497Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:46.502Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:46.522Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:46.584Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:46.694Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:46.848Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:47.052Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:47.315Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:47.629Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:47.990Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:48.400Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:48.855Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:49.371Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:49.888Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-05T17:28:50.402Z"}
+{"level":"error","message":"Error in PUT /api/orders/43/update for user 7 Insufficient stock for 3","stack":"Error: Insufficient stock for 3\n    at Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:103:33)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:212:19","timestamp":"2025-03-06T07:16:39.344Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:143:36","timestamp":"2025-03-06T07:39:12.787Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:143:36","timestamp":"2025-03-06T07:39:14.985Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column \"inventory\" of relation \"inventory\" does not exist","stack":"error: column \"inventory\" of relation \"inventory\" does not exist\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:43:43.528Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:45:52.428Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:46:00.471Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:46:05.544Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:46:16.336Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column \"inventory\" of relation \"inventory\" does not exist","stack":"error: column \"inventory\" of relation \"inventory\" does not exist\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:49:07.037Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 column reference \"stock_quantity\" is ambiguous","stack":"error: column reference \"stock_quantity\" is ambiguous\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:52:25.976Z"}
+{"level":"error","message":"Error in PUT /api/orders/43/update for user 7 could not determine data type of parameter $1","stack":"error: could not determine data type of parameter $1\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:251:38","timestamp":"2025-03-06T07:56:06.695Z"}
+{"level":"error","message":"Error in POST /api/orders for user 7 could not determine data type of parameter $1","stack":"error: could not determine data type of parameter $1\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:142:36","timestamp":"2025-03-06T07:56:28.150Z"}
+{"level":"error","message":"Error in PUT /api/orders/43/update for user 7 canceling statement due to user request","stack":"error: canceling statement due to user request\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Order.updateOrder (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:100:33)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:236:19","timestamp":"2025-03-06T09:39:42.112Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:47.846Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:47.867Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:47.929Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:48.058Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:48.226Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:48.435Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:48.696Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:49.008Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:49.366Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:49.776Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:50.240Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:50.755Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:51.268Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:51.771Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:52.286Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:52.799Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:53.310Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:53.812Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:54.323Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:54.827Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:55.336Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:55.853Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:56.366Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:56.876Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:57.387Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:57.898Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:58.410Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:58.915Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:59.431Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:18:59.945Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:00.457Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:00.973Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:01.487Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:02.000Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:02.508Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:03.021Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:03.532Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:04.050Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:04.564Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:05.078Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:05.592Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:06.106Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:06.618Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:07.126Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:07.637Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:08.146Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:08.657Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:09.173Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:09.687Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:10.201Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:10.713Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:11.226Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:11.737Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:12.247Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:12.760Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:13.273Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:13.788Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:14.300Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:14.813Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:15.324Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:15.838Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:16.349Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:16.863Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:17.378Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:17.895Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:18.409Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:18.915Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:19.425Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:19.939Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:20.450Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:20.961Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:21.470Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:21.982Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:22.493Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:23.008Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:23.529Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:24.043Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:24.558Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:25.070Z"}
+{"code":"ECONNREFUSED","level":"error","message":"Redis client error:","stack":"AggregateError [ECONNREFUSED]: \n    at internalConnectMultiple (node:net:1118:18)\n    at afterConnectMultiple (node:net:1685:7)","timestamp":"2025-03-06T13:19:25.588Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders?limit=10&offset=0","timestamp":"2025-03-06T16:31:55.477Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/users/customers","timestamp":"2025-03-06T16:31:55.498Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders?limit=10&offset=0","timestamp":"2025-03-06T16:57:31.791Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/users/customers","timestamp":"2025-03-06T16:57:31.792Z"}
+{"level":"error","message":"Error in POST /api/orders: Product 2 not found","stack":"Error: Product 2 not found\n    at Order.create (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:23:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:99:19","timestamp":"2025-03-07T06:11:48.993Z"}
+{"level":"error","message":"Error in POST /api/orders: Product 1 not found","stack":"Error: Product 1 not found\n    at Order.create (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:23:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:99:19","timestamp":"2025-03-07T06:11:55.100Z"}
+{"level":"error","message":"Error creating order for user 8: Product 2 not found","stack":"Error: Product 2 not found\n    at Order.create (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:46:40)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:100:19","timestamp":"2025-03-07T06:24:30.962Z"}
+{"level":"error","message":"Error in POST /api/orders: Product 2 not found","stack":"Error: Product 2 not found\n    at Order.create (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:46:40)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:100:19","timestamp":"2025-03-07T06:24:30.963Z"}
+{"level":"error","message":"Error creating order for user 8: set-returning functions are not allowed in UPDATE","stack":"error: set-returning functions are not allowed in UPDATE\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Order.create (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:70:7)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:69:19","timestamp":"2025-03-07T06:42:30.802Z"}
+{"level":"error","message":"Error in POST /api/orders: set-returning functions are not allowed in UPDATE","stack":"error: set-returning functions are not allowed in UPDATE\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Order.create (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\models\\order.js:70:7)\n    at async C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\orders.js:69:19","timestamp":"2025-03-07T06:42:30.803Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders","timestamp":"2025-03-07T07:25:49.758Z"}
+{"level":"error","message":"Connection terminated due to connection timeout - GET /api/orders","timestamp":"2025-03-07T07:25:51.771Z"}
