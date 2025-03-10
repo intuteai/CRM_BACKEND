@@ -1,13 +1,14 @@
-// routes/auth.js
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 const logger = require('../utils/logger');
 const router = express.Router();
-require('dotenv').config;
+const { authenticateToken } = require('../middleware/auth');
+const User = require('../models/user');
+require('dotenv').config();
 
-// POST /api/auth/login - Authenticate user and set cookie
+// POST /api/auth/login - Authenticate user and return token in response body
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -40,14 +41,8 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 3600000,
-    });
-
     logger.info(`User logged in: ${email}, user_id: ${user.user_id}`);
+    // Return token in response body, no cookie
     res.json({ role: user.role_id === 1 ? 'admin' : 'customer', token, name: user.name });
   } catch (err) {
     logger.error(`Login error: ${err.message}`, err.stack);
@@ -55,16 +50,10 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET /api/auth/user - Fetch user name (optional)
-router.get('/user', async (req, res) => {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided', code: 'AUTH_NO_TOKEN' });
-  }
-
+// GET /api/auth/user - Fetch user name
+router.get('/user', authenticateToken, async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { rows } = await pool.query('SELECT name FROM users WHERE user_id = $1', [decoded.user_id]);
+    const { rows } = await pool.query('SELECT name FROM users WHERE user_id = $1', [req.user.user_id]);
     const user = rows[0];
     if (!user) {
       return res.status(404).json({ error: 'User not found', code: 'USER_NOT_FOUND' });
@@ -76,11 +65,29 @@ router.get('/user', async (req, res) => {
   }
 });
 
-// POST /api/auth/logout - Clear cookie
-router.post('/logout', (req, res) => {
-  res.clearCookie('token');
+// POST /api/auth/logout - No-op since token is client-managed
+router.post('/logout', authenticateToken, (req, res) => {
   logger.info(`User logged out`);
   res.json({ message: 'Logged out successfully' });
+});
+
+// PUT /api/auth/update-password - Update user password
+router.put('/update-password', authenticateToken, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.user.user_id;
+
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ error: 'Old and new passwords are required', code: 'AUTH_MISSING_FIELDS' });
+  }
+
+  try {
+    await User.updatePassword(userId, oldPassword, newPassword);
+    logger.info(`Password updated successfully for user_id: ${userId}`);
+    res.json({ message: 'Password updated successfully!' });
+  } catch (err) {
+    logger.error(`Password update error for user_id: ${userId}: ${err.message}`, err.stack);
+    res.status(err.status || 500).json({ error: err.message, code: err.code || 'SERVER_ERROR' });
+  }
 });
 
 module.exports = router;

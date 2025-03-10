@@ -60,7 +60,7 @@ router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async 
   }
 });
 
-// Create a new order (unchanged, included for completeness)
+// Create a new order
 router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
   try {
     const { targetDeliveryDate, items, user_id } = req.body;
@@ -86,9 +86,20 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
       timezone: 'Asia/Kolkata',
     };
 
-    setImmediate(() =>
-      redis.del(`orders_*_${orderUserId}`).catch((err) => logger.error('Cache error', err))
-    );
+    setImmediate(async () => {
+      try {
+        const [orderKeys, inventoryKeys] = await Promise.all([
+          redis.keys(`orders_*_${orderUserId}`),
+          redis.keys('inventory_*'),
+        ]);
+        if (orderKeys.length) await redis.del(orderKeys);
+        if (inventoryKeys.length) await redis.del(inventoryKeys);
+        logger.info(`Cleared caches for orders and inventory after creating order ${order.order_id}`);
+      } catch (err) {
+        logger.error('Cache invalidation error', err);
+      }
+    });
+
     res.status(201).json(response);
   } catch (error) {
     logger.error(`Error in POST /api/orders: ${error.message}`, { stack: error.stack });
@@ -96,7 +107,7 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
   }
 });
 
-// Update an existing order (unchanged, included for completeness)
+// Update an existing order
 router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
   if (req.user.role_id !== 1) return res.status(403).json({ error: 'Only admins can update orders' });
 

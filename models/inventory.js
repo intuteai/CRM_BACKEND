@@ -1,5 +1,4 @@
 const pool = require('../config/db');
-const { sendEmail } = require('../utils/email');
 
 class Inventory {
   static async create({ product_name, stock_quantity, price }, io) {
@@ -9,9 +8,6 @@ class Inventory {
     `;
     const result = await pool.query(query, [product_name, stock_quantity, price]);
     const product = result.rows[0];
-    if (stock_quantity < 10) {
-      await sendEmail('admin@example.com', 'Low Stock Alert', `${product_name} stock is low: ${stock_quantity}`);
-    }
     io.emit('stockUpdate', { product_id: product.product_id, stock_quantity });
     return product;
   }

@@ -40,6 +40,30 @@ class User {
     }
     return result.rows[0];
   }
+
+  static async updatePassword(userId, oldPassword, newPassword) {
+    const { rows } = await pool.query('SELECT password_hash FROM users WHERE user_id = $1', [userId]);
+    const user = rows[0];
+
+    if (!user) {
+      throw Object.assign(new Error('User not found'), { status: 404, code: 'USER_NOT_FOUND' });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
+    if (!isMatch) {
+      throw Object.assign(new Error('Incorrect old password'), { status: 401, code: 'AUTH_INVALID_OLD_PASSWORD' });
+    }
+
+    if (newPassword.length < 6) {
+      throw Object.assign(new Error('New password must be at least 6 characters long'), {
+        status: 400,
+        code: 'AUTH_PASSWORD_TOO_SHORT',
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await pool.query('UPDATE users SET password_hash = $1 WHERE user_id = $2', [hashedPassword, userId]);
+  }
 }
 
 module.exports = User;

@@ -67,20 +67,26 @@ class Order {
         [orderItemsValues.map(v => v[0]), orderItemsValues.map(v => v[1]), orderItemsValues.map(v => v[2]), orderItemsValues.map(v => v[3])]
       );
 
-      // Corrected stock update using a CTE
-      await client.query(
+      const { rows: updatedStocks } = await client.query(
         `WITH stock_changes AS (
            SELECT unnest($1::int[]) AS product_id, unnest($2::int[]) AS quantity
          )
          UPDATE inventory i
          SET stock_quantity = i.stock_quantity - sc.quantity
          FROM stock_changes sc
-         WHERE i.product_id = sc.product_id`,
+         WHERE i.product_id = sc.product_id
+         RETURNING i.product_id, i.stock_quantity`,
         [productIds, items.map(i => i.quantity)]
       );
 
       await client.query('COMMIT');
-      if (io) io.emit('stockUpdate', { productIds, action: 'decrement', quantities: items.map(i => i.quantity) });
+
+      if (io) {
+        updatedStocks.forEach(({ product_id, stock_quantity }) => {
+          io.emit('stockUpdate', { product_id, stock_quantity });
+        });
+      }
+
       return order;
     } catch (error) {
       await client.query('ROLLBACK');
