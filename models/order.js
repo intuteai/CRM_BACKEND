@@ -174,6 +174,57 @@ class Order {
       client.release();
     }
   }
+
+  static async cancelOrder(orderId, userId, roleId) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      
+      const { rows: [order] } = await client.query(
+        'SELECT * FROM orders WHERE order_id = $1',
+        [orderId]
+      );
+      if (!order) throw new Error('Order not found');
+      if (roleId !== 1 && order.user_id !== userId) throw new Error('Unauthorized');
+      if (order.status === 'Cancelled') throw new Error('Order already cancelled');
+      if (order.status === 'Delivered') throw new Error('Cannot cancel delivered order');
+
+      const { rows: items } = await client.query(
+        'SELECT product_id, quantity FROM order_items WHERE order_id = $1',
+        [orderId]
+      );
+      
+      if (items.length) {
+        await client.query(
+          `UPDATE inventory i
+           SET stock_quantity = i.stock_quantity + sc.quantity
+           FROM (SELECT unnest($1::int[]) AS product_id, unnest($2::int[]) AS quantity) sc
+           WHERE i.product_id = sc.product_id`,
+          [items.map(i => i.product_id), items.map(i => i.quantity)]
+        );
+      }
+
+      const { rows: [cancelledOrder] } = await client.query(
+        'UPDATE orders SET status = $1 WHERE order_id = $2 RETURNING *',
+        ['Cancelled', orderId]
+      );
+
+      await client.query('COMMIT');
+      
+      // Note: 'io' is not defined in this scope; it should be passed as an argument if needed
+      // if (io) {
+      //   io.emit('orderUpdate', { id: orderId, status: 'Cancelled' });
+      // }
+      
+      return cancelledOrder;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      logger.error(`Error cancelling order ${orderId}: ${error.message}`, { stack: error.stack });
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
 }
 
 module.exports = Order;

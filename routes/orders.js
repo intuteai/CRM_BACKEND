@@ -1,12 +1,11 @@
 const express = require('express');
-const Order = require('../models/order');
+const Order = require('../models/order'); // Correct import
 const redis = require('../config/redis');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const router = express.Router({ mergeParams: true });
 const pool = require('../config/db');
 
-// Get all orders
 router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async (req, res, next) => {
   const { limit = 10, cursor, force_refresh = false } = req.query;
 
@@ -60,7 +59,6 @@ router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async 
   }
 });
 
-// Create a new order
 router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
   try {
     const { targetDeliveryDate, items, user_id } = req.body;
@@ -107,7 +105,6 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
   }
 });
 
-// Update an existing order
 router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
   if (req.user.role_id !== 1) return res.status(403).json({ error: 'Only admins can update orders' });
 
@@ -152,6 +149,35 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
     res.json(response);
   } catch (error) {
     logger.error(`Error in PUT /api/orders/${req.params.id}/update: ${error.message}`, { stack: error.stack });
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.post('/:id/cancel', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.cancelOrder(orderId, req.user.user_id, req.user.role_id);
+    
+    setImmediate(async () => {
+      try {
+        const [orderKeys, inventoryKeys] = await Promise.all([
+          redis.keys(`orders_*_${order.user_id}`),
+          redis.keys('inventory_*'),
+        ]);
+        if (orderKeys.length) await redis.del(orderKeys);
+        if (inventoryKeys.length) await redis.del(inventoryKeys);
+      } catch (err) {
+        logger.error('Cache invalidation error', err);
+      }
+    });
+
+    res.json({
+      id: order.order_id,
+      status: order.status,
+      message: 'Order cancelled successfully'
+    });
+  } catch (error) {
+    logger.error(`Error in POST /api/orders/${req.params.id}/cancel: ${error.message}`, { stack: error.stack });
     res.status(400).json({ error: error.message });
   }
 });

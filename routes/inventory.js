@@ -5,23 +5,58 @@ const redis = require('../config/redis');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const pool = require('../config/db');
+const sanitizeHtml = require('sanitize-html');
+const rateLimit = require('express-rate-limit');
 const router = express.Router({ mergeParams: true });
 
-// POST /api/inventory - Create a new inventory item
+// Rate limiting: 100 requests per 15 minutes per IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+// Apply rate limiting to all routes
+router.use(limiter);
+
+const sanitizeInput = (input) => sanitizeHtml(input, {
+  allowedTags: [], // Strip all HTML tags
+  allowedAttributes: {}
+});
+
+// POST /api/inventory
 router.post('/', authenticateToken, checkPermission('Inventory', 'can_write'), async (req, res, next) => {
   try {
-    const product = await Inventory.create(req.body, req.io);
+    const { product_name, stock_quantity, price, description, product_code } = req.body;
+    
+    if (!product_name) return res.status(400).json({ error: 'Product name is required' });
+    if (!product_code || product_code.length !== 10) return res.status(400).json({ error: 'Product code must be exactly 10 characters' });
+
+    const sanitizedData = {
+      product_name: sanitizeInput(product_name),
+      stock_quantity,
+      price,
+      description: description ? sanitizeInput(description) : null,
+      product_code: sanitizeInput(product_code)
+    };
+
+    const product = await Inventory.create(sanitizedData, req.io);
+    
     await Activity.log(req.user.user_id, 'CREATE_PRODUCT', `Product ${product.product_id} created`);
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
     logger.info(`Product added: ${product.product_name} by ${req.user.user_id}`);
     res.status(201).json(product);
   } catch (error) {
+    if (error.code === '23505' && error.constraint === 'unique_product_code') {
+      return res.status(400).json({ error: 'Product code must be unique' });
+    }
+    logger.error(`Error creating inventory: ${error.message}`, error.stack);
     next(error);
   }
 });
 
-// GET /api/inventory/available - Fetch available inventory items
+// GET /api/inventory/available
 router.get('/available', authenticateToken, async (req, res, next) => {
   const { limit = 10, offset = 0 } = req.query;
   try {
@@ -33,10 +68,8 @@ router.get('/available', authenticateToken, async (req, res, next) => {
     }
 
     const query = `
-      SELECT product_id, product_name, stock_quantity, price, created_at
-      FROM inventory
-      WHERE stock_quantity > 0
-      LIMIT $1 OFFSET $2
+      SELECT product_id, product_name, stock_quantity, price, created_at, description, product_code
+      FROM inventory WHERE stock_quantity > 0 LIMIT $1 OFFSET $2
     `;
     const countQuery = `SELECT COUNT(*) FROM inventory WHERE stock_quantity > 0`;
     const [itemsResult, countResult] = await Promise.all([
@@ -54,7 +87,7 @@ router.get('/available', authenticateToken, async (req, res, next) => {
   }
 });
 
-// GET /api/inventory - Fetch all inventory items
+// GET /api/inventory
 router.get('/', authenticateToken, checkPermission('Inventory', 'can_read'), async (req, res, next) => {
   const { limit = 10, offset = 0, force_refresh } = req.query;
   try {
@@ -72,50 +105,53 @@ router.get('/', authenticateToken, checkPermission('Inventory', 'can_read'), asy
     logger.info(`Fetched ${inventory.data.length} inventory items`);
     res.json(inventory);
   } catch (error) {
+    logger.error(`Error in GET /api/inventory: ${error.message}`, error.stack);
     next(error);
   }
 });
 
-// GET /api/inventory/stock - Fetch real-time stock data
+// GET /api/inventory/stock
 router.get('/stock', authenticateToken, async (req, res, next) => {
   try {
     const query = `
-      SELECT product_id, product_name, stock_quantity
-      FROM inventory
-      WHERE stock_quantity > 0
+      SELECT product_id, product_name, stock_quantity, description, product_code
+      FROM inventory WHERE stock_quantity > 0
     `;
     const { rows } = await pool.query(query);
     logger.info(`Fetched ${rows.length} available stock items`);
     res.json(rows);
   } catch (error) {
-    logger.error(`Error in GET /api/inventory/stock: ${error.message}`, { stack: error.stack });
+    logger.error(`Error in GET /api/inventory/stock: ${error.message}`, error.stack);
     next(error);
   }
 });
 
-// PUT /api/inventory/:id - Update an inventory item
+// PUT /api/inventory/:id
 router.put('/:id', authenticateToken, checkPermission('Inventory', 'can_write'), async (req, res, next) => {
   try {
-    const { product_name, stock_quantity, price } = req.body;
+    const { product_name, stock_quantity, price, description, product_code } = req.body;
     const productId = req.params.id;
 
-    if (!product_name) {
-      return res.status(400).json({ error: 'Product name is required' });
-    }
-    if (stock_quantity < 0 || price < 0) {
-      return res.status(400).json({ error: 'Stock quantity and price must be >= 0' });
-    }
+    if (!product_name) return res.status(400).json({ error: 'Product name is required' });
+    if (stock_quantity < 0 || price < 0) return res.status(400).json({ error: 'Stock quantity and price must be >= 0' });
+    if (!product_code || product_code.length !== 10) return res.status(400).json({ error: 'Product code must be exactly 10 characters' });
+
+    const sanitizedData = {
+      product_name: sanitizeInput(product_name),
+      stock_quantity: stock_quantity || 0,
+      price: price || null,
+      description: description ? sanitizeInput(description) : null,
+      product_code: sanitizeInput(product_code)
+    };
 
     const query = `
       UPDATE inventory
-      SET product_name = $1, stock_quantity = $2, price = $3
-      WHERE product_id = $4
-      RETURNING product_id, product_name, stock_quantity, price, created_at
+      SET product_name = $1, stock_quantity = $2, price = $3, description = $4, product_code = $5
+      WHERE product_id = $6
+      RETURNING *
     `;
-    const { rows } = await pool.query(query, [product_name, stock_quantity || 0, price || null, productId]);
-    if (rows.length === 0) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
+    const { rows } = await pool.query(query, [sanitizedData.product_name, sanitizedData.stock_quantity, sanitizedData.price, sanitizedData.description, sanitizedData.product_code, productId]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Product not found' });
     const updatedProduct = rows[0];
 
     req.io.emit('stockUpdate', { product_id: updatedProduct.product_id, stock_quantity: updatedProduct.stock_quantity });
@@ -125,7 +161,27 @@ router.put('/:id', authenticateToken, checkPermission('Inventory', 'can_write'),
     logger.info(`Product updated: ${updatedProduct.product_name} by ${req.user.user_id}`);
     res.json(updatedProduct);
   } catch (error) {
+    if (error.code === '23505' && error.constraint === 'unique_product_code') {
+      return res.status(400).json({ error: 'Product code must be unique' });
+    }
     logger.error(`Error updating inventory ${req.params.id}: ${error.message}`, error.stack);
+    next(error);
+  }
+});
+
+// DELETE /api/inventory/:id
+router.delete('/:id', authenticateToken, checkPermission('Inventory', 'can_write'), async (req, res, next) => {
+  try {
+    const productId = req.params.id;
+    const deletedProduct = await Inventory.delete(productId, req.io);
+    
+    await Activity.log(req.user.user_id, 'DELETE_PRODUCT', `Product ${productId} deleted`);
+    const keys = await redis.keys('inventory_*');
+    if (keys.length > 0) await redis.del(keys);
+    logger.info(`Product deleted: ${deletedProduct.product_name} by ${req.user.user_id}`);
+    res.json({ message: 'Product deleted successfully', product: deletedProduct });
+  } catch (error) {
+    logger.error(`Error deleting inventory ${req.params.id}: ${error.message}`, error.stack);
     next(error);
   }
 });
