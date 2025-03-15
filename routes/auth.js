@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs'); // Switched to bcryptjs
 const pool = require('../config/db');
 const logger = require('../utils/logger');
 const router = express.Router();
@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
       return res.status(500).json({ error: 'User account incomplete - no password set', code: 'AUTH_NO_PASSWORD' });
     }
 
-    if (!await bcrypt.compare(password, user.password_hash)) {
+    if (!(await bcrypt.compare(password, user.password_hash))) {
       logger.warn(`Failed login attempt for email: ${email} - Incorrect password`);
       return res.status(401).json({ error: 'Invalid credentials', code: 'AUTH_INVALID_CREDENTIALS' });
     }
@@ -45,7 +45,7 @@ router.post('/login', async (req, res) => {
     // Return token in response body, no cookie
     res.json({ role: user.role_id === 1 ? 'admin' : 'customer', token, name: user.name });
   } catch (err) {
-    logger.error(`Login error: ${err.message}`, err.stack);
+    logger.error(`Login error: ${err.message}`, { stack: err.stack });
     res.status(500).json({ error: 'Server error', code: 'SERVER_ERROR' });
   }
 });
@@ -60,7 +60,7 @@ router.get('/user', authenticateToken, async (req, res) => {
     }
     res.json({ name: user.name });
   } catch (err) {
-    logger.error(`User fetch error: ${err.message}`, err.stack);
+    logger.error(`User fetch error: ${err.message}`, { stack: err.stack });
     res.status(403).json({ error: 'Invalid token', code: 'AUTH_INVALID_TOKEN' });
   }
 });
@@ -85,7 +85,7 @@ router.put('/update-password', authenticateToken, async (req, res) => {
     logger.info(`Password updated successfully for user_id: ${userId}`);
     res.json({ message: 'Password updated successfully!' });
   } catch (err) {
-    logger.error(`Password update error for user_id: ${userId}: ${err.message}`, err.stack);
+    logger.error(`Password update error for user_id: ${userId}: ${err.message}`, { stack: err.stack });
     res.status(err.status || 500).json({ error: err.message, code: err.code || 'SERVER_ERROR' });
   }
 });
