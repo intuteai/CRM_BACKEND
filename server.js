@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const http = require('http');
 const helmet = require('helmet');
@@ -32,12 +31,13 @@ const io = initSocket(server);
     console.log('Redis Test Success:', redisReply);
   } catch (err) {
     console.error('Startup Test Error:', err.stack);
+    process.exit(1);
   }
 })();
 
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
   credentials: true,
 }));
 app.use(cookieParser());
@@ -65,5 +65,5 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${process.env.PORT || 5000}`);
 });
