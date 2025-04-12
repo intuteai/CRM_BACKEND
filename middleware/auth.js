@@ -1,4 +1,3 @@
-// middleware/auth.js
 const jwt = require('jsonwebtoken');
 const pool = require('../config/db');
 
@@ -9,6 +8,7 @@ const authenticateToken = async (req, res, next) => {
   }
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
+    console.log('Decoded token:', req.user); // Log token payload
     next();
   } catch (error) {
     res.status(403).json({ error: 'Invalid token', code: 'AUTH_INVALID_TOKEN' });
@@ -18,16 +18,18 @@ const authenticateToken = async (req, res, next) => {
 const checkPermission = (module, action) => {
   return async (req, res, next) => {
     const { role_id } = req.user;
-    const query = `SELECT ${action} FROM permissions WHERE role_id = $1 AND module = $2`;
+    const dbAction = action === 'can_create' ? 'can_write' : action;
+    const query = `SELECT ${dbAction} FROM permissions WHERE role_id = $1 AND module = $2`;
     try {
       const result = await pool.query(query, [role_id, module]);
-      if (result.rows.length > 0 && result.rows[0][action]) {
+      console.log(`Permission check: role_id=${role_id}, module=${module}, action=${dbAction}, result=`, result.rows); // Add this line
+      if (result.rows.length > 0 && result.rows[0][dbAction]) {
         next();
       } else {
         res.status(403).json({ error: 'Permission denied', code: 'PERM_DENIED' });
       }
     } catch (error) {
-      next(error);
+      res.status(500).json({ error: `Permission check failed: ${error.message}`, code: 'PERM_CHECK_FAILED' });
     }
   };
 };

@@ -45,6 +45,7 @@ router.post('/', authenticateToken, checkPermission('Inventory', 'can_write'), a
     await Activity.log(req.user.user_id, 'CREATE_PRODUCT', `Product ${product.product_id} created`);
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
+    await redis.del(`price_list_*`); // Invalidate price_list cache
     logger.info(`Product added: ${product.product_name} by ${req.user.user_id}`);
     res.status(201).json(product);
   } catch (error) {
@@ -144,20 +145,16 @@ router.put('/:id', authenticateToken, checkPermission('Inventory', 'can_write'),
       product_code: sanitizeInput(product_code)
     };
 
-    const query = `
-      UPDATE inventory
-      SET product_name = $1, stock_quantity = $2, price = $3, description = $4, product_code = $5
-      WHERE product_id = $6
-      RETURNING *
-    `;
-    const { rows } = await pool.query(query, [sanitizedData.product_name, sanitizedData.stock_quantity, sanitizedData.price, sanitizedData.description, sanitizedData.product_code, productId]);
-    if (rows.length === 0) return res.status(404).json({ error: 'Product not found' });
-    const updatedProduct = rows[0];
+    const updatedProduct = await Inventory.update(productId, sanitizedData);
+    if (price !== undefined) {
+      await Inventory.syncPriceWithPriceList(productId, price); // Sync with price_list
+    }
 
     req.io.emit('stockUpdate', { product_id: updatedProduct.product_id, stock_quantity: updatedProduct.stock_quantity });
     await Activity.log(req.user.user_id, 'UPDATE_PRODUCT', `Product ${productId} updated`);
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
+    await redis.del(`price_list_*`); // Invalidate price_list cache
     logger.info(`Product updated: ${updatedProduct.product_name} by ${req.user.user_id}`);
     res.json(updatedProduct);
   } catch (error) {
@@ -178,6 +175,7 @@ router.delete('/:id', authenticateToken, checkPermission('Inventory', 'can_write
     await Activity.log(req.user.user_id, 'DELETE_PRODUCT', `Product ${productId} deleted`);
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
+    await redis.del(`price_list_*`); // Invalidate price_list cache
     logger.info(`Product deleted: ${deletedProduct.product_name} by ${req.user.user_id}`);
     res.json({ message: 'Product deleted successfully', product: deletedProduct });
   } catch (error) {

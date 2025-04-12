@@ -1,5 +1,5 @@
 const express = require('express');
-const Order = require('../models/order'); // Correct import
+const { Order } = require('../models/order');
 const redis = require('../config/redis');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
@@ -128,7 +128,7 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
       items,
       status,
       payment_status,
-    });
+    }, req.io);
     const itemsDetails = await Order.getItemsByOrderIds([orderId]);
     const customer = await pool.query('SELECT name FROM users WHERE user_id = $1', [order.user_id]);
 
@@ -156,7 +156,7 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
 router.post('/:id/cancel', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
   try {
     const orderId = req.params.id;
-    const order = await Order.cancelOrder(orderId, req.user.user_id, req.user.role_id);
+    const order = await Order.cancelOrder(orderId, req.user.user_id, req.user.role_id, req.io);
     
     setImmediate(async () => {
       try {

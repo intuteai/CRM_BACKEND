@@ -1,15 +1,29 @@
 const express = require('express');
-const pool = require('../config/db');
 const redis = require('../config/redis');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
+const Customer = require('../models/customer');
 const router = express.Router();
 
-// Input validation middleware
+// Pagination validation middleware
 const validatePagination = (req, res, next) => {
   const { limit = 10, offset = 0 } = req.query;
-  req.safeLimit = Math.min(parseInt(limit) || 10, 100); // Max limit 100
-  req.safeOffset = Math.max(parseInt(offset) || 0, 0);  // Min offset 0
+  req.safeLimit = Math.min(parseInt(limit) || 10, 100);
+  req.safeOffset = Math.max(parseInt(offset) || 0, 0);
+  next();
+};
+
+// Customer input validation middleware
+const validateCustomerInput = (req, res, next) => {
+  const { name, contact_person, city, phone, email, gst, shipping_address, billing_address } = req.body;
+  if (!name || name.length < 3) return res.status(400).json({ error: 'Name must be at least 3 characters', code: 'VALIDATION_ERROR' });
+  if (!contact_person || contact_person.length < 3) return res.status(400).json({ error: 'Contact person is required', code: 'VALIDATION_ERROR' });
+  if (!city) return res.status(400).json({ error: 'City is required', code: 'VALIDATION_ERROR' });
+  if (!phone || !/^[0-9]{10}$/.test(phone)) return res.status(400).json({ error: 'Phone must be a valid 10-digit number', code: 'VALIDATION_ERROR' });
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.status(400).json({ error: 'Invalid email address', code: 'VALIDATION_ERROR' });
+  if (gst && !/^[0-9A-Z]{15}$/.test(gst)) return res.status(400).json({ error: 'GST must be a 15-character alphanumeric code', code: 'VALIDATION_ERROR' });
+  if (!shipping_address) return res.status(400).json({ error: 'Shipping address is required', code: 'VALIDATION_ERROR' });
+  if (!billing_address) return res.status(400).json({ error: 'Billing address is required', code: 'VALIDATION_ERROR' });
   next();
 };
 
@@ -27,59 +41,37 @@ router.get('/',
         return res.json(JSON.parse(cached));
       }
 
-      const query = `
-        SELECT u.user_id AS id, u.name, u.email, 
-               COUNT(DISTINCT o.order_id)::INTEGER AS orders, 
-               COUNT(DISTINCT q.query_id)::INTEGER AS queries 
-        FROM users u 
-        LEFT JOIN orders o ON u.user_id = o.user_id 
-        LEFT JOIN queries q ON u.user_id = q.user_id 
-        WHERE u.role_id = 2 
-        GROUP BY u.user_id, u.name, u.email 
-        LIMIT $1 OFFSET $2
-      `;
-
-      const countQuery = 'SELECT COUNT(*) FROM users WHERE role_id = 2';
-      
-      const [dataResult, countResult] = await Promise.all([
-        pool.query(query, [req.safeLimit, req.safeOffset]),
-        pool.query(countQuery)
-      ]);
-
-      console.log('Query Result:', dataResult.rows); // Log raw data
-
-      const response = {
-        data: dataResult.rows,
-        total: parseInt(countResult.rows[0].count),
-        limit: req.safeLimit,
-        offset: req.safeOffset
-      };
+      const response = await Customer.getCustomers({ limit: req.safeLimit, offset: req.safeOffset });
 
       await redis.setEx(cacheKey, 3600, JSON.stringify(response));
       logger.info(`Customers fetched successfully: ${response.data.length} items`);
       res.json(response);
     } catch (error) {
       logger.error(`Error in GET /api/customers: ${error.message}`, error.stack);
-      next(error);
+      res.status(500).json({ error: error.message, code: 'INTERNAL_SERVER_ERROR' });
     }
   }
 );
 
-// Add order (new endpoint)
-router.post('/orders', 
+// Add customer
+router.post('/', 
   authenticateToken, 
-  checkPermission('Orders', 'can_create'),
+  checkPermission('Customers', 'can_create'),
+  validateCustomerInput,
   async (req, res, next) => {
     try {
-      const { user_id, target_delivery_date } = req.body;
-      const query = `
-        INSERT INTO orders (user_id, target_delivery_date, created_at, status, payment_status)
-        VALUES ($1, $2, NOW(), 'Pending', 'Pending')
-        RETURNING order_id, user_id
-      `;
-      const result = await pool.query(query, [user_id, target_delivery_date]);
+      const { name, contact_person, city, phone, email, gst, shipping_address, billing_address } = req.body;
+      const customer = await Customer.create({
+        name,
+        email,
+        contact_person,
+        city,
+        phone,
+        gst,
+        shipping_address,
+        billing_address,
+      });
 
-      // Invalidate all customer caches
       const cacheKeyPattern = `customers_*_*`;
       const keys = await redis.keys(cacheKeyPattern);
       if (keys.length > 0) {
@@ -87,28 +79,16 @@ router.post('/orders',
         logger.info(`Invalidated caches: ${keys}`);
       }
 
-      // Fetch updated customer data
-      const updatedCustomerQuery = `
-        SELECT u.user_id AS id, u.name, u.email, 
-               COUNT(DISTINCT o.order_id)::INTEGER AS orders, 
-               COUNT(DISTINCT q.query_id)::INTEGER AS queries 
-        FROM users u 
-        LEFT JOIN orders o ON u.user_id = o.user_id 
-        LEFT JOIN queries q ON u.user_id = q.user_id 
-        WHERE u.user_id = $1 
-        GROUP BY u.user_id, u.name, u.email
-      `;
-      const updatedCustomerResult = await pool.query(updatedCustomerQuery, [user_id]);
-      const updatedCustomer = updatedCustomerResult.rows[0];
-
-      // Emit Socket.IO update
-      const io = req.app.get('socketio') || require('socket.io')(req.app.get('httpServer')); // Fallback
-      io.emit('customerUpdate', updatedCustomer);
-
-      res.status(201).json(result.rows[0]);
+      req.io.emit('customerUpdate', customer);
+      logger.info(`Customer created: ${customer.id}`);
+      res.status(201).json(customer);
     } catch (error) {
-      logger.error(`Error in POST /api/orders: ${error.message}`, error.stack);
-      next(error);
+      logger.error(`Error in POST /api/customers: ${error.message}`, { stack: error.stack, body: req.body });
+      if (error.status) {
+        res.status(error.status).json({ error: error.message, code: error.code });
+      } else {
+        res.status(500).json({ error: error.message, code: 'INTERNAL_SERVER_ERROR' });
+      }
     }
   }
 );

@@ -79,6 +79,20 @@ class Order {
         [productIds, items.map(i => i.quantity)]
       );
 
+      // Fetch updated invoice to emit Socket.IO event
+      const { rows: [updatedInvoice] } = await client.query(
+        'SELECT invoice_id, invoice_number, total_value, issue_date FROM customer_invoices WHERE order_id = $1',
+        [order.order_id]
+      );
+      if (updatedInvoice && io) {
+        io.emit('invoiceUpdate', {
+          invoice_id: updatedInvoice.invoice_id,
+          invoice_number: updatedInvoice.invoice_number,
+          total_value: updatedInvoice.total_value,
+          issue_date: updatedInvoice.issue_date
+        });
+      }
+
       await client.query('COMMIT');
 
       if (io) {
@@ -97,7 +111,7 @@ class Order {
     }
   }
 
-  static async updateOrder(orderId, { target_delivery_date, items, status, payment_status }) {
+  static async updateOrder(orderId, { target_delivery_date, items, status, payment_status }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -165,6 +179,20 @@ class Order {
         );
       }
 
+      // Fetch updated invoice to emit Socket.IO event
+      const { rows: [updatedInvoice] } = await client.query(
+        'SELECT invoice_id, invoice_number, total_value, issue_date FROM customer_invoices WHERE order_id = $1',
+        [orderId]
+      );
+      if (updatedInvoice && io) {
+        io.emit('invoiceUpdate', {
+          invoice_id: updatedInvoice.invoice_id,
+          invoice_number: updatedInvoice.invoice_number,
+          total_value: updatedInvoice.total_value,
+          issue_date: updatedInvoice.issue_date
+        });
+      }
+
       await client.query('COMMIT');
       return updatedOrder;
     } catch (error) {
@@ -175,7 +203,7 @@ class Order {
     }
   }
 
-  static async cancelOrder(orderId, userId, roleId) {
+  static async cancelOrder(orderId, userId, roleId, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -209,12 +237,21 @@ class Order {
         ['Cancelled', orderId]
       );
 
+      // Fetch updated invoice to emit Socket.IO event
+      const { rows: [updatedInvoice] } = await client.query(
+        'SELECT invoice_id, invoice_number, total_value, issue_date FROM customer_invoices WHERE order_id = $1',
+        [orderId]
+      );
+      if (updatedInvoice && io) {
+        io.emit('invoiceUpdate', {
+          invoice_id: updatedInvoice.invoice_id,
+          invoice_number: updatedInvoice.invoice_number,
+          total_value: updatedInvoice.total_value,
+          issue_date: updatedInvoice.issue_date
+        });
+      }
+
       await client.query('COMMIT');
-      
-      // Note: 'io' is not defined in this scope; it should be passed as an argument if needed
-      // if (io) {
-      //   io.emit('orderUpdate', { id: orderId, status: 'Cancelled' });
-      // }
       
       return cancelledOrder;
     } catch (error) {
@@ -227,4 +264,4 @@ class Order {
   }
 }
 
-module.exports = Order;
+module.exports = { Order };
