@@ -11731,3 +11731,135 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-12T15:12:17.911Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-12T15:12:17.950Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-12T15:12:17.954Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-04-21T05:09:06.480Z","timestamp":"2025-04-21T05:09:16.547Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-04-21T05:09:16.684Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-04-21T05:09:17.522Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-04-21T05:09:17.526Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:09:25.278Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:09:25.280Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:09:53.297Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:09:53.300Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:09:53.480Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:09:53.485Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:09:55.118Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:09:55.122Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:09:55.262Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:09:55.281Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:10:09.358Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:10:09.362Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:10:09.556Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:10:09.574Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:10:56.826Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:10:56.828Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:10:57.544Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:10:57.546Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:15:13.911Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:15:13.915Z"}
+{"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-04-21T05:27:58.593Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:00.102Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:00.172Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:01.199Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:01.200Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:01.752Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:01.775Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:36.687Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:36.688Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:37.399Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:37.403Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:40.016Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:40.018Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:40.540Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:40.549Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:49.425Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:49.429Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:49.759Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:49.776Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:28:53.210Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:28:55.679Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:30:55.959Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:30:55.960Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:30:57.637Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:30:57.644Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:30:57.649Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:31:12.473Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:31:12.477Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:31:12.478Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:31:12.882Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:31:12.883Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:31:12.887Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:33:27.339Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:33:27.342Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:33:27.343Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:33:28.834Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:33:28.835Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:33:47.225Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:33:47.228Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:33:47.556Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:33:47.568Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-04-21T05:42:24.180Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-04-21T05:42:15.416Z","timestamp":"2025-04-21T05:42:26.472Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-04-21T05:42:27.729Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-04-21T05:42:27.733Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:27.942Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:31.589Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:42:31.619Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:42:31.621Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:32.065Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:32.074Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:32.080Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:42:36.678Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:42:36.690Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:42:36.692Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1","timestamp":"2025-04-21T05:42:55.024Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:55.090Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:55.093Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:42:57.323Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T05:42:59.734Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T05:43:01.740Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:43:37.595Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:43:37.598Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:43:37.600Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:50:45.766Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:50:45.783Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T05:50:45.800Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T05:50:47.262Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T05:50:47.712Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T05:50:59.515Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T05:51:18.814Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:54:49.669Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T05:54:49.674Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:09:25.494Z"}
+{"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-04-21T06:09:25.545Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:09:27.850Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:09:27.875Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:09:27.879Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:09:50.535Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:09:50.545Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:09:50.551Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:09:51.190Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:09:51.206Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:09:51.223Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:09:52.785Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:09:53.202Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:10:49.890Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:14:19.195Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:14:20.735Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:14:20.736Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:14:55.845Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:14:55.858Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:14:57.037Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:14:58.571Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:14:59.034Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:17:26.136Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:17:27.524Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:17:28.203Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:17:28.211Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:17:28.294Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:17:43.886Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:17:43.987Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:17:44.847Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:17:44.918Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:17:45.300Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:17:45.371Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:19:11.414Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:19:11.415Z"}
