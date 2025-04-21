@@ -1818,3 +1818,6 @@
 {"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-04-21T05:27:58.593Z"}
 {"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-04-21T06:09:25.545Z"}
 {"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-04-21T06:38:43.329Z"}
+{"level":"error","message":"Error in GET /api/inventory: timeout exceeded when trying to connect","timestamp":"2025-04-21T10:58:21.421Z"}
+{"level":"error","message":"timeout exceeded when trying to connect - GET /api/inventory?limit=10&offset=0&force_refresh=true","timestamp":"2025-04-21T10:58:21.425Z"}
+{"level":"error","message":"Error fetching stock: Connection terminated due to connection timeout","timestamp":"2025-04-21T11:31:06.470Z"}
