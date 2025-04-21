@@ -11863,3 +11863,364 @@
 {"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:17:45.371Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:19:11.414Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:19:11.415Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-04-21T06:30:51.118Z","timestamp":"2025-04-21T06:31:01.218Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-04-21T06:31:01.389Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-04-21T06:31:01.913Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-04-21T06:31:01.923Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:31:16.949Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:31:16.960Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:31:16.974Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:31:17.618Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:31:17.635Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:31:17.726Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:31:19.209Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:31:19.312Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:31:24.892Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:31:25.341Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:31:25.850Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:31:41.285Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:31:41.287Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:31:41.287Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:31:42.857Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:31:42.884Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:31:42.899Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:31:43.234Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:31:43.698Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:31:45.179Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:37:04.904Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:37:04.907Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:37:04.908Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:37:05.288Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:37:05.304Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:37:05.320Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:37:06.874Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:37:07.336Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:37:09.499Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:10.612Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:37:10.691Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:10.700Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:37:10.783Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:24.449Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:37:24.533Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:24.592Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:37:24.671Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:24.709Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:37:24.812Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:24.850Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:37:24.934Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:37:24.975Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:37:25.073Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:39.940Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:38:40.726Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:40.764Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:38:40.865Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:40.901Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:38:40.988Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:41.033Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:38:41.112Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:41.153Z"}
+{"level":"warn","message":"Stock item 6 not found","timestamp":"2025-04-21T06:38:41.256Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:41.323Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-04-21T06:38:43.329Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:44.641Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:38:46.435Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:38:54.075Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:38:54.181Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:39:44.337Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:39:44.979Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:39:45.010Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:39:45.086Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:39:45.112Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:39:45.196Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:39:45.216Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:39:45.306Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:39:45.337Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:39:45.996Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:45:23.460Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:45:23.464Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:45:24.097Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:45:24.101Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:45:27.353Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:45:27.375Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1","timestamp":"2025-04-21T06:45:45.568Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:45:45.629Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:45:45.632Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:47.958Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:45:48.610Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:48.618Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:45:48.671Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:52.945Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:45:53.015Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:53.044Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:45:53.157Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:53.193Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:45:53.296Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:53.338Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:45:53.438Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:53.473Z"}
+{"level":"warn","message":"Stock item 6 not found","timestamp":"2025-04-21T06:45:53.547Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:53.560Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:45:53.671Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:57.183Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:45:57.293Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:58.382Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:45:58.747Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:45:59.590Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:45:59.660Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:06.415Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:46:06.502Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:06.542Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:46:06.611Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:06.655Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:46:06.764Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:06.800Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:46:06.875Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:06.910Z"}
+{"level":"warn","message":"Stock item 6 not found","timestamp":"2025-04-21T06:46:06.984Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:07.000Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:46:07.092Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:30.347Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:46:30.436Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:30.478Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:46:30.559Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:30.597Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:46:30.670Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:30.722Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:46:30.780Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:30.845Z"}
+{"level":"warn","message":"Stock item 6 not found","timestamp":"2025-04-21T06:46:30.905Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:30.925Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:46:30.996Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:46:33.599Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:46:33.687Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:28.130Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:50:28.791Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:28.813Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:50:28.900Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:28.920Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:50:28.978Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:29.000Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:50:29.071Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:29.098Z"}
+{"level":"info","message":"Created stock item 6","timestamp":"2025-04-21T06:50:29.179Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:29.186Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:50:29.847Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:29.859Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:50:29.954Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:29.964Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:50:30.046Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:50:32.088Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:50:32.176Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:25.985Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:52:27.727Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:32.023Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:52:32.118Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:35.689Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:52:35.800Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:41.242Z"}
+{"level":"info","message":"Updated stock item 6","timestamp":"2025-04-21T06:52:41.317Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:41.346Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:52:41.444Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:41.482Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:52:41.552Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:41.580Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:52:41.673Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:41.695Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:52:41.767Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:52:41.787Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:52:41.862Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:52:58.253Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:53:00.616Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:53:01.098Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T06:53:26.439Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:27.439Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:53:27.518Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:27.528Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:53:27.611Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:31.199Z"}
+{"level":"info","message":"Updated stock item 6","timestamp":"2025-04-21T06:53:31.377Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:31.423Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:53:31.577Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:31.609Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:53:31.781Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:31.806Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:53:32.784Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:32.821Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:53:33.207Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:53:33.235Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:53:33.628Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:28.542Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:54:29.983Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:30.025Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:54:30.093Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:30.140Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:54:30.248Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:30.277Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:54:30.356Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:30.393Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:30.976Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:35.658Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:35.724Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:37.349Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:37.429Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:38.179Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:38.238Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:38.783Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:38.879Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:39.185Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:39.264Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:39.470Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:39.544Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:42.213Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:42.315Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:46.411Z"}
+{"level":"info","message":"Deleted stock item 6","timestamp":"2025-04-21T06:54:47.165Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:48.802Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:48.880Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:49.851Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:49.939Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:53.303Z"}
+{"level":"info","message":"Updated stock item 5","timestamp":"2025-04-21T06:54:53.513Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:53.546Z"}
+{"level":"info","message":"Updated stock item 4","timestamp":"2025-04-21T06:54:53.639Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:53.668Z"}
+{"level":"info","message":"Updated stock item 3","timestamp":"2025-04-21T06:54:53.763Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:53.790Z"}
+{"level":"info","message":"Updated stock item 1","timestamp":"2025-04-21T06:54:53.870Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:54:53.899Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:54:53.966Z"}
+{"level":"info","message":"Checking admin access for user undefined with role_id 1","timestamp":"2025-04-21T06:56:27.965Z"}
+{"level":"info","message":"Stock data fetched successfully","timestamp":"2025-04-21T06:56:29.512Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T06:56:31.237Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:56:31.667Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:56:32.149Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:56:34.240Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T06:56:37.412Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:07:38.565Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:07:38.597Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:40.157Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:07:43.242Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:07:44.873Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:45.285Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:45.705Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:07:52.790Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:52.868Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:53.591Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:07:53.977Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:54.705Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:07:54.860Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:07:55.282Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:08:21.615Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:08:22.077Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:08:23.941Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:08:23.943Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:08:26.530Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:08:27.021Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:08:27.499Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:08:57.870Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:08:58.543Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:00.445Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:09:00.616Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:01.410Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:09:01.853Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:02.346Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:09:06.851Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:06.882Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:07.580Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:09:08.023Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:08.796Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:09:08.998Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:09.436Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:23.842Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:09:24.358Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:25.150Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:09:25.367Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:26.064Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:09:26.576Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:27.056Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:09:34.883Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:09:34.887Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:09:34.888Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:09:35.286Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:09:35.301Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:09:35.317Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:35.671Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:36.119Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:45.708Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:09:46.189Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:46.932Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:09:47.132Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:47.816Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:09:48.313Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:09:48.750Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:16:51.550Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:16:51.582Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:16:52.582Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:16:55.956Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:16:55.957Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:16:55.958Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:16:56.293Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:16:56.309Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:16:56.324Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:16:56.613Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:16:56.973Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:17:05.625Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:17:06.056Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:17:06.595Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:17:06.776Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:17:07.316Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:17:07.751Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:17:08.110Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:25:52.046Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:25:52.048Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:25:52.048Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:25:52.857Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:25:52.872Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:25:52.887Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:25:54.409Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:25:54.434Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:25:54.893Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:26:05.275Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:26:05.703Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:26:06.122Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:26:15.104Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:26:15.480Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:26:16.256Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:26:16.429Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:26:17.635Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:26:17.713Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:26:18.180Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:30:34.583Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:30:34.637Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:36.093Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:30:39.655Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:30:39.656Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-04-21T07:30:39.657Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:30:40.091Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:30:40.113Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-04-21T07:30:40.129Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:40.562Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:41.043Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:49.066Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:30:49.531Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:50.292Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:30:50.478Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:51.826Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:30:51.828Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:30:52.295Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-04-21T07:31:48.347Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:31:48.408Z"}
+{"level":"info","message":"Product updated: cluster 2w by 1","timestamp":"2025-04-21T07:31:49.645Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:31:49.647Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:31:50.376Z"}
+{"level":"info","message":"Product updated: csm220_5 by 1","timestamp":"2025-04-21T07:31:50.925Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-04-21T07:31:51.612Z"}
+{"level":"info","message":"Product added: dfgh by 1","timestamp":"2025-04-21T07:31:51.829Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-04-21T07:31:53.276Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-04-21T07:31:58.126Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-04-21T07:32:18.359Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-04-21T07:32:23.281Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:32:30.493Z"}
+{"level":"info","message":"Product deleted: dfgh by 1","timestamp":"2025-04-21T07:32:30.927Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:32:31.331Z"}
+{"level":"info","message":"Fetched 3 inventory items","timestamp":"2025-04-21T07:32:32.720Z"}
