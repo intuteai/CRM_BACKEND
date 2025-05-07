@@ -38,7 +38,8 @@ router.post('/', authenticateToken, checkPermission('Enquiries', 'can_write'), a
       req.io
     );
 
-    const keys = await redis.keys('enquiry_*');
+    // Invalidate all enquiry list caches
+    const keys = await redis.keys('enquiry_list_*');
     if (keys.length > 0) await redis.del(keys);
 
     logger.info(`Enquiry created: ${enquiry.enquiry_id} by ${req.user.user_id}`);
@@ -125,8 +126,10 @@ router.put('/:id', authenticateToken, checkPermission('Enquiries', 'can_write'),
       req.io
     );
 
-    const keys = await redis.keys('enquiry_*');
-    if (keys.length > 0) await redis.del(keys);
+    // Invalidate specific enquiry and all list caches
+    const keys = await redis.keys(`enquiry_${req.params.id}`);
+    const listKeys = await redis.keys('enquiry_list_*');
+    if (keys.length > 0 || listKeys.length > 0) await redis.del([...keys, ...listKeys]);
 
     logger.info(`Enquiry updated: ${enquiry.enquiry_id} by ${req.user.user_id}`);
     res.json(enquiry);
@@ -140,14 +143,31 @@ router.delete('/:id', authenticateToken, checkPermission('Enquiries', 'can_delet
   try {
     const enquiry = await Enquiry.delete(req.params.id, req.io);
 
-    const keys = await redis.keys('enquiry_*');
-    if (keys.length > 0) await redis.del(keys);
+    // Invalidate specific enquiry and all list caches
+    const keys = await redis.keys(`enquiry_${req.params.id}`);
+    const listKeys = await redis.keys('enquiry_list_*');
+    if (keys.length > 0 || listKeys.length > 0) await redis.del([...keys, ...listKeys]);
 
     logger.info(`Enquiry deleted: ${enquiry.enquiry_id} by ${req.user.user_id}`);
     res.json({ message: 'Enquiry deleted successfully', enquiry });
   } catch (error) {
     logger.error(`Error deleting enquiry ${req.params.id}: ${error.message}`, error.stack);
     res.status(error.message === 'Enquiry not found' ? 404 : 500).json({ error: error.message, code: error.message === 'Enquiry not found' ? 'NOT_FOUND' : 'SERVER_ERROR' });
+  }
+});
+
+router.post('/refresh', authenticateToken, checkPermission('Enquiries', 'can_read'), async (req, res) => {
+  try {
+    // Invalidate all enquiry-related caches
+    const keys = await redis.keys('enquiry_*');
+    const listKeys = await redis.keys('enquiry_list_*');
+    if (keys.length > 0 || listKeys.length > 0) await redis.del([...keys, ...listKeys]);
+
+    logger.info(`Enquiry caches invalidated by ${req.user.user_id}`);
+    res.json({ message: 'Enquiry caches invalidated successfully' });
+  } catch (error) {
+    logger.error(`Error invalidating enquiry caches: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error', code: 'SERVER_ERROR' });
   }
 });
 
