@@ -7,18 +7,6 @@ const logger = require('../utils/logger');
 const pool = require('../config/db');
 const router = express.Router({ mergeParams: true });
 
-// Middleware to ensure admin access
-const ensureAdmin = (req, res, next) => {
-  if (req.user.role_id !== 1) {
-    logger.warn(`Unauthorized BOM access by user_id: ${req.user.user_id}`, {
-      path: req.path,
-      method: req.method,
-    });
-    return res.status(403).json({ error: 'Access restricted to admin only' });
-  }
-  next();
-};
-
 // Validation middleware
 const validateBOM = [
   body('productId')
@@ -71,7 +59,6 @@ const invalidateBOMCache = async () => {
 router.get(
   '/',
   authenticateToken,
-  ensureAdmin,
   validateQuery,
   async (req, res) => {
     const errors = validationResult(req);
@@ -121,7 +108,6 @@ router.get(
 router.get(
   '/:id',
   authenticateToken,
-  ensureAdmin,
   validateId,
   async (req, res) => {
     const errors = validationResult(req);
@@ -153,7 +139,6 @@ router.get(
 router.post(
   '/',
   authenticateToken,
-  ensureAdmin,
   validateBOM,
   async (req, res) => {
     const errors = validationResult(req);
@@ -195,7 +180,6 @@ router.post(
 router.put(
   '/:id',
   authenticateToken,
-  ensureAdmin,
   validateId,
   validateBOM,
   async (req, res) => {
@@ -243,7 +227,6 @@ router.put(
 router.delete(
   '/:id',
   authenticateToken,
-  ensureAdmin,
   validateId,
   async (req, res) => {
     const errors = validationResult(req);

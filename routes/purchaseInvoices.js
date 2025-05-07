@@ -6,16 +6,6 @@ const logger = require('../utils/logger');
 const pool = require('../config/db');
 const router = express.Router({ mergeParams: true });
 
-// Admin middleware
-const ensureAdmin = (req, res, next) => {
-  logger.info(`Checking admin access for user ${req.user.id} with role_id ${req.user.role_id}`);
-  if (req.user.role_id !== 1) {
-    logger.warn(`Unauthorized access attempt by user ${req.user.id} to ${req.path}`);
-    return res.status(403).json({ error: 'Access restricted to admin only' });
-  }
-  next();
-};
-
 // Validate input
 const validateInvoiceInput = (req, res, next) => {
   const { supplierCode, supplierName, invoiceNumber, issueDate, description, unitPrice, quantity, linkPdf, productId } = req.body;
@@ -37,7 +27,7 @@ const validateInvoiceInput = (req, res, next) => {
 };
 
 // GET all invoices
-router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   const { limit = 10, offset = 0, force_refresh = false } = req.query;
   const cacheKey = `purchase_invoices_${limit}_${offset}`;
   logger.info(`GET /api/purchase-invoices called with limit=${limit}, offset=${offset}`);
@@ -60,7 +50,7 @@ router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // POST new invoice
-router.post('/', authenticateToken, ensureAdmin, validateInvoiceInput, async (req, res) => {
+router.post('/', authenticateToken, validateInvoiceInput, async (req, res) => {
   const { supplierCode, supplierName, invoiceNumber, issueDate, description, unitPrice, quantity, linkPdf, productId } = req.body;
   try {
     const invoice = await PurchaseInvoice.create({
@@ -87,7 +77,7 @@ router.post('/', authenticateToken, ensureAdmin, validateInvoiceInput, async (re
 });
 
 // PUT update invoice
-router.put('/:invoiceId', authenticateToken, ensureAdmin, validateInvoiceInput, async (req, res) => {
+router.put('/:invoiceId', authenticateToken, validateInvoiceInput, async (req, res) => {
   const { invoiceId } = req.params;
   const { supplierCode, supplierName, invoiceNumber, issueDate, description, unitPrice, quantity, linkPdf, productId } = req.body;
   try {
@@ -118,7 +108,7 @@ router.put('/:invoiceId', authenticateToken, ensureAdmin, validateInvoiceInput, 
 });
 
 // DELETE invoice
-router.delete('/:invoiceId', authenticateToken, ensureAdmin, async (req, res) => {
+router.delete('/:invoiceId', authenticateToken, async (req, res) => {
   const { invoiceId } = req.params;
   try {
     const deleted = await PurchaseInvoice.delete(parseInt(invoiceId));

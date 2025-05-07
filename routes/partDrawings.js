@@ -5,13 +5,6 @@ const { authenticateToken } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const router = express.Router({ mergeParams: true });
 
-const ensureAdmin = (req, res, next) => {
-  if (req.user.role_id !== 1) {
-    return res.status(403).json({ error: 'Access restricted to admin only' });
-  }
-  next();
-};
-
 // Helper function for Redis pattern-based deletion
 const deleteByPattern = async (pattern) => {
   const keys = await redis.keys(pattern);
@@ -24,7 +17,7 @@ const deleteByPattern = async (pattern) => {
 };
 
 // GET all part drawings
-router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   const { limit = 10, offset = 0, force_refresh = false } = req.query;
   const cacheKey = `part_drawings_${limit}_${offset}`;
 
@@ -59,7 +52,7 @@ router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // POST a new part drawing
-router.post('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   const { drawing_link, product_id } = req.body;
   try {
     const newDrawing = await PartDrawings.create({ drawing_link, product_id });
@@ -83,7 +76,7 @@ router.post('/', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // PUT update an existing part drawing
-router.put('/:srNo', authenticateToken, ensureAdmin, async (req, res) => {
+router.put('/:srNo', authenticateToken, async (req, res) => {
   const { srNo } = req.params;
   const { drawing_link, product_id } = req.body;
   
@@ -114,7 +107,7 @@ router.put('/:srNo', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // DELETE a part drawing
-router.delete('/:srNo', authenticateToken, ensureAdmin, async (req, res) => {
+router.delete('/:srNo', authenticateToken, async (req, res) => {
   const { srNo } = req.params;
   try {
     const deletedItem = await PartDrawings.delete(srNo);

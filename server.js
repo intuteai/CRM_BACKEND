@@ -19,8 +19,9 @@ const priceListRoutes = require('./routes/priceList');
 const pdiRoutes = require('./routes/pdi');
 const purchaseInvoicesRoutes = require('./routes/purchaseInvoices');
 const bomRoutes = require('./routes/bom');
-const enquiryRoutes = require('./routes/enquiry'); // Corrected from enquiriesRoutes
+const enquiryRoutes = require('./routes/enquiry');
 const dispatchTrackingRoutes = require('./routes/dispatchTracking');
+const dashboardRoutes = require('./routes/dashboard');
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
@@ -35,6 +36,7 @@ const io = new Server(server, {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
+  path: '/socket.io', // Added to match App.jsx
 });
 
 app.set('socketio', io);
@@ -94,8 +96,9 @@ app.use('/api/price-list', priceListRoutes);
 app.use('/api/pdi', pdiRoutes);
 app.use('/api/purchase-invoices', purchaseInvoicesRoutes);
 app.use('/api/bom', bomRoutes);
-app.use('/api/enquiry', enquiryRoutes); // Updated to use enquiryRoutes
+app.use('/api/enquiry', enquiryRoutes);
 app.use('/api/dispatch-tracking', dispatchTrackingRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 app.use(errorHandler);
 

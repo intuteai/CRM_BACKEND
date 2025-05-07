@@ -5,15 +5,8 @@ const { authenticateToken } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const router = express.Router({ mergeParams: true });
 
-const ensureAdmin = (req, res, next) => {
-  if (req.user.role_id !== 1) {
-    return res.status(403).json({ error: 'Access restricted to admin only' });
-  }
-  next();
-};
-
 // POST /api/pdi - Create a new PDI report
-router.post('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const { customer_id, order_id, status, inspected_by, inspection_date, report_link } = req.body;
 
@@ -44,7 +37,7 @@ router.post('/', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // GET /api/pdi - Get all PDI reports
-router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   const { limit = 10, cursor, force_refresh = 'false' } = req.query;
   const cacheKey = cursor ? `pdi_list_${limit}_${cursor}` : `pdi_list_${limit}`;
 
@@ -68,7 +61,7 @@ router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // GET /api/pdi/:id - Get a single PDI report
-router.get('/:id', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   const cacheKey = `pdi_report_${req.params.id}`;
 
   try {
@@ -91,7 +84,7 @@ router.get('/:id', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // PUT /api/pdi/:id - Update a PDI report
-router.put('/:id', authenticateToken, ensureAdmin, async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { customer_id, order_id, status, inspected_by, inspection_date, report_link } = req.body;
 
@@ -120,7 +113,7 @@ router.put('/:id', authenticateToken, ensureAdmin, async (req, res) => {
 });
 
 // DELETE /api/pdi/:id - Delete a PDI report
-router.delete('/:id', authenticateToken, ensureAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const report = await Pdi.delete(req.params.id, req.io);
 

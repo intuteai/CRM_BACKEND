@@ -1,19 +1,11 @@
 const express = require('express');
 const DispatchTracking = require('../models/dispatchTracking');
 const redis = require('../config/redis');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const router = express.Router({ mergeParams: true });
 
-const ensureAdmin = (req, res, next) => {
-  if (req.user.role_id !== 1) {
-    return res.status(403).json({ error: 'Access restricted to admin only' });
-  }
-  next();
-};
-
-// GET all dispatch tracking details
-router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/', authenticateToken, checkPermission('DispatchTracking', 'can_read'), async (req, res) => {
   const { limit = 10, offset = 0, force_refresh = false } = req.query;
   const cacheKey = `dispatch_tracking_${limit}_${offset}`;
 
@@ -31,18 +23,16 @@ router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
     res.json(dispatchTracking);
   } catch (error) {
     logger.error(`Error fetching dispatch tracking details: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', code: 'SERVER_ERROR' });
   }
 });
 
-// PUT update an existing dispatch tracking entry
-router.put('/:trackingId', authenticateToken, ensureAdmin, async (req, res) => {
+router.put('/:trackingId', authenticateToken, checkPermission('DispatchTracking', 'can_write'), async (req, res) => {
   const { trackingId } = req.params;
   const { order_id, docket_number, dispatch_date, delivery_date, status } = req.body;
 
-  // Basic validation
   if (!trackingId) {
-    return res.status(400).json({ error: 'Tracking ID is required' });
+    return res.status(400).json({ error: 'Tracking ID is required', code: 'INVALID_INPUT' });
   }
 
   try {
@@ -55,32 +45,31 @@ router.put('/:trackingId', authenticateToken, ensureAdmin, async (req, res) => {
     });
 
     if (!updatedDispatch) {
-      return res.status(404).json({ error: 'Dispatch tracking entry not found' });
+      return res.status(404).json({ error: 'Dispatch tracking entry not found', code: 'NOT_FOUND' });
     }
 
-    await redis.del(`dispatch_tracking_*`); // Invalidate cache
-    req.io.emit('dispatchUpdate'); // Emit event for real-time updates
+    await redis.del(`dispatch_tracking_*`);
+    req.io.emit('dispatchUpdate');
     res.json(updatedDispatch);
   } catch (error) {
     logger.error(`Error updating dispatch tracking: ${error.message}`, error.stack);
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ error: error.message, code: 'INVALID_INPUT' });
   }
 });
 
-// DELETE a dispatch tracking entry
-router.delete('/:trackingId', authenticateToken, ensureAdmin, async (req, res) => {
+router.delete('/:trackingId', authenticateToken, checkPermission('DispatchTracking', 'can_delete'), async (req, res) => {
   const { trackingId } = req.params;
   try {
     const deleted = await DispatchTracking.delete(trackingId);
     if (!deleted) {
-      return res.status(404).json({ error: 'Dispatch tracking entry not found' });
+      return res.status(404).json({ error: 'Dispatch tracking entry not found', code: 'NOT_FOUND' });
     }
-    await redis.del(`dispatch_tracking_*`); // Invalidate cache
-    req.io.emit('dispatchUpdate'); // Emit event for real-time updates
+    await redis.del(`dispatch_tracking_*`);
+    req.io.emit('dispatchUpdate');
     res.status(204).send();
   } catch (error) {
     logger.error(`Error deleting dispatch tracking: ${error.message}`, error.stack);
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ error: error.message, code: 'INVALID_INPUT' });
   }
 });
 

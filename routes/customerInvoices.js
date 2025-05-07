@@ -1,23 +1,16 @@
 const express = require('express');
 const { CustomerInvoice } = require('../models/customerInvoice');
 const redis = require('../config/redis');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const router = express.Router({ mergeParams: true });
 
-const ensureAdmin = (req, res, next) => {
-  if (req.user.role_id !== 1) {
-    return res.status(403).json({ error: 'Access restricted to admin only' });
-  }
-  next();
-};
-
-router.post('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.post('/', authenticateToken, checkPermission('CustomerInvoices', 'can_write'), async (req, res) => {
   try {
     const { customer_id, order_id, invoice_number, issue_date, total_value, link_pdf } = req.body;
 
     if (!invoice_number) {
-      return res.status(400).json({ error: 'Invoice number is required' });
+      return res.status(400).json({ error: 'Invoice number is required', code: 'INVALID_INPUT' });
     }
 
     const invoice = await CustomerInvoice.create({
@@ -36,14 +29,14 @@ router.post('/', authenticateToken, ensureAdmin, async (req, res) => {
     res.status(201).json(invoice);
   } catch (error) {
     if (error.code === '23503') {
-      return res.status(400).json({ error: 'Invalid customer_id or order_id' });
+      return res.status(400).json({ error: 'Invalid customer_id or order_id', code: 'FOREIGN_KEY_VIOLATION' });
     }
     logger.error(`Error creating customer invoice: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', code: 'SERVER_ERROR' });
   }
 });
 
-router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/', authenticateToken, checkPermission('CustomerInvoices', 'can_read'), async (req, res) => {
   const { limit = 10, cursor, force_refresh = 'false' } = req.query;
   const cacheKey = cursor ? `invoice_list_${limit}_${cursor}` : `invoice_list_${limit}`;
 
@@ -62,11 +55,11 @@ router.get('/', authenticateToken, ensureAdmin, async (req, res) => {
     res.json(invoices);
   } catch (error) {
     logger.error(`Error fetching customer invoices: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', code: 'SERVER_ERROR' });
   }
 });
 
-router.get('/:id', authenticateToken, ensureAdmin, async (req, res) => {
+router.get('/:id', authenticateToken, checkPermission('CustomerInvoices', 'can_read'), async (req, res) => {
   const cacheKey = `invoice_${req.params.id}`;
 
   try {
@@ -84,11 +77,11 @@ router.get('/:id', authenticateToken, ensureAdmin, async (req, res) => {
     res.json(invoice);
   } catch (error) {
     logger.error(`Error fetching customer invoice ${req.params.id}: ${error.message}`, error.stack);
-    res.status(error.message === 'Invoice not found' ? 404 : 500).json({ error: error.message });
+    res.status(error.message === 'Invoice not found' ? 404 : 500).json({ error: error.message, code: error.message === 'Invoice not found' ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
 });
 
-router.put('/:id', authenticateToken, ensureAdmin, async (req, res) => {
+router.put('/:id', authenticateToken, checkPermission('CustomerInvoices', 'can_write'), async (req, res) => {
   try {
     const { customer_id, order_id, invoice_number, issue_date, link_pdf } = req.body;
 
@@ -107,14 +100,14 @@ router.put('/:id', authenticateToken, ensureAdmin, async (req, res) => {
     res.json(invoice);
   } catch (error) {
     if (error.code === '23503') {
-      return res.status(400).json({ error: 'Invalid customer_id or order_id' });
+      return res.status(400).json({ error: 'Invalid customer_id or order_id', code: 'FOREIGN_KEY_VIOLATION' });
     }
     logger.error(`Error updating customer invoice ${req.params.id}: ${error.message}`, error.stack);
-    res.status(error.message === 'Invoice not found' ? 404 : 500).json({ error: error.message });
+    res.status(error.message === 'Invoice not found' ? 404 : 500).json({ error: error.message, code: error.message === 'Invoice not found' ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
 });
 
-router.delete('/:id', authenticateToken, ensureAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, checkPermission('CustomerInvoices', 'can_delete'), async (req, res) => {
   try {
     const invoice = await CustomerInvoice.delete(req.params.id, req.io);
 
@@ -125,7 +118,7 @@ router.delete('/:id', authenticateToken, ensureAdmin, async (req, res) => {
     res.json({ message: 'Invoice deleted successfully', invoice });
   } catch (error) {
     logger.error(`Error deleting customer invoice ${req.params.id}: ${error.message}`, error.stack);
-    res.status(error.message === 'Invoice not found' ? 404 : 500).json({ error: error.message });
+    res.status(error.message === 'Invoice not found' ? 404 : 500).json({ error: error.message, code: error.message === 'Invoice not found' ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
 });
 

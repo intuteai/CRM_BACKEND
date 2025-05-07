@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs'); // Switched to bcryptjs
+const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 const logger = require('../utils/logger');
 const router = express.Router();
@@ -8,7 +8,6 @@ const { authenticateToken } = require('../middleware/auth');
 const User = require('../models/user');
 require('dotenv').config();
 
-// POST /api/auth/login - Authenticate user and return token in response body
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -17,7 +16,10 @@ router.post('/login', async (req, res) => {
   }
 
   try {
-    const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const { rows } = await pool.query(
+      'SELECT u.*, r.role_name FROM users u JOIN roles r ON u.role_id = r.role_id WHERE u.email = $1',
+      [email]
+    );
     const user = rows[0];
 
     if (!user) {
@@ -41,16 +43,36 @@ router.post('/login', async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    logger.info(`User logged in: ${email}, user_id: ${user.user_id}`);
-    // Return token in response body, no cookie
-    res.json({ role: user.role_id === 1 ? 'admin' : 'customer', token, name: user.name });
+    // Explicit role mapping by role_id
+    const roleMap = {
+      1: 'admin',
+      2: 'customer',
+      3: 'sales',
+      4: 'design',
+      5: 'production',
+      6: 'store',
+      7: 'dispatch',
+      8: 'accounts',
+    };
+    const role = roleMap[user.role_id] || 'unknown';
+
+    logger.info(`User logged in: ${email}, user_id: ${user.user_id}, role_id: ${user.role_id}, role: ${role}`);
+    res.json({ role, token, name: user.name });
   } catch (err) {
     logger.error(`Login error: ${err.message}`, { stack: err.stack });
     res.status(500).json({ error: 'Server error', code: 'SERVER_ERROR' });
   }
 });
 
-// GET /api/auth/user - Fetch user name
+router.get('/verify-token', authenticateToken, (req, res) => {
+  try {
+    res.json({ user: req.user });
+  } catch (err) {
+    logger.error(`Token verification error: ${err.message}`, { stack: err.stack });
+    res.status(403).json({ error: 'Invalid token', code: 'AUTH_INVALID_TOKEN' });
+  }
+});
+
 router.get('/user', authenticateToken, async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT name FROM users WHERE user_id = $1', [req.user.user_id]);
@@ -65,13 +87,11 @@ router.get('/user', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/auth/logout - No-op since token is client-managed
 router.post('/logout', authenticateToken, (req, res) => {
   logger.info(`User logged out`);
   res.json({ message: 'Logged out successfully' });
 });
 
-// PUT /api/auth/update-password - Update user password
 router.put('/update-password', authenticateToken, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const userId = req.user.user_id;
