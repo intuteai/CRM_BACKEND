@@ -13572,3 +13572,7 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:38:06.219Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:38:28.827Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:38:28.832Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-07T07:43:03.106Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-07T07:42:57.035Z","timestamp":"2025-05-07T07:43:03.408Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-07T07:43:04.025Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-07T07:43:04.027Z"}
