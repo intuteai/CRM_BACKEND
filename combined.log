@@ -13506,3 +13506,61 @@
 {"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T06:55:46.552Z"}
 {"level":"info","message":"Cache hit for enquiry_list_10","timestamp":"2025-05-07T06:56:23.465Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:06:28.023Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-07T07:27:15.080Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-07T07:27:09.181Z","timestamp":"2025-05-07T07:27:15.586Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-07T07:27:16.141Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-07T07:27:16.145Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:27:35.782Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:27:35.784Z"}
+{"level":"info","message":"Cache hit for enquiry_list_10","timestamp":"2025-05-07T07:27:37.384Z"}
+{"level":"info","message":"Cache hit for enquiry_list_10","timestamp":"2025-05-07T07:27:39.042Z"}
+{"level":"info","message":"Enquiry updated: ENQ2025001","timestamp":"2025-05-07T07:27:50.859Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:27:50.860Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:27:50.861Z"}
+{"level":"info","message":"Creating enquiry with provided enquiry_id: none","timestamp":"2025-05-07T07:28:51.020Z"}
+{"level":"info","message":"Attempting to generate enquiry_id: ENQ20257622","timestamp":"2025-05-07T07:28:51.021Z"}
+{"level":"info","message":"Generated unique enquiry_id: ENQ20257622","timestamp":"2025-05-07T07:28:51.122Z"}
+{"level":"info","message":"Inserting enquiry with enquiry_id: ENQ20257622","timestamp":"2025-05-07T07:28:51.122Z"}
+{"level":"info","message":"Enquiry created successfully: ENQ20257622","timestamp":"2025-05-07T07:28:51.322Z"}
+{"level":"info","message":"Enquiry created: ENQ20257622 by 1","timestamp":"2025-05-07T07:28:51.864Z"}
+{"level":"info","message":"Fetched 2 enquiries","timestamp":"2025-05-07T07:28:53.097Z"}
+{"level":"info","message":"Fetched 2 enquiries","timestamp":"2025-05-07T07:28:53.381Z"}
+{"level":"info","message":"Enquiry deleted: ENQ20257622","timestamp":"2025-05-07T07:29:00.180Z"}
+{"level":"info","message":"Enquiry deleted: ENQ20257622 by 1","timestamp":"2025-05-07T07:29:01.017Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T07:29:02.539Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T07:29:02.854Z"}
+{"level":"info","message":"Enquiry updated: ENQ2025001","timestamp":"2025-05-07T07:29:13.568Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:13.568Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:13.569Z"}
+{"level":"info","message":"Enquiry updated: ENQ2025001","timestamp":"2025-05-07T07:29:40.102Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:40.103Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:40.104Z"}
+{"level":"info","message":"Enquiry updated: ENQ2025001","timestamp":"2025-05-07T07:29:42.900Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:42.901Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:42.901Z"}
+{"level":"info","message":"Cache hit for enquiry_list_10","timestamp":"2025-05-07T07:29:46.547Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-07T07:35:07.007Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-07T07:35:00.903Z","timestamp":"2025-05-07T07:35:07.304Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-07T07:35:07.902Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-07T07:35:07.905Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:35:08.045Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:35:08.050Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:35:20.987Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:35:20.997Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-05-07T07:35:34.965Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:35:35.002Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:35:35.009Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T07:35:37.859Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T07:35:38.183Z"}
+{"level":"info","message":"Enquiry updated: ENQ2025001","timestamp":"2025-05-07T07:35:50.037Z"}
+{"level":"info","message":"Enquiry updated: ENQ2025001 by 1","timestamp":"2025-05-07T07:35:50.904Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T07:35:51.422Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-05-07T07:35:51.743Z"}
+{"level":"info","message":"Cache hit for enquiry_list_10","timestamp":"2025-05-07T07:35:55.746Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:36:17.463Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:36:17.704Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-07T07:37:44.827Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-07T07:37:39.164Z","timestamp":"2025-05-07T07:37:45.546Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-07T07:37:46.115Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-07T07:37:46.118Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:37:46.283Z"}

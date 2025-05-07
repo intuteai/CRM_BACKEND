@@ -224,7 +224,7 @@ class Enquiry {
           mail_id: enquiry.mail_id,
           phone_no: enquiry.phone_no,
           items_required: enquiry.items_required,
-          status: enrolment.status,
+          status: enquiry.status,
           last_discussion: enquiry.last_discussion,
           next_interaction: enquiry.next_interaction,
         });

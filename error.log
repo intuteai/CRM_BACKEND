@@ -1837,3 +1837,11 @@
 {"level":"error","message":"Error creating enquiry: null value in column \"enquiry_id\" of relation \"enquiries\" violates not-null constraint","timestamp":"2025-05-07T06:40:53.911Z"}
 {"level":"error","message":"Error creating enquiry: null value in column \"enquiry_id\" of relation \"enquiries\" violates not-null constraint","timestamp":"2025-05-07T06:40:58.094Z"}
 {"level":"error","message":"Error creating enquiry: null value in column \"enquiry_id\" of relation \"enquiries\" violates not-null constraint","timestamp":"2025-05-07T06:41:05.133Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:27:50.860Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:27:50.861Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:13.568Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:13.569Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:40.103Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:40.104Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:42.901Z"}
+{"level":"error","message":"Error updating enquiry ENQ2025001: enrolment is not defined","timestamp":"2025-05-07T07:29:42.901Z"}
