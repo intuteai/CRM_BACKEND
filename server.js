@@ -22,6 +22,7 @@ const bomRoutes = require('./routes/bom');
 const enquiryRoutes = require('./routes/enquiry');
 const dispatchTrackingRoutes = require('./routes/dispatchTracking');
 const dashboardRoutes = require('./routes/dashboard');
+const problemsRoutes = require('./routes/problems'); // New import
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
@@ -36,7 +37,7 @@ const io = new Server(server, {
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   },
-  path: '/socket.io', // Added to match App.jsx
+  path: '/socket.io',
 });
 
 app.set('socketio', io);
@@ -99,6 +100,7 @@ app.use('/api/bom', bomRoutes);
 app.use('/api/enquiry', enquiryRoutes);
 app.use('/api/dispatch-tracking', dispatchTrackingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/problems', problemsRoutes); // New route
 
 app.use(errorHandler);
 

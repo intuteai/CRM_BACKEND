@@ -13576,3 +13576,223 @@
 {"level":"info","message":"Database connection successful:","now":"2025-05-07T07:42:57.035Z","timestamp":"2025-05-07T07:43:03.408Z"}
 {"level":"info","message":"Redis connection successful:","timestamp":"2025-05-07T07:43:04.025Z"}
 {"level":"info","message":"Server running on port 5000","timestamp":"2025-05-07T07:43:04.027Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-07T07:58:54.072Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-07T07:58:48.116Z","timestamp":"2025-05-07T07:58:54.515Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-07T07:58:55.045Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-07T07:58:55.051Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:58:58.041Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-07T07:58:58.043Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:01.272Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:01.513Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:08.316Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:13.834Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:14.868Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:15.555Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:15.936Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:16.327Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:16.680Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:17.030Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:17.470Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:17.869Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-05-07T07:59:18.191Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:59:38.742Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-07T07:59:38.745Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-14T12:58:21.346Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-14T12:58:08.672Z","timestamp":"2025-05-14T12:58:22.207Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-14T12:58:22.750Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-14T12:58:22.754Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T12:58:36.682Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T12:58:36.727Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T12:58:38.534Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T12:58:38.554Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-14T13:01:49.455Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-05-14T13:01:50.722Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-14T13:02:07.398Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-05-14T13:02:08.617Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-14T13:03:23.663Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-14T13:03:11.089Z","timestamp":"2025-05-14T13:03:24.619Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-14T13:03:25.149Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-14T13:03:25.152Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-05-14T13:03:46.404Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:03:46.474Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:03:46.491Z"}
+{"level":"error","message":"Error fetching problems for user 1 redis is not defined","stack":"ReferenceError: redis is not defined\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\problems.js:15:20\n    at Layer.handle [as handle_request] (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2025-05-14T13:06:32.386Z"}
+{"level":"error","message":"redis is not defined - GET /api/problems","timestamp":"2025-05-14T13:06:32.387Z"}
+{"level":"error","message":"Error fetching problems for user 1 redis is not defined","stack":"ReferenceError: redis is not defined\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\problems.js:15:20\n    at Layer.handle [as handle_request] (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2025-05-14T13:06:32.619Z"}
+{"level":"error","message":"redis is not defined - GET /api/problems","timestamp":"2025-05-14T13:06:32.620Z"}
+{"level":"error","message":"Error fetching problems for user 1 redis is not defined","stack":"ReferenceError: redis is not defined\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\problems.js:15:20\n    at Layer.handle [as handle_request] (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2025-05-14T13:06:37.536Z"}
+{"level":"error","message":"redis is not defined - GET /api/problems","timestamp":"2025-05-14T13:06:37.537Z"}
+{"level":"error","message":"Error fetching problems for user 1 redis is not defined","stack":"ReferenceError: redis is not defined\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\problems.js:15:20\n    at Layer.handle [as handle_request] (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2025-05-14T13:06:42.744Z"}
+{"level":"error","message":"redis is not defined - GET /api/problems","timestamp":"2025-05-14T13:06:42.745Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:06:53.702Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:06:53.705Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:06:54.046Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:06:54.055Z"}
+{"level":"error","message":"Error fetching problems for user 1 redis is not defined","stack":"ReferenceError: redis is not defined\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\routes\\problems.js:15:20\n    at Layer.handle [as handle_request] (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\HP\\OneDrive\\Desktop\\erp_backend-main\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2025-05-14T13:06:54.225Z"}
+{"level":"error","message":"redis is not defined - GET /api/problems","timestamp":"2025-05-14T13:06:54.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:08:00.878Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:08:00.882Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-05-14T13:08:45.228Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-05-14T13:08:32.517Z","timestamp":"2025-05-14T13:08:46.058Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-05-14T13:08:46.588Z"}
+{"level":"info","message":"Server running on port 5000","timestamp":"2025-05-14T13:08:46.592Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:15:38.874Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:15:38.875Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:15:52.436Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:17:17.815Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:17:26.758Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:17:26.762Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:17:27.337Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:17:27.341Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:17:27.790Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:17:28.256Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-05-14T13:17:30.114Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:17:30.186Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:17:30.187Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:17:32.246Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:19:46.648Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:19:46.660Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:19:50.279Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:19:50.281Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:19:50.306Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:19:50.307Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:19:53.441Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:19:53.460Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:19:53.850Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:19:53.881Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:19:53.896Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:19:53.897Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:19:54.335Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:19:54.336Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:20:34.997Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:20:35.005Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:20:36.681Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:20:36.682Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:20:36.701Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:20:36.703Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:20:37.150Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:20:37.151Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:20:38.075Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:20:38.090Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:20:38.543Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:20:38.545Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:20:38.565Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:20:38.568Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:20:38.995Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:20:39.026Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:21:12.253Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:21:12.264Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:21:14.075Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:21:14.545Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:21:14.952Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:21:16.172Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:21:16.173Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:21:45.597Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:21:45.610Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:21:49.992Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:21:49.994Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:21:50.446Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:21:50.447Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:21:53.868Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:21:53.870Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:21:57.551Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:21:57.564Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:22:05.422Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:22:05.424Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:22:05.873Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:22:05.951Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:22:16.460Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:22:42.274Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:22:43.460Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T13:27:06.560Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:27:24.054Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T13:27:24.148Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:27:57.311Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T13:27:57.374Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:30:48.548Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:30:48.595Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:32:05.488Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:32:05.518Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:35:17.552Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:35:58.669Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T13:35:58.671Z"}
+{"level":"info","message":"Fetched 7 customer invoices","timestamp":"2025-05-14T13:36:27.726Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:36:31.151Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:36:31.153Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:36:31.605Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:36:31.667Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:39:37.493Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:39:37.787Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:39:37.791Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:39:38.208Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:39:38.221Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:39:38.643Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:39:39.094Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:39:39.767Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:39:40.206Z"}
+{"level":"info","message":"Fetched 7 customer invoices","timestamp":"2025-05-14T13:39:53.152Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:39:55.668Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:39:55.669Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:39:56.138Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:39:56.169Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:43:10.409Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:43:10.419Z"}
+{"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-05-14T13:54:35.381Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"switchback.proxy.rlwy.net","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND switchback.proxy.rlwy.net","stack":"Error: getaddrinfo ENOTFOUND switchback.proxy.rlwy.net\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:120:26)","syscall":"getaddrinfo","timestamp":"2025-05-14T13:54:35.456Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"switchback.proxy.rlwy.net","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND switchback.proxy.rlwy.net","stack":"Error: getaddrinfo ENOTFOUND switchback.proxy.rlwy.net\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:120:26)","syscall":"getaddrinfo","timestamp":"2025-05-14T13:54:35.487Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:54:36.862Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:54:36.875Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:54:37.039Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:54:37.045Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:54:37.748Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T13:54:37.755Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:54:39.495Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T13:54:39.940Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T13:54:40.406Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:58:12.315Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T13:58:12.317Z"}
+{"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-05-14T14:41:07.102Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:09.354Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:09.358Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:41:09.731Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:41:09.733Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:10.519Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:10.520Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:41:27.990Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:41:27.992Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:28.172Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:28.195Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:41:29.761Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:41:29.769Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-05-14T14:41:48.301Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:48.351Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:41:48.374Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-05-14T14:41:48.790Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:41:52.572Z"}
+{"level":"info","message":"Fetched 4 inventory items","timestamp":"2025-05-14T14:41:53.197Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T14:41:53.679Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:42:17.311Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:42:18.675Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:42:18.679Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:42:18.860Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-05-14T14:42:18.875Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T14:42:19.324Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:42:19.325Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:42:19.809Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T14:42:19.824Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:42:45.570Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T14:42:45.601Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:43:02.788Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T14:43:02.834Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:44:33.397Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T14:44:33.415Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:44:35.175Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-05-14T14:44:35.180Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:46:09.622Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:46:30.312Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:46:39.288Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T14:46:39.320Z"}
+{"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-05-14T14:47:15.339Z"}
+{"level":"info","message":"Cleared problem caches for user 1","timestamp":"2025-05-14T14:47:15.418Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:49:44.288Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-05-14T14:49:44.290Z"}
