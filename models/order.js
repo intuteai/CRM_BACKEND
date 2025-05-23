@@ -4,8 +4,8 @@ const logger = require('../utils/logger');
 class Order {
   static async getAll({ limit = 10, cursor = null, user_id }) {
     const query = user_id
-      ? 'SELECT * FROM orders WHERE user_id = $1 AND ($2::timestamp IS NULL OR created_at < $2) ORDER BY created_at DESC LIMIT $3'
-      : 'SELECT * FROM orders WHERE $1::timestamp IS NULL OR created_at < $1 ORDER BY created_at DESC LIMIT $2';
+      ? 'SELECT order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status FROM orders WHERE user_id = $1 AND ($2::timestamp IS NULL OR created_at < $2) ORDER BY created_at DESC LIMIT $3'
+      : 'SELECT order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status FROM orders WHERE $1::timestamp IS NULL OR created_at < $1 ORDER BY created_at DESC LIMIT $2';
     const countQuery = user_id ? 'SELECT COUNT(*) FROM orders WHERE user_id = $1' : 'SELECT COUNT(*) FROM orders';
     const values = user_id ? [user_id, cursor, limit] : [cursor, limit];
     const [result, countResult] = await Promise.all([
@@ -57,7 +57,7 @@ class Order {
       }
 
       const { rows: [order] } = await client.query(
-        'INSERT INTO orders (user_id, status, target_delivery_date, payment_status) VALUES ($1, $2, $3, $4) RETURNING *',
+        'INSERT INTO orders (user_id, status, target_delivery_date, payment_status) VALUES ($1, $2, $3, $4) RETURNING order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status',
         [user_id, 'Pending', target_delivery_date || null, 'Pending']
       );
 
@@ -156,7 +156,7 @@ class Order {
         values.push(payment_status);
       }
       const { rows: [updatedOrder] } = await client.query(
-        `UPDATE orders SET ${updates.join(', ')} WHERE order_id = $1 RETURNING *`,
+        `UPDATE orders SET ${updates.join(', ')} WHERE order_id = $1 RETURNING order_id, user_id, TO_CHAR(target_delivery_date, 'YYYY-MM-DD') AS target_delivery_date, created_at, status, payment_status`,
         values
       );
 
@@ -233,7 +233,7 @@ class Order {
       }
 
       const { rows: [cancelledOrder] } = await client.query(
-        'UPDATE orders SET status = $1 WHERE order_id = $2 RETURNING *',
+        'UPDATE orders SET status = $1 WHERE order_id = $2 RETURNING order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status',
         ['Cancelled', orderId]
       );
 

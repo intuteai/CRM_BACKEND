@@ -39,7 +39,7 @@ router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async 
       return {
         id: order.order_id,
         status: order.status,
-        targetDeliveryDate: order.target_delivery_date ? order.target_delivery_date.toISOString().split('T')[0] : null,
+        targetDeliveryDate: order.target_delivery_date,
         paymentStatus: order.payment_status,
         customerName: customer.rows[0]?.name || 'Unknown',
         createdAt: order.created_at.toISOString(),
@@ -76,7 +76,7 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
     const response = {
       id: order.order_id,
       status: order.status,
-      targetDeliveryDate: order.target_delivery_date ? order.target_delivery_date.toISOString().split('T')[0] : null,
+      targetDeliveryDate: order.target_delivery_date,
       paymentStatus: order.payment_status,
       customerName: customer.rows[0]?.name || 'Unknown',
       createdAt: order.created_at.toISOString(),
@@ -135,7 +135,7 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
     const response = {
       id: order.order_id,
       status: order.status,
-      targetDeliveryDate: order.target_delivery_date ? order.target_delivery_date.toISOString().split('T')[0] : null,
+      targetDeliveryDate: order.target_delivery_date,
       paymentStatus: order.payment_status,
       customerName: customer.rows[0]?.name || 'Unknown',
       createdAt: order.created_at.toISOString(),
