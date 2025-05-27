@@ -2,19 +2,53 @@ const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 class PartDrawings {
-  static async getAll({ limit = 10, offset = 0 }) {
-    const query = `
-      SELECT pd.sr_no AS "srNo", pd.drawing_id AS "drawingId", 
-             pd.item_name AS "itemName", pd.drawing_link AS "drawingLink", 
-             pd.product_id AS "productId", pd.updated_at AS "updatedAt",
-             i.product_name AS "productName"
-      FROM part_drawings pd
-      JOIN inventory i ON pd.product_id = i.product_id
-      ORDER BY pd.updated_at DESC
-      LIMIT $1 OFFSET $2
-    `;
-    const { rows } = await pool.query(query, [limit, offset]);
-    return rows;
+  static async getAll({ limit = 10, offset = 0, search = '' }) {
+    const client = await pool.connect();
+    try {
+      // Query for paginated data
+      const dataQuery = `
+        SELECT pd.sr_no AS "srNo", pd.drawing_id AS "drawingId", 
+               pd.item_name AS "itemName", pd.drawing_link AS "drawingLink", 
+               pd.product_id AS "productId", pd.updated_at AS "updatedAt",
+               i.product_name AS "productName"
+        FROM part_drawings pd
+        LEFT JOIN inventory i ON pd.product_id = i.product_id
+        WHERE $3 = '' OR (
+          pd.sr_no::text ILIKE $3 OR
+          pd.drawing_id::text ILIKE $3 OR
+          pd.item_name ILIKE $3 OR
+          i.product_name ILIKE $3 OR
+          pd.product_id::text ILIKE $3
+        )
+        ORDER BY pd.updated_at DESC
+        LIMIT $1 OFFSET $2
+      `;
+      // Query for total count
+      const countQuery = `
+        SELECT COUNT(*) AS total
+        FROM part_drawings pd
+        LEFT JOIN inventory i ON pd.product_id = i.product_id
+        WHERE $1 = '' OR (
+          pd.sr_no::text ILIKE $1 OR
+          pd.drawing_id::text ILIKE $1 OR
+          pd.item_name ILIKE $1 OR
+          i.product_name ILIKE $1 OR
+          pd.product_id::text ILIKE $1
+        )
+      `;
+      const searchPattern = `%${search}%`;
+      const [dataResult, countResult] = await Promise.all([
+        client.query(dataQuery, [limit, offset, searchPattern]),
+        client.query(countQuery, [searchPattern])
+      ]);
+
+      return {
+        drawings: dataResult.rows,
+        total: parseInt(countResult.rows[0].total, 10)
+      };
+    } finally {
+      client.release();
+    }
   }
 
   static async create({ drawing_link, product_id }) {

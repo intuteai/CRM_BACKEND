@@ -1,4 +1,3 @@
-// services/queryService.js
 const pool = require('../config/db');
 const redisClient = require('../config/redis');
 const logger = require('../utils/logger');
@@ -15,22 +14,29 @@ class QueryError extends Error {
 class QueryService {
   static async getQueries(userId, roleId, { limit = 10, offset = 0 }) {
     const cacheKey = `queries:${userId}:${limit}:${offset}`;
+    // Force clear cache for debugging
+    await redisClient.del(cacheKey);
+    logger.info(`Cleared cache for ${cacheKey}`);
     const cached = await redisClient.get(cacheKey);
     if (cached) {
       logger.info(`Cache hit for ${cacheKey}`);
       return JSON.parse(cached);
     }
 
-    const query = roleId === 1
-      ? `
+    let query;
+    let params;
+    if (roleId === 1 || roleId === 5) { // Admin or Production
+      query = `
         SELECT q.query_id AS "queryId", u.name AS "customerName", 
                q.query_text AS "description", q.query_status AS "status"
         FROM queries q
-        JOIN users u ON q.user_id = u.user_id
+        LEFT JOIN users u ON q.user_id = u.user_id
         ORDER BY q.date_of_query_raised DESC
         LIMIT $1 OFFSET $2
-      `
-      : `
+      `;
+      params = [limit, offset];
+    } else {
+      query = `
         SELECT q.query_id AS "queryId", u.name AS "customerName", 
                q.query_text AS "description", q.query_status AS "status"
         FROM queries q
@@ -39,21 +45,27 @@ class QueryService {
         ORDER BY q.date_of_query_raised DESC
         LIMIT $2 OFFSET $3
       `;
-    const params = roleId === 1 ? [limit, offset] : [userId, limit, offset];
+      params = [userId, limit, offset];
+    }
+    logger.info(`Executing query for user ${userId} (role: ${roleId})`, { query });
     const { rows: queries } = await pool.query(query, params);
+    logger.info(`Query result: ${JSON.stringify(queries)}`);
 
     for (let query of queries) {
       query.adminResponses = await this.getResponses(query.queryId);
+      if (!query.customerName) {
+        query.customerName = 'Unknown User';
+      }
     }
 
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(queries));
-    logger.info(`Fetched ${queries.length} queries for user ${userId}`);
+    logger.info(`Fetched ${queries.length} queries for user ${userId} (role: ${roleId})`);
     return queries;
   }
 
   static async createQuery(userId, customerName, description) {
     if (!description || typeof description !== 'string' || !description.trim()) {
-      throw new QueryError('Query description is required and must be a non-empty string', 400);
+      throw new QueryError('Description is required and must be a non-empty string', 400);
     }
 
     const client = await pool.connect();
@@ -73,7 +85,6 @@ class QueryService {
         status: query.query_status,
         adminResponses: []
       };
-      // Invalidate all query caches to ensure admins and customers see the new query
       await redisClient.delPattern('queries:*');
       logger.info(`Query ${query.query_id} created by user ${userId}`);
       return response;
@@ -116,7 +127,7 @@ class QueryService {
         ['In Progress', queryId]
       );
       updatedQuery.adminResponses = await this.getResponses(queryId);
-      const customerName = (await client.query('SELECT name FROM users WHERE user_id = $1', [updatedQuery.user_id])).rows[0].name;
+      const customerName = (await client.query('SELECT name FROM users WHERE user_id = $1', [updatedQuery.user_id])).rows[0]?.name || 'Unknown User';
       await Activity.log(respondedBy, 'RESPOND_QUERY', `Response added to Query ${queryId}`, client);
       await client.query('COMMIT');
 
@@ -198,7 +209,7 @@ class QueryService {
         throw new QueryError('Query already closed', 400);
       }
 
-      const { rows: [updatedQuery] } = await client.query(
+      const { rows: [updatedQuery] } = await pool.query(
         'UPDATE queries SET query_status = $1, last_updated = NOW() WHERE query_id = $2 RETURNING *',
         ['Closed', queryId]
       );
@@ -220,7 +231,7 @@ class QueryService {
 
   static async getResponses(queryId) {
     const { rows } = await pool.query(
-      'SELECT response AS "response", response_date AS "response_date" ' +
+      'SELECT response AS "response", response_date AS "responseDate" ' +
       'FROM query_responses WHERE query_id = $1 ORDER BY response_date ASC',
       [queryId]
     );

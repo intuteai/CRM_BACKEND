@@ -22,11 +22,12 @@ router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async 
     }
 
     const isAdmin = req.user.role_id === 1;
-    console.log(`Fetching orders for user_id: ${req.user.user_id}, role_id: ${req.user.role_id}, isAdmin: ${isAdmin}, cursor: ${cursor}, limit: ${parsedLimit}`);
+    const isProduction = req.user.role_id === 5; // Allow Production role to see all orders
+    console.log(`Fetching orders for user_id: ${req.user.user_id}, role_id: ${req.user.role_id}, isAdmin: ${isAdmin}, isProduction: ${isProduction}, cursor: ${cursor}, limit: ${parsedLimit}`);
     const { data: orders, total, nextCursor } = await Order.getAll({
       limit: parsedLimit,
       cursor: cursor ? new Date(cursor) : null,
-      user_id: isAdmin ? null : req.user.user_id,
+      user_id: (isAdmin || isProduction) ? null : req.user.user_id, // Bypass user_id filter for Production
     });
     console.log('Fetched orders from DB:', orders);
 
@@ -36,6 +37,8 @@ router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async 
 
     const processedRows = await Promise.all(orders.map(async (order) => {
       const customer = await pool.query('SELECT name FROM users WHERE user_id = $1', [order.user_id]);
+      const items = itemsByOrder[order.order_id] || [];
+      const totalAmount = items.reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
       return {
         id: order.order_id,
         status: order.status,
@@ -43,7 +46,8 @@ router.get('/', authenticateToken, checkPermission('Orders', 'can_read'), async 
         paymentStatus: order.payment_status,
         customerName: customer.rows[0]?.name || 'Unknown',
         createdAt: order.created_at.toISOString(),
-        items: itemsByOrder[order.order_id] || [],
+        items,
+        totalAmount,
         timezone: 'Asia/Kolkata',
       };
     }));
@@ -72,6 +76,7 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
     const order = await Order.create(orderUserId, req.user.role_id, { target_delivery_date: targetDeliveryDate, items }, req.io);
     const itemsDetails = await Order.getItemsByOrderIds([order.order_id]);
     const customer = await pool.query('SELECT name FROM users WHERE user_id = $1', [orderUserId]);
+    const totalAmount = (itemsDetails[order.order_id] || []).reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
 
     const response = {
       id: order.order_id,
@@ -81,6 +86,7 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
       customerName: customer.rows[0]?.name || 'Unknown',
       createdAt: order.created_at.toISOString(),
       items: itemsDetails[order.order_id] || [],
+      totalAmount,
       timezone: 'Asia/Kolkata',
     };
 
@@ -106,7 +112,7 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
 });
 
 router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_write'), async (req, res, next) => {
-  if (req.user.role_id !== 1) return res.status(403).json({ error: 'Only admins can update orders' });
+  if (req.user.role_id !== 1 && req.user.role_id !== 5) return res.status(403).json({ error: 'Only admins or production can update orders' });
 
   try {
     const orderId = req.params.id;
@@ -131,6 +137,7 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
     }, req.io);
     const itemsDetails = await Order.getItemsByOrderIds([orderId]);
     const customer = await pool.query('SELECT name FROM users WHERE user_id = $1', [order.user_id]);
+    const totalAmount = (itemsDetails[orderId] || []).reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
 
     const response = {
       id: order.order_id,
@@ -140,6 +147,7 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
       customerName: customer.rows[0]?.name || 'Unknown',
       createdAt: order.created_at.toISOString(),
       items: itemsDetails[orderId] || [],
+      totalAmount,
       timezone: 'Asia/Kolkata',
     };
 
@@ -157,7 +165,16 @@ router.post('/:id/cancel', authenticateToken, checkPermission('Orders', 'can_wri
   try {
     const orderId = req.params.id;
     const order = await Order.cancelOrder(orderId, req.user.user_id, req.user.role_id, req.io);
-    
+    const itemsDetails = await Order.getItemsByOrderIds([orderId]);
+    const totalAmount = (itemsDetails[orderId] || []).reduce((sum, item) => sum + (Number(item.price) * Number(item.quantity)), 0);
+
+    const response = {
+      id: order.order_id,
+      status: order.status,
+      totalAmount,
+      message: 'Order cancelled successfully',
+    };
+
     setImmediate(async () => {
       try {
         const [orderKeys, inventoryKeys] = await Promise.all([
@@ -171,11 +188,7 @@ router.post('/:id/cancel', authenticateToken, checkPermission('Orders', 'can_wri
       }
     });
 
-    res.json({
-      id: order.order_id,
-      status: order.status,
-      message: 'Order cancelled successfully'
-    });
+    res.json(response);
   } catch (error) {
     logger.error(`Error in POST /api/orders/${req.params.id}/cancel: ${error.message}`, { stack: error.stack });
     res.status(400).json({ error: error.message });

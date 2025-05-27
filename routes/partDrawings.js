@@ -16,10 +16,20 @@ const deleteByPattern = async (pattern) => {
   return 0;
 };
 
+// Clear all caches on startup
+const clearAllCaches = async () => {
+  await deleteByPattern('part_drawings_*');
+  await deleteByPattern('inventory_*');
+  logger.info('Cleared all part_drawings and inventory caches');
+};
+
+// Execute cache clearing on startup
+clearAllCaches();
+
 // GET all part drawings
 router.get('/', authenticateToken, async (req, res) => {
-  const { limit = 10, offset = 0, force_refresh = false } = req.query;
-  const cacheKey = `part_drawings_${limit}_${offset}`;
+  const { limit = 10, offset = 0, force_refresh = false, search = '' } = req.query;
+  const cacheKey = `part_drawings_${limit}_${offset}_${search}`;
 
   try {
     // Handle force refresh
@@ -27,10 +37,10 @@ router.get('/', authenticateToken, async (req, res) => {
       await redis.del(cacheKey);
       logger.info(`Cache invalidated for ${cacheKey} due to force refresh`);
       
-      const drawings = await PartDrawings.getAll({ limit: parseInt(limit), offset: parseInt(offset) });
-      await redis.setEx(cacheKey, 300, JSON.stringify(drawings));
+      const result = await PartDrawings.getAll({ limit: parseInt(limit), offset: parseInt(offset), search });
+      await redis.setEx(cacheKey, 300, JSON.stringify(result));
       logger.info(`Fresh data cached for ${cacheKey}`);
-      return res.json(drawings);
+      return res.json(result);
     }
 
     // Try cache first
@@ -42,9 +52,9 @@ router.get('/', authenticateToken, async (req, res) => {
 
     // Cache miss
     logger.info(`Cache miss for ${cacheKey}, fetching from database`);
-    const drawings = await PartDrawings.getAll({ limit: parseInt(limit), offset: parseInt(offset) });
-    await redis.setEx(cacheKey, 300, JSON.stringify(drawings));
-    res.json(drawings);
+    const result = await PartDrawings.getAll({ limit: parseInt(limit), offset: parseInt(offset), search });
+    await redis.setEx(cacheKey, 300, JSON.stringify(result));
+    res.json(result);
   } catch (error) {
     logger.error(`Error fetching part drawings: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });

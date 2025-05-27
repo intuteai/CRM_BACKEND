@@ -1,3 +1,4 @@
+// routes/queries.js
 const express = require('express');
 const { authenticateToken } = require('../middleware/auth');
 const QueryService = require('../services/queryService');

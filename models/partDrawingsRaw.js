@@ -2,19 +2,53 @@ const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 class PartDrawingsRaw {
-  static async getAll({ limit = 10, offset = 0 }) {
-    const query = `
-      SELECT pdr.sr_no AS "srNo", pdr.drawing_id AS "drawingId", 
-             pdr.item_name AS "itemName", pdr.drawing_link AS "drawingLink", 
-             pdr.product_id AS "productId", pdr.updated_at AS "updatedAt",
-             rm.product_name AS "productName"
-      FROM part_drawings_raw pdr
-      JOIN raw_materials rm ON pdr.product_id = rm.product_id
-      ORDER BY pdr.updated_at DESC
-      LIMIT $1 OFFSET $2
-    `;
-    const { rows } = await pool.query(query, [limit, offset]);
-    return rows;
+  static async getAll({ limit = 10, offset = 0, search = '' }) {
+    const client = await pool.connect();
+    try {
+      // Query for paginated data
+      const dataQuery = `
+        SELECT pdr.sr_no AS "srNo", pdr.drawing_id AS "drawingId", 
+               pdr.item_name AS "itemName", pdr.drawing_link AS "drawingLink", 
+               pdr.product_id AS "productId", pdr.updated_at AS "updatedAt",
+               rm.product_name AS "productName"
+        FROM part_drawings_raw pdr
+        LEFT JOIN raw_materials rm ON pdr.product_id = rm.product_id
+        WHERE $3 = '' OR (
+          pdr.sr_no::text ILIKE $3 OR
+          pdr.drawing_id::text ILIKE $3 OR
+          pdr.item_name ILIKE $3 OR
+          rm.product_name ILIKE $3 OR
+          pdr.product_id::text ILIKE $3
+        )
+        ORDER BY pdr.updated_at DESC
+        LIMIT $1 OFFSET $2
+      `;
+      // Query for total count
+      const countQuery = `
+        SELECT COUNT(*) AS total
+        FROM part_drawings_raw pdr
+        LEFT JOIN raw_materials rm ON pdr.product_id = rm.product_id
+        WHERE $1 = '' OR (
+          pdr.sr_no::text ILIKE $1 OR
+          pdr.drawing_id::text ILIKE $1 OR
+          pdr.item_name ILIKE $1 OR
+          rm.product_name ILIKE $1 OR
+          pdr.product_id::text ILIKE $1
+        )
+      `;
+      const searchPattern = `%${search}%`;
+      const [dataResult, countResult] = await Promise.all([
+        client.query(dataQuery, [limit, offset, searchPattern]),
+        client.query(countQuery, [searchPattern])
+      ]);
+
+      return {
+        drawings: dataResult.rows,
+        total: parseInt(countResult.rows[0].total, 10)
+      };
+    } finally {
+      client.release();
+    }
   }
 
   static async create({ drawing_link, product_id }) {
