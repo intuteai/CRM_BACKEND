@@ -104,7 +104,7 @@ app.use('/api/problems', problemsRoutes); // New route
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 initializeServer().then(() => {
   server.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`);

@@ -15172,3 +15172,5 @@
 {"level":"info","message":"Cache hit for problems_100_0_1","timestamp":"2025-06-14T16:00:14.662Z"}
 {"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-06-14T16:00:14.665Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-06-14T16:00:43.994Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:09.517Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:52.004Z"}

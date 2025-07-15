@@ -1924,3 +1924,5 @@
 {"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:218:20)","syscall":"read","timestamp":"2025-05-27T14:14:52.079Z"}
 {"level":"error","message":"Error fetching part drawings: Connection terminated due to connection timeout","timestamp":"2025-05-27T14:31:33.542Z"}
 {"level":"error","message":"Failed to initialize server:","timestamp":"2025-06-14T15:46:31.302Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:09.517Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:52.004Z"}
