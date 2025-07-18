@@ -40,4 +40,4 @@ jobs:
             cd ~/erp-backend
             docker-compose pull erp-backend
             docker-compose down
-            docker-compose up -d erp-backend
+            docker-compose up -d 
