@@ -15725,3 +15725,169 @@
 {"level":"info","message":"Fresh data cached for price_list_10_0","timestamp":"2025-07-22T05:36:49.154Z"}
 {"level":"info","message":"User logged out","timestamp":"2025-07-22T05:37:03.985Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-22T05:37:03.997Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-07-24T08:09:44.514Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-07-24T08:09:44.517Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-07-24T08:09:44.518Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-07-24T08:09:44.236Z","timestamp":"2025-07-24T08:09:44.928Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-07-24T08:09:44.932Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-07-24T08:09:44.935Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-07-24T08:10:18.347Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-07-24T08:10:18.350Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-07-24T08:10:18.350Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-07-24T08:10:18.045Z","timestamp":"2025-07-24T08:10:18.732Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-07-24T08:10:18.736Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-07-24T08:10:18.741Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-07-24T08:11:32.736Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-07-24T08:11:32.739Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-07-24T08:11:32.739Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-07-24T08:11:32.484Z","timestamp":"2025-07-24T08:11:33.175Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-07-24T08:11:33.179Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-07-24T08:11:33.184Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-07-24T08:12:24.296Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:12:24.379Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:12:28.733Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:12:29.103Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:12:29.194Z"}
+{"level":"info","message":"Product added: abc by 1","timestamp":"2025-07-24T08:13:06.394Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:06.748Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:06.834Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:13:24.404Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:13:35.463Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:35.538Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:35.617Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:13:37.812Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:13:37.815Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:13:37.997Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:13:38.022Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:38.061Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:38.141Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:13:39.665Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:14:26.203Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:14:26.214Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:14:26.908Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:14:33.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:14:33.252Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:14:33.323Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:14:35.631Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:14:35.640Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:14:35.717Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:14:39.695Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:14:39.706Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:14:39.783Z"}
+{"level":"info","message":"Product updated: abc by 1","timestamp":"2025-07-24T08:17:00.716Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:17:01.053Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:17:01.134Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:17:31.988Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:17:31.991Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:17:32.183Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:17:32.199Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:17:32.797Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:17:32.879Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:17:35.815Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:17:35.827Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:17:35.899Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:17:36.383Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:17:36.394Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:17:36.466Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:17:39.191Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:17:39.201Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:17:39.278Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:17:42.193Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:17:42.202Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:17:42.275Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:18:33.804Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:18:33.804Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:18:33.951Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:18:33.964Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:18:34.903Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:18:34.987Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:18:47.633Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:18:47.643Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:18:47.718Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:18:52.878Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:18:52.888Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:18:52.961Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:18:56.491Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:18:56.504Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:18:56.574Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:18:59.808Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:18:59.820Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:18:59.894Z"}
+{"level":"info","message":"Product updated: abc by 1","timestamp":"2025-07-24T08:19:19.089Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:19:19.132Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:19:19.283Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:26:04.148Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:26:04.149Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:26:04.398Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:26:04.423Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:26:05.053Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:26:05.138Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:26:30.186Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:26:30.197Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:26:30.275Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:26:31.065Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:26:31.079Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:26:31.155Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:26:33.037Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:26:33.046Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:26:33.127Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:26:36.823Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:26:36.832Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:26:36.910Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:32.222Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:32.283Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:31:32.916Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:40.218Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:40.260Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:31:40.307Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:43.217Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:43.224Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:31:43.303Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:47.225Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:47.240Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:31:47.316Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:53.222Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:53.246Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:31:53.310Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:57.220Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:57.249Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:31:57.304Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:31:59.226Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:31:59.238Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:31:59.314Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:00.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:00.252Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:00.317Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:10.291Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:10.293Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:10.518Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:10.533Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:10.570Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:10.653Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-07-24T08:32:32.673Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-07-24T08:32:32.676Z"}
+{"level":"info","message":"Invalidated 5 cache keys matching pattern: inventory_*","timestamp":"2025-07-24T08:32:32.677Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-07-24T08:32:32.678Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-07-24T08:32:32.362Z","timestamp":"2025-07-24T08:32:33.050Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-07-24T08:32:33.054Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-07-24T08:32:33.058Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:33.090Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:35.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:39.492Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:39.494Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:41.530Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:41.546Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:41.888Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:41.966Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:48.685Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:48.696Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:48.767Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:54.103Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:54.120Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:54.186Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:56.086Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:56.101Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-24T08:32:56.166Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-24T08:32:57.250Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-24T08:32:57.260Z"}
+{"level":"info","message":"Fetched 6 inventory items","timestamp":"2025-07-24T08:32:57.332Z"}
