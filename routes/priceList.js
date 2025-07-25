@@ -16,15 +16,15 @@ const deleteByPattern = async (pattern) => {
 };
 
 router.get('/', authenticateToken, checkPermission('PriceList', 'can_read'), async (req, res) => {
-  const { limit = 10, offset = 0, force_refresh = false } = req.query;
-  const cacheKey = `price_list_${limit}_${offset}`;
+  const { limit = 10, offset = 0, search = '', force_refresh = false } = req.query;
+  const cacheKey = `price_list_${limit}_${offset}_${search}`;
 
   try {
     if (force_refresh === 'true') {
       await redis.del(cacheKey);
       logger.info(`Cache invalidated for ${cacheKey} due to force refresh`);
       
-      const priceList = await PriceList.getAll({ limit: parseInt(limit), offset: parseInt(offset) });
+      const priceList = await PriceList.getAll({ limit: parseInt(limit), offset: parseInt(offset), search });
       await redis.setEx(cacheKey, 300, JSON.stringify(priceList));
       logger.info(`Fresh data cached for ${cacheKey}`);
       return res.json(priceList);
@@ -37,7 +37,7 @@ router.get('/', authenticateToken, checkPermission('PriceList', 'can_read'), asy
     }
 
     logger.info(`Cache miss for ${cacheKey}, fetching from database`);
-    const priceList = await PriceList.getAll({ limit: parseInt(limit), offset: parseInt(offset) });
+    const priceList = await PriceList.getAll({ limit: parseInt(limit), offset: parseInt(offset), search });
     await redis.setEx(cacheKey, 300, JSON.stringify(priceList));
     res.json(priceList);
   } catch (error) {
