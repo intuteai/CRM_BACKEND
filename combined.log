@@ -15463,3 +15463,75 @@
 {"level":"info","message":"Fetched 100 inventory items","timestamp":"2025-07-31T08:18:07.969Z"}
 {"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-07-31T08:18:07.971Z"}
 {"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T08:18:08.037Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:58.869Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:58.879Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:58.933Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:59.036Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-07-31T09:00:59.032Z","timestamp":"2025-07-31T09:00:59.161Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:59.196Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:59.405Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:59.662Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:00:59.974Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:00.331Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:00.745Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:01.198Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:01.703Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:02.206Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:02.720Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T09:01:03.232Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-07-31T09:01:03.747Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-07-31T09:01:03.748Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-07-31T09:01:03.750Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-07-31T09:01:03.751Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-07-31T09:01:03.752Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-07-31T09:01:03.752Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:16.918Z"}
+{"level":"info","message":"User logged out","timestamp":"2025-07-31T09:01:26.665Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:01:26.686Z"}
+{"level":"info","message":"User logged in: production@compageauto.com, user_id: 9, role_id: 5, role: production","timestamp":"2025-07-31T09:01:33.097Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:33.159Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-07-31T09:01:35.771Z"}
+{"level":"info","message":"Fetched 10 inventory items","timestamp":"2025-07-31T09:01:36.048Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-07-31T09:01:36.051Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:01:36.134Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:01:51.409Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:51.498Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:54.258Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:01:54.634Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:01:57.050Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:01:57.590Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:57.616Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:01:57.655Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:01:57.970Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:57.993Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:01:58.046Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:01:58.364Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:01:58.388Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:01:58.427Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:02:03.118Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:02:03.143Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:02:03.196Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:02:05.789Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:02:05.816Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:02:05.857Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:02:09.062Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:02:09.088Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:02:09.141Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:02:16.974Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:02:16.981Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:02:17.068Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-07-31T09:02:22.305Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-07-31T09:02:22.309Z"}
+{"level":"info","message":"Cache hit for inventory_10_0","timestamp":"2025-07-31T09:02:22.338Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-07-31T09:02:22.364Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:02:22.406Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:07:14.678Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-07-31T09:07:15.011Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-07-31T09:07:15.018Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:07:15.033Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T09:07:15.048Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-07-31T09:07:15.332Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-07-31T09:07:15.546Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-07-31T09:07:15.615Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:07:37.396Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T09:07:37.397Z"}
