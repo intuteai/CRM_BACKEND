@@ -96,7 +96,7 @@ app.use('/api/part-drawings-raw', partDrawingsRawRoutes);
 app.use('/api/price-list', priceListRoutes);
 app.use('/api/pdi', pdiRoutes);
 app.use('/api/purchase-invoices', purchaseInvoicesRoutes);
-app.use('/api/bom', bomRoutes);
+app.use('/api/bom', bomRoutes); 
 app.use('/api/enquiry', enquiryRoutes);
 app.use('/api/dispatch-tracking', dispatchTrackingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
