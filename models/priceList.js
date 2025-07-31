@@ -2,18 +2,48 @@ const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 class PriceList {
-  static async getAll({ limit = 10, offset = 0 }) {
-    const query = `
-      SELECT pl.price_id AS "priceId", pl.item_description AS "itemDescription", 
-             pl.price, pl.created_at AS "createdAt", 
-             i.product_name AS "productName", i.product_id AS "productId"
-      FROM price_list pl
-      JOIN inventory i ON pl.product_id = i.product_id
-      ORDER BY pl.created_at DESC
-      LIMIT $1 OFFSET $2
-    `;
-    const { rows } = await pool.query(query, [limit, offset]);
-    return rows;
+  static async getAll({ limit = 10, offset = 0, search = '' }) {
+    try {
+      // Main query for paginated and filtered results
+      let query = `
+        SELECT pl.price_id AS "priceId", pl.item_description AS "itemDescription", 
+               pl.price, pl.created_at AS "createdAt", 
+               i.product_name AS "productName", i.product_id AS "productId"
+        FROM price_list pl
+        JOIN inventory i ON pl.product_id = i.product_id
+      `;
+      let countQuery = `
+        SELECT COUNT(*) AS total
+        FROM price_list pl
+        JOIN inventory i ON pl.product_id = i.product_id
+      `;
+      const values = [];
+
+      if (search) {
+        const searchPattern = `%${search}%`;
+        query += ` WHERE pl.price_id::text ILIKE $1 OR pl.item_description ILIKE $1`;
+        countQuery += ` WHERE pl.price_id::text ILIKE $1 OR pl.item_description ILIKE $1`;
+        values.push(searchPattern);
+      }
+
+      // Add limit and offset to the main query
+      values.push(limit, offset);
+      query += ` ORDER BY pl.created_at DESC LIMIT $${values.length - 1} OFFSET $${values.length}`;
+
+      // Execute queries
+      const [itemsResult, countResult] = await Promise.all([
+        pool.query(query, values),
+        pool.query(countQuery, search ? [values[0]] : [])
+      ]);
+
+      const priceItems = itemsResult.rows;
+      const total = parseInt(countResult.rows[0].total, 10);
+
+      return { priceItems, total };
+    } catch (error) {
+      logger.error(`Error fetching price list: ${error.message}`);
+      throw error;
+    }
   }
 
   static async create({ item_description, price, product_id }) {

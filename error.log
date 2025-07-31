@@ -1926,6 +1926,7 @@
 {"level":"error","message":"Failed to initialize server:","timestamp":"2025-06-14T15:46:31.302Z"}
 {"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:09.517Z"}
 {"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:52.004Z"}
+<<<<<<< HEAD
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:118:26)","syscall":"getaddrinfo","timestamp":"2025-07-21T11:51:28.454Z"}
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:118:26)","syscall":"getaddrinfo","timestamp":"2025-07-21T11:51:31.150Z"}
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:118:26)","syscall":"getaddrinfo","timestamp":"2025-07-21T11:51:33.911Z"}
@@ -2412,3 +2413,5 @@
 {"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T05:17:42.964Z"}
 {"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T05:17:43.467Z"}
 {"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-07-31T05:17:43.973Z"}
+=======
+>>>>>>> c1c73f47e85a9dff785ce2be0a58fa736287a926

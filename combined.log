@@ -15174,6 +15174,7 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-06-14T16:00:43.994Z"}
 {"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:09.517Z"}
 {"level":"error","message":"Failed to initialize server:","timestamp":"2025-07-07T12:34:52.004Z"}
+<<<<<<< HEAD
 {"level":"info","message":"Database connection successful:","now":"2025-07-21T11:51:25.641Z","timestamp":"2025-07-21T11:51:26.361Z"}
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:118:26)","syscall":"getaddrinfo","timestamp":"2025-07-21T11:51:28.454Z"}
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:118:26)","syscall":"getaddrinfo","timestamp":"2025-07-21T11:51:31.150Z"}
@@ -16263,3 +16264,5 @@
 {"level":"info","message":"User logged out","timestamp":"2025-07-31T06:36:59.659Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T06:36:59.669Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T06:37:14.609Z"}
+=======
+>>>>>>> c1c73f47e85a9dff785ce2be0a58fa736287a926
