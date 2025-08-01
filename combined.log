@@ -16771,3 +16771,79 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-07-31T12:42:13.233Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-07-31T12:42:13.243Z"}
 {"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-07-31T12:42:13.817Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-01T12:03:55.426Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-01T12:03:55.429Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-01T12:03:55.429Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-01T12:03:56.919Z","timestamp":"2025-08-01T12:03:55.813Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-01T12:03:55.817Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-01T12:03:55.821Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:04:08.980Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:04:13.867Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:04:14.058Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:04:17.803Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2025-08-01T12:04:33.172Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:04:33.214Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-01T12:04:35.949Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:04:36.256Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T12:04:36.259Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-01T12:04:36.333Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-01T12:11:33.659Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T12:11:34.022Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:12:02.299Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:12:02.623Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:12:02.731Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:12:08.886Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-01T12:12:10.994Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-01T12:12:10.997Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-01T12:12:11.030Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T12:12:11.064Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-01T12:12:11.107Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:12:17.548Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:12:17.627Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:12:17.699Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:12:31.551Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-01T12:12:32.226Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-01T12:12:32.228Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-01T12:12:32.261Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T12:12:32.294Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-01T12:12:32.337Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:12:37.748Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:12:37.826Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:12:37.899Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:12:49.473Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-01T12:34:58.341Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-01T12:34:58.345Z"}
+{"level":"info","message":"Invalidated 2 cache keys matching pattern: inventory_*","timestamp":"2025-08-01T12:34:58.346Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-01T12:34:58.346Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-01T12:34:59.792Z","timestamp":"2025-08-01T12:34:58.692Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-01T12:34:58.695Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-01T12:34:58.698Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:35:00.216Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-01T12:47:42.331Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-01T12:47:42.333Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-01T12:47:42.334Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-01T12:47:43.825Z","timestamp":"2025-08-01T12:47:42.731Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-01T12:47:42.735Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-01T12:47:42.742Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:47:47.607Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:47:49.105Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:47:49.868Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:47:52.216Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:47:54.756Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:47:55.837Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:58:34.414Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-01T12:58:34.603Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:58:34.610Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:58:34.615Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T12:58:35.013Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:58:35.204Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-01T12:58:35.283Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-01T12:58:44.539Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:58:44.641Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-01T12:58:44.725Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T12:58:50.792Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-01T12:58:51.739Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-01T12:58:51.741Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-01T12:58:51.774Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T12:58:51.842Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-01T12:58:51.856Z"}
