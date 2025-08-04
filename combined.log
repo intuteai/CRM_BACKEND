@@ -16856,3 +16856,341 @@
 {"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-01T06:53:40.481Z"}
 {"level":"info","message":"Fetched stock data","timestamp":"2025-08-01T06:53:40.544Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-01T06:53:53.110Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-04T07:06:06.253Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-04T07:06:06.256Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-04T07:06:06.257Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-04T07:06:06.121Z","timestamp":"2025-08-04T07:06:06.607Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-04T07:06:06.609Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-04T07:06:06.613Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:06:29.827Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:06:32.286Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2025-08-04T07:06:46.212Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:06:46.263Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:06:47.212Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-04T07:06:47.492Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:06:47.519Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:06:47.566Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:06:53.677Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:06:53.678Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:01.700Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:07:03.129Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:07:03.186Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:07:04.275Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:07:04.282Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:07:04.319Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:04.350Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:07:04.522Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:07:05.239Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:07:05.240Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:05.300Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:07:06.368Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:07:06.370Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:06.438Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T07:07:17.501Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T07:07:17.594Z"}
+{"bomId":13,"level":"info","message":"BOM created successfully","productId":6,"timestamp":"2025-08-04T07:07:17.718Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:07:17.720Z"}
+{"bomId":13,"level":"info","message":"BOM 13 created","timestamp":"2025-08-04T07:07:17.723Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:07:19.388Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:19.451Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:07:25.995Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:07:26.209Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:07:26.215Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:07:26.230Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:07:26.238Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:07:26.252Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:26.276Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:07:26.359Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:07:33.687Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:07:33.688Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:07:35.390Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:09:02.000Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:09:02.001Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:09:02.173Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:09:02.178Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:09:02.186Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:09:02.197Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:09:02.446Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:09:02.471Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:09:02.520Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:18:09.573Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:18:09.574Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:18:09.867Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:18:09.892Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:18:09.894Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:18:10.164Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:18:10.218Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:18:10.475Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:18:30.546Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:18:30.547Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:18:30.623Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:18:47.605Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:18:47.611Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:18:47.640Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:18:47.930Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:18:47.964Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:19:04.042Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:19:04.043Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:19:04.215Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:19:04.222Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:19:04.238Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:19:04.245Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:19:04.252Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:19:04.298Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:19:04.344Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:25:54.349Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:25:54.351Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:25:54.629Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:25:54.654Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:25:54.657Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:25:54.925Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:25:54.979Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:25:55.252Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:26:00.250Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:26:00.252Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:26:00.415Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:26:00.419Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:26:00.432Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:26:00.442Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:26:00.451Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:26:00.474Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:26:00.535Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:26:06.224Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:26:06.227Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:26:06.345Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:26:06.351Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:26:06.368Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:26:06.375Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:26:06.388Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:26:06.422Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:26:06.469Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:27:14.638Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:27:14.641Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:27:15.008Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:27:15.015Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:27:15.040Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:27:15.048Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:27:15.289Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:27:15.319Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:27:15.377Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:27:27.844Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:27:27.847Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:27:28.249Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:27:28.253Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:27:28.270Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:27:28.282Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:27:28.292Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:27:28.319Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:27:28.372Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:32:34.461Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:32:34.462Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:32:34.935Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:32:34.975Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T07:32:34.982Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T07:32:35.208Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:32:35.249Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T07:32:35.505Z"}
+{"level":"info","materialCount":2,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T07:33:00.385Z"}
+{"level":"info","materialCount":2,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T07:33:00.490Z"}
+{"bomId":14,"level":"info","message":"BOM created successfully","productId":6,"timestamp":"2025-08-04T07:33:00.782Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:33:00.784Z"}
+{"bomId":14,"level":"info","message":"BOM 14 created","timestamp":"2025-08-04T07:33:00.785Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:33:02.483Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:33:02.540Z"}
+{"level":"info","materialCount":3,"message":"Updating BOM 14","productId":6,"timestamp":"2025-08-04T07:33:13.031Z"}
+{"bomId":"14","level":"info","materialCount":3,"message":"Updating BOM","productId":6,"timestamp":"2025-08-04T07:33:13.171Z"}
+{"bomId":"14","level":"info","message":"BOM updated successfully","productId":6,"timestamp":"2025-08-04T07:33:13.332Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T07:33:13.333Z"}
+{"bomId":14,"level":"info","message":"BOM 14 updated","timestamp":"2025-08-04T07:33:13.334Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T07:33:14.688Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T07:33:14.751Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:38:54.045Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T07:38:54.047Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:08:56.036Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:08:56.059Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:08:56.352Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:08:56.353Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:08:57.762Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:08:57.782Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:12:44.014Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2025-08-04T09:13:01.930Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:13:01.986Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:13:03.039Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:13:03.468Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-04T09:13:04.069Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:13:04.169Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:13:19.642Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:13:19.644Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:13:19.706Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-04T09:16:55.604Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-04T09:16:55.607Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-04T09:16:55.607Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-04T09:16:55.608Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-04T09:16:55.341Z","timestamp":"2025-08-04T09:16:55.925Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-04T09:16:55.927Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-04T09:16:55.931Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:16:56.125Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:16:56.130Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:17:00.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:17:00.228Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:17:00.665Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:17:00.682Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:17:00.688Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:17:00.694Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-04T09:17:01.034Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:17:01.056Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:17:01.110Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:27:49.326Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:27:49.329Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:27:49.726Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:27:49.753Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:27:49.761Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T09:27:50.011Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:27:50.040Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:27:50.088Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:36:51.032Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:36:51.034Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:36:51.448Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:36:51.516Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:36:51.520Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T09:36:51.864Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:36:51.913Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:36:52.144Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:43:44.642Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:43:44.645Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:43:45.055Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:43:45.086Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:43:45.093Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T09:43:45.394Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:43:45.442Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:43:45.480Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-04T09:47:52.344Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-04T09:47:52.346Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-04T09:47:52.347Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-04T09:47:52.347Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-04T09:47:52.068Z","timestamp":"2025-08-04T09:47:52.670Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-04T09:47:52.673Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-04T09:47:52.675Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:47:52.844Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:47:52.854Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:47:57.043Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:47:57.045Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:47:57.482Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:47:57.503Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:47:57.511Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:47:57.513Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-04T09:47:57.798Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:47:57.825Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:47:57.980Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:49:12.432Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:49:12.434Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:49:12.748Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:49:14.226Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:49:14.298Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:49:15.251Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:49:15.538Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:49:15.621Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:49:16.357Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:49:16.364Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:49:16.431Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:49:17.030Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:49:17.033Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T09:49:17.069Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:49:17.104Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:49:17.157Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T09:49:51.644Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T09:49:52.031Z"}
+{"bomId":15,"level":"info","message":"BOM created successfully","productId":6,"timestamp":"2025-08-04T09:49:52.151Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:49:52.153Z"}
+{"bomId":15,"level":"info","message":"BOM 15 created","timestamp":"2025-08-04T09:49:52.156Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:49:53.859Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:49:53.954Z"}
+{"level":"info","materialCount":2,"message":"Updating BOM 15","productId":6,"timestamp":"2025-08-04T09:50:11.106Z"}
+{"bomId":"15","level":"info","materialCount":2,"message":"Updating BOM","productId":6,"timestamp":"2025-08-04T09:50:11.261Z"}
+{"bomId":"15","level":"info","message":"BOM updated successfully","productId":6,"timestamp":"2025-08-04T09:50:11.443Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:50:11.444Z"}
+{"bomId":15,"level":"info","message":"BOM 15 updated","timestamp":"2025-08-04T09:50:11.446Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:50:12.904Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:50:12.983Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:50:52.506Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:50:52.507Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:50:52.781Z"}
+{"level":"info","message":"User logged out","timestamp":"2025-08-04T09:50:53.746Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:50:53.759Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-04T09:51:06.375Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:51:06.428Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:51:07.930Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:51:07.934Z"}
+{"level":"info","message":"Fetched 100 inventory items","timestamp":"2025-08-04T09:51:08.256Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:51:08.348Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:51:08.458Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:52:07.934Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:52:07.935Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:52:08.267Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-04T09:53:03.584Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-04T09:53:03.588Z"}
+{"level":"info","message":"Invalidated 2 cache keys matching pattern: inventory_*","timestamp":"2025-08-04T09:53:03.588Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-04T09:53:03.589Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-04T09:53:03.310Z","timestamp":"2025-08-04T09:53:03.916Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-04T09:53:03.919Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-04T09:53:03.921Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:53:04.130Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:53:04.142Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:53:11.593Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:53:11.594Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:53:11.925Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:53:11.939Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:53:11.943Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:53:11.949Z"}
+{"level":"info","message":"Fetched 100 inventory items","timestamp":"2025-08-04T09:53:12.242Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:53:12.282Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:53:12.320Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:53:19.500Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:53:19.502Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:53:19.678Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:53:21.644Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:53:21.651Z"}
+{"level":"info","message":"Cache hit for inventory_100_0","timestamp":"2025-08-04T09:53:21.686Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:53:21.717Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:53:21.775Z"}
+{"level":"info","message":"User logged out","timestamp":"2025-08-04T09:53:33.052Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T09:53:33.062Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2025-08-04T09:53:46.004Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T09:53:46.055Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T09:53:47.199Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T09:53:47.205Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T09:53:47.266Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-04T09:53:47.488Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T09:53:47.565Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T11:48:45.089Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T11:48:45.473Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T11:48:45.501Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T11:48:47.190Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2025-08-04T11:48:58.529Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T11:48:58.576Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T11:48:59.678Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-04T11:48:59.943Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T11:48:59.946Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T11:49:00.015Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T11:55:55.759Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-04T11:55:55.762Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T11:55:56.089Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T11:55:56.107Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-04T11:55:56.118Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-04T11:55:56.356Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T11:55:56.372Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-04T11:55:56.428Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T11:56:08.439Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-04T11:56:08.527Z"}
+{"bomId":16,"level":"info","message":"BOM created successfully","productId":6,"timestamp":"2025-08-04T11:56:08.630Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T11:56:08.632Z"}
+{"bomId":16,"level":"info","message":"BOM 16 created","timestamp":"2025-08-04T11:56:08.634Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T11:56:10.352Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T11:56:10.413Z"}
+{"level":"info","materialCount":2,"message":"Updating BOM 16","productId":6,"timestamp":"2025-08-04T11:56:19.136Z"}
+{"bomId":"16","level":"info","materialCount":2,"message":"Updating BOM","productId":6,"timestamp":"2025-08-04T11:56:19.254Z"}
+{"bomId":"16","level":"info","message":"BOM updated successfully","productId":6,"timestamp":"2025-08-04T11:56:19.402Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-04T11:56:19.403Z"}
+{"bomId":16,"level":"info","message":"BOM 16 updated","timestamp":"2025-08-04T11:56:19.404Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T11:56:21.068Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T11:56:21.129Z"}

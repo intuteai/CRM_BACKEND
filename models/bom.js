@@ -8,9 +8,10 @@ class BOM {
       SELECT 
         b.bom_id AS "bomId",
         b.product_id AS "productId",
+        ip.product_name AS "productName",
+        ip.description AS "productDescription",
         b.created_at AS "createdAt",
         b.updated_at AS "updatedAt",
-        ip.product_name AS "productName",
         COALESCE( 
           json_agg(
             json_build_object(
@@ -28,7 +29,7 @@ class BOM {
       LEFT JOIN inventory ip ON b.product_id = ip.product_id
       LEFT JOIN bom_materials bm ON b.bom_id = bm.bom_id
       LEFT JOIN raw_materials rm ON bm.material_id = rm.product_id
-      GROUP BY b.bom_id, b.product_id, b.created_at, b.updated_at, ip.product_name
+      GROUP BY b.bom_id, b.product_id, ip.product_name, ip.description
       ORDER BY b.created_at DESC
       LIMIT $1 OFFSET $2
     `;
@@ -47,9 +48,10 @@ class BOM {
       SELECT 
         b.bom_id AS "bomId",
         b.product_id AS "productId",
+        ip.product_name AS "productName",
+        ip.description AS "productDescription",
         b.created_at AS "createdAt",
         b.updated_at AS "updatedAt",
-        ip.product_name AS "productName",
         COALESCE(
           json_agg(
             json_build_object(
@@ -68,7 +70,7 @@ class BOM {
       LEFT JOIN bom_materials bm ON b.bom_id = bm.bom_id
       LEFT JOIN raw_materials rm ON bm.material_id = rm.product_id
       WHERE b.bom_id = $1
-      GROUP BY b.bom_id, b.product_id, b.created_at, b.updated_at, ip.product_name
+      GROUP BY b.bom_id, b.product_id, ip.product_name, ip.description
     `;
     try {
       const { rows } = await pool.query(query, [bomId]);
@@ -83,41 +85,78 @@ class BOM {
   }
 
   // Create a new BOM with multiple materials
-  static async create({ productId, materials }, io) {
+  static async create({ productId, productName, materials }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      // Validate productId
-      const productCheck = await client.query(
-        'SELECT product_id, product_name FROM inventory WHERE product_id = $1',
-        [productId]
-      );
-      if (productCheck.rows.length === 0) {
-        throw new Error(`Product ID ${productId} not found in inventory`);
+      // Resolve productId from productName if not provided
+      let resolvedProductId = productId;
+      let resolvedProductName;
+      let resolvedProductDescription;
+      if (!productId && productName) {
+        const productCheck = await client.query(
+          'SELECT product_id, product_name, description FROM inventory WHERE product_name = $1',
+          [productName]
+        );
+        if (productCheck.rows.length === 0) {
+          throw new Error(`Product name ${productName} not found in inventory`);
+        }
+        resolvedProductId = productCheck.rows[0].product_id;
+        resolvedProductName = productCheck.rows[0].product_name;
+        resolvedProductDescription = productCheck.rows[0].description || 'No Description';
+      } else {
+        const productCheck = await client.query(
+          'SELECT product_id, product_name, description FROM inventory WHERE product_id = $1',
+          [productId]
+        );
+        if (productCheck.rows.length === 0) {
+          throw new Error(`Product ID ${productId} not found in inventory`);
+        }
+        resolvedProductName = productCheck.rows[0].product_name;
+        resolvedProductDescription = productCheck.rows[0].description || 'No Description';
       }
-      const productName = productCheck.rows[0].product_name;
 
-      // Validate materials
+      // Validate and resolve materials
       if (!materials || materials.length === 0) {
         throw new Error('At least one material is required');
       }
       const materialDetails = await Promise.all(
-        materials.map(async ({ materialId, quantityPerUnit }) => {
-          if (!materialId || quantityPerUnit <= 0) {
-            throw new Error(`Invalid material data: materialId=${materialId}, quantityPerUnit=${quantityPerUnit}`);
+        materials.map(async ({ materialId, materialName, quantityPerUnit }) => {
+          if (!materialId && !materialName) {
+            throw new Error('Each material must have either materialId or materialName');
           }
-          const materialCheck = await client.query(
-            'SELECT product_id, product_name FROM raw_materials WHERE product_id = $1',
-            [materialId]
-          );
-          if (materialCheck.rows.length === 0) {
-            throw new Error(`Material ID ${materialId} not found in raw_materials`);
+          if (!quantityPerUnit || quantityPerUnit <= 0) {
+            throw new Error(`Invalid quantityPerUnit: ${quantityPerUnit}`);
           }
+
+          let resolvedMaterialId = materialId;
+          let resolvedMaterialName;
+          if (materialId) {
+            const materialCheck = await client.query(
+              'SELECT product_id, product_name FROM raw_materials WHERE product_id = $1',
+              [materialId]
+            );
+            if (materialCheck.rows.length === 0) {
+              throw new Error(`Material ID ${materialId} not found in raw_materials`);
+            }
+            resolvedMaterialName = materialCheck.rows[0].product_name;
+          } else {
+            const materialCheck = await client.query(
+              'SELECT product_id, product_name FROM raw_materials WHERE product_name = $1',
+              [materialName]
+            );
+            if (materialCheck.rows.length === 0) {
+              throw new Error(`Material name ${materialName} not found in raw_materials`);
+            }
+            resolvedMaterialId = materialCheck.rows[0].product_id;
+            resolvedMaterialName = materialCheck.rows[0].product_name;
+          }
+
           return {
-            materialId,
+            materialId: resolvedMaterialId,
             quantityPerUnit,
-            materialName: materialCheck.rows[0].product_name
+            materialName: resolvedMaterialName,
           };
         })
       );
@@ -132,8 +171,8 @@ class BOM {
           created_at AS "createdAt",
           updated_at AS "updatedAt"
       `;
-      logger.info('Creating BOM', { productId, materialCount: materials.length });
-      const bomResult = await client.query(bomQuery, [productId]);
+      logger.info('Creating BOM', { productId: resolvedProductId, materialCount: materials.length });
+      const bomResult = await client.query(bomQuery, [resolvedProductId]);
       const bom = bomResult.rows[0];
 
       // Insert materials
@@ -148,11 +187,11 @@ class BOM {
           total_value AS "totalValue"
       `;
       const insertedMaterials = await Promise.all(
-        materials.map(async ({ materialId, quantityPerUnit }) => {
+        materialDetails.map(async ({ materialId, quantityPerUnit }) => {
           const materialResult = await client.query(materialQuery, [
             bom.bomId,
             materialId,
-            quantityPerUnit
+            quantityPerUnit,
           ]);
           return materialResult.rows[0];
         })
@@ -163,14 +202,15 @@ class BOM {
       // Construct response
       const response = {
         ...bom,
-        productName,
+        productName: resolvedProductName,
+        productDescription: resolvedProductDescription,
         materials: insertedMaterials.map((m, i) => ({
           ...m,
-          materialName: materialDetails[i].materialName
-        }))
+          materialName: materialDetails[i].materialName,
+        })),
       };
 
-      logger.info('BOM created successfully', { bomId: bom.bomId, productId });
+      logger.info('BOM created successfully', { bomId: bom.bomId, productId: resolvedProductId });
       io?.emit('bom:created', response);
       return response;
     } catch (error) {
@@ -179,7 +219,8 @@ class BOM {
         error: error.message,
         stack: error.stack,
         productId,
-        materials
+        productName,
+        materials,
       });
       throw new Error(`Error creating BOM: ${error.message}`);
     } finally {
@@ -188,41 +229,78 @@ class BOM {
   }
 
   // Update an existing BOM
-  static async update(bomId, { productId, materials }, io) {
+  static async update(bomId, { productId, productName, materials }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      // Validate productId
-      const productCheck = await client.query(
-        'SELECT product_id, product_name FROM inventory WHERE product_id = $1',
-        [productId]
-      );
-      if (productCheck.rows.length === 0) {
-        throw new Error(`Product ID ${productId} not found in inventory`);
+      // Resolve productId from productName if not provided
+      let resolvedProductId = productId;
+      let resolvedProductName;
+      let resolvedProductDescription;
+      if (!productId && productName) {
+        const productCheck = await client.query(
+          'SELECT product_id, product_name, description FROM inventory WHERE product_name = $1',
+          [productName]
+        );
+        if (productCheck.rows.length === 0) {
+          throw new Error(`Product name ${productName} not found in inventory`);
+        }
+        resolvedProductId = productCheck.rows[0].product_id;
+        resolvedProductName = productCheck.rows[0].product_name;
+        resolvedProductDescription = productCheck.rows[0].description || 'No Description';
+      } else {
+        const productCheck = await client.query(
+          'SELECT product_id, product_name, description FROM inventory WHERE product_id = $1',
+          [productId]
+        );
+        if (productCheck.rows.length === 0) {
+          throw new Error(`Product ID ${productId} not found in inventory`);
+        }
+        resolvedProductName = productCheck.rows[0].product_name;
+        resolvedProductDescription = productCheck.rows[0].description || 'No Description';
       }
-      const productName = productCheck.rows[0].product_name;
 
-      // Validate materials
+      // Validate and resolve materials
       if (!materials || materials.length === 0) {
         throw new Error('At least one material is required');
       }
       const materialDetails = await Promise.all(
-        materials.map(async ({ materialId, quantityPerUnit }) => {
-          if (!materialId || quantityPerUnit <= 0) {
-            throw new Error(`Invalid material data: materialId=${materialId}, quantityPerUnit=${quantityPerUnit}`);
+        materials.map(async ({ materialId, materialName, quantityPerUnit }) => {
+          if (!materialId && !materialName) {
+            throw new Error('Each material must have either materialId or materialName');
           }
-          const materialCheck = await client.query(
-            'SELECT product_id, product_name FROM raw_materials WHERE product_id = $1',
-            [materialId]
-          );
-          if (materialCheck.rows.length === 0) {
-            throw new Error(`Material ID ${materialId} not found in raw_materials`);
+          if (!quantityPerUnit || quantityPerUnit <= 0) {
+            throw new Error(`Invalid quantityPerUnit: ${quantityPerUnit}`);
           }
+
+          let resolvedMaterialId = materialId;
+          let resolvedMaterialName;
+          if (materialId) {
+            const materialCheck = await client.query(
+              'SELECT product_id, product_name FROM raw_materials WHERE product_id = $1',
+              [materialId]
+            );
+            if (materialCheck.rows.length === 0) {
+              throw new Error(`Material ID ${materialId} not found in raw_materials`);
+            }
+            resolvedMaterialName = materialCheck.rows[0].product_name;
+          } else {
+            const materialCheck = await client.query(
+              'SELECT product_id, product_name FROM raw_materials WHERE product_name = $1',
+              [materialName]
+            );
+            if (materialCheck.rows.length === 0) {
+              throw new Error(`Material name ${materialName} not found in raw_materials`);
+            }
+            resolvedMaterialId = materialCheck.rows[0].product_id;
+            resolvedMaterialName = materialCheck.rows[0].product_name;
+          }
+
           return {
-            materialId,
+            materialId: resolvedMaterialId,
             quantityPerUnit,
-            materialName: materialCheck.rows[0].product_name
+            materialName: resolvedMaterialName,
           };
         })
       );
@@ -240,8 +318,8 @@ class BOM {
           created_at AS "createdAt",
           updated_at AS "updatedAt"
       `;
-      logger.info('Updating BOM', { bomId, productId, materialCount: materials.length });
-      const bomResult = await client.query(bomQuery, [productId, bomId]);
+      logger.info('Updating BOM', { bomId, productId: resolvedProductId, materialCount: materials.length });
+      const bomResult = await client.query(bomQuery, [resolvedProductId, bomId]);
       if (bomResult.rows.length === 0) {
         throw new Error(`BOM ${bomId} not found`);
       }
@@ -262,11 +340,11 @@ class BOM {
           total_value AS "totalValue"
       `;
       const insertedMaterials = await Promise.all(
-        materials.map(async ({ materialId, quantityPerUnit }) => {
+        materialDetails.map(async ({ materialId, quantityPerUnit }) => {
           const materialResult = await client.query(materialQuery, [
             bomId,
             materialId,
-            quantityPerUnit
+            quantityPerUnit,
           ]);
           return materialResult.rows[0];
         })
@@ -277,14 +355,15 @@ class BOM {
       // Construct response
       const response = {
         ...bom,
-        productName,
+        productName: resolvedProductName,
+        productDescription: resolvedProductDescription,
         materials: insertedMaterials.map((m, i) => ({
           ...m,
-          materialName: materialDetails[i].materialName
-        }))
+          materialName: materialDetails[i].materialName,
+        })),
       };
 
-      logger.info('BOM updated successfully', { bomId, productId });
+      logger.info('BOM updated successfully', { bomId, productId: resolvedProductId });
       io?.emit('bom:updated', response);
       return response;
     } catch (error) {
@@ -293,7 +372,8 @@ class BOM {
         error: error.message,
         stack: error.stack,
         productId,
-        materials
+        productName,
+        materials,
       });
       throw new Error(`Error updating BOM ${bomId}: ${error.message}`);
     } finally {
@@ -310,7 +390,8 @@ class BOM {
       const query = `
         DELETE FROM bill_of_materials
         WHERE bom_id = $1
-        RETURNING bom_id AS "bomId"
+        RETURNING 
+          bom_id AS "bomId"
       `;
       logger.info('Deleting BOM', { bomId });
       const result = await client.query(query, [bomId]);
@@ -326,7 +407,7 @@ class BOM {
       await client.query('ROLLBACK');
       logger.error(`Error deleting BOM ${bomId}`, {
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
       });
       throw new Error(`Error deleting BOM ${bomId}: ${error.message}`);
     } finally {
@@ -336,249 +417,3 @@ class BOM {
 }
 
 module.exports = BOM;
-
-// class BOM {
-//   // Get all and getById ... (unchanged) ...
-
-//   static async create({ productId, productName, materials }, io) {
-//     const client = await pool.connect();
-//     try {
-//       await client.query('BEGIN');
-
-//       // ---- Product: resolve ID by name if only name is given ----
-//       let finalProductId = productId;
-//       let fetchedProductName = productName;
-//       if (!finalProductId && productName) {
-//         let result = await client.query(
-//           'SELECT product_id FROM inventory WHERE LOWER(product_name) = LOWER($1)',
-//           [productName.trim()]
-//         );
-//         if (result.rows.length) {
-//           finalProductId = result.rows[0].product_id;
-//         } else {
-//           let insertRes = await client.query(
-//             'INSERT INTO inventory (product_name) VALUES ($1) RETURNING product_id',
-//             [productName.trim()]
-//           );
-//           finalProductId = insertRes.rows[0].product_id;
-//         }
-//       }
-//       if (!fetchedProductName && finalProductId) {
-//         let result = await client.query('SELECT product_name FROM inventory WHERE product_id = $1', [finalProductId]);
-//         fetchedProductName = result.rows.length ? result.rows[0].product_name : '';
-//       }
-//       if (!finalProductId) throw new Error('Product could not be resolved or created');
-
-//       // ---- Materials: resolve ID by name if only name is given ----
-//       const resolvedMaterials = [];
-//       for (const mat of materials) {
-//         let materialId = mat.materialId;
-//         let materialName = mat.materialName;
-//         if (!materialId && materialName) {
-//           let result = await client.query(
-//             'SELECT product_id FROM raw_materials WHERE LOWER(product_name) = LOWER($1)',
-//             [materialName.trim()]
-//           );
-//           if (result.rows.length) {
-//             materialId = result.rows[0].product_id;
-//           } else {
-//             let insertRes = await client.query(
-//               'INSERT INTO raw_materials (product_name) VALUES ($1) RETURNING product_id',
-//               [materialName.trim()]
-//             );
-//             materialId = insertRes.rows[0].product_id;
-//           }
-//         }
-//         if (!materialName && materialId) {
-//           let result = await client.query('SELECT product_name FROM raw_materials WHERE product_id = $1', [materialId]);
-//           materialName = result.rows.length ? result.rows[0].product_name : '';
-//         }
-//         if (!materialId) throw new Error('Material could not be resolved or created');
-//         resolvedMaterials.push({
-//           materialId,
-//           materialName,
-//           quantityPerUnit: mat.quantityPerUnit,
-//         });
-//       }
-
-//       // -- Insert BOM main row --
-//       const bomQuery = `
-//         INSERT INTO bill_of_materials (product_id, created_at)
-//         VALUES ($1, CURRENT_TIMESTAMP)
-//         RETURNING 
-//           bom_id AS "bomId",
-//           product_id AS "productId",
-//           created_at AS "createdAt",
-//           updated_at AS "updatedAt"
-//       `;
-//       const bomResult = await client.query(bomQuery, [finalProductId]);
-//       const bom = bomResult.rows[0];
-
-//       // -- Insert all BOM materials --
-//       const materialQuery = `
-//         INSERT INTO bom_materials (bom_id, material_id, quantity_per_unit)
-//         VALUES ($1, $2, $3)
-//         RETURNING 
-//           bom_material_id AS "bomMaterialId",
-//           material_id AS "materialId",
-//           quantity_per_unit AS "quantityPerUnit",
-//           unit_price AS "unitPrice",
-//           total_value AS "totalValue"
-//       `;
-//       const insertedMaterials = [];
-//       for (const mat of resolvedMaterials) {
-//         const materialResult = await client.query(materialQuery, [
-//           bom.bomId,
-//           mat.materialId,
-//           mat.quantityPerUnit
-//         ]);
-//         insertedMaterials.push({
-//           ...materialResult.rows[0],
-//           materialName: mat.materialName
-//         });
-//       }
-
-//       await client.query('COMMIT');
-
-//       const response = {
-//         ...bom,
-//         productName: fetchedProductName,
-//         materials: insertedMaterials
-//       };
-//       io?.emit('bom:created', response);
-//       return response;
-//     } catch (error) {
-//       await client.query('ROLLBACK');
-//       throw new Error(`Error creating BOM: ${error.message}`);
-//     } finally {
-//       client.release();
-//     }
-//   }
-
-//   static async update(bomId, { productId, productName, materials }, io) {
-//     const client = await pool.connect();
-//     try {
-//       await client.query('BEGIN');
-
-//       let finalProductId = productId;
-//       let fetchedProductName = productName;
-//       if (!finalProductId && productName) {
-//         let result = await client.query(
-//           'SELECT product_id FROM inventory WHERE LOWER(product_name) = LOWER($1)',
-//           [productName.trim()]
-//         );
-//         if (result.rows.length) {
-//           finalProductId = result.rows[0].product_id;
-//         } else {
-//           let insertRes = await client.query(
-//             'INSERT INTO inventory (product_name) VALUES ($1) RETURNING product_id',
-//             [productName.trim()]
-//           );
-//           finalProductId = insertRes.rows[0].product_id;
-//         }
-//       }
-//       if (!fetchedProductName && finalProductId) {
-//         let result = await client.query('SELECT product_name FROM inventory WHERE product_id = $1', [finalProductId]);
-//         fetchedProductName = result.rows.length ? result.rows[0].product_name : '';
-//       }
-//       if (!finalProductId) throw new Error('Product could not be resolved or created');
-
-//       // Resolve materials
-//       const resolvedMaterials = [];
-//       for (const mat of materials) {
-//         let materialId = mat.materialId;
-//         let materialName = mat.materialName;
-//         if (!materialId && materialName) {
-//           let result = await client.query(
-//             'SELECT product_id FROM raw_materials WHERE LOWER(product_name) = LOWER($1)',
-//             [materialName.trim()]
-//           );
-//           if (result.rows.length) {
-//             materialId = result.rows[0].product_id;
-//           } else {
-//             let insertRes = await client.query(
-//               'INSERT INTO raw_materials (product_name) VALUES ($1) RETURNING product_id',
-//               [materialName.trim()]
-//             );
-//             materialId = insertRes.rows[0].product_id;
-//           }
-//         }
-//         if (!materialName && materialId) {
-//           let result = await client.query('SELECT product_name FROM raw_materials WHERE product_id = $1', [materialId]);
-//           materialName = result.rows.length ? result.rows[0].product_name : '';
-//         }
-//         if (!materialId) throw new Error('Material could not be resolved or created');
-//         resolvedMaterials.push({
-//           materialId,
-//           materialName,
-//           quantityPerUnit: mat.quantityPerUnit,
-//         });
-//       }
-
-//       // -- Update BOM row --
-//       const bomQuery = `
-//         UPDATE bill_of_materials
-//         SET 
-//           product_id = $1,
-//           updated_at = CURRENT_TIMESTAMP
-//         WHERE bom_id = $2
-//         RETURNING 
-//           bom_id AS "bomId",
-//           product_id AS "productId",
-//           created_at AS "createdAt",
-//           updated_at AS "updatedAt"
-//       `;
-//       const bomResult = await client.query(bomQuery, [finalProductId, bomId]);
-//       if (bomResult.rows.length === 0) {
-//         throw new Error(`BOM ${bomId} not found`);
-//       }
-//       const bom = bomResult.rows[0];
-
-//       // -- Remove old materials --
-//       await client.query('DELETE FROM bom_materials WHERE bom_id = $1', [bomId]);
-
-//       // -- Insert new materials --
-//       const materialQuery = `
-//         INSERT INTO bom_materials (bom_id, material_id, quantity_per_unit)
-//         VALUES ($1, $2, $3)
-//         RETURNING 
-//           bom_material_id AS "bomMaterialId",
-//           material_id AS "materialId",
-//           quantity_per_unit AS "quantityPerUnit",
-//           unit_price AS "unitPrice",
-//           total_value AS "totalValue"
-//       `;
-//       const insertedMaterials = [];
-//       for (const mat of resolvedMaterials) {
-//         const materialResult = await client.query(materialQuery, [
-//           bomId,
-//           mat.materialId,
-//           mat.quantityPerUnit
-//         ]);
-//         insertedMaterials.push({
-//           ...materialResult.rows[0],
-//           materialName: mat.materialName
-//         });
-//       }
-
-//       await client.query('COMMIT');
-
-//       const response = {
-//         ...bom,
-//         productName: fetchedProductName,
-//         materials: insertedMaterials
-//       };
-//       io?.emit('bom:updated', response);
-//       return response;
-//     } catch (error) {
-//       await client.query('ROLLBACK');
-//       throw new Error(`Error updating BOM ${bomId}: ${error.message}`);
-//     } finally {
-//       client.release();
-//     }
-//   }
-
-//   // ... getAll, getById, delete ... unchanged ...
-// }
-
-// module.exports = BOM;
