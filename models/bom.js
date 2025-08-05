@@ -10,6 +10,7 @@ class BOM {
         b.product_id AS "productId",
         ip.product_name AS "productName",
         ip.description AS "productDescription",
+        ip.product_code AS "productCode", -- Added product_code
         b.created_at AS "createdAt",
         b.updated_at AS "updatedAt",
         COALESCE( 
@@ -29,7 +30,7 @@ class BOM {
       LEFT JOIN inventory ip ON b.product_id = ip.product_id
       LEFT JOIN bom_materials bm ON b.bom_id = bm.bom_id
       LEFT JOIN raw_materials rm ON bm.material_id = rm.product_id
-      GROUP BY b.bom_id, b.product_id, ip.product_name, ip.description
+      GROUP BY b.bom_id, b.product_id, ip.product_name, ip.description, ip.product_code
       ORDER BY b.created_at DESC
       LIMIT $1 OFFSET $2
     `;
@@ -50,6 +51,7 @@ class BOM {
         b.product_id AS "productId",
         ip.product_name AS "productName",
         ip.description AS "productDescription",
+        ip.product_code AS "productCode", -- Added product_code
         b.created_at AS "createdAt",
         b.updated_at AS "updatedAt",
         COALESCE(
@@ -70,7 +72,7 @@ class BOM {
       LEFT JOIN bom_materials bm ON b.bom_id = bm.bom_id
       LEFT JOIN raw_materials rm ON bm.material_id = rm.product_id
       WHERE b.bom_id = $1
-      GROUP BY b.bom_id, b.product_id, ip.product_name, ip.description
+      GROUP BY b.bom_id, b.product_id, ip.product_name, ip.description, ip.product_code
     `;
     try {
       const { rows } = await pool.query(query, [bomId]);
@@ -84,13 +86,13 @@ class BOM {
     }
   }
 
-  // Create a new BOM with multiple materials
+  // ... Rest of the BOM class remains unchanged ...
+  // (create, update, delete methods are identical to the original)
   static async create({ productId, productName, materials }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      // Resolve productId from productName if not provided
       let resolvedProductId = productId;
       let resolvedProductName;
       let resolvedProductDescription;
@@ -117,7 +119,6 @@ class BOM {
         resolvedProductDescription = productCheck.rows[0].description || 'No Description';
       }
 
-      // Validate and resolve materials
       if (!materials || materials.length === 0) {
         throw new Error('At least one material is required');
       }
@@ -161,7 +162,6 @@ class BOM {
         })
       );
 
-      // Insert BOM header
       const bomQuery = `
         INSERT INTO bill_of_materials (product_id, created_at)
         VALUES ($1, CURRENT_TIMESTAMP)
@@ -175,7 +175,6 @@ class BOM {
       const bomResult = await client.query(bomQuery, [resolvedProductId]);
       const bom = bomResult.rows[0];
 
-      // Insert materials
       const materialQuery = `
         INSERT INTO bom_materials (bom_id, material_id, quantity_per_unit)
         VALUES ($1, $2, $3)
@@ -199,7 +198,6 @@ class BOM {
 
       await client.query('COMMIT');
 
-      // Construct response
       const response = {
         ...bom,
         productName: resolvedProductName,
@@ -228,13 +226,11 @@ class BOM {
     }
   }
 
-  // Update an existing BOM
   static async update(bomId, { productId, productName, materials }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      // Resolve productId from productName if not provided
       let resolvedProductId = productId;
       let resolvedProductName;
       let resolvedProductDescription;
@@ -261,7 +257,6 @@ class BOM {
         resolvedProductDescription = productCheck.rows[0].description || 'No Description';
       }
 
-      // Validate and resolve materials
       if (!materials || materials.length === 0) {
         throw new Error('At least one material is required');
       }
@@ -305,7 +300,6 @@ class BOM {
         })
       );
 
-      // Update BOM header
       const bomQuery = `
         UPDATE bill_of_materials
         SET 
@@ -325,10 +319,8 @@ class BOM {
       }
       const bom = bomResult.rows[0];
 
-      // Delete existing materials
       await client.query('DELETE FROM bom_materials WHERE bom_id = $1', [bomId]);
 
-      // Insert new materials
       const materialQuery = `
         INSERT INTO bom_materials (bom_id, material_id, quantity_per_unit)
         VALUES ($1, $2, $3)
@@ -352,7 +344,6 @@ class BOM {
 
       await client.query('COMMIT');
 
-      // Construct response
       const response = {
         ...bom,
         productName: resolvedProductName,
@@ -381,7 +372,6 @@ class BOM {
     }
   }
 
-  // Delete a BOM entry
   static async delete(bomId, io) {
     const client = await pool.connect();
     try {

@@ -17194,3 +17194,90 @@
 {"bomId":16,"level":"info","message":"BOM 16 updated","timestamp":"2025-08-04T11:56:19.404Z","userId":10}
 {"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-04T11:56:21.068Z"}
 {"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-04T11:56:21.129Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:51.989Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:51.997Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:52.049Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:52.152Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:52.311Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-05T07:53:51.064Z","timestamp":"2025-08-05T07:53:52.415Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:52.528Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:52.793Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:53.097Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:53.454Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:53.858Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-05T07:53:54.320Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-05T08:38:06.880Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-05T08:38:06.882Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-05T08:38:06.883Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-05T08:38:05.791Z","timestamp":"2025-08-05T08:38:07.160Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-05T08:38:07.162Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-05T08:38:07.164Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:38:20.430Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:38:23.855Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2025-08-05T08:38:38.339Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:38:38.388Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:38:39.992Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:38:40.276Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-05T08:38:40.284Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-05T08:38:40.399Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:38:43.706Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:38:43.880Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:38:43.892Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:38:43.900Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:38:43.909Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-05T08:38:43.916Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:38:43.960Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-05T08:38:43.991Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:39:15.599Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:39:15.601Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:39:15.770Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:39:15.786Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:39:15.790Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:39:15.804Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:39:16.050Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-05T08:39:16.069Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-05T08:39:16.155Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-05T08:42:04.396Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-05T08:42:04.402Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-05T08:42:04.404Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-05T08:42:04.404Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-05T08:42:03.291Z","timestamp":"2025-08-05T08:42:04.675Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-05T08:42:04.677Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-05T08:42:04.678Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:42:04.741Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:42:05.227Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:42:07.364Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:42:07.365Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:42:07.597Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:42:07.607Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:42:07.614Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:42:07.615Z"}
+{"level":"info","message":"Fetched 223 inventory items","timestamp":"2025-08-05T08:42:07.882Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:42:07.908Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-05T08:42:07.948Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:45:54.552Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-05T08:45:54.553Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:45:54.743Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:45:54.746Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:45:54.755Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-05T08:45:54.767Z"}
+{"level":"info","message":"Cache hit for inventory_1000_0","timestamp":"2025-08-05T08:45:55.003Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:45:55.052Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-05T08:45:55.349Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-05T08:46:07.490Z"}
+{"level":"info","materialCount":1,"message":"Creating BOM","productId":6,"timestamp":"2025-08-05T08:46:07.565Z"}
+{"bomId":9,"level":"info","message":"BOM created successfully","productId":6,"timestamp":"2025-08-05T08:46:07.655Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:46:07.657Z"}
+{"bomId":9,"level":"info","message":"BOM 9 created","timestamp":"2025-08-05T08:46:07.659Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:46:09.088Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:46:09.141Z"}
+{"level":"info","materialCount":2,"message":"Updating BOM 9","productId":6,"timestamp":"2025-08-05T08:46:22.017Z"}
+{"bomId":"9","level":"info","materialCount":2,"message":"Updating BOM","productId":6,"timestamp":"2025-08-05T08:46:22.123Z"}
+{"bomId":"9","level":"info","message":"BOM updated successfully","productId":6,"timestamp":"2025-08-05T08:46:22.260Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:46:22.262Z"}
+{"bomId":9,"level":"info","message":"BOM 9 updated","timestamp":"2025-08-05T08:46:22.263Z","userId":10}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:46:24.341Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:46:24.402Z"}
+{"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:46:47.674Z"}
+{"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:46:47.676Z"}
+{"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:46:47.728Z"}
