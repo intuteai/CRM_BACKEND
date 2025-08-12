@@ -17281,3 +17281,600 @@
 {"cacheKey":"bom_list_10_0","level":"info","limit":"10","message":"Fetching BOMs","offset":"0","timestamp":"2025-08-05T08:46:47.674Z"}
 {"keys":["bom_list_10_0"],"level":"info","message":"Invalidated 1 BOM cache keys","timestamp":"2025-08-05T08:46:47.676Z"}
 {"level":"info","message":"Cache set for bom_list_10_0","timestamp":"2025-08-05T08:46:47.728Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T09:20:56.383Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T09:20:56.393Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T09:20:56.397Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-07T09:20:56.218Z","timestamp":"2025-08-07T09:20:56.685Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-07T09:20:56.688Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-07T09:20:56.691Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-07T09:21:32.087Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:21:32.220Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-07T09:21:33.381Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-07T09:21:34.151Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:21:41.353Z"}
+{"level":"info","message":"Customers fetched successfully: 10 items","timestamp":"2025-08-07T09:21:41.416Z"}
+{"data":[{"billing_address":"Unknown Billing Address","city":"Unknown City","contact_person":"Default Contact","email":"customer@example.com","gst":null,"id":1,"name":"Customer","orders":7,"phone":"0000000000","queries":2,"shipping_address":"Unknown Shipping Address"},{"billing_address":"No","city":"Delhi","contact_person":"None","email":"customer1@example.com","gst":null,"id":2,"name":"Customer1","orders":4,"phone":"0000000000","queries":0,"shipping_address":"No"},{"billing_address":"afjkdrvjhh","city":"kolkata","contact_person":"shyamal khamrai","email":"aishiaitrisolution@gmail.com","gst":null,"id":3,"name":"shyamal khamrai","orders":3,"phone":"4567152877","queries":0,"shipping_address":"kolkata"},{"billing_address":"Plot No. 9 Site-IV Industrial Area Sahibabad-201010","city":"Sahibabad GZB","contact_person":"SHIV OM SINGH","email":"sf.purchase@paharpur.com","gst":"09AABCP8017C1ZN","id":4,"name":"Paharpur Cooling Towers Ltd","orders":2,"phone":"7376988977","queries":0,"shipping_address":"Plot No. 9 Site-IV Industrial Area Sahibabad-201010"},{"billing_address":"G-14, Vardhman AC Market, CSE Blocl-E, (Near Astha Kunj Society, Sector-18 Rohini Delhi, North Delhi, Delhi-110085.","city":"New Delhi","contact_person":"Sunit Bahl ","email":"sunitbahl46@gmail.com","gst":"07ABQPB6747E1ZK","id":5,"name":"Eco Motor ","orders":9,"phone":"9818169532","queries":0,"shipping_address":"G-14, Vardhman AC Market, CSE Blocl-E, (Near Astha Kunj Society, Sector-18 Rohini Delhi, North Delhi, Delhi-110085."},{"billing_address":"Office No.-3, Sarthak Premises Ingale Nagar, Near Zeal College Narhe Dhayari Road, Narhe Pune Place of Supply: MAHARASHTRA  ","city":"Pune ","contact_person":"Rajesh ","email":"nrcontrols@gmail.com","gst":"06AAACC3923F1Z4","id":6,"name":"NR Control ","orders":17,"phone":"8830898785","queries":0,"shipping_address":"Office No.-3, Sarthak Premises Ingale Nagar, Near Zeal College Narhe Dhayari Road, Narhe Pune Place of Supply: MAHARASHTRA  "},{"billing_address":"round Floor 668 Dheerkheda Industrial Area Hapur Road Dheerkheda Meerut Place of Supply: UTTRA PRADESH","city":"Thane","contact_person":"Heera Lal","email":"sales@autonxt.in","gst":"09AAOCA7739H1Z4","id":7,"name":"Autonxt Automation ","orders":3,"phone":"9702505707","queries":0,"shipping_address":"Ground Floor 668 Dheerkheda Industrial Area Hapur Road Dheerkheda Meerut Place of Supply: UTTRA PRADESH"},{"billing_address":"1, Crooked Lane, Room No. G-2, Ground Floor, Kolkata - 700069, West Bengal","city":"Kolkata ","contact_person":"Shankarlal Agarwal","email":"howrahgasesltd@gmail.com","gst":"22AAACH6649B1Z0","id":8,"name":"Howrah Gases ","orders":1,"phone":"9830024305","queries":0,"shipping_address":"1, Crooked Lane, Room No. G-2, Ground Floor, Kolkata - 700069, West Bengal"},{"billing_address":"Plot no: 311,Vill. Kakra,Rawli road,Muradnagar,Pin 201206 Ghaziabad, U.P.","city":"Muradnagar, Ghaziabad","contact_person":"Pankaj","email":"info@fluisystech.com","gst":"09ASMPS9923J1ZT","id":9,"name":"Fluisys","orders":6,"phone":"9560529090","queries":0,"shipping_address":"Plot no: 311,Vill. Kakra,Rawli road,Muradnagar,Pin 201206 Ghaziabad, U.P."},{"billing_address":"Plot No. 1A, Cama Industries Estate, Service Road, Goregaon East, Mumbai-400063","city":"Mumbai","contact_person":"Ganahar","email":"account@ha-ko.com","gst":"27AAECH8731N1Z2","id":10,"name":"HA-KO Industries","orders":5,"phone":"9004007978","queries":0,"shipping_address":"Plot No. 1A, Cama Industries Estate, Service Road, Goregaon East, Mumbai-400063"}],"level":"info","limit":10,"message":"Cache hit for customers_10_0","offset":0,"timestamp":"2025-08-07T09:21:41.457Z","total":15}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-07T09:21:42.411Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:21:42.421Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:21:42.422Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-08-07T09:22:00.079Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:22:00.129Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:22:04.764Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:22:04.823Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:28:34.179Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:41:41.568Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:41:42.213Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:41:42.615Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:41:47.228Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:41:54.512Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:47:47.770Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:47:50.285Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:47:51.380Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:47:51.442Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:47:52.028Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:47:52.096Z"}
+{"level":"info","message":"User logged out, user_id: 46","timestamp":"2025-08-07T09:47:53.236Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:47:53.243Z"}
+{"level":"warn","message":"Failed login attempt for email: rahulsrivastava503@gmail.com - Incorrect password","timestamp":"2025-08-07T09:48:00.548Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2025-08-07T09:48:04.539Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:48:04.583Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:48:07.314Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:48:07.375Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:48:08.366Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:48:08.425Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:48:42.781Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:48:42.833Z"}
+{"level":"info","message":"User logged out, user_id: 45","timestamp":"2025-08-07T09:48:52.631Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-07T09:48:52.638Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2025-08-07T09:48:59.843Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T09:48:59.895Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T10:06:12.650Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T10:06:12.654Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T10:06:12.654Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-07T10:06:12.454Z","timestamp":"2025-08-07T10:06:12.956Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-07T10:06:12.958Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-07T10:06:12.960Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T10:06:13.082Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T10:06:24.089Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T10:06:24.093Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T10:06:24.094Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T10:06:25.720Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T10:06:25.722Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T10:06:25.723Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-07T10:06:25.524Z","timestamp":"2025-08-07T10:06:26.023Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-07T10:06:26.025Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-07T10:06:26.027Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T10:06:26.096Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T10:06:53.602Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T10:06:53.606Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T10:06:53.607Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-07T10:06:53.411Z","timestamp":"2025-08-07T10:06:53.914Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-07T10:06:53.916Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-07T10:06:53.918Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T10:06:54.100Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T10:07:06.274Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T10:07:06.278Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T10:07:06.279Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-07T10:07:06.052Z","timestamp":"2025-08-07T10:07:06.554Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-07T10:07:06.556Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-07T10:07:06.559Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T10:07:06.581Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-07T10:08:13.243Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-07T10:08:13.245Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-07T10:08:13.246Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-07T10:08:13.039Z","timestamp":"2025-08-07T10:08:13.541Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-07T10:08:13.543Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-07T10:08:13.545Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-07T10:08:13.769Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:29:59.517Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:29:59.521Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:29:59.577Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:29:59.684Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:29:59.844Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-08T06:29:59.899Z","timestamp":"2025-08-08T06:29:59.930Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:30:00.054Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:30:00.309Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:30:00.616Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:30:00.975Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:30:01.377Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-08T06:30:01.852Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-08T06:32:12.810Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-08T06:32:12.813Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-08T06:32:12.814Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-08T06:32:13.055Z","timestamp":"2025-08-08T06:32:13.089Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-08T06:32:13.092Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-08T06:32:13.094Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-08T06:32:33.547Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-08T06:51:07.598Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-08T09:00:16.966Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-08T09:05:29.610Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-08T09:05:49.841Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T07:06:05.238Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T07:06:05.241Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T07:06:05.242Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T07:06:03.486Z","timestamp":"2025-08-11T07:06:05.577Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T07:06:05.579Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T07:06:05.581Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T07:09:43.549Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T07:31:55.998Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T07:45:55.535Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T07:45:56.082Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T07:45:56.668Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T07:46:00.154Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T09:35:41.703Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T09:42:54.059Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T09:49:05.768Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T09:56:09.190Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T09:56:09.193Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T09:56:09.194Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T09:56:07.291Z","timestamp":"2025-08-11T09:56:09.537Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T09:56:09.540Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T09:56:09.542Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T09:56:09.695Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T09:56:29.193Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T09:56:29.910Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:04:58.412Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:04:58.891Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:07:41.746Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:07:42.300Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:08:07.815Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:08:07.879Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:08:12.884Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:08:13.342Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:08:15.689Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:08:15.790Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:08:17.128Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:08:17.605Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:08:30.190Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:08:30.246Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:12:12.728Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:12:13.153Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:12:17.942Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:12:18.003Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:13:01.988Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:13:02.442Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:13:39.651Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:13:39.717Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:14:54.762Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:14:54.831Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:15:02.067Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:15:02.112Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:15:03.976Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-11T10:15:16.366Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:15:16.430Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-11T10:15:18.898Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-11T10:15:19.669Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:15:20.815Z"}
+{"level":"info","message":"Fetched 10 available inventory items","timestamp":"2025-08-11T10:15:21.126Z"}
+{"level":"info","message":"Cache hit for inventory_available_10_0","timestamp":"2025-08-11T10:15:21.132Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:15:22.032Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-11T10:15:22.721Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:15:22.731Z"}
+{"level":"warn","message":"Failed login attempt for email: rahulsrivastava503@gmail.com - Incorrect password","timestamp":"2025-08-11T10:15:30.543Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2025-08-11T10:15:34.730Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:15:34.778Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:15:38.756Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:15:38.793Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:15:47.836Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:15:47.904Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:15:48.678Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:15:48.716Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:16:21.551Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:16:21.623Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:16:46.480Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:16:46.538Z"}
+{"level":"info","message":"Created attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T10:17:11.114Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T10:17:11.147Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:17:13.250Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:17:13.306Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:17:14.205Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:17:14.239Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:17:23.187Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:17:23.255Z"}
+{"level":"info","message":"Updated attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T10:17:27.016Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T10:17:27.046Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:17:28.826Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:17:28.891Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:17:29.488Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:17:29.522Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:17:34.374Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:17:34.423Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:17:38.764Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:17:38.819Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:17:39.512Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:17:39.548Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:20:55.874Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:20:56.283Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:20:56.578Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:20:56.614Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:20:56.648Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:21:07.698Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:21:08.050Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:21:08.053Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:21:08.107Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:21:08.145Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:22:48.478Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:22:48.827Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:22:49.271Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:22:49.306Z"}
+{"level":"info","message":"Cache hit for attendance_10_null_45","timestamp":"2025-08-11T10:22:49.336Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T10:25:53.307Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T10:25:53.311Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-11T10:25:53.314Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T10:25:53.314Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T10:25:51.468Z","timestamp":"2025-08-11T10:25:53.740Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T10:25:53.743Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T10:25:53.745Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:25:53.882Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T10:25:56.131Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T10:25:56.134Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T10:25:56.134Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T10:25:59.121Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T10:25:59.127Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T10:25:59.127Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T10:25:57.171Z","timestamp":"2025-08-11T10:25:59.439Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T10:25:59.441Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T10:25:59.445Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:25:59.855Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:26:01.092Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:26:01.544Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:26:01.790Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:26:01.859Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:26:01.931Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:27:00.743Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:27:00.795Z"}
+{"level":"info","message":"Updated attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T10:27:14.924Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T10:27:14.955Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:27:17.973Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:27:18.058Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:27:19.594Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:27:19.665Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:27:22.722Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:27:22.781Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:15.917Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:31:22.802Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:31:23.275Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:23.357Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:23.466Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:31:25.882Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:31:25.955Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:26.698Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:26.773Z"}
+{"level":"info","message":"Updated attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T10:31:50.734Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T10:31:50.770Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:50.852Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:31:54.728Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:31:54.799Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:55.781Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:31:55.857Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:31:59.376Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:31:59.434Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:32:00.464Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:32:00.547Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:32:05.439Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:32:05.506Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:32:06.243Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:32:06.349Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:37:45.222Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:46:16.854Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:46:17.403Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:46:17.472Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:46:22.562Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:46:22.621Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:46:23.347Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:46:23.413Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T10:54:39.450Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T10:54:39.454Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T10:54:39.455Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T10:54:37.461Z","timestamp":"2025-08-11T10:54:39.750Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T10:54:39.752Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T10:54:39.754Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:54:43.369Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:54:53.307Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:54:53.371Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:54:54.777Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:54:54.852Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:55:01.666Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:55:01.747Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:55:02.510Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:55:02.577Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:55:03.850Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:55:03.905Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:55:04.797Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T10:55:04.869Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:57:07.549Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:57:08.000Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:57:08.498Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:57:08.577Z"}
+{"level":"error","message":"Error marking attendance for user 45: pool is not defined","stack":"ReferenceError: pool is not defined\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\attendance.js:70:40\n    at Layer.handle [as handle_request] (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-11T10:57:34.992Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:57:47.452Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:57:47.814Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:57:48.205Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:57:48.279Z"}
+{"level":"error","message":"Error marking attendance for user 45: pool is not defined","stack":"ReferenceError: pool is not defined\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\attendance.js:70:40\n    at Layer.handle [as handle_request] (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-11T10:57:49.630Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T10:57:52.691Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:57:52.760Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:57:53.528Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T10:57:53.607Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T10:59:29.421Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T10:59:29.424Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T10:59:29.424Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T10:59:27.449Z","timestamp":"2025-08-11T10:59:29.743Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T10:59:29.745Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T10:59:29.748Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T10:59:29.885Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:01:39.781Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:01:39.883Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:01:41.020Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:01:41.085Z"}
+{"level":"info","message":"Created attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:02:15.758Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:02:15.791Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:02:16.084Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:02:25.993Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:02:26.054Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:02:26.625Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:02:26.698Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:02:28.313Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:02:28.394Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:02:28.977Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:02:29.053Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:06:55.946Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:07:04.155Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:07:04.224Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:07:05.187Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:07:05.256Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:07:06.616Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:07:06.677Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:07:07.662Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:07:07.727Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:07:45.173Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:07:45.662Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:07:46.217Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:07:46.342Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:07:46.704Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:07:47.074Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:07:47.087Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:07:47.176Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:07:48.257Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:07:48.323Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:07:49.068Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:07:49.138Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:28.933Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:10:31.647Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:10:32.072Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:32.090Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:32.158Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:10:33.541Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:10:33.602Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:34.307Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:34.376Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:10:44.525Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:10:44.902Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:44.933Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:45.010Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:10:46.544Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:10:46.799Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:46.822Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:46.891Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:10:47.284Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:10:47.504Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:47.536Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:47.605Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:10:49.967Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:10:50.073Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:50.793Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:10:50.856Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:05.897Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:13:07.327Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:13:07.762Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:07.766Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:07.873Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:13:09.369Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:13:09.711Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:09.731Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:09.801Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:13:16.700Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:13:16.988Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:17.008Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:17.077Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:13:17.519Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:13:17.586Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:18.609Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:13:18.674Z"}
+{"level":"info","message":"Created attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:13:55.249Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:13:55.281Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:13:55.596Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:13:59.525Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:13:59.605Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:14:00.286Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:14:00.384Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:14:01.605Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:14:01.672Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:14:02.409Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:14:02.473Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:16:57.496Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:16:57.566Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:17:04.132Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2025-08-11T11:17:10.350Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:17:10.419Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:17:37.930Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:17:37.994Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:17:39.071Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:17:39.136Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:17:39.943Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:17:40.010Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:19:51.226Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:19:51.732Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:19:52.242Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:19:52.316Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:19:52.688Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:19:53.024Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:19:53.046Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:19:53.115Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:19:55.210Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:19:55.303Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:19:56.160Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:19:56.236Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:22:29.383Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:22:29.807Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:22:30.316Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:22:30.426Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:22:31.671Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:22:31.748Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:22:32.599Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:22:32.673Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:23:07.820Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:23:08.166Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:23:08.443Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:23:08.550Z"}
+{"level":"info","message":"User logged out, user_id: 45","timestamp":"2025-08-11T11:23:12.389Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:23:12.397Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2025-08-11T11:23:22.167Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:23:22.245Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:23:23.243Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:23:23.313Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:25:11.287Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:25:11.731Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:12.258Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:12.336Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:25:12.737Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:25:13.139Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:13.150Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:13.222Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:25:14.183Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:25:14.236Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:14.910Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:14.983Z"}
+{"level":"info","message":"Updated attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:25:16.793Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:25:16.826Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:16.922Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:25:20.333Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:25:20.434Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:21.644Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:25:21.719Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:26:01.801Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:26:02.134Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:26:02.991Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:26:03.057Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:26:07.928Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:26:08.014Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:26:09.027Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:26:09.096Z"}
+{"level":"info","message":"Created attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:26:34.342Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:26:34.372Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:26:34.442Z"}
+{"level":"info","message":"Updated attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:26:46.488Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:26:46.533Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:26:46.673Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:26:47.592Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:26:47.658Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:26:49.134Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:26:49.204Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:26:53.392Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:26:53.448Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:26:54.137Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:26:54.207Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:27:42.203Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:27:42.580Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:27:43.024Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:27:43.081Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:28:39.384Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:28:39.433Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:28:40.545Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:28:40.629Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:34:01.460Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:01.877Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:02.420Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:02.488Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:02.555Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:34:06.092Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:06.159Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:07.048Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:07.120Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-11T11:34:35.195Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-11T11:34:35.200Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-11T11:34:35.201Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-11T11:34:33.177Z","timestamp":"2025-08-11T11:34:35.489Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-11T11:34:35.492Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-11T11:34:35.494Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:35.680Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:34:36.340Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:36.720Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:36.994Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:37.072Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:34:37.143Z"}
+{"level":"info","message":"Created attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:34:40.370Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:34:40.401Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:40.469Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:34:42.633Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:42.970Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:43.001Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:43.063Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:43.131Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:34:45.405Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:45.475Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:46.211Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:46.284Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:34:49.630Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:34:49.695Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:50.478Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:34:50.542Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:37:14.204Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:37:14.556Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:37:15.106Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:37:15.186Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:37:15.258Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:37:20.745Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:37:20.812Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:37:21.536Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:37:21.609Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:37:44.269Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:37:44.604Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:44.639Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:44.712Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:44.788Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:37:45.945Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:37:46.287Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:46.326Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:46.399Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:46.469Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:37:47.082Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:37:47.141Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:48.174Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:37:48.261Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:38:01.268Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:38:01.328Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:38:02.209Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:38:02.283Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:40:08.606Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:40:08.961Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:09.487Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:09.555Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:09.621Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:40:38.787Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:40:38.859Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:40.294Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:40.367Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:40:50.389Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:40:50.733Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:50.814Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:50.894Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 4","timestamp":"2025-08-11T11:40:50.973Z"}
+{"level":"info","message":"Created attendance for user_id: 45, date: Mon Aug 11 2025 00:00:00 GMT+0530 (India Standard Time)","timestamp":"2025-08-11T11:41:01.802Z"}
+{"level":"info","message":"Cleared cache for attendance after marking for user_id: 45","timestamp":"2025-08-11T11:41:01.834Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:01.914Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:41:11.615Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:41:11.990Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:12.024Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:12.091Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:12.163Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:41:42.734Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:41:42.788Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:44.648Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:44.711Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:41:47.878Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-11T11:41:47.961Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:48.515Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-08-11T11:41:48.589Z"}
+{"level":"info","message":"User logged out, user_id: 45","timestamp":"2025-08-11T11:41:55.225Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-11T11:41:55.233Z"}

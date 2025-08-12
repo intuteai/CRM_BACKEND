@@ -53,6 +53,8 @@ router.post('/login', async (req, res) => {
       6: 'store',
       7: 'dispatch',
       8: 'accounts',
+      9: 'employee', // Added
+      10: 'hr', // Added
     };
     const role = roleMap[user.role_id] || 'unknown';
 
@@ -83,12 +85,12 @@ router.get('/user', authenticateToken, async (req, res) => {
     res.json({ name: user.name });
   } catch (err) {
     logger.error(`User fetch error: ${err.message}`, { stack: err.stack });
-    res.status(403).json({ error: 'Invalid token', code: 'AUTH_INVALID_TOKEN' });
+    res.status(500).json({ error: 'Server error', code: 'SERVER_ERROR' });
   }
 });
 
 router.post('/logout', authenticateToken, (req, res) => {
-  logger.info(`User logged out`);
+  logger.info(`User logged out, user_id: ${req.user.user_id}`);
   res.json({ message: 'Logged out successfully' });
 });
 

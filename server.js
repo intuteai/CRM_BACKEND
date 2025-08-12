@@ -22,7 +22,8 @@ const bomRoutes = require('./routes/bom');
 const enquiryRoutes = require('./routes/enquiry');
 const dispatchTrackingRoutes = require('./routes/dispatchTracking');
 const dashboardRoutes = require('./routes/dashboard');
-const problemsRoutes = require('./routes/problems'); // New import
+const problemsRoutes = require('./routes/problems');
+const attendanceRoutes = require('./routes/attendance'); // New import
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
@@ -96,11 +97,12 @@ app.use('/api/part-drawings-raw', partDrawingsRawRoutes);
 app.use('/api/price-list', priceListRoutes);
 app.use('/api/pdi', pdiRoutes);
 app.use('/api/purchase-invoices', purchaseInvoicesRoutes);
-app.use('/api/bom', bomRoutes); 
+app.use('/api/bom', bomRoutes);
 app.use('/api/enquiry', enquiryRoutes);
 app.use('/api/dispatch-tracking', dispatchTrackingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/problems', problemsRoutes); // New route
+app.use('/api/problems', problemsRoutes);
+app.use('/api/attendance', attendanceRoutes); // New route
 
 app.use(errorHandler);
 
