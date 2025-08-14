@@ -120,27 +120,40 @@ class Order {
 
       const { rows: existingItems } = await client.query('SELECT product_id, quantity FROM order_items WHERE order_id = $1', [orderId]);
       const oldItemsMap = new Map(existingItems.map(i => [i.product_id, i.quantity]));
-      const newItemsMap = new Map(items.map(i => [i.product_id, i.quantity]));
+      const newItemsMap = new Map(items.map(i => [parseInt(i.product_id, 10), i.quantity]));
 
-      const productIds = [...new Set([...existingItems.map(i => i.product_id), ...items.map(i => i.product_id)])];
+      // Identify deleted items (in oldItemsMap but not in newItemsMap)
+      const deletedItems = [];
+      for (const [productId, oldQty] of oldItemsMap) {
+        if (!newItemsMap.has(productId)) {
+          deletedItems.push({ productId, quantity: oldQty });
+        }
+      }
+
+      const productIds = [...new Set([...existingItems.map(i => i.product_id), ...items.map(i => parseInt(i.product_id, 10))])];
       const { rows: products } = await client.query('SELECT product_id, stock_quantity FROM inventory WHERE product_id = ANY($1)', [productIds]);
       const productMap = new Map(products.map(p => [p.product_id, p.stock_quantity]));
 
+      // Validate stock for updated and new items
       for (const [productId, newQty] of newItemsMap) {
         const oldQty = oldItemsMap.get(productId) || 0;
         const stock = productMap.get(productId);
         if (stock === undefined) throw new Error(`Product ${productId} not found`);
-        const stockChange = oldQty - newQty;
-        if (stock + stockChange < 0) throw new Error(`Insufficient stock for product ${productId}`);
+        const stockChange = oldQty - newQty; // Positive if reducing qty, negative if increasing
+        if (stock + stockChange < 0) throw new Error(`Insufficient stock for product ${productId}: ${stock + oldQty} available`);
       }
 
+      // Delete existing order items
       await client.query('DELETE FROM order_items WHERE order_id = $1', [orderId]);
+
+      // Insert new order items
       const orderItemsValues = items.map(item => [orderId, parseInt(item.product_id, 10), item.quantity, item.price]);
       await client.query(
         'INSERT INTO order_items (order_id, product_id, quantity, price) SELECT * FROM unnest($1::int[], $2::int[], $3::int[], $4::numeric[])',
         [orderItemsValues.map(v => v[0]), orderItemsValues.map(v => v[1]), orderItemsValues.map(v => v[2]), orderItemsValues.map(v => v[3])]
       );
 
+      // Update order details
       const updates = [];
       const values = [orderId];
       if (target_delivery_date !== undefined) {
@@ -160,23 +173,35 @@ class Order {
         values
       );
 
+      // Update stock for modified and deleted items
       const stockUpdates = [];
       for (const [productId, newQty] of newItemsMap) {
         const oldQty = oldItemsMap.get(productId) || 0;
-        const stockChange = oldQty - newQty;
+        const stockChange = oldQty - newQty; // Positive if reducing qty, negative if increasing
         if (stockChange !== 0) stockUpdates.push({ productId, quantity: stockChange });
       }
+      for (const { productId, quantity } of deletedItems) {
+        stockUpdates.push({ productId, quantity }); // Restore full quantity for deleted items
+      }
       if (stockUpdates.length) {
-        await client.query(
+        const { rows: updatedStocks } = await client.query(
           `WITH stock_changes AS (
              SELECT unnest($1::int[]) AS product_id, unnest($2::int[]) AS quantity
            )
            UPDATE inventory i
            SET stock_quantity = i.stock_quantity + sc.quantity
            FROM stock_changes sc
-           WHERE i.product_id = sc.product_id`,
+           WHERE i.product_id = sc.product_id
+           RETURNING i.product_id, i.stock_quantity`,
           [stockUpdates.map(s => s.productId), stockUpdates.map(s => s.quantity)]
         );
+
+        // Emit stock updates via Socket.IO
+        if (io) {
+          updatedStocks.forEach(({ product_id, stock_quantity }) => {
+            io.emit('stockUpdate', { product_id, stock_quantity });
+          });
+        }
       }
 
       // Fetch updated invoice to emit Socket.IO event

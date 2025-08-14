@@ -18845,3 +18845,215 @@
 {"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T04:43:44.136Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T04:43:44.143Z"}
 {"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T04:43:44.144Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:01:45.123Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:01:45.126Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-14T05:01:45.127Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:01:45.127Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:01:44.189Z","timestamp":"2025-08-14T05:01:45.486Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:01:45.488Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:01:45.490Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:01:46.573Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:01:47.235Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:01:53.524Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:01:53.525Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:01:56.456Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:01:56.469Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:04:37.840Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:04:37.841Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-14T05:04:49.586Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:04:49.647Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:04:51.140Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:04:51.460Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:04:51.589Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:04:57.070Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:04:57.609Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:04:57.947Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:04:57.954Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:05:02.139Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:05:02.196Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:05:15.778Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:05:15.856Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:05:31.312Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:05:31.702Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:05:46.946Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:05:47.029Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:05:51.280Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:05:51.397Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:06:02.158Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:06:21.254Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:06:21.328Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:06:37.530Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:06:41.097Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:06:41.187Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:07:05.192Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:07:21.172Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:07:21.290Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:07:24.724Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:07:24.828Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:07:33.495Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:07:33.543Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:07:37.073Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:07:37.185Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:07:47.325Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:07:47.500Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:07:57.987Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:07:58.161Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:08:01.065Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:08:02.407Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:08:10.608Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:08:10.695Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:08:15.901Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:08:16.017Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:08:19.839Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:08:21.034Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:08:23.980Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:08:24.063Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:08:28.642Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:09:00.242Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:09:00.321Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:17:53.031Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:17:53.037Z"}
+{"level":"info","message":"Invalidated 2 cache keys matching pattern: inventory_*","timestamp":"2025-08-14T05:17:53.038Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:17:53.038Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:17:52.090Z","timestamp":"2025-08-14T05:17:53.397Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:17:53.399Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:17:53.402Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:17:53.716Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:17:53.720Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:17:56.470Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:17:56.472Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:17:56.810Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:17:56.821Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:17:56.828Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:17:56.829Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:17:56.873Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:17:56.874Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:17:57.115Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:17:57.121Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:17:59.127Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:17:59.129Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:17:59.280Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:17:59.289Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:17:59.306Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:17:59.316Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:17:59.319Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:17:59.325Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:17:59.371Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:17:59.372Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-14T05:18:01.608Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:18:01.617Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:18:01.618Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-14T05:18:12.370Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:18:12.432Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-14T05:18:13.965Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-14T05:18:14.042Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:16.205Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:18:16.209Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:16.213Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:16.219Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:16.220Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:16.263Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:16.264Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:17.780Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:17.804Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:17.805Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:18.441Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:18.472Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:18.473Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:18.643Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:18.666Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:18.666Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:18.833Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:18.862Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:18.862Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:19.018Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:19.040Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:19.041Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:29.176Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:29.206Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:29.207Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:29.781Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:29.808Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:29.808Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:18:31.850Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:32.662Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:18:32.676Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:18:32.678Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:32.697Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:32.698Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:18:32.746Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:18:32.748Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:19:19.488Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:19:20.230Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:19:20.240Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:19:20.241Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:19:20.518Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:19:20.519Z"}
+{"level":"error","message":"Error fetching orders for user 1 Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Order.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\order.js:12:12)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:27:61\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-14T05:19:20.557Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-14T05:19:20.558Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:21:01.129Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:21:01.132Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-14T05:21:01.133Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:21:01.134Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:21:00.207Z","timestamp":"2025-08-14T05:21:01.510Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:21:01.512Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:21:01.514Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:21:01.598Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:21:02.823Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:21:02.825Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:21:02.826Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:21:01.868Z","timestamp":"2025-08-14T05:21:03.175Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:21:03.177Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:21:03.179Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:21:03.284Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:21:06.765Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:22:08.609Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:22:08.612Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:22:09.115Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:22:09.127Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:22:09.458Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:22:09.476Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:22:22.338Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:22:24.165Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:22:45.489Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:22:48.166Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:22:48.221Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:22:59.004Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:22:59.005Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:22:59.459Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:22:59.467Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:22:59.489Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:22:59.495Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:23:08.555Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:23:08.660Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:23:24.745Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:23:27.246Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:23:27.298Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:24:08.206Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:24:08.210Z"}
+{"level":"info","message":"Invalidated 2 cache keys matching pattern: inventory_*","timestamp":"2025-08-14T05:24:08.211Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:24:08.211Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:24:07.228Z","timestamp":"2025-08-14T05:24:08.536Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:24:08.538Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:24:08.540Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:24:08.768Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:24:08.788Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:24:11.770Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:24:11.772Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:24:12.113Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:24:12.125Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:24:14.485Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:14.494Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:24:25.248Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:24:25.327Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:33.265Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:24:33.284Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:24:33.372Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:24:41.173Z"}
+{"level":"info","message":"Fetched 245 stock items","timestamp":"2025-08-14T05:24:41.256Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:43.269Z"}
+{"level":"info","message":"Cleared caches for orders and inventory after updating order 4","timestamp":"2025-08-14T05:24:43.449Z"}
+{"level":"info","message":"Fetched 245 inventory items","timestamp":"2025-08-14T05:24:43.686Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:54.281Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:54.735Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:55.950Z"}
