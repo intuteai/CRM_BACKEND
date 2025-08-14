@@ -46,6 +46,7 @@ router.post('/', authenticateToken, checkPermission('Inventory', 'can_write'), a
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
     await redis.del(`price_list_*`); // Invalidate price_list cache
+    await redis.del('inventory_stock'); // Invalidate stock cache
     logger.info(`Product added: ${product.product_name} by ${req.user.user_id}`);
     res.status(201).json(product);
   } catch (error) {
@@ -59,7 +60,7 @@ router.post('/', authenticateToken, checkPermission('Inventory', 'can_write'), a
 
 // GET /api/inventory/available
 router.get('/available', authenticateToken, async (req, res, next) => {
-  const { limit = 10, offset = 0 } = req.query;
+  const { limit = 1000, offset = 0 } = req.query; // Increased limit for all products
   try {
     const cacheKey = `inventory_available_${limit}_${offset}`;
     const cached = await redis.get(cacheKey);
@@ -70,17 +71,23 @@ router.get('/available', authenticateToken, async (req, res, next) => {
 
     const query = `
       SELECT product_id, product_name, stock_quantity, price, created_at, description, product_code
-      FROM inventory WHERE stock_quantity > 0 LIMIT $1 OFFSET $2
+      FROM inventory LIMIT $1 OFFSET $2
     `;
-    const countQuery = `SELECT COUNT(*) FROM inventory WHERE stock_quantity > 0`;
+    const countQuery = `SELECT COUNT(*) FROM inventory`;
     const [itemsResult, countResult] = await Promise.all([
       pool.query(query, [parseInt(limit), parseInt(offset)]),
       pool.query(countQuery),
     ]);
-    const result = { data: itemsResult.rows, total: parseInt(countResult.rows[0].count) };
+    const result = { 
+      data: itemsResult.rows.map(item => ({
+        ...item,
+        available: item.stock_quantity > 0 // Add flag for frontend
+      })), 
+      total: parseInt(countResult.rows[0].count) 
+    };
 
     await redis.setEx(cacheKey, 3600, JSON.stringify(result));
-    logger.info(`Fetched ${itemsResult.rows.length} available inventory items`);
+    logger.info(`Fetched ${itemsResult.rows.length} inventory items`);
     res.json(result);
   } catch (error) {
     logger.error(`Error in GET /api/inventory/available: ${error.message}`, error.stack);
@@ -113,13 +120,24 @@ router.get('/', authenticateToken, checkPermission('Inventory', 'can_read'), asy
 
 // GET /api/inventory/stock
 router.get('/stock', authenticateToken, async (req, res, next) => {
+  const { force_refresh } = req.query;
   try {
+    const cacheKey = `inventory_stock`;
+    if (force_refresh !== 'true') {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        logger.info(`Cache hit for ${cacheKey}`);
+        return res.json(JSON.parse(cached));
+      }
+    }
+
     const query = `
       SELECT product_id, product_name, stock_quantity, description, product_code
-      FROM inventory WHERE stock_quantity > 0
+      FROM inventory
     `;
     const { rows } = await pool.query(query);
-    logger.info(`Fetched ${rows.length} available stock items`);
+    await redis.setEx(cacheKey, 3600, JSON.stringify(rows));
+    logger.info(`Fetched ${rows.length} stock items`);
     res.json(rows);
   } catch (error) {
     logger.error(`Error in GET /api/inventory/stock: ${error.message}`, error.stack);
@@ -155,6 +173,7 @@ router.put('/:id', authenticateToken, checkPermission('Inventory', 'can_write'),
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
     await redis.del(`price_list_*`); // Invalidate price_list cache
+    await redis.del('inventory_stock'); // Invalidate stock cache
     logger.info(`Product updated: ${updatedProduct.product_name} by ${req.user.user_id}`);
     res.json(updatedProduct);
   } catch (error) {
@@ -176,6 +195,7 @@ router.delete('/:id', authenticateToken, checkPermission('Inventory', 'can_write
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
     await redis.del(`price_list_*`); // Invalidate price_list cache
+    await redis.del('inventory_stock'); // Invalidate stock cache
     logger.info(`Product deleted: ${deletedProduct.product_name} by ${req.user.user_id}`);
     res.json({ message: 'Product deleted successfully', product: deletedProduct });
   } catch (error) {

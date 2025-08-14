@@ -95,9 +95,10 @@ router.post('/', authenticateToken, checkPermission('Orders', 'can_write'), asyn
         const [orderKeys, inventoryKeys] = await Promise.all([
           redis.keys(`orders_*_${orderUserId}`),
           redis.keys('inventory_*'),
+          redis.keys('inventory_stock'), // Invalidate stock cache
         ]);
         if (orderKeys.length) await redis.del(orderKeys);
-        if (inventoryKeys.length) await redis.del(inventoryKeys);
+        if (inventoryKeys.length) await redis.del([...inventoryKeys, 'inventory_stock']); // Ensure inventory_stock is included
         logger.info(`Cleared caches for orders and inventory after creating order ${order.order_id}`);
       } catch (err) {
         logger.error('Cache invalidation error', err);
@@ -151,9 +152,21 @@ router.put('/:id/update', authenticateToken, checkPermission('Orders', 'can_writ
       timezone: 'Asia/Kolkata',
     };
 
-    setImmediate(() =>
-      redis.del(`orders_*_${order.user_id}`).catch((err) => logger.error('Cache error', err))
-    );
+    setImmediate(async () => {
+      try {
+        const [orderKeys, inventoryKeys] = await Promise.all([
+          redis.keys(`orders_*_${order.user_id}`),
+          redis.keys('inventory_*'),
+          redis.keys('inventory_stock'), // Invalidate stock cache
+        ]);
+        if (orderKeys.length) await redis.del(orderKeys);
+        if (inventoryKeys.length) await redis.del([...inventoryKeys, 'inventory_stock']); // Ensure inventory_stock is included
+        logger.info(`Cleared caches for orders and inventory after updating order ${orderId}`);
+      } catch (err) {
+        logger.error('Cache invalidation error', err);
+      }
+    });
+
     res.json(response);
   } catch (error) {
     logger.error(`Error in PUT /api/orders/${req.params.id}/update: ${error.message}`, { stack: error.stack });
@@ -180,9 +193,11 @@ router.post('/:id/cancel', authenticateToken, checkPermission('Orders', 'can_wri
         const [orderKeys, inventoryKeys] = await Promise.all([
           redis.keys(`orders_*_${order.user_id}`),
           redis.keys('inventory_*'),
+          redis.keys('inventory_stock'), // Invalidate stock cache
         ]);
         if (orderKeys.length) await redis.del(orderKeys);
-        if (inventoryKeys.length) await redis.del(inventoryKeys);
+        if (inventoryKeys.length) await redis.del([...inventoryKeys, 'inventory_stock']); // Ensure inventory_stock is included
+        logger.info(`Cleared caches for orders and inventory after cancelling order ${orderId}`);
       } catch (err) {
         logger.error('Cache invalidation error', err);
       }
