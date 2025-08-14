@@ -19057,3 +19057,78 @@
 {"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:54.281Z"}
 {"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:54.735Z"}
 {"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:24:55.950Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:49:30.637Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:49:30.640Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-14T05:49:30.641Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:49:30.642Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:49:29.641Z","timestamp":"2025-08-14T05:49:30.963Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:49:30.966Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:49:30.968Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:49:34.468Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:49:36.861Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:49:50.005Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:49:50.009Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:49:50.634Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:49:50.803Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:49:50.925Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:49:50.937Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:49:56.092Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:49:58.698Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-14T05:50:00.000Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:50:00.011Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:50:00.014Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-14T05:50:11.367Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:50:11.428Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-14T05:50:12.401Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-14T05:50:13.413Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-14T05:50:15.114Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-14T05:50:19.280Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-14T05:50:19.417Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:50:26.866Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:50:26.982Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:50:27.096Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-08-14T05:50:35.628Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:50:35.693Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:50:35.796Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:50:37.488Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:50:39.004Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:50:41.472Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:50:41.844Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:50:41.852Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-14T05:51:02.737Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-14T05:51:02.788Z"}
+{"level":"info","message":"Invalidated 2 cache keys matching pattern: inventory_*","timestamp":"2025-08-14T05:51:02.789Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-14T05:51:02.790Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-14T05:51:01.792Z","timestamp":"2025-08-14T05:51:03.119Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-14T05:51:03.122Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-14T05:51:03.125Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:51:03.277Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:51:03.296Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-14T05:51:05.081Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:51:05.089Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:51:05.090Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-14T05:51:15.293Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:51:15.340Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-14T05:51:16.588Z"}
+{"level":"info","message":"Fetched 10 customer invoices","timestamp":"2025-08-14T05:51:17.309Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:51:19.387Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:51:19.754Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:51:19.763Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:51:26.399Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-14T05:51:28.192Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-08-14T05:51:28.410Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:51:30.208Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:51:30.449Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:51:30.795Z"}
+{"level":"info","message":"Product updated: Sample by 1","timestamp":"2025-08-14T05:51:37.692Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:51:37.764Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:51:37.908Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:51:40.171Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:51:40.847Z"}
+{"level":"info","message":"Fetched 250 inventory items","timestamp":"2025-08-14T05:51:40.958Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-14T05:51:40.971Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-14T05:51:49.756Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:51:49.762Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-14T05:51:49.763Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-14T05:52:00.001Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-14T05:52:00.060Z"}
