@@ -23,7 +23,8 @@ const enquiryRoutes = require('./routes/enquiry');
 const dispatchTrackingRoutes = require('./routes/dispatchTracking');
 const dashboardRoutes = require('./routes/dashboard');
 const problemsRoutes = require('./routes/problems');
-const attendanceRoutes = require('./routes/attendance'); // New import
+const attendanceRoutes = require('./routes/attendance');
+const processRoutes = require('./routes/process'); // New import for processes routes
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
@@ -102,7 +103,8 @@ app.use('/api/enquiry', enquiryRoutes);
 app.use('/api/dispatch-tracking', dispatchTrackingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/problems', problemsRoutes);
-app.use('/api/attendance', attendanceRoutes); // New route
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/process', processRoutes); // New route for processes
 
 app.use(errorHandler);
 
