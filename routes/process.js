@@ -1,267 +1,200 @@
 const express = require('express');
-const { Process } = require('../models/process');
-const redis = require('../config/redis');
+const router = express.Router({ mergeParams: true });
+const Process = require('../models/process');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
-const router = express.Router({ mergeParams: true });
-const pool = require('../config/db');
+const redis = require('../config/redis');
 
-router.get('/:orderId', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
-  const { orderId } = req.params;
-  const { limit = 10, cursor, force_refresh = false } = req.query;
+const formatResponse = (workOrder) => ({
+  workOrderId: workOrder.workOrderId,
+  orderId: workOrder.orderId,
+  componentId: workOrder.componentId,
+  componentName: workOrder.componentName,
+  productType: workOrder.productType,
+  instanceGroupId: workOrder.instanceGroupId,
+  instanceName: workOrder.instanceName,
+  instanceType: workOrder.instanceType,
+  quantity: workOrder.quantity,
+  targetDate: workOrder.targetDate,
+  status: workOrder.status,
+  createdAt: workOrder.createdAt,
+  processes: workOrder.processes.map(process => ({
+    processId: process.processId,
+    processName: process.processName,
+    sequence: process.sequence,
+    responsiblePerson: process.responsiblePerson,
+    description: process.description,
+    status: process.status,
+    completedQuantity: process.completedQuantity,
+    completionDate: process.completionDate
+  })),
+  materials: workOrder.materials.map(material => ({
+    workOrderMaterialId: material.workOrderMaterialId,
+    materialId: material.materialId,
+    rawMaterialId: material.rawMaterialId,
+    quantity: material.quantity
+  })),
+  orderStages: workOrder.orderStages.map(stage => ({
+    stageName: stage.stageName,
+    stageDate: stage.stageDate
+  })),
+  timezone: 'Asia/Kolkata'
+});
 
+router.get('/orders', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
   try {
-    const parsedLimit = Math.min(parseInt(limit, 10), 100);
-    const cacheKey = `processes_${orderId}_${parsedLimit}_${cursor || 'null'}_${req.user.user_id}`;
-
-    if (force_refresh === 'true') await redis.del(cacheKey);
-
-    const cached = await redis.get(cacheKey);
-    if (cached && force_refresh !== 'true') {
-      logger.info(`Cache hit for ${cacheKey}`);
-      return res.json(JSON.parse(cached));
-    }
-
-    const { data: workOrders, total, nextCursor } = await Process.getAll({
-      order_id: orderId,
-      limit: parsedLimit,
-      cursor: cursor ? new Date(cursor) : null,
-    });
-
-    const processedRows = await Promise.all(workOrders.map(async (wo) => {
-      const componentProcesses = wo.processes.map(p => ({
-        name: p.name,
-        sequence: p.sequence,
-        responsible: p.responsible,
-        description: p.description,
-        status: wo.process_status[p.name]?.status || 'Pending',
-        completion_date: wo.process_status[p.name]?.completion_date || null,
-      }));
-      return {
-        id: wo.work_order_id,
-        orderId: wo.order_id,
-        componentId: wo.component_id,
-        componentName: wo.component_name,
-        quantity: wo.quantity,
-        targetDate: wo.target_date,
-        responsiblePerson: wo.responsible_person,
-        processes: componentProcesses,
-        motorStages: wo.motor_stages,
-        status: wo.status,
-        createdAt: wo.created_at.toISOString(),
-        timezone: 'Asia/Kolkata',
-      };
-    }));
-
-    const response = {
-      workOrders: processedRows,
-      total,
-      nextCursor: nextCursor ? nextCursor.toISOString() : null,
-    };
-
-    await redis.setEx(cacheKey, 300, JSON.stringify(response));
-    res.json(response);
+    const orders = await Process.getOrders();
+    res.json(orders.map(order => ({
+      orderId: order.order_id,
+      status: order.status,
+      targetDeliveryDate: order.target_delivery_date ? order.target_delivery_date.toISOString().split('T')[0] : null,
+      createdAt: order.created_at,
+      timezone: 'Asia/Kolkata'
+    })));
   } catch (error) {
-    logger.error(`Error fetching work orders for order ${orderId}: ${error.message}`, { stack: error.stack });
+    logger.error(`Error fetching orders: ${error.message}`, { stack: error.stack });
     next(error);
   }
 });
 
-router.post('/', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.get('/:orderId/instance-groups', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
+  const { orderId } = req.params;
   try {
-    const { order_id, component_id, quantity, target_date, responsible_person, process_status } = req.body;
-
-    if (!order_id || !component_id || !quantity || !responsible_person) {
-      return res.status(400).json({ error: 'Invalid input: order_id, component_id, quantity, and responsible_person required' });
-    }
-
-    const workOrder = await Process.create(order_id, component_id, {
-      quantity,
-      target_date,
-      responsible_person,
-      process_status,
-    }, req.io);
-
-    const { rows: [component] } = await pool.query('SELECT component_name, processes FROM components WHERE component_id = $1', [workOrder.component_id]);
-
-    const componentProcesses = component.processes.map(p => ({
-      name: p.name,
-      sequence: p.sequence,
-      responsible: p.responsible,
-      description: p.description,
-      status: workOrder.process_status[p.name]?.status || 'Pending',
-      completion_date: workOrder.process_status[p.name]?.completion_date || null,
-    }));
-
-    const response = {
-      id: workOrder.work_order_id,
-      orderId: workOrder.order_id,
-      componentId: workOrder.component_id,
-      componentName: component.component_name,
-      quantity: workOrder.quantity,
-      targetDate: workOrder.target_date,
-      responsiblePerson: workOrder.responsible_person,
-      processes: componentProcesses,
-      motorStages: workOrder.motor_stages,
-      status: workOrder.status,
-      createdAt: workOrder.created_at.toISOString(),
-      timezone: 'Asia/Kolkata',
-    };
-
-    setImmediate(async () => {
-      try {
-        const keys = await redis.keys(`processes_${order_id}_*`);
-        if (keys.length) await redis.del(keys);
-        logger.info(`Cleared caches for processes after creating work order ${workOrder.work_order_id}`);
-      } catch (err) {
-        logger.error('Cache invalidation error', err);
-      }
-    });
-
-    res.status(201).json(response);
+    const instanceGroups = await Process.getInstanceGroups(orderId);
+    res.json(instanceGroups);
   } catch (error) {
-    logger.error(`Error in POST /api/processes: ${error.message}`, { stack: error.stack });
+    logger.error(`Error fetching instance groups for order ${orderId}: ${error.message}`, { stack: error.stack });
+    next(error);
+  }
+});
+
+router.post('/:orderId/instance-groups', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { orderId } = req.params;
+  const { instance_name, instance_type } = req.body;
+  try {
+    if (!instance_name || !instance_type) {
+      return res.status(400).json({ error: 'Invalid input: instance_name and instance_type required' });
+    }
+    const instanceGroup = await Process.createInstanceGroup(orderId, { instance_name, instance_type }, req.io);
+    res.status(201).json(instanceGroup);
+  } catch (error) {
+    logger.error(`Error creating instance group for order ${orderId}: ${error.message}`, { stack: error.stack });
     res.status(error.status || 400).json({ error: error.message });
   }
 });
 
-router.put('/:workOrderId/process-status', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.get('/components', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
   try {
-    const { workOrderId } = req.params;
-    const { process_name, status, completion_date } = req.body;
+    const components = await Process.getComponents();
+    res.json(components);
+  } catch (error) {
+    logger.error(`Error fetching components: ${error.message}`, { stack: error.stack });
+    next(error);
+  }
+});
 
-    if (!process_name || !status) {
-      return res.status(400).json({ error: 'Invalid input: process_name and status required' });
+router.post('/components', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { component_name, product_type } = req.body;
+  try {
+    if (!component_name || !product_type) {
+      return res.status(400).json({ error: 'Invalid input: component_name and product_type required' });
+    }
+    const component = await Process.createComponent({ component_name, product_type }, req.io);
+    res.status(201).json(component);
+  } catch (error) {
+    logger.error(`Error creating component ${component_name}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.post('/components/:componentId/processes', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { componentId } = req.params;
+  const { process_name, sequence, responsible_person, description } = req.body;
+  try {
+    if (!process_name || sequence == null) {
+      return res.status(400).json({ error: 'Invalid input: process_name and sequence required' });
+    }
+    const process = await Process.createComponentProcess(componentId, { process_name, sequence, responsible_person, description }, req.io);
+    res.status(201).json(process);
+  } catch (error) {
+    logger.error(`Error creating process for component ${componentId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.post('/components/:componentId/materials', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { componentId } = req.params;
+  const { raw_material_id, quantity_per_unit } = req.body;
+  try {
+    if (!raw_material_id || quantity_per_unit == null) {
+      return res.status(400).json({ error: 'Invalid input: raw_material_id and quantity_per_unit required' });
+    }
+    const material = await Process.createComponentRawMaterial(componentId, { raw_material_id, quantity_per_unit }, req.io);
+    res.status(201).json(material);
+  } catch (error) {
+    logger.error(`Error assigning raw material to component ${componentId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.get('/:orderId', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
+  const { orderId } = req.params;
+  const { instance_group_id, limit, cursor, force_refresh, responsible_person, overdue } = req.query;
+  const userId = req.user.userId;
+  const cacheKey = `processes_${orderId}_${instance_group_id || 'all'}_${limit || 10}_${cursor || 'none'}_${userId}`;
+
+  try {
+    if (force_refresh === 'true') {
+      await redis.del(cacheKey);
     }
 
-    const workOrder = await Process.updateProcessStatus(workOrderId, {
-      process_name,
-      status,
-      completion_date,
-    }, req.io);
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return res.json(JSON.parse(cached));
+    }
 
-    const { rows: [component] } = await pool.query('SELECT component_name, processes FROM components WHERE component_id = $1', [workOrder.component_id]);
-
-    const componentProcesses = component.processes.map(p => ({
-      name: p.name,
-      sequence: p.sequence,
-      responsible: p.responsible,
-      description: p.description,
-      status: workOrder.process_status[p.name]?.status || 'Pending',
-      completion_date: workOrder.process_status[p.name]?.completion_date || null,
-    }));
-
+    const processes = await Process.getAll({ order_id: orderId, instance_group_id, limit: parseInt(limit, 10), cursor, responsible_person, overdue: overdue === 'true' });
     const response = {
-      id: workOrder.work_order_id,
-      orderId: workOrder.order_id,
-      componentId: workOrder.component_id,
-      componentName: component.component_name,
-      quantity: workOrder.quantity,
-      targetDate: workOrder.target_date,
-      responsiblePerson: workOrder.responsible_person,
-      processes: componentProcesses,
-      motorStages: workOrder.motor_stages,
-      status: workOrder.status,
-      createdAt: workOrder.created_at.toISOString(),
-      timezone: 'Asia/Kolkata',
+      workOrders: processes.data.map(formatResponse),
+      total: processes.total,
+      nextCursor: processes.nextCursor
     };
 
-    setImmediate(async () => {
-      try {
-        const keys = await redis.keys(`processes_${workOrder.order_id}_*`);
-        if (keys.length) await redis.del(keys);
-        logger.info(`Cleared caches for processes after updating work order ${workOrderId}`);
-      } catch (err) {
-        logger.error('Cache invalidation error', err);
-      }
-    });
-
+    await redis.setex(cacheKey, 300, JSON.stringify(response));
     res.json(response);
   } catch (error) {
-    logger.error(`Error in PUT /api/processes/${req.params.workOrderId}/process-status: ${error.message}`, { stack: error.stack });
-    res.status(error.status || 400).json({ error: error.message });
+    logger.error(`Error fetching processes for order ${orderId}: ${error.message}`, { stack: error.stack });
+    next(error);
   }
 });
 
-router.put('/:workOrderId/motor-stages', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/:orderId', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { orderId } = req.params;
+  const { component_id, instance_group_id, quantity, target_date } = req.body;
   try {
-    const { workOrderId } = req.params;
-    const { motor_stages } = req.body;
-
-    if (!motor_stages) {
-      return res.status(400).json({ error: 'Invalid input: motor_stages required' });
+    if (!component_id || !quantity) {
+      return res.status(400).json({ error: 'Invalid input: component_id and quantity required' });
     }
+    const workOrder = await Process.create(orderId, { component_id, instance_group_id, quantity, target_date }, req.io);
+    const { rows: [component] } = await pool.query('SELECT component_name, product_type FROM components WHERE component_id = $1', [workOrder.componentId]);
+    const { rows: [instanceGroup] } = instance_group_id ? await pool.query('SELECT instance_name, instance_type FROM instance_groups WHERE instance_group_id = $1', [workOrder.instanceGroupId]) : { rows: [{}] };
 
-    const workOrder = await Process.updateMotorStages(workOrderId, { motor_stages }, req.io);
-
-    const { rows: [component] } = await pool.query('SELECT component_name, processes FROM components WHERE component_id = $1', [workOrder.component_id]);
-
-    const componentProcesses = component.processes.map(p => ({
-      name: p.name,
-      sequence: p.sequence,
-      responsible: p.responsible,
-      description: p.description,
-      status: workOrder.process_status[p.name]?.status || 'Pending',
-      completion_date: workOrder.process_status[p.name]?.completion_date || null,
-    }));
-
-    const response = {
-      id: workOrder.work_order_id,
-      orderId: workOrder.order_id,
-      componentId: workOrder.component_id,
+    const response = formatResponse({
+      ...workOrder,
       componentName: component.component_name,
-      quantity: workOrder.quantity,
-      targetDate: workOrder.target_date,
-      responsiblePerson: workOrder.responsible_person,
-      processes: componentProcesses,
-      motorStages: workOrder.motor_stages,
-      status: workOrder.status,
-      createdAt: workOrder.created_at.toISOString(),
-      timezone: 'Asia/Kolkata',
-    };
-
-    setImmediate(async () => {
-      try {
-        const keys = await redis.keys(`processes_${workOrder.order_id}_*`);
-        if (keys.length) await redis.del(keys);
-        logger.info(`Cleared caches for processes after updating motor stages for work order ${workOrderId}`);
-      } catch (err) {
-        logger.error('Cache invalidation error', err);
-      }
+      productType: component.product_type,
+      instanceName: instanceGroup.instance_name || null,
+      instanceType: instanceGroup.instance_type || null,
+      processes: [],
+      materials: [],
+      orderStages: []
     });
-
-    res.json(response);
-  } catch (error) {
-    logger.error(`Error in PUT /api/processes/${req.params.workOrderId}/motor-stages: ${error.message}`, { stack: error.stack });
-    res.status(error.status || 400).json({ error: error.message });
-  }
-});
-
-router.post('/:orderId/pdi', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
-  try {
-    const { orderId } = req.params;
-    const { report, description } = req.body;
-
-    if (!report || !description) {
-      return res.status(400).json({ error: 'Invalid input: report and description required' });
-    }
-
-    const pdiReport = await Process.createPDIReport(orderId, { report, description }, req.io);
-
-    const response = {
-      id: pdiReport.report_id,
-      orderId: pdiReport.order_id,
-      report: pdiReport.report,
-      description: pdiReport.description,
-      createdAt: pdiReport.created_at.toISOString(),
-      timezone: 'Asia/Kolkata',
-    };
 
     setImmediate(async () => {
       try {
         const keys = await redis.keys(`processes_${orderId}_*`);
         if (keys.length) await redis.del(keys);
-        logger.info(`Cleared caches for processes after creating PDI report for order ${orderId}`);
+        logger.info(`Cleared caches for processes after creating work order for order ${orderId}`);
       } catch (err) {
         logger.error('Cache invalidation error', err);
       }
@@ -269,7 +202,144 @@ router.post('/:orderId/pdi', authenticateToken, checkPermission('motor_processes
 
     res.status(201).json(response);
   } catch (error) {
-    logger.error(`Error in POST /api/processes/${req.params.orderId}/pdi: ${error.message}`, { stack: error.stack });
+    logger.error(`Error creating work order for order ${orderId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.put('/:workOrderId/process-status', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { workOrderId } = req.params;
+  const { process_id, status, completed_quantity, completion_date } = req.body;
+  try {
+    if (!process_id || !status) {
+      return res.status(400).json({ error: 'Invalid input: process_id and status required' });
+    }
+    const processStatus = await Process.updateProcessStatus(workOrderId, { process_id, status, completed_quantity, completion_date }, req.io);
+    const { rows: [workOrder] } = await pool.query(
+      `SELECT wo.work_order_id, wo.order_id, wo.component_id, c.component_name, c.product_type, 
+              wo.instance_group_id, ig.instance_name, ig.instance_type, wo.quantity, wo.target_date, wo.status, 
+              TO_CHAR(wo.created_at, 'YYYY-MM-DD') AS created_at
+       FROM work_orders wo
+       JOIN components c ON wo.component_id = c.component_id
+       LEFT JOIN instance_groups ig ON wo.instance_group_id = ig.instance_group_id
+       WHERE wo.work_order_id = $1`,
+      [workOrderId]
+    );
+
+    const { rows: processes } = await pool.query(
+      `SELECT cp.process_id, cp.process_name, cp.sequence, cp.responsible_person, cp.description, 
+              ps.status, ps.completed_quantity, TO_CHAR(ps.completion_date, 'YYYY-MM-DD') AS completion_date
+       FROM component_processes cp
+       LEFT JOIN process_status ps ON cp.process_id = ps.process_id AND ps.work_order_id = $1
+       WHERE cp.component_id = $2
+       ORDER BY cp.sequence`,
+      [workOrderId, workOrder.component_id]
+    );
+
+    const { rows: materials } = await pool.query(
+      `SELECT wom.work_order_material_id, wom.material_id, crm.raw_material_id, wom.quantity
+       FROM work_order_materials wom
+       JOIN component_raw_materials crm ON wom.material_id = crm.material_id
+       WHERE wom.work_order_id = $1`,
+      [workOrderId]
+    );
+
+    const { rows: orderStages } = await pool.query(
+      `SELECT stage_name, TO_CHAR(stage_date, 'YYYY-MM-DD') AS stage_date
+       FROM order_stages
+       WHERE order_id = $1`,
+      [workOrder.order_id]
+    );
+
+    const response = formatResponse({
+      workOrderId: workOrder.work_order_id,
+      orderId: workOrder.order_id,
+      componentId: workOrder.component_id,
+      componentName: workOrder.component_name,
+      productType: workOrder.product_type,
+      instanceGroupId: workOrder.instance_group_id,
+      instanceName: workOrder.instance_name,
+      instanceType: workOrder.instance_type,
+      quantity: workOrder.quantity,
+      targetDate: workOrder.target_date ? workOrder.target_date.toISOString().split('T')[0] : null,
+      status: workOrder.status,
+      createdAt: workOrder.created_at,
+      processes: processes.map(p => ({
+        processId: p.process_id,
+        processName: p.process_name,
+        sequence: p.sequence,
+        responsiblePerson: p.responsible_person,
+        description: p.description,
+        status: p.status,
+        completedQuantity: p.completed_quantity,
+        completionDate: p.completion_date
+      })),
+      materials: materials.map(m => ({
+        workOrderMaterialId: m.work_order_material_id,
+        materialId: m.material_id,
+        rawMaterialId: m.raw_material_id,
+        quantity: m.quantity
+      })),
+      orderStages: orderStages.map(s => ({
+        stageName: s.stage_name,
+        stageDate: s.stage_date
+      }))
+    });
+
+    setImmediate(async () => {
+      try {
+        const keys = await redis.keys(`processes_${workOrder.order_id}_*`);
+        if (keys.length) await redis.del(keys);
+        logger.info(`Cleared caches for processes after updating process status for work order ${workOrderId}`);
+      } catch (err) {
+        logger.error('Cache invalidation error', err);
+      }
+    });
+
+    res.json(response);
+  } catch (error) {
+    logger.error(`Error updating process status for work order ${workOrderId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.put('/:orderId/stages', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { orderId } = req.params;
+  const { stage_name, stage_date } = req.body;
+  try {
+    if (!stage_name || !stage_date) {
+      return res.status(400).json({ error: 'Invalid input: stage_name and stage_date required' });
+    }
+    const stage = await Process.updateOrderStage(orderId, { stage_name, stage_date }, req.io);
+    res.json({
+      stageId: stage.stageId,
+      orderId: stage.orderId,
+      stageName: stage.stageName,
+      stageDate: stage.stageDate,
+      timezone: 'Asia/Kolkata'
+    });
+  } catch (error) {
+    logger.error(`Error updating order stage for order ${orderId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.post('/:workOrderId/materials', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+  const { workOrderId } = req.params;
+  const { material_id, quantity } = req.body;
+  try {
+    if (!material_id || quantity == null) {
+      return res.status(400).json({ error: 'Invalid input: material_id and quantity required' });
+    }
+    const workOrderMaterial = await Process.createWorkOrderMaterial(workOrderId, { material_id, quantity }, req.io);
+    res.status(201).json({
+      workOrderMaterialId: workOrderMaterial.workOrderMaterialId,
+      workOrderId: workOrderMaterial.workOrderId,
+      materialId: workOrderMaterial.materialId,
+      quantity: workOrderMaterial.quantity
+    });
+  } catch (error) {
+    logger.error(`Error creating work order material for work order ${workOrderId}: ${error.message}`, { stack: error.stack });
     res.status(error.status || 400).json({ error: error.message });
   }
 });
