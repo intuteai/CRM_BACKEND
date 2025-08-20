@@ -41,7 +41,7 @@ const formatResponse = (workOrder) => ({
   timezone: 'Asia/Kolkata'
 });
 
-router.get('/orders', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
+router.get('/orders', authenticateToken, checkPermission('Processes', 'can_read'), async (req, res, next) => {
   try {
     const orders = await Process.getOrders();
     res.json(orders.map(order => ({
@@ -57,7 +57,7 @@ router.get('/orders', authenticateToken, checkPermission('motor_processes', 'can
   }
 });
 
-router.get('/:orderId/instance-groups', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
+router.get('/:orderId/instance-groups', authenticateToken, checkPermission('Processes', 'can_read'), async (req, res, next) => {
   const { orderId } = req.params;
   try {
     const instanceGroups = await Process.getInstanceGroups(orderId);
@@ -68,7 +68,7 @@ router.get('/:orderId/instance-groups', authenticateToken, checkPermission('moto
   }
 });
 
-router.post('/:orderId/instance-groups', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/:orderId/instance-groups', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { orderId } = req.params;
   const { instance_name, instance_type } = req.body;
   try {
@@ -83,7 +83,7 @@ router.post('/:orderId/instance-groups', authenticateToken, checkPermission('mot
   }
 });
 
-router.get('/components', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
+router.get('/components', authenticateToken, checkPermission('Processes', 'can_read'), async (req, res, next) => {
   try {
     const components = await Process.getComponents();
     res.json(components);
@@ -93,7 +93,7 @@ router.get('/components', authenticateToken, checkPermission('motor_processes', 
   }
 });
 
-router.post('/components', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/components', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { component_name, product_type } = req.body;
   try {
     if (!component_name || !product_type) {
@@ -107,7 +107,7 @@ router.post('/components', authenticateToken, checkPermission('motor_processes',
   }
 });
 
-router.post('/components/:componentId/processes', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/components/:componentId/processes', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { componentId } = req.params;
   const { process_name, sequence, responsible_person, description } = req.body;
   try {
@@ -122,7 +122,7 @@ router.post('/components/:componentId/processes', authenticateToken, checkPermis
   }
 });
 
-router.post('/components/:componentId/materials', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/components/:componentId/materials', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { componentId } = req.params;
   const { raw_material_id, quantity_per_unit } = req.body;
   try {
@@ -137,7 +137,7 @@ router.post('/components/:componentId/materials', authenticateToken, checkPermis
   }
 });
 
-router.get('/:orderId', authenticateToken, checkPermission('motor_processes', 'can_read'), async (req, res, next) => {
+router.get('/:orderId', authenticateToken, checkPermission('Processes', 'can_read'), async (req, res, next) => {
   const { orderId } = req.params;
   const { instance_group_id, limit, cursor, force_refresh, responsible_person, overdue } = req.query;
   const userId = req.user.userId;
@@ -168,7 +168,7 @@ router.get('/:orderId', authenticateToken, checkPermission('motor_processes', 'c
   }
 });
 
-router.post('/:orderId', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/:orderId', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { orderId } = req.params;
   const { component_id, instance_group_id, quantity, target_date } = req.body;
   try {
@@ -207,7 +207,7 @@ router.post('/:orderId', authenticateToken, checkPermission('motor_processes', '
   }
 });
 
-router.put('/:workOrderId/process-status', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.put('/:workOrderId/process-status', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { workOrderId } = req.params;
   const { process_id, status, completed_quantity, completion_date } = req.body;
   try {
@@ -303,7 +303,7 @@ router.put('/:workOrderId/process-status', authenticateToken, checkPermission('m
   }
 });
 
-router.put('/:orderId/stages', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.put('/:orderId/stages', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { orderId } = req.params;
   const { stage_name, stage_date } = req.body;
   try {
@@ -324,7 +324,7 @@ router.put('/:orderId/stages', authenticateToken, checkPermission('motor_process
   }
 });
 
-router.post('/:workOrderId/materials', authenticateToken, checkPermission('motor_processes', 'can_write'), async (req, res, next) => {
+router.post('/:workOrderId/materials', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { workOrderId } = req.params;
   const { material_id, quantity } = req.body;
   try {
