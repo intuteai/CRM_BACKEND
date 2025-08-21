@@ -1,9 +1,13 @@
-const { pool } = require('../config/db');
 const logger = require('../utils/logger');
 const redis = require('../config/redis');
 
 class Process {
   static async getOrders() {
+    const pool = require('../config/db'); // Import inside method
+    if (!pool) {
+      logger.error('Database pool is not initialized');
+      throw new Error('Database pool is not initialized');
+    }
     try {
       const { rows } = await pool.query(
         `SELECT order_id, status, target_delivery_date, TO_CHAR(created_at, 'YYYY-MM-DD') AS created_at 
@@ -18,6 +22,7 @@ class Process {
   }
 
   static async getInstanceGroups(order_id) {
+    const pool = require('../config/db');
     try {
       const { rows } = await pool.query(
         `SELECT instance_group_id, order_id, instance_name, instance_type, 
@@ -41,6 +46,7 @@ class Process {
   }
 
   static async createInstanceGroup(order_id, { instance_name, instance_type }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -90,7 +96,9 @@ class Process {
     }
   }
 
+  // Update other methods similarly
   static async getComponents() {
+    const pool = require('../config/db');
     try {
       const { rows } = await pool.query(
         `SELECT c.component_id, c.component_name, c.product_type, c.is_fixed,
@@ -128,6 +136,7 @@ class Process {
   }
 
   static async createComponent({ component_name, product_type }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -179,6 +188,7 @@ class Process {
   }
 
   static async createComponentProcess(component_id, { process_name, sequence, responsible_person, description }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -234,6 +244,7 @@ class Process {
   }
 
   static async createComponentRawMaterial(component_id, { raw_material_id, quantity_per_unit }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -288,6 +299,7 @@ class Process {
   }
 
   static async getAll({ order_id, instance_group_id, limit, cursor, responsible_person, overdue }) {
+    const pool = require('../config/db');
     try {
       const conditions = ['wo.order_id = $1'];
       const params = [order_id];
@@ -416,6 +428,7 @@ class Process {
   }
 
   static async create(order_id, { component_id, instance_group_id, quantity, target_date }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -492,6 +505,7 @@ class Process {
   }
 
   static async updateProcessStatus(work_order_id, { process_id, status, completed_quantity, completion_date }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -556,6 +570,7 @@ class Process {
   }
 
   static async updateOrderStage(order_id, { stage_name, stage_date }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -603,6 +618,7 @@ class Process {
   }
 
   static async createWorkOrderMaterial(work_order_id, { material_id, quantity }, io) {
+    const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');

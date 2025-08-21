@@ -19566,3 +19566,138 @@
 {"level":"info","message":"Database connection successful:","now":"2025-08-20T10:41:06.170Z","timestamp":"2025-08-20T10:41:07.516Z"}
 {"level":"info","message":"Redis connection successful:","timestamp":"2025-08-20T10:41:07.520Z"}
 {"level":"info","message":"Server running on port 8000","timestamp":"2025-08-20T10:41:07.522Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T07:15:27.874Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T07:15:27.882Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T07:15:27.883Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T07:15:26.445Z","timestamp":"2025-08-21T07:15:28.288Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T07:15:28.291Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T07:15:28.292Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:15:36.606Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:17:50.896Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:17:50.957Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:19:55.110Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:19:58.767Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:19:58.768Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-21T07:20:17.082Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:20:17.154Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:21.301Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:21.302Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:20:21.303Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:21.339Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:21.340Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:20:21.340Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:38.368Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:38.369Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:20:38.369Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:38.422Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:20:38.422Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:20:38.423Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:26:03.466Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:27:13.409Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:27:13.606Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:27:14.295Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:07.825Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:07.825Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:29:07.825Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:07.866Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:07.867Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:29:07.867Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:09.833Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:09.834Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:29:09.834Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:09.872Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:09.873Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:29:09.873Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:10.913Z"}
+{"level":"error","message":"Error fetching processes for order 1: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:388:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:156:37\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:29:10.914Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T07:29:10.914Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-21T07:36:57.872Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:36:57.885Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-21T07:37:11.618Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:37:11.684Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:37:13.327Z"}
+{"level":"info","message":"Fetched 270 inventory items","timestamp":"2025-08-21T07:37:13.642Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T07:37:13.656Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:37:16.183Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:40:03.570Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:40:04.006Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T07:42:30.021Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:42:30.032Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T07:42:30.036Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:42:33.653Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:44:59.961Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:45:01.412Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:45:09.608Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T07:45:09.609Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T07:45:09.616Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:45:13.479Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T07:47:09.654Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T07:47:09.657Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-21T07:47:09.659Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T07:47:09.659Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T07:47:08.111Z","timestamp":"2025-08-21T07:47:09.962Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T07:47:09.965Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T07:47:09.967Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:47:10.183Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:48:40.458Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:48:40.926Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:48:43.638Z"}
+{"level":"info","message":"Fetched 270 inventory items","timestamp":"2025-08-21T07:48:43.972Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T07:48:44.021Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:48:45.736Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:50:47.850Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:50:48.366Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:51:38.629Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:51:38.946Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T07:56:29.638Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T07:56:29.642Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-21T07:56:29.643Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T07:56:29.644Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T07:56:28.057Z","timestamp":"2025-08-21T07:56:29.914Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T07:56:29.917Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T07:56:29.919Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:56:29.968Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T07:59:27.284Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T07:59:27.827Z"}
+{"level":"error","message":"Error fetching orders: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getOrders (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:8:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:46:34\n    at Layer.handle [as handle_request] (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:59:28.998Z"}
+{"level":"error","message":"Error fetching orders: Cannot read properties of undefined (reading 'query')","stack":"TypeError: Cannot read properties of undefined (reading 'query')\n    at Process.getOrders (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:8:35)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:46:34\n    at Layer.handle [as handle_request] (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\express\\lib\\router\\route.js:149:13)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\middleware\\auth.js:27:9\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T07:59:28.998Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'query') - GET /api/process/orders","timestamp":"2025-08-21T07:59:28.999Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T08:08:00.241Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T08:08:00.244Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T08:08:00.244Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T08:07:58.671Z","timestamp":"2025-08-21T08:08:00.536Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T08:08:00.539Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T08:08:00.542Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T08:08:00.703Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T08:10:05.783Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T08:10:05.786Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T08:10:05.787Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T08:10:04.230Z","timestamp":"2025-08-21T08:10:06.104Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T08:10:06.108Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T08:10:06.112Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T08:10:06.157Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T08:10:13.375Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T08:10:13.380Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T08:10:13.382Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T08:10:11.841Z","timestamp":"2025-08-21T08:10:13.707Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T08:10:13.709Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T08:10:13.713Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T08:10:13.862Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T08:10:35.435Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T08:10:35.440Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T08:10:35.441Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T08:10:33.927Z","timestamp":"2025-08-21T08:10:35.792Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T08:10:35.794Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T08:10:35.796Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T08:10:35.856Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T08:10:41.044Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T08:10:41.434Z"}
+{"level":"info","message":"Fetched 10 PDI reports","timestamp":"2025-08-21T08:10:54.591Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T08:16:10.045Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:45:36.122Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T09:45:36.544Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:45:38.024Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T09:45:43.774Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-21T09:45:56.118Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:45:56.196Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T09:46:32.280Z"}
