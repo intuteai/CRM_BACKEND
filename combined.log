@@ -19701,3 +19701,141 @@
 {"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-21T09:45:56.118Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:45:56.196Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T09:46:32.280Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T09:48:19.870Z","timestamp":"2025-08-21T09:48:21.814Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:23.911Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:26.184Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:28.506Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:30.871Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:33.302Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:35.778Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:38.304Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:40.869Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:43.490Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:46.158Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T09:48:50.652Z","timestamp":"2025-08-21T09:48:52.599Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:54.777Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:57.062Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:48:59.390Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:01.763Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:04.185Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:06.666Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:09.196Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:11.776Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:14.400Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:17.072Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-21T09:49:19.793Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-21T09:49:33.201Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-21T09:49:33.206Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-21T09:49:33.206Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-21T09:49:31.587Z","timestamp":"2025-08-21T09:49:33.527Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-21T09:49:33.531Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-21T09:49:33.533Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:49:49.301Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:52:50.501Z"}
+{"level":"info","message":"Fetched 270 inventory items","timestamp":"2025-08-21T09:52:50.872Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-08-21T09:52:50.884Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T09:52:53.095Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T09:58:36.444Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T09:58:36.941Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T09:58:48.444Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T09:58:48.445Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T09:58:48.518Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T09:58:48.519Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T09:59:19.890Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T09:59:19.890Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T09:59:19.961Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T09:59:19.962Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T09:59:36.387Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T09:59:36.387Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-21T09:59:36.452Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-21T09:59:36.452Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T10:00:10.970Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T10:00:13.755Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T10:05:20.424Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-21T11:06:14.979Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-21T11:38:13.375Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-22T06:45:20.825Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-22T06:45:20.848Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-22T06:45:20.849Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-22T06:45:20.953Z","timestamp":"2025-08-22T06:45:21.173Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-22T06:45:21.176Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-22T06:45:21.179Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T06:45:26.945Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T06:45:28.734Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-22T06:45:39.807Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T06:45:39.870Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T06:45:44.458Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T06:45:44.459Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T06:45:44.528Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T06:45:44.529Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T06:48:19.178Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T06:48:19.179Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T06:48:19.242Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T06:48:19.243Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T06:48:37.681Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T06:48:37.682Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T06:48:37.747Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T06:48:37.748Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T07:06:04.421Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T07:06:05.652Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T07:09:30.708Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T07:09:31.386Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T07:09:31.742Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T07:09:31.742Z"}
+{"level":"error","message":"Error fetching processes for order 1: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:190:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-22T07:09:31.804Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/1?limit=5000&offset=0&force_refresh=true","timestamp":"2025-08-22T07:09:31.805Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T08:07:30.582Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T08:37:49.931Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T08:38:59.778Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T09:49:12.471Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T09:54:50.432Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T11:11:33.940Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T11:11:45.215Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-22T11:43:59.097Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-22T11:44:03.411Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-23T08:29:49.594Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-23T08:29:49.599Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-23T08:29:49.599Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-23T08:29:49.883Z","timestamp":"2025-08-23T08:29:50.407Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-23T08:29:50.409Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-23T08:29:50.411Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:30:05.629Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T08:30:13.399Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-23T08:30:27.274Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:30:27.358Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-23T08:42:43.319Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-23T08:42:43.325Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-23T08:42:43.325Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-23T08:42:43.576Z","timestamp":"2025-08-23T08:42:44.124Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-23T08:42:44.129Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-23T08:42:44.133Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:42:44.208Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T08:42:48.790Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:42:49.280Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-23T08:48:30.782Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-23T08:48:30.787Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-23T08:48:30.788Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-23T08:48:31.052Z","timestamp":"2025-08-23T08:48:31.611Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-23T08:48:31.614Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-23T08:48:31.617Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:48:32.257Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-23T08:56:47.887Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-23T08:56:47.892Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-23T08:56:47.892Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-23T08:56:48.358Z","timestamp":"2025-08-23T08:56:48.922Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-23T08:56:48.926Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-23T08:56:48.929Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:56:49.018Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T08:58:00.395Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T08:58:01.015Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:00:31.814Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:00:32.252Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-23T09:02:17.162Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-23T09:02:17.167Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-23T09:02:17.168Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-23T09:02:17.303Z","timestamp":"2025-08-23T09:02:17.858Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-23T09:02:17.860Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-23T09:02:17.863Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:02:18.005Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:03:19.285Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:03:19.826Z"}

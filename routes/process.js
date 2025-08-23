@@ -141,15 +141,128 @@ router.post('/components/:componentId/processes', authenticateToken, checkPermis
   }
 });
 
+router.get('/components/:componentId/materials', authenticateToken, checkPermission('Processes', 'can_read'), async (req, res, next) => {
+  const { componentId } = req.params;
+  try {
+    console.log(`Fetching materials for component ${componentId}`);
+    const pool = require('../config/db');
+    const { rows } = await pool.query(
+      `SELECT material_id, component_id, raw_material_id, quantity_per_unit, required_quantity
+       FROM component_raw_materials
+       WHERE component_id = $1`,
+      [componentId]
+    );
+    const materials = rows.map(row => ({
+      materialId: row.material_id,
+      componentId: row.component_id,
+      rawMaterialId: row.raw_material_id,
+      quantityPerUnit: row.quantity_per_unit,
+      requiredQuantity: row.required_quantity
+    }));
+    console.log('Materials fetched:', materials);
+    res.json(materials);
+  } catch (error) {
+    logger.error(`Error fetching materials for component ${componentId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
+router.put('/components/:componentId/materials/:materialId', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
+  const { componentId, materialId } = req.params;
+  const { quantity_per_unit, required_quantity } = req.body;
+  try {
+    if ((quantity_per_unit != null && (!Number.isInteger(Number(quantity_per_unit)) || Number(quantity_per_unit) < 0)) ||
+        (required_quantity != null && (!Number.isInteger(Number(required_quantity)) || Number(required_quantity) < 0))) {
+      return res.status(400).json({ error: 'Invalid input: quantity_per_unit and required_quantity must be non-negative integers' });
+    }
+    if (quantity_per_unit == null && required_quantity == null) {
+      return res.status(400).json({ error: 'Invalid input: at least one of quantity_per_unit or required_quantity must be provided' });
+    }
+    console.log(`Updating material ${materialId} for component ${componentId}:`, { quantity_per_unit, required_quantity });
+    const pool = require('../config/db');
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const { rows: [component] } = await client.query('SELECT component_id FROM components WHERE component_id = $1', [componentId]);
+      if (!component) throw new Error(`Component ${componentId} not found`);
+
+      const updates = [];
+      const values = [];
+      let paramIndex = 1;
+
+      if (quantity_per_unit != null) {
+        updates.push(`quantity_per_unit = $${paramIndex++}`);
+        values.push(quantity_per_unit);
+      }
+      if (required_quantity != null) {
+        updates.push(`required_quantity = $${paramIndex++}`);
+        values.push(required_quantity);
+      }
+
+      values.push(materialId, componentId);
+
+      const { rows: [material] } = await client.query(
+        `UPDATE component_raw_materials
+         SET ${updates.join(', ')}
+         WHERE material_id = $${paramIndex} AND component_id = $${paramIndex + 1}
+         RETURNING material_id, component_id, raw_material_id, quantity_per_unit, required_quantity`,
+        values
+      );
+
+      if (!material) throw new Error(`Material ${materialId} not found for component ${componentId}`);
+
+      if (req.io) {
+        req.io.emit('componentRawMaterialUpdate', {
+          materialId: material.material_id,
+          componentId: material.component_id,
+          rawMaterialId: material.raw_material_id,
+          quantityPerUnit: material.quantity_per_unit,
+          requiredQuantity: material.required_quantity
+        });
+      }
+
+      await client.query('COMMIT');
+      const response = {
+        materialId: material.material_id,
+        componentId: material.component_id,
+        rawMaterialId: material.raw_material_id,
+        quantityPerUnit: material.quantity_per_unit,
+        requiredQuantity: material.required_quantity
+      };
+      console.log('Material updated:', response);
+      res.json(response);
+    } catch (error) {
+      await client.query('ROLLBACK');
+      if (error.message.includes('Insufficient quantity_per_unit')) {
+        res.status(400).json({ error: error.message });
+      } else {
+        throw error;
+      }
+    } finally {
+      client.release();
+    }
+  } catch (error) {
+    logger.error(`Error updating material ${materialId} for component ${componentId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
+});
+
 router.post('/components/:componentId/materials', authenticateToken, checkPermission('Processes', 'can_write'), async (req, res, next) => {
   const { componentId } = req.params;
-  const { raw_material_id, quantity_per_unit } = req.body;
+  const { raw_material_id, quantity_per_unit, required_quantity } = req.body;
   try {
-    if (!raw_material_id || quantity_per_unit == null) {
-      return res.status(400).json({ error: 'Invalid input: raw_material_id and quantity_per_unit required' });
+    if (!raw_material_id || quantity_per_unit == null || required_quantity == null) {
+      return res.status(400).json({ error: 'Invalid input: raw_material_id, quantity_per_unit, and required_quantity required' });
     }
-    console.log(`Assigning raw material to component ${componentId}:`, { raw_material_id, quantity_per_unit });
-    const material = await Process.createComponentRawMaterial(componentId, { raw_material_id, quantity_per_unit }, req.io);
+    if (!Number.isInteger(Number(quantity_per_unit)) || Number(quantity_per_unit) < 0 ||
+        !Number.isInteger(Number(required_quantity)) || Number(required_quantity) < 0) {
+      return res.status(400).json({ error: 'Invalid input: quantity_per_unit and required_quantity must be non-negative integers' });
+    }
+    if (quantity_per_unit < required_quantity) {
+      return res.status(400).json({ error: 'Invalid input: quantity_per_unit must be at least required_quantity' });
+    }
+    console.log(`Assigning raw material to component ${componentId}:`, { raw_material_id, quantity_per_unit, required_quantity });
+    const material = await Process.createComponentRawMaterial(componentId, { raw_material_id, quantity_per_unit, required_quantity }, req.io);
     console.log('Material assigned:', material);
     res.status(201).json(material);
   } catch (error) {
@@ -286,7 +399,7 @@ router.put('/:workOrderId/process-status', authenticateToken, checkPermission('P
 
     const response = formatResponse({
       workOrderId: workOrder.work_order_id,
-      orderId: workOrder.order_id,
+      orderId: new String(workOrder.order_id),
       componentId: workOrder.component_id,
       componentName: workOrder.component_name,
       productType: workOrder.product_type,
