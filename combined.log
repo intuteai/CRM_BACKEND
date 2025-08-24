@@ -19839,3 +19839,171 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:02:18.005Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:03:19.285Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:03:19.826Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-23T09:34:29.387Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-23T09:34:29.391Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-23T09:34:29.392Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-23T09:34:31.905Z","timestamp":"2025-08-23T09:34:30.455Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-23T09:34:30.459Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-23T09:34:30.462Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:34:42.946Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:34:46.303Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:34:46.596Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:34:47.857Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-23T09:34:52.121Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:34:52.183Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:35:31.206Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:35:31.375Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:41:15.840Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:44:40.151Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:44:40.492Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:44:40.855Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:46:42.049Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:46:44.051Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:46:51.531Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T09:47:33.529Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-23T09:47:37.131Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-23T17:54:00.686Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:08:30.361Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:08:30.364Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:08:30.365Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:08:32.654Z","timestamp":"2025-08-24T01:08:30.827Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:08:30.831Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:08:30.836Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:08:51.557Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:09:09.358Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:09:09.527Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:09:11.838Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-24T01:09:18.043Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:09:18.079Z"}
+{"level":"error","message":"Error fetching processes for order 94: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\rishi\\Dropbox\\Web-development\\intuteAI\\CRM_BACKEND\\routes\\process.js:303:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-24T01:17:37.183Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/94?limit=1","timestamp":"2025-08-24T01:17:37.186Z"}
+{"level":"error","message":"Error fetching processes for order 94: redis.setex is not a function","stack":"TypeError: redis.setex is not a function\n    at C:\\Users\\rishi\\Dropbox\\Web-development\\intuteAI\\CRM_BACKEND\\routes\\process.js:303:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)","timestamp":"2025-08-24T01:18:19.388Z"}
+{"level":"error","message":"redis.setex is not a function - GET /api/process/94?limit=1","timestamp":"2025-08-24T01:18:19.389Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:24:30.942Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:24:30.945Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:24:30.946Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:24:33.218Z","timestamp":"2025-08-24T01:24:31.396Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:24:31.400Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:24:31.405Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:24:31.530Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:24:32.835Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:24:32.838Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:24:32.839Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:24:35.022Z","timestamp":"2025-08-24T01:24:33.196Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:24:33.200Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:24:33.204Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:24:34.231Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:25:58.140Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:25:58.357Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:30:35.021Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:30:35.024Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:30:35.024Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:30:37.299Z","timestamp":"2025-08-24T01:30:35.472Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:30:35.474Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:30:35.476Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:30:35.549Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:30:36.735Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:30:36.737Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:30:36.738Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:30:38.923Z","timestamp":"2025-08-24T01:30:37.094Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:30:37.097Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:30:37.102Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:30:37.234Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:31:06.745Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:31:06.942Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:34:29.477Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:34:29.480Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:34:29.480Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:34:31.736Z","timestamp":"2025-08-24T01:34:29.910Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:34:29.913Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:34:30.736Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:34:30.739Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:34:30.739Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:34:32.905Z","timestamp":"2025-08-24T01:34:31.074Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:34:31.077Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:34:31.082Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:34:31.243Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T01:35:11.024Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T01:35:11.027Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T01:35:11.027Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T01:35:13.300Z","timestamp":"2025-08-24T01:35:11.477Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T01:35:11.479Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T01:35:11.482Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:35:12.224Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:37:23.310Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:37:23.517Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:37:25.496Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:37:25.656Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:54:37.053Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:54:38.229Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:54:38.529Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:54:38.787Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:55:13.946Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T01:55:15.219Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T01:56:17.466Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:36:45.015Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:38:07.211Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:38:07.613Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:38:10.451Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:38:10.598Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:38:13.961Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-24T02:38:18.512Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:38:18.550Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:38:55.121Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:38:55.272Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:40:21.765Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:40:21.946Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:40:46.820Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:40:46.821Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:40:52.492Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T02:43:51.755Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T02:43:51.758Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T02:43:51.758Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T02:43:54.076Z","timestamp":"2025-08-24T02:43:52.250Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T02:43:52.251Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T02:43:52.253Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:43:52.527Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-24T02:43:56.994Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-24T02:43:56.999Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-24T02:43:57.000Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T02:43:59.219Z","timestamp":"2025-08-24T02:43:57.392Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-24T02:43:57.394Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-24T02:43:57.396Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:43:57.525Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:47:46.004Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:47:46.172Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:47:53.456Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:47:59.075Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:47:59.216Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:48:16.965Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:48:17.153Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:50:43.929Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:50:44.133Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:52:43.221Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T02:52:43.413Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T02:52:48.603Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:52:52.961Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:52:53.174Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:52:57.101Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:52:57.322Z"}
+{"level":"error","message":"Error updating order stage for order 92: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch","stack":"Error: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch\n    at Process.updateOrderStage (C:\\Users\\rishi\\Dropbox\\Web-development\\intuteAI\\CRM_BACKEND\\models\\process.js:580:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\rishi\\Dropbox\\Web-development\\intuteAI\\CRM_BACKEND\\routes\\process.js:464:19","timestamp":"2025-08-24T02:52:57.456Z"}
+{"level":"error","message":"Error updating order stage for order 92: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch","stack":"Error: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch\n    at Process.updateOrderStage (C:\\Users\\rishi\\Dropbox\\Web-development\\intuteAI\\CRM_BACKEND\\models\\process.js:580:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\rishi\\Dropbox\\Web-development\\intuteAI\\CRM_BACKEND\\routes\\process.js:464:19","timestamp":"2025-08-24T02:52:57.457Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:53:10.477Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:53:10.690Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:53:10.900Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:53:22.928Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:53:23.135Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T02:53:23.357Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T02:58:54.351Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T03:49:25.417Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-24T03:49:33.936Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-24T03:49:38.971Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-24T03:49:39.001Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T03:59:18.105Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T03:59:49.188Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T03:59:49.393Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-24T04:03:30.367Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-24T04:03:30.577Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-24T04:24:42.992Z","timestamp":"2025-08-24T04:24:41.168Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-24T04:24:43.121Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-24T04:24:45.820Z"}

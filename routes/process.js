@@ -274,7 +274,8 @@ router.post('/components/:componentId/materials', authenticateToken, checkPermis
 router.get('/:orderId', authenticateToken, checkPermission('Processes', 'can_read'), async (req, res, next) => {
   const { orderId } = req.params;
   const { instance_group_id, limit, cursor, force_refresh, responsible_person, overdue } = req.query;
-  const userId = req.user.userId;
+  // const userId = req.user.userId;
+  const userId = req.user?.userId || 'anon';
   const cacheKey = `processes_${orderId}_${instance_group_id || 'all'}_${limit || 10}_${cursor || 'none'}_${userId}`;
 
   try {
@@ -300,7 +301,8 @@ router.get('/:orderId', authenticateToken, checkPermission('Processes', 'can_rea
     };
     console.log('Response to frontend:', response);
 
-    await redis.setex(cacheKey, 300, JSON.stringify(response));
+    // await redis.setex(cacheKey, 300, JSON.stringify(response));
+    await redis.setEx(cacheKey, 300, JSON.stringify(response));
     res.json(response);
   } catch (error) {
     logger.error(`Error fetching processes for order ${orderId}: ${error.message}`, { stack: error.stack });
@@ -461,6 +463,12 @@ router.put('/:orderId/stages', authenticateToken, checkPermission('Processes', '
     console.log(`Updating order stage for order ${orderId}:`, { stage_name, stage_date });
     const stage = await Process.updateOrderStage(orderId, { stage_name, stage_date }, req.io);
     console.log('Order stage updated:', stage);
+    try {
+      await redis.delPattern(`processes_${orderId}_*`);
+    } catch (err) {
+      console.error('Cache invalidation error after updating stages', err);
+    }
+
     res.json({
       stageId: stage.stageId,
       orderId: stage.orderId,
