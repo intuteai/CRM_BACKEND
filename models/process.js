@@ -3,7 +3,7 @@ const redis = require('../config/redis');
 
 class Process {
   static async getOrders() {
-    const pool = require('../config/db'); // Import inside method
+    const pool = require('../config/db');
     if (!pool) {
       logger.error('Database pool is not initialized');
       throw new Error('Database pool is not initialized');
@@ -96,7 +96,6 @@ class Process {
     }
   }
 
-  // Update other methods similarly
   static async getComponents() {
     const pool = require('../config/db');
     try {
@@ -243,17 +242,23 @@ class Process {
     }
   }
 
-  static async createComponentRawMaterial(component_id, { raw_material_id, quantity_per_unit }, io) {
+  static async createComponentRawMaterial(component_id, { raw_material_id, quantity_per_unit, required_quantity }, io) {
     const pool = require('../config/db');
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      if (!raw_material_id || quantity_per_unit == null) {
-        throw new Error('Invalid input: raw_material_id and quantity_per_unit required');
+      if (!raw_material_id || quantity_per_unit == null || required_quantity == null) {
+        throw new Error('Invalid input: raw_material_id, quantity_per_unit, and required_quantity required');
       }
       if (!Number.isInteger(quantity_per_unit) || quantity_per_unit < 0) {
         throw new Error('Invalid quantity_per_unit: must be a non-negative integer');
+      }
+      if (!Number.isInteger(required_quantity) || required_quantity < 0) {
+        throw new Error('Invalid required_quantity: must be a non-negative integer');
+      }
+      if (quantity_per_unit < required_quantity) {
+        throw new Error('Invalid input: quantity_per_unit must be at least required_quantity');
       }
 
       const { rows: [component] } = await client.query('SELECT component_id FROM components WHERE component_id = $1', [component_id]);
@@ -263,12 +268,12 @@ class Process {
       if (!rawMaterial) throw new Error(`Raw material ${raw_material_id} not found`);
 
       const { rows: [material] } = await client.query(
-        `INSERT INTO component_raw_materials (component_id, raw_material_id, quantity_per_unit)
-         VALUES ($1, $2, $3)
+        `INSERT INTO component_raw_materials (component_id, raw_material_id, quantity_per_unit, required_quantity)
+         VALUES ($1, $2, $3, $4)
          ON CONFLICT ON CONSTRAINT unique_material_per_component
          DO NOTHING
-         RETURNING material_id, component_id, raw_material_id, quantity_per_unit`,
-        [component_id, raw_material_id, quantity_per_unit]
+         RETURNING material_id, component_id, raw_material_id, quantity_per_unit, required_quantity`,
+        [component_id, raw_material_id, quantity_per_unit, required_quantity]
       );
 
       if (!material) throw new Error(`Material ${raw_material_id} already assigned to component ${component_id}`);
@@ -278,7 +283,8 @@ class Process {
           materialId: material.material_id,
           componentId: material.component_id,
           rawMaterialId: material.raw_material_id,
-          quantityPerUnit: material.quantity_per_unit
+          quantityPerUnit: material.quantity_per_unit,
+          requiredQuantity: material.required_quantity
         });
       }
 
@@ -287,7 +293,8 @@ class Process {
         materialId: material.material_id,
         componentId: material.component_id,
         rawMaterialId: material.raw_material_id,
-        quantityPerUnit: material.quantity_per_unit
+        quantityPerUnit: material.quantity_per_unit,
+        requiredQuantity: material.required_quantity
       };
     } catch (error) {
       await client.query('ROLLBACK');
@@ -311,7 +318,7 @@ class Process {
       }
 
       if (responsible_person) {
-        conditions.push(`cp.responsible_person ILIKE $${paramIndex++}`);
+        conditions.push(`COALESCE(ps.responsible_person, cp.responsible_person) ILIKE $${paramIndex++}`);
         params.push(`%${responsible_person}%`);
       }
 
@@ -337,10 +344,11 @@ class Process {
                        'processId', cp.process_id,
                        'processName', cp.process_name,
                        'sequence', cp.sequence,
-                       'responsiblePerson', cp.responsible_person,
+                       'responsiblePerson', COALESCE(ps.responsible_person, cp.responsible_person),
                        'description', cp.description,
                        'status', ps.status,
                        'completedQuantity', ps.completed_quantity,
+                       'rawQuantityUsed', ps.raw_quantity_used,
                        'completionDate', TO_CHAR(ps.completion_date, 'YYYY-MM-DD')
                      ) ORDER BY cp.sequence
                    )
@@ -465,8 +473,8 @@ class Process {
 
       for (const process of processes) {
         await client.query(
-          `INSERT INTO process_status (work_order_id, process_id, status, completed_quantity)
-           VALUES ($1, $2, 'Pending', 0)`,
+          `INSERT INTO process_status (work_order_id, process_id, status, completed_quantity, raw_quantity_used)
+           VALUES ($1, $2, 'Pending', 0, 0)`,
           [workOrder.work_order_id, process.process_id]
         );
       }
@@ -504,7 +512,7 @@ class Process {
     }
   }
 
-  static async updateProcessStatus(work_order_id, { process_id, status, completed_quantity, completion_date }, io) {
+  static async updateProcessStatus(work_order_id, { process_id, status, completed_quantity, raw_quantity_used, completion_date, responsible_person }, io) {
     const pool = require('../config/db');
     const client = await pool.connect();
     try {
@@ -517,28 +525,79 @@ class Process {
       if (completed_quantity != null && (!Number.isInteger(completed_quantity) || completed_quantity < 0)) {
         throw new Error('Invalid completed_quantity: must be a non-negative integer');
       }
+      if (raw_quantity_used != null && (!Number.isInteger(raw_quantity_used) || raw_quantity_used < 0)) {
+        throw new Error('Invalid raw_quantity_used: must be a non-negative integer');
+      }
+      if (responsible_person != null && (typeof responsible_person !== 'string' || responsible_person.length > 255)) {
+        throw new Error('Invalid responsible_person: must be a string with max length 255');
+      }
 
-      const { rows: [workOrder] } = await client.query('SELECT work_order_id, quantity FROM work_orders WHERE work_order_id = $1', [work_order_id]);
+      const { rows: [workOrder] } = await client.query(
+        'SELECT work_order_id, component_id, quantity FROM work_orders WHERE work_order_id = $1',
+        [work_order_id]
+      );
       if (!workOrder) throw new Error(`Work order ${work_order_id} not found`);
+
+      const { rows: [process] } = await client.query(
+        'SELECT process_id FROM component_processes WHERE process_id = $1 AND component_id = $2',
+        [process_id, workOrder.component_id]
+      );
+      if (!process) throw new Error(`Process ${process_id} not found for component ${workOrder.component_id}`);
 
       if (completed_quantity != null && completed_quantity > workOrder.quantity) {
         throw new Error(`Completed quantity ${completed_quantity} exceeds work order quantity ${workOrder.quantity}`);
       }
 
-      const { rows: [process] } = await client.query('SELECT process_id FROM component_processes WHERE process_id = $1', [process_id]);
-      if (!process) throw new Error(`Process ${process_id} not found`);
+      const updates = ['status = $1'];
+      const values = [status];
+      let paramIndex = 2;
+
+      if (completed_quantity != null) {
+        updates.push(`completed_quantity = $${paramIndex++}`);
+        values.push(completed_quantity);
+      }
+      if (raw_quantity_used != null) {
+        updates.push(`raw_quantity_used = $${paramIndex++}`);
+        values.push(raw_quantity_used);
+      }
+      if (completion_date) {
+        updates.push(`completion_date = $${paramIndex++}`);
+        values.push(completion_date);
+      } else {
+        updates.push(`completion_date = CASE WHEN $1 = 'Completed' THEN COALESCE($${paramIndex++}, CURRENT_DATE) ELSE NULL END`);
+        values.push(completion_date || null);
+      }
+      if (responsible_person != null) {
+        updates.push(`responsible_person = $${paramIndex++}`);
+        values.push(responsible_person);
+      }
+
+      values.push(work_order_id, process_id);
 
       const { rows: [statusRecord] } = await client.query(
         `UPDATE process_status
-         SET status = $1, completed_quantity = COALESCE($2, completed_quantity), 
-             completion_date = CASE WHEN $1 = 'Completed' THEN COALESCE($3, CURRENT_DATE) ELSE completion_date END
-         WHERE work_order_id = $4 AND process_id = $5
-         RETURNING status_id, work_order_id, process_id, status, completed_quantity, 
-                  TO_CHAR(completion_date, 'YYYY-MM-DD') AS completion_date`,
-        [status, completed_quantity, completion_date || null, work_order_id, process_id]
+         SET ${updates.join(', ')}
+         WHERE work_order_id = $${paramIndex} AND process_id = $${paramIndex + 1}
+         RETURNING status_id, work_order_id, process_id, status, completed_quantity, raw_quantity_used, 
+                  TO_CHAR(completion_date, 'YYYY-MM-DD') AS completion_date, responsible_person`,
+        values
       );
 
       if (!statusRecord) throw new Error(`Process status not found for work order ${work_order_id} and process ${process_id}`);
+
+      // Update work order status
+      const { rows: processStatuses } = await client.query(
+        'SELECT status FROM process_status WHERE work_order_id = $1',
+        [work_order_id]
+      );
+      const allCompleted = processStatuses.every(ps => ps.status === 'Completed');
+      const anyInProgress = processStatuses.some(ps => ps.status === 'In Progress');
+      const newWorkOrderStatus = allCompleted ? 'Completed' : anyInProgress ? 'In Progress' : 'Pending';
+
+      await client.query(
+        'UPDATE work_orders SET status = $1 WHERE work_order_id = $2',
+        [newWorkOrderStatus, work_order_id]
+      );
 
       if (io) {
         io.emit('processUpdate', {
@@ -547,7 +606,9 @@ class Process {
           processId: statusRecord.process_id,
           status: statusRecord.status,
           completedQuantity: statusRecord.completed_quantity,
-          completionDate: statusRecord.completion_date
+          rawQuantityUsed: statusRecord.raw_quantity_used,
+          completionDate: statusRecord.completion_date,
+          responsiblePerson: statusRecord.responsible_person
         });
       }
 
@@ -558,7 +619,9 @@ class Process {
         processId: statusRecord.process_id,
         status: statusRecord.status,
         completedQuantity: statusRecord.completed_quantity,
-        completionDate: statusRecord.completion_date
+        rawQuantityUsed: statusRecord.raw_quantity_used,
+        completionDate: statusRecord.completion_date,
+        responsiblePerson: statusRecord.responsible_person
       };
     } catch (error) {
       await client.query('ROLLBACK');
@@ -576,8 +639,8 @@ class Process {
       await client.query('BEGIN');
 
       if (!stage_name || !stage_date) throw new Error('Invalid input: stage_name and stage_date required');
-      if (!['Assembly', 'Testing', 'Packing', 'Dispatch'].includes(stage_name)) {
-        throw new Error('Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch');
+      if (!['Assembly', 'Testing', 'PDI', 'Packing', 'Dispatch'].includes(stage_name)) {
+        throw new Error('Invalid stage_name: must be Assembly, Testing, PDI, Packing, or Dispatch');
       }
 
       const { rows: [order] } = await client.query('SELECT order_id FROM orders WHERE order_id = $1', [order_id]);

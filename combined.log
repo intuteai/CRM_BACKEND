@@ -20007,3 +20007,284 @@
 {"level":"info","message":"Database connection successful:","now":"2025-08-24T04:24:42.992Z","timestamp":"2025-08-24T04:24:41.168Z"}
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-24T04:24:43.121Z"}
 {"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-08-24T04:24:45.820Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-25T06:06:10.832Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-25T06:06:10.838Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-25T06:06:10.909Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-08-25T06:06:11.022Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T06:07:34.672Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T06:07:34.676Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T06:07:34.676Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T06:07:33.748Z","timestamp":"2025-08-25T06:07:35.122Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T06:07:35.125Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T06:07:35.130Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:07:48.672Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:08:04.970Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-25T06:08:18.753Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:08:18.803Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-25T06:08:57.707Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:08:57.860Z"}
+{"level":"error","message":"Error updating order stage for order 92: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch","stack":"Error: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch\n    at Process.updateOrderStage (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:580:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:464:19","timestamp":"2025-08-25T06:08:57.955Z"}
+{"level":"error","message":"Error updating order stage for order 92: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch","stack":"Error: Invalid stage_name: must be Assembly, Testing, Packing, or Dispatch\n    at Process.updateOrderStage (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:580:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:464:19","timestamp":"2025-08-25T06:08:57.956Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:08:58.109Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:08:58.261Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:09:08.572Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:09:08.885Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:09:22.059Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:09:22.251Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T06:17:35.525Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T06:17:35.528Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T06:17:35.529Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T06:17:34.488Z","timestamp":"2025-08-25T06:17:35.862Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T06:17:35.864Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T06:17:35.866Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:17:36.085Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T06:19:15.914Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T06:19:15.921Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T06:19:15.921Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T06:19:15.249Z","timestamp":"2025-08-25T06:19:16.618Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T06:19:16.621Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T06:19:16.623Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:19:16.792Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:19:24.378Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:19:24.698Z"}
+{"level":"info","message":"Deleted 1 Redis keys matching pattern: processes_92_*","timestamp":"2025-08-25T06:19:40.978Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:19:41.128Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:19:41.276Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:19:41.435Z"}
+{"level":"info","message":"No Redis keys found for pattern: processes_92_*","timestamp":"2025-08-25T06:19:41.588Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:19:47.610Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:19:47.800Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:20:29.487Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:20:29.655Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T06:36:23.633Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:36:26.803Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:36:27.127Z"}
+{"level":"error","message":"Error updating process status for work order 2: inconsistent types deduced for parameter $1","stack":"error: inconsistent types deduced for parameter $1\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Process.updateProcessStatus (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:530:40)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:363:27","timestamp":"2025-08-25T06:38:46.940Z"}
+{"level":"error","message":"Error updating process status for work order 2: inconsistent types deduced for parameter $1","stack":"error: inconsistent types deduced for parameter $1\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Process.updateProcessStatus (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:530:40)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:363:27","timestamp":"2025-08-25T06:38:46.940Z"}
+{"level":"error","message":"Error updating process status for work order 2: inconsistent types deduced for parameter $1","stack":"error: inconsistent types deduced for parameter $1\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Process.updateProcessStatus (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:530:40)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:363:27","timestamp":"2025-08-25T06:38:49.850Z"}
+{"level":"error","message":"Error updating process status for work order 2: inconsistent types deduced for parameter $1","stack":"error: inconsistent types deduced for parameter $1\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Process.updateProcessStatus (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:530:40)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:363:27","timestamp":"2025-08-25T06:38:49.851Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:38:53.110Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:38:53.519Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T06:40:09.073Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T06:40:09.076Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T06:40:09.076Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T06:40:07.989Z","timestamp":"2025-08-25T06:40:09.378Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T06:40:09.380Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T06:40:09.383Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:40:09.792Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:40:12.869Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:40:13.309Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:40:20.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:40:20.669Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:40:25.706Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:40:26.145Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T06:41:02.713Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T06:41:02.874Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T06:41:03.028Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T06:41:03.188Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T06:41:03.344Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:41:06.263Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:41:06.657Z"}
+{"level":"error","message":"Error updating process status for work order 2: inconsistent types deduced for parameter $1","stack":"error: inconsistent types deduced for parameter $1\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Process.updateProcessStatus (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:530:40)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:421:27","timestamp":"2025-08-25T06:41:19.751Z"}
+{"level":"error","message":"Error updating process status for work order 2: inconsistent types deduced for parameter $1","stack":"error: inconsistent types deduced for parameter $1\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Process.updateProcessStatus (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\process.js:530:40)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:421:27","timestamp":"2025-08-25T06:41:19.751Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T06:53:16.558Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T06:53:16.563Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T06:53:16.563Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T06:53:15.466Z","timestamp":"2025-08-25T06:53:16.868Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T06:53:16.870Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T06:53:16.873Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:53:17.092Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T06:55:21.255Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T06:55:21.260Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T06:55:21.261Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T06:55:20.204Z","timestamp":"2025-08-25T06:55:21.611Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T06:55:21.613Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T06:55:21.616Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:55:21.811Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:59:37.279Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:59:37.716Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T06:59:40.161Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T06:59:40.515Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:06:09.034Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:06:09.444Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:07:39.810Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:07:40.261Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:08:08.691Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:08:09.069Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:08:28.311Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-25T07:08:38.267Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:08:38.351Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 1","timestamp":"2025-08-25T07:16:48.575Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:17:25.207Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 2","timestamp":"2025-08-25T07:17:31.811Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:26:22.912Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:26:23.384Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:33.214Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:39.950Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:42.233Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:43.751Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:45.138Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:47.719Z"}
+{"level":"info","message":"Cleared caches for processes after creating work order for order 92","timestamp":"2025-08-25T07:26:52.832Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 5","timestamp":"2025-08-25T07:27:01.291Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 3","timestamp":"2025-08-25T07:28:13.065Z"}
+{"level":"error","message":"Error updating process status for work order 4: COALESCE types integer and date cannot be matched","stack":"error: COALESCE types integer and date cannot be matched\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:473:40","timestamp":"2025-08-25T07:28:36.503Z"}
+{"level":"error","message":"Error updating process status for work order 4: COALESCE types integer and date cannot be matched","stack":"error: COALESCE types integer and date cannot be matched\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:473:40","timestamp":"2025-08-25T07:28:46.550Z"}
+{"level":"error","message":"Error updating process status for work order 8: COALESCE types integer and date cannot be matched","stack":"error: COALESCE types integer and date cannot be matched\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:473:40","timestamp":"2025-08-25T07:29:21.469Z"}
+{"level":"error","message":"Error updating process status for work order 8: COALESCE types integer and date cannot be matched","stack":"error: COALESCE types integer and date cannot be matched\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:473:40","timestamp":"2025-08-25T07:29:28.034Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:30:04.444Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:30:04.918Z"}
+{"level":"error","message":"Error updating process status for work order 8: COALESCE types integer and date cannot be matched","stack":"error: COALESCE types integer and date cannot be matched\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:473:40","timestamp":"2025-08-25T07:30:23.609Z"}
+{"level":"error","message":"Error updating process status for work order 8: COALESCE types integer and date cannot be matched","stack":"error: COALESCE types integer and date cannot be matched\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:473:40","timestamp":"2025-08-25T07:30:31.649Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T07:35:19.536Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T07:35:19.539Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T07:35:19.539Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T07:35:18.432Z","timestamp":"2025-08-25T07:35:19.861Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T07:35:19.864Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T07:35:19.867Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:35:20.139Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T07:35:22.965Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:35:26.064Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:35:26.472Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T07:35:39.128Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:35:42.374Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:35:42.744Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T07:36:38.193Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:50:40.985Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T07:50:46.056Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T07:51:51.057Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T08:05:58.820Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T08:06:28.035Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T08:20:38.270Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T08:21:03.704Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T08:21:03.709Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T08:21:03.710Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T08:21:02.565Z","timestamp":"2025-08-25T08:21:04.044Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T08:21:04.046Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T08:21:04.049Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T08:21:04.223Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T08:21:17.709Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T08:21:17.713Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T08:21:17.714Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T08:21:16.671Z","timestamp":"2025-08-25T08:21:18.122Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T08:21:18.124Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T08:21:18.127Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T08:21:18.782Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T08:21:36.749Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T08:21:36.753Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T08:21:36.754Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T08:21:35.593Z","timestamp":"2025-08-25T08:21:37.051Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T08:21:37.053Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T08:21:37.055Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T08:21:37.091Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T08:21:50.633Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T08:21:50.637Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T08:21:50.638Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T08:21:49.488Z","timestamp":"2025-08-25T08:21:50.954Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T08:21:50.956Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T08:21:50.960Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T08:21:51.103Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T08:27:41.574Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:16:21.797Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:16:39.371Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:16:39.967Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T09:16:54.882Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T09:16:54.886Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T09:16:54.886Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T09:16:53.772Z","timestamp":"2025-08-25T09:16:55.283Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T09:16:55.285Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T09:16:55.287Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:16:55.586Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:16:56.378Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-25T09:17:07.408Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:17:07.521Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:17:28.370Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:17:30.881Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:17:31.351Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:23:29.783Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:23:30.215Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:24:05.381Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:24:13.492Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:24:22.216Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:24:30.512Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:24:39.685Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:24:41.414Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:24:41.858Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:24:49.138Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:24:50.668Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:24:50.959Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:31:26.299Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:31:26.717Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:31:43.466Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:31:53.993Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:31:59.156Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:32:09.252Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:35:36.190Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:35:36.670Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:35:45.060Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-08-25T09:35:56.862Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:35:56.871Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-25T09:36:08.061Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:36:08.137Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:36:22.141Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:36:31.256Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:36:39.734Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:36:45.047Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:41:37.791Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:41:43.419Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:41:49.256Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:42:09.336Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T09:42:31.689Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T09:42:31.861Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T09:42:32.036Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T09:42:32.222Z"}
+{"level":"info","message":"Cleared caches for stages and processes after updating stage for order 92","timestamp":"2025-08-25T09:42:32.393Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:42:50.995Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:42:57.423Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:42:59.859Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:43:00.141Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:43:39.195Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:43:39.374Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:44:40.066Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:44:44.657Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:46:54.710Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:49:32.074Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:49:32.344Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T09:51:29.759Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:51:38.482Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:51:47.029Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:51:52.572Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:51:58.231Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:02.657Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:52:08.957Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:52:09.184Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:16.920Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:29.388Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:30.796Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:31.043Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:31.275Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:31.538Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:31.790Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:32.119Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:52:32.348Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:54:45.047Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:54:45.230Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:55:10.032Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T09:55:41.810Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T09:55:42.174Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:488:40","timestamp":"2025-08-25T09:56:01.047Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-25T10:02:29.159Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-25T10:02:29.163Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-25T10:02:29.164Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-25T10:02:27.944Z","timestamp":"2025-08-25T10:02:29.491Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-25T10:02:29.493Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-25T10:02:29.496Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T10:02:29.636Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T10:05:11.096Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T10:05:11.583Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:504:40","timestamp":"2025-08-25T10:05:24.556Z"}
+{"level":"error","message":"Error updating process status for work order 8: Total completed quantity (8) exceeds work order quantity (5)","stack":"error: Total completed quantity (8) exceeds work order quantity (5)\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\process.js:504:40","timestamp":"2025-08-25T10:05:26.593Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-25T10:11:54.942Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T10:11:55.380Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T10:12:08.516Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T10:12:18.571Z"}
