@@ -20288,3 +20288,89 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-25T10:11:55.380Z"}
 {"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T10:12:08.516Z"}
 {"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-25T10:12:18.571Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-27T08:13:09.078Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-27T08:13:09.083Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-08-27T08:13:09.083Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-27T08:13:09.084Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-27T08:13:09.695Z","timestamp":"2025-08-27T08:13:09.367Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-27T08:13:09.369Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-27T08:13:09.371Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:13:09.600Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:13:10.262Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:13:13.083Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:13:14.305Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-27T08:13:24.471Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:13:24.536Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:23:52.028Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:23:52.478Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 11","timestamp":"2025-08-27T08:23:58.344Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 1","timestamp":"2025-08-27T08:24:18.070Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 11","timestamp":"2025-08-27T08:24:26.338Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 1","timestamp":"2025-08-27T08:24:34.505Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 11","timestamp":"2025-08-27T08:24:48.215Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:25:19.686Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:25:20.104Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:29:58.595Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:29:59.039Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 11","timestamp":"2025-08-27T08:30:04.358Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:35:59.316Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:35:59.785Z"}
+{"level":"info","message":"Cleared caches for processes after updating material for component 3","timestamp":"2025-08-27T08:36:08.821Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:38:00.663Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T08:38:01.106Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 8","timestamp":"2025-08-27T08:38:46.702Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T08:45:32.529Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T09:21:37.551Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T09:21:37.888Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T09:21:40.808Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-27T09:31:07.658Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-27T09:31:07.662Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-27T09:31:07.662Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-27T09:31:08.236Z","timestamp":"2025-08-27T09:31:07.969Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-27T09:31:07.971Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-27T09:31:07.973Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T09:31:08.095Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-08-27T09:31:13.081Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-08-27T09:31:13.084Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-08-27T09:31:13.084Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-08-27T09:31:13.666Z","timestamp":"2025-08-27T09:31:13.392Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-08-27T09:31:13.395Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-08-27T09:31:13.398Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T09:31:13.585Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T09:31:56.715Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-08-27T09:32:07.655Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T09:32:07.745Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-08-27T09:34:43.933Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-08-27T09:34:44.363Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 2","timestamp":"2025-08-27T09:35:01.285Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 11","timestamp":"2025-08-27T09:35:01.313Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 35","timestamp":"2025-08-27T09:35:01.342Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 17","timestamp":"2025-08-27T09:35:01.370Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 18","timestamp":"2025-08-27T09:35:01.398Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 22","timestamp":"2025-08-27T09:35:01.426Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 29","timestamp":"2025-08-27T09:35:01.453Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 30","timestamp":"2025-08-27T09:35:01.481Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 31","timestamp":"2025-08-27T09:35:01.508Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 11","timestamp":"2025-08-27T09:35:06.467Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 2","timestamp":"2025-08-27T09:35:12.780Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 35","timestamp":"2025-08-27T09:35:12.808Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 17","timestamp":"2025-08-27T09:35:12.835Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 18","timestamp":"2025-08-27T09:35:12.863Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 22","timestamp":"2025-08-27T09:35:12.891Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 29","timestamp":"2025-08-27T09:35:12.919Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 30","timestamp":"2025-08-27T09:35:12.948Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 31","timestamp":"2025-08-27T09:35:12.974Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 11","timestamp":"2025-08-27T09:35:13.002Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 11","timestamp":"2025-08-27T09:35:18.902Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 12","timestamp":"2025-08-27T09:36:00.282Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 19","timestamp":"2025-08-27T09:36:00.311Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 23","timestamp":"2025-08-27T09:36:00.339Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 24","timestamp":"2025-08-27T09:36:00.367Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 25","timestamp":"2025-08-27T09:36:00.394Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 32","timestamp":"2025-08-27T09:36:00.421Z"}
+{"level":"info","message":"Cleared caches for processes after updating work order 8","timestamp":"2025-08-27T09:36:00.448Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 12","timestamp":"2025-08-27T09:36:07.646Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 12","timestamp":"2025-08-27T09:36:13.155Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 12","timestamp":"2025-08-27T09:36:19.211Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 12","timestamp":"2025-08-27T09:36:31.670Z"}
+{"level":"info","message":"Cleared caches for processes after updating process status for work order 12","timestamp":"2025-08-27T09:36:35.754Z"}

@@ -187,6 +187,9 @@ router.put('/components/:componentId/materials/:materialId', authenticateToken, 
     if (quantity_per_unit == null && required_quantity == null) {
       return res.status(400).json({ error: 'Invalid input: at least one of quantity_per_unit or required_quantity must be provided' });
     }
+    if (quantity_per_unit != null && required_quantity != null && Number(quantity_per_unit) < Number(required_quantity)) {
+      return res.status(400).json({ error: 'Invalid input: quantity_per_unit must be at least required_quantity' });
+    }
     console.log(`Updating material ${materialId} for component ${componentId}:`, { quantity_per_unit, required_quantity });
     const client = await pool.connect();
     try {
@@ -219,6 +222,25 @@ router.put('/components/:componentId/materials/:materialId', authenticateToken, 
 
       if (!material) throw new Error(`Material ${materialId} not found for component ${componentId}`);
 
+      // Update work order quantities
+      if (required_quantity != null) {
+        const { rows: workOrders } = await client.query(
+          'SELECT work_order_id, order_id FROM work_orders WHERE component_id = $1',
+          [componentId]
+        );
+
+        for (const wo of workOrders) {
+          await client.query(
+            'UPDATE work_orders SET quantity = $1 WHERE work_order_id = $2',
+            [required_quantity, wo.work_order_id]
+          );
+          // Invalidate cache for related processes
+          const keys = await redis.keys(`processes_${wo.order_id}_*`);
+          if (keys.length) await redis.del(keys);
+          logger.info(`Cleared caches for processes after updating work order ${wo.work_order_id}`);
+        }
+      }
+
       if (req.io) {
         req.io.emit('componentRawMaterialUpdate', {
           materialId: material.material_id,
@@ -228,23 +250,6 @@ router.put('/components/:componentId/materials/:materialId', authenticateToken, 
           requiredQuantity: material.required_quantity
         });
       }
-
-      // Invalidate cache for related processes
-      setImmediate(async () => {
-        try {
-          const { rows: [workOrder] } = await client.query(
-            'SELECT order_id FROM work_orders WHERE component_id = $1 LIMIT 1',
-            [componentId]
-          );
-          if (workOrder) {
-            const keys = await redis.keys(`processes_${workOrder.order_id}_*`);
-            if (keys.length) await redis.del(keys);
-            logger.info(`Cleared caches for processes after updating material for component ${componentId}`);
-          }
-        } catch (err) {
-          logger.error('Cache invalidation error', err);
-        }
-      });
 
       await client.query('COMMIT');
       const response = {
