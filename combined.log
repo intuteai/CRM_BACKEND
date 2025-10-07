@@ -20948,3 +20948,43 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-09-16T11:32:44.189Z"}
 {"level":"info","message":"Cleared caches for stages and processes after creating stage for order 97","timestamp":"2025-09-16T11:32:45.376Z"}
 {"level":"info","message":"Cleared caches for stages and processes after updating stage for order 97","timestamp":"2025-09-16T11:32:49.585Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:10.455Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:10.460Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:10.526Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:10.631Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:10.787Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-10-07T06:41:10.500Z","timestamp":"2025-10-07T06:41:10.793Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:11.002Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:11.267Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:11.579Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:11.939Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:12.343Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:12.794Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:13.306Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-10-07T06:41:13.809Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-10-07T06:43:01.143Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-10-07T06:43:01.147Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-10-07T06:43:01.147Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-10-07T06:43:01.128Z","timestamp":"2025-10-07T06:43:01.423Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-10-07T06:43:01.425Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-10-07T06:43:01.427Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-10-07T06:43:43.860Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-10-07T06:43:45.855Z"}
+{"level":"warn","message":"Failed login attempt for email: rahulsrivastava503@gmail.com - Incorrect password","timestamp":"2025-10-07T06:43:52.166Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2025-10-07T06:43:56.568Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-10-07T06:43:56.616Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:43:58.123Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:43:58.194Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-10-07T06:44:24.851Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-10-07T06:44:25.091Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:44:25.124Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:44:25.191Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:44:25.257Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-10-07T06:45:09.730Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-10-07T06:45:09.785Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:45:15.174Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:45:15.258Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:55:32.312Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:55:32.381Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:56:05.893Z"}
+{"level":"info","message":"Fetched attendance for user_id: 45, count: 5","timestamp":"2025-10-07T06:56:05.971Z"}

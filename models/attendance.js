@@ -4,7 +4,7 @@ const logger = require('../utils/logger');
 class Attendance {
   static async getAll({ limit = 10, cursor = null, user_id }) {
     const query = `
-      SELECT attendance_id, user_id, date, check_in_time, check_out_time, present_absent, online_office, wfh, created_at 
+      SELECT attendance_id, user_id, date, check_in_time, check_out_time, present_absent, mode, created_at 
       FROM attendance 
       WHERE user_id = $1 AND ($2::timestamp IS NULL OR created_at < $2) 
       ORDER BY date DESC 
@@ -31,7 +31,7 @@ class Attendance {
     }
   }
 
-  static async createOrUpdate(user_id, { date, check_in_time, check_out_time, present_absent, online_office, wfh }, io) {
+  static async createOrUpdate(user_id, { date, check_in_time, check_out_time, present_absent, mode }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -45,19 +45,19 @@ class Attendance {
       if (existingRecord) {
         const { rows: [updatedRecord] } = await client.query(
           `UPDATE attendance 
-           SET check_in_time = $1, check_out_time = $2, present_absent = $3, online_office = $4, wfh = $5, created_at = CURRENT_TIMESTAMP 
-           WHERE attendance_id = $6 
-           RETURNING attendance_id, user_id, date, check_in_time, check_out_time, present_absent, online_office, wfh, created_at`,
-          [check_in_time || null, check_out_time || null, present_absent, online_office, wfh || false, existingRecord.attendance_id]
+           SET check_in_time = $1, check_out_time = $2, present_absent = $3, mode = $4, created_at = CURRENT_TIMESTAMP 
+           WHERE attendance_id = $5 
+           RETURNING attendance_id, user_id, date, check_in_time, check_out_time, present_absent, mode, created_at`,
+          [check_in_time || null, check_out_time || null, present_absent, mode || 'office', existingRecord.attendance_id]
         );
         attendance = updatedRecord;
         logger.info(`Updated attendance for user_id: ${user_id}, date: ${attendance.date}`);
       } else {
         const { rows: [newRecord] } = await client.query(
-          `INSERT INTO attendance (user_id, date, check_in_time, check_out_time, present_absent, online_office, wfh) 
-           VALUES ($1, $2, $3, $4, $5, $6, $7) 
-           RETURNING attendance_id, user_id, date, check_in_time, check_out_time, present_absent, online_office, wfh, created_at`,
-          [user_id, date || new Date().toISOString().split('T')[0], check_in_time || null, check_out_time || null, present_absent, online_office, wfh || false]
+          `INSERT INTO attendance (user_id, date, check_in_time, check_out_time, present_absent, mode) 
+           VALUES ($1, $2, $3, $4, $5, $6) 
+           RETURNING attendance_id, user_id, date, check_in_time, check_out_time, present_absent, mode, created_at`,
+          [user_id, date || new Date().toISOString().split('T')[0], check_in_time || null, check_out_time || null, present_absent, mode || 'office']
         );
         attendance = newRecord;
         logger.info(`Created attendance for user_id: ${user_id}, date: ${attendance.date}`);
@@ -73,8 +73,7 @@ class Attendance {
           check_in_time: attendance.check_in_time ? attendance.check_in_time.toISOString() : null,
           check_out_time: attendance.check_out_time ? attendance.check_out_time.toISOString() : null,
           present_absent: attendance.present_absent,
-          online_office: attendance.online_office,
-          wfh: attendance.wfh,
+          mode: attendance.mode,
         });
       }
 

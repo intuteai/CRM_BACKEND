@@ -34,8 +34,7 @@ router.get('/', authenticateToken, checkPermission('attendance_history', 'can_re
       check_in_time: record.check_in_time ? record.check_in_time.toISOString() : null,
       check_out_time: record.check_out_time ? record.check_out_time.toISOString() : null,
       present_absent: record.present_absent,
-      online_office: record.online_office,
-      wfh: record.wfh,
+      mode: record.mode,
       created_at: record.created_at.toISOString(),
       timezone: 'Asia/Kolkata',
     }));
@@ -53,7 +52,7 @@ router.get('/', authenticateToken, checkPermission('attendance_history', 'can_re
 
 router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_write'), async (req, res, next) => {
   try {
-    const { date, check_in_time, check_out_time, present_absent, online_office, wfh } = req.body;
+    const { date, check_in_time, check_out_time, present_absent, mode } = req.body;
 
     if (!present_absent) {
       return res.status(400).json({ error: 'Status is required', code: 'ATTENDANCE_MISSING_FIELDS' });
@@ -75,16 +74,17 @@ router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_writ
 
     if (present_absent === 'absent') {
       // Allow null fields for absent status
-      if (check_in_time || check_out_time || online_office || wfh) {
-        return res.status(400).json({ error: 'When absent, check-in, check-out, online_office, and wfh must be null', code: 'ATTENDANCE_INVALID_ABSENT_FIELDS' });
+      if (check_in_time || check_out_time || mode) {
+        return res.status(400).json({ error: 'When absent, check-in, check-out, and mode must be null', code: 'ATTENDANCE_INVALID_ABSENT_FIELDS' });
       }
     } else {
       // Validate fields for present status
-      if (!online_office) {
-        return res.status(400).json({ error: 'Work location is required for present status', code: 'ATTENDANCE_MISSING_FIELDS' });
+      if (!mode) {
+        return res.status(400).json({ error: 'Work mode is required for present status', code: 'ATTENDANCE_MISSING_FIELDS' });
       }
-      if (!['online', 'office'].includes(online_office)) {
-        return res.status(400).json({ error: 'Invalid work location: must be online or office', code: 'ATTENDANCE_INVALID_LOCATION' });
+      // Assuming work_mode enum includes 'office' and possibly other values like 'remote'
+      if (!['office', 'remote'].includes(mode)) {
+        return res.status(400).json({ error: 'Invalid work mode: must be office or remote', code: 'ATTENDANCE_INVALID_MODE' });
       }
       if (check_in_time && existingRecord) {
         return res.status(400).json({ error: 'Check-in already recorded for today', code: 'ATTENDANCE_ALREADY_CHECKED_IN' });
@@ -102,7 +102,7 @@ router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_writ
 
     const attendance = await Attendance.createOrUpdate(
       req.user.user_id,
-      { date, check_in_time, check_out_time, present_absent, online_office, wfh },
+      { date, check_in_time, check_out_time, present_absent, mode },
       req.io
     );
 
@@ -113,8 +113,7 @@ router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_writ
       check_in_time: attendance.check_in_time ? attendance.check_in_time.toISOString() : null,
       check_out_time: attendance.check_out_time ? attendance.check_out_time.toISOString() : null,
       present_absent: attendance.present_absent,
-      online_office: attendance.online_office,
-      wfh: attendance.wfh,
+      mode: attendance.mode,
       created_at: attendance.created_at.toISOString(),
       timezone: 'Asia/Kolkata',
     };
