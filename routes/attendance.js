@@ -6,7 +6,8 @@ const logger = require('../utils/logger');
 const pool = require('../config/db');
 const router = express.Router({ mergeParams: true });
 
-router.get('/', authenticateToken, checkPermission('attendance_history', 'can_read'), async (req, res, next) => {
+// === PERSONAL ATTENDANCE (Employee) ===
+router.get('/', authenticateToken, checkPermission('attendance_history', 'can_read'), async (req, res) => {
   const { limit = 10, cursor, force_refresh = false } = req.query;
 
   try {
@@ -39,9 +40,14 @@ router.get('/', authenticateToken, checkPermission('attendance_history', 'can_re
       timezone: 'Asia/Kolkata',
     }));
 
-    console.log('Processed attendance records:', processedRows);
+    const response = {
+      attendance: processedRows,
+      total,
+      nextCursor: nextCursor
+        ? (nextCursor instanceof Date ? nextCursor.toISOString() : nextCursor)
+        : null,
+    };
 
-    const response = { attendance: processedRows, total, nextCursor: nextCursor ? nextCursor.toISOString() : null };
     await redis.setEx(cacheKey, 300, JSON.stringify(response));
     res.json(response);
   } catch (error) {
@@ -50,7 +56,7 @@ router.get('/', authenticateToken, checkPermission('attendance_history', 'can_re
   }
 });
 
-router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_write'), async (req, res, next) => {
+router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_write'), async (req, res) => {
   try {
     const { date, check_in_time, check_out_time, present_absent, mode } = req.body;
 
@@ -73,16 +79,13 @@ router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_writ
     );
 
     if (present_absent === 'absent') {
-      // Allow null fields for absent status
       if (check_in_time || check_out_time || mode) {
         return res.status(400).json({ error: 'When absent, check-in, check-out, and mode must be null', code: 'ATTENDANCE_INVALID_ABSENT_FIELDS' });
       }
     } else {
-      // Validate fields for present status
       if (!mode) {
         return res.status(400).json({ error: 'Work mode is required for present status', code: 'ATTENDANCE_MISSING_FIELDS' });
       }
-      // Assuming work_mode enum includes 'office' and possibly other values like 'remote'
       if (!['office', 'remote'].includes(mode)) {
         return res.status(400).json({ error: 'Invalid work mode: must be office or remote', code: 'ATTENDANCE_INVALID_MODE' });
       }
@@ -128,12 +131,58 @@ router.post('/', authenticateToken, checkPermission('mark_attendance', 'can_writ
       }
     });
 
-    req.io.emit('attendanceMarked', { user_id: req.user.user_id });
+    // Emit with name for HR
+    req.io.emit('attendanceMarked', { user_id: req.user.user_id, name: req.user.name });
+
     res.status(201).json(response);
   } catch (error) {
     logger.error(`Error marking attendance for user ${req.user.user_id}: ${error.message}`, { stack: error.stack });
     res.status(error.status || 400).json({ error: error.message, code: 'ATTENDANCE_ERROR' });
   }
 });
+
+// === HR ATTENDANCE SUMMARY (All Employees) ===
+router.get(
+  '/summary',
+  authenticateToken,
+  checkPermission('attendance_summary', 'can_read'),
+  async (req, res) => {
+    const { limit = 20, cursor, date, search, force_refresh = false } = req.query;
+
+    try {
+      const parsedLimit = Math.min(parseInt(limit, 10), 100);
+      const cacheKey = `hr_attendance_summary_${parsedLimit}_${cursor || 'null'}_${date || 'all'}_${search || 'none'}`;
+
+      if (force_refresh === 'true') await redis.del(cacheKey);
+
+      const cached = await redis.get(cacheKey);
+      if (cached && force_refresh !== 'true') {
+        logger.info(`Cache hit for HR summary: ${cacheKey}`);
+        return res.json(JSON.parse(cached));
+      }
+
+      const { data, total, nextCursor } = await Attendance.getHRSummary({
+        limit: parsedLimit,
+        cursor: cursor ? new Date(cursor) : null,
+        date,
+        search,
+      });
+
+      const response = {
+        attendance: data,
+        total,
+        nextCursor: nextCursor
+          ? (nextCursor instanceof Date ? nextCursor.toISOString() : nextCursor)
+          : null,
+      };
+
+      await redis.setEx(cacheKey, 300, JSON.stringify(response));
+      res.json(response);
+    } catch (error) {
+      logger.error(`HR Attendance Summary Error for user ${req.user.user_id}: ${error.message}`, { stack: error.stack });
+      res.status(500).json({ error: 'Server error', code: 'HR_ATTENDANCE_SUMMARY_ERROR' });
+    }
+  }
+);
 
 module.exports = router;
