@@ -20,6 +20,7 @@
     "express-validator": "^7.2.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
+    "lodash.debounce": "^4.0.8",
     "nodemailer": "^6.9.15",
     "pg": "^8.13.0",
     "redis": "^4.7.0",
