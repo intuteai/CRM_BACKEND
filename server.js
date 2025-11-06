@@ -24,8 +24,9 @@ const dispatchTrackingRoutes = require('./routes/dispatchTracking');
 const dashboardRoutes = require('./routes/dashboard');
 const problemsRoutes = require('./routes/problems');
 const attendanceRoutes = require('./routes/attendance');
-const processRoutes = require('./routes/process'); // New import for processes routes
-const activitiesRoutes = require('./routes/activities'); // NEW: Activities route
+const processRoutes = require('./routes/process');
+const activitiesRoutes = require('./routes/activities');
+const payslipRoutes = require('./routes/payslip'); // NEW: Payslip route
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
@@ -84,7 +85,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the ERP Backend API' });
 });
 
-// Routes (all prefixed with /api/)
+// ==================== ROUTES (ALL PREFIXED WITH /api/) ====================
+
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customersRoutes);
 app.use('/api/orders', ordersRoutes);
@@ -105,11 +107,14 @@ app.use('/api/dispatch-tracking', dispatchTrackingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/problems', problemsRoutes);
 app.use('/api/attendance', attendanceRoutes);
-app.use('/api/process', processRoutes); // New route for processes
-app.use('/api/activities', activitiesRoutes); // NEW: Activities route
+app.use('/api/process', processRoutes);
+app.use('/api/activities', activitiesRoutes);
+app.use('/api/payslip', payslipRoutes); // NEW: Payslip route
 
+// ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);
 
+// ==================== START SERVER ====================
 const PORT = process.env.PORT || 8000;
 initializeServer().then(() => {
   server.listen(PORT, () => {

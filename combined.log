@@ -22621,3 +22621,25 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-05T09:00:44.310Z"}
 {"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-05T09:00:57.885Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-05T09:00:57.962Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-05T10:46:08.781Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-05T10:46:08.790Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-05T10:46:08.791Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-05T10:46:08.467Z","timestamp":"2025-11-05T10:46:09.081Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-05T10:46:09.083Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-05T10:46:09.086Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-05T10:46:11.481Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-05T10:48:50.325Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-05T10:48:50.334Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-05T10:48:50.335Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-05T10:48:50.009Z","timestamp":"2025-11-05T10:48:50.621Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-05T10:48:50.623Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-05T10:48:50.625Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-05T10:48:50.701Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-05T10:52:55.806Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-05T10:54:04.296Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-05T10:56:56.001Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-05T10:57:33.687Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-05T11:06:09.902Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-05T11:06:25.059Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-05T11:06:25.119Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_SAMPLE_SEPTERMBER_2025.pdf by 46","timestamp":"2025-11-05T11:07:02.649Z"}
