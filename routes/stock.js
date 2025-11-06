@@ -4,15 +4,28 @@ const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const router = express.Router({ mergeParams: true });
 
+// --------------------------------------------------------------
+// VALIDATION – now also checks `location`
+// --------------------------------------------------------------
 const validateStockInput = (req, res, next) => {
-  const { productName, description, productCode, price, stockQuantity, qtyRequired } = req.body;
+  const {
+    productName,
+    description,
+    productCode,
+    price,
+    stockQuantity,
+    qtyRequired,
+    location,          // <-- NEW
+  } = req.body;
+
   if (
     !productName || typeof productName !== 'string' ||
     (description && typeof description !== 'string') ||
     !productCode || typeof productCode !== 'string' ||
     !price || typeof price !== 'number' || price < 0 ||
     (stockQuantity !== undefined && (typeof stockQuantity !== 'number' || stockQuantity < 0)) ||
-    (qtyRequired !== undefined && (typeof qtyRequired !== 'number' || qtyRequired < 0))
+    (qtyRequired !== undefined && (typeof qtyRequired !== 'number' || qtyRequired < 0)) ||
+    (location !== undefined && typeof location !== 'string')
   ) {
     logger.warn(`Invalid input data for ${req.method} ${req.path}: ${JSON.stringify(req.body)}`);
     return res.status(400).json({ error: 'Invalid input data', code: 'INVALID_INPUT' });
@@ -32,6 +45,9 @@ const validateAdjustInput = (req, res, next) => {
   next();
 };
 
+// --------------------------------------------------------------
+// GET ALL
+// --------------------------------------------------------------
 router.get('/', authenticateToken, checkPermission('Stock', 'can_read'), async (req, res) => {
   const { limit = 10, offset = 0 } = req.query;
   try {
@@ -44,8 +60,20 @@ router.get('/', authenticateToken, checkPermission('Stock', 'can_read'), async (
   }
 });
 
+// --------------------------------------------------------------
+// CREATE
+// --------------------------------------------------------------
 router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, async (req, res) => {
-  const { productName, description, productCode, price, stockQuantity, qtyRequired } = req.body;
+  const {
+    productName,
+    description,
+    productCode,
+    price,
+    stockQuantity,
+    qtyRequired,
+    location,          // <-- NEW
+  } = req.body;
+
   try {
     const stockItem = await Stock.create({
       productName,
@@ -53,10 +81,15 @@ router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), valid
       productCode,
       price,
       stockQuantity,
-      qtyRequired
+      qtyRequired,
+      location,
     });
     logger.info(`Created stock item ${stockItem.productId} by ${req.user.user_id}`);
-    req.io.emit('stockUpdate', { product_id: stockItem.productId, stock_quantity: stockItem.stockQuantity });
+    req.io.emit('stockUpdate', {
+      product_id: stockItem.productId,
+      stock_quantity: stockItem.stockQuantity,
+      location: stockItem.location,
+    });
     res.status(201).json(stockItem);
   } catch (error) {
     logger.error(`Error creating stock: ${error.message}`, error.stack);
@@ -64,9 +97,21 @@ router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), valid
   }
 });
 
+// --------------------------------------------------------------
+// UPDATE
+// --------------------------------------------------------------
 router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, async (req, res) => {
   const { productId } = req.params;
-  const { productName, description, productCode, price, stockQuantity, qtyRequired } = req.body;
+  const {
+    productName,
+    description,
+    productCode,
+    price,
+    stockQuantity,
+    qtyRequired,
+    location,          // <-- NEW
+  } = req.body;
+
   try {
     const stockItem = await Stock.update(parseInt(productId), {
       productName,
@@ -74,10 +119,15 @@ router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write
       productCode,
       price,
       stockQuantity,
-      qtyRequired
+      qtyRequired,
+      location,
     });
     logger.info(`Updated stock item ${productId} by ${req.user.user_id}`);
-    req.io.emit('stockUpdate', { product_id: parseInt(productId), stock_quantity: stockItem.stockQuantity });
+    req.io.emit('stockUpdate', {
+      product_id: parseInt(productId),
+      stock_quantity: stockItem.stockQuantity,
+      location: stockItem.location,
+    });
     res.json(stockItem);
   } catch (error) {
     if (error.message === 'Stock item not found') {
@@ -89,6 +139,9 @@ router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write
   }
 });
 
+// --------------------------------------------------------------
+// DELETE (unchanged)
+// --------------------------------------------------------------
 router.delete('/:productId', authenticateToken, checkPermission('Stock', 'can_delete'), async (req, res) => {
   const { productId } = req.params;
   try {
@@ -106,6 +159,9 @@ router.delete('/:productId', authenticateToken, checkPermission('Stock', 'can_de
   }
 });
 
+// --------------------------------------------------------------
+// ADJUST STOCK (unchanged)
+// --------------------------------------------------------------
 router.post('/:productId/adjust', authenticateToken, checkPermission('Stock', 'can_write'), validateAdjustInput, async (req, res) => {
   const { productId } = req.params;
   const { quantity, reason } = req.body;
@@ -114,10 +170,13 @@ router.post('/:productId/adjust', authenticateToken, checkPermission('Stock', 'c
       productId: parseInt(productId),
       quantity,
       reason,
-      userId: req.user.user_id
+      userId: req.user.user_id,
     });
     logger.info(`Adjusted stock for product ${productId} by ${quantity} by ${req.user.user_id}`);
-    req.io.emit('stockUpdate', { product_id: parseInt(productId), stock_quantity: stockItem.stockQuantity });
+    req.io.emit('stockUpdate', {
+      product_id: parseInt(productId),
+      stock_quantity: stockItem.stockQuantity,
+    });
     res.json(stockItem);
   } catch (error) {
     if (error.message === 'Stock item not found') {
