@@ -6,40 +6,34 @@ const redis = require('../config/redis');
 const { authenticateToken } = require('../middleware/auth');
 const logger = require('../utils/logger');
 
-// ADD THIS LINE — WAS MISSING!
 const router = express.Router({ mergeParams: true });
 
 // ------------------------ Utils --------------------------
 const CACHE_TTL_SECONDS = 300;
 const ACTIVITIES_PREFIX = 'activities_';
 
-/** Safely parse integer with bounds. */
 function toInt(v, { def = 10, min = 1, max = 100 } = {}) {
   const n = Number.parseInt(v, 10);
   if (!Number.isFinite(n)) return def;
   return Math.max(min, Math.min(max, n));
 }
 
-/** Parse boolean-ish query string ("true"/"1"). */
 function toBool(v) {
   if (typeof v === 'boolean') return v;
   if (typeof v !== 'string') return false;
   return v.toLowerCase() === 'true' || v === '1';
 }
 
-/** Build list cache key. */
 function listCacheKey({ limit, cursor }) {
   return cursor
     ? `${ACTIVITIES_PREFIX}list_${limit}_${cursor}`
     : `${ACTIVITIES_PREFIX}list_${limit}`;
 }
 
-/** Build item cache key. */
 function itemCacheKey(id) {
   return `${ACTIVITIES_PREFIX}${id}`;
 }
 
-/** Non-blocking invalidation using SCAN iterator (avoids KEYS). */
 async function invalidateActivitiesCache() {
   try {
     const keysToDelete = [];
@@ -61,7 +55,6 @@ async function invalidateActivitiesCache() {
   }
 }
 
-/** Safe get/set cache wrappers */
 async function cacheGetJSON(key) {
   try {
     const raw = await redis.get(key);
@@ -92,14 +85,14 @@ router.use(authenticateToken, (req, res, next) => {
 // POST /api/activities
 router.post('/', async (req, res) => {
   try {
-    const { summary, status, assignee_ids, due_date, priority } = req.body;
+    const { summary, status, assignee_ids, due_date, priority, comments } = req.body;
 
     if (!summary || !Array.isArray(assignee_ids) || assignee_ids.length === 0) {
       return res.status(400).json({ error: 'Summary and assignee_ids[] required' });
     }
 
     const activity = await Activities.create(
-      { summary, status, assignee_ids, due_date, priority },
+      { summary, status, assignee_ids, due_date, priority, comments },
       req.io
     );
 
@@ -168,8 +161,12 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const id = req.params.id;
   try {
-    const { summary, status, assignee_ids, due_date, priority } = req.body;
-    const activity = await Activities.update(id, { summary, status, assignee_ids, due_date, priority }, req.io);
+    const { summary, status, assignee_ids, due_date, priority, comments } = req.body;
+    const activity = await Activities.update(
+      id,
+      { summary, status, assignee_ids, due_date, priority, comments },
+      req.io
+    );
 
     await invalidateActivitiesCache();
     logger.info(`Activity updated: ${activity.id}`);

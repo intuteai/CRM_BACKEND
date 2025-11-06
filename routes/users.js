@@ -24,13 +24,13 @@ router.get('/customers', authenticateToken, checkPermission('Customers', 'can_re
 });
 
 // GET /api/users/employees-hr → For Activities assignee dropdown
-// RESTRICTED TO SPECIFIC USERS ONLY: 45, 69, 70, 71, 72, 73, 74
+// RESTRICTED TO SPECIFIC USERS ONLY: 45, 69, 70, 71, 72, 73
 router.get('/employees-hr', authenticateToken, async (req, res) => {
   try {
     const query = `
       SELECT user_id, name 
       FROM users 
-      WHERE user_id IN (45, 69, 70, 71, 72, 73, 74)
+      WHERE user_id IN (45, 69, 70, 71, 72, 73)
       ORDER BY name ASC
     `;
     const { rows } = await pool.query(query);

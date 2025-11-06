@@ -22703,3 +22703,32 @@
 {"level":"info","message":"User logged out, user_id: 9","timestamp":"2025-11-06T10:59:17.337Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-06T10:59:17.346Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-06T10:59:17.347Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-06T11:14:37.997Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-06T11:14:38.000Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-06T11:14:38.001Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-06T11:14:37.229Z","timestamp":"2025-11-06T11:14:38.350Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-06T11:14:38.356Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-06T11:14:38.359Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-06T11:47:05.172Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-06T11:47:05.180Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-06T11:47:05.181Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-06T11:47:04.411Z","timestamp":"2025-11-06T11:47:05.548Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-06T11:47:05.550Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-06T11:47:05.552Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-06T11:47:53.684Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-06T11:47:53.692Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-06T11:47:53.693Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-06T11:47:52.852Z","timestamp":"2025-11-06T11:47:53.995Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-06T11:47:53.996Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-06T11:47:53.998Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-06T11:49:04.609Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-06T11:49:04.677Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T11:51:31.766Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T11:51:43.945Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T11:52:04.661Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T11:56:48.838Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T11:57:27.065Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-06T12:11:33.196Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-06T12:11:33.862Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T12:11:44.209Z"}
+{"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T12:11:56.938Z"}

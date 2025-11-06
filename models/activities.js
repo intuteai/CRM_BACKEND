@@ -13,7 +13,7 @@ class Activities {
     try { io.emit(event, payload); } catch {}
   }
 
-  // NEW: Map row + assignees into clean payload
+  // Updated payload to include comments
   static #toPayload(row, assignees = []) {
     return {
       id: row.id,
@@ -21,19 +21,16 @@ class Activities {
       status: row.status,
       due_date: row.due_date,
       priority: row.priority,
+      comments: row.comments || '', // NEW
       created_by: row.created_by,
       created_at: row.created_at,
       updated_at: row.updated_at,
-      // NEW: Array of assignees
       assignees: assignees.map(a => ({
         user_id: a.user_id,
         name: a.name || 'Unknown',
         email: a.email || null,
         assigned_at: a.assigned_at,
       })),
-      // Optional: Keep old field for backward compat
-      // assignee_id: assignees[0]?.user_id || null,
-      // assignee_name: assignees[0]?.name || 'Unknown',
     };
   }
 
@@ -50,29 +47,28 @@ class Activities {
   }
 
   // ==================== CREATE ====================
-  static async create({ summary, status, assignee_ids = [], due_date, priority }, io) {
+  static async create({ summary, status, assignee_ids = [], due_date, priority, comments = '' }, io) {
     if (!summary || !Array.isArray(assignee_ids) || assignee_ids.length === 0) {
       throw new Error('Summary and at least one assignee_id required');
     }
 
     const _status = status || 'todo';
     const _priority = priority || 'medium';
+    const _comments = comments?.trim() || '';
     const createdBy = io?.user?.user_id ?? null;
 
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      // Insert activity (no assignee_id)
       const actRes = await client.query(`
-        INSERT INTO activities (summary, status, due_date, priority, created_by)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, summary, status, due_date, priority, created_by, created_at, updated_at
-      `, [summary, _status, due_date ?? null, _priority, createdBy]);
+        INSERT INTO activities (summary, status, due_date, priority, comments, created_by)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id, summary, status, due_date, priority, comments, created_by, created_at, updated_at
+      `, [summary, _status, due_date ?? null, _priority, _comments, createdBy]);
 
       const activityId = actRes.rows[0].id;
 
-      // Insert assignees
       if (assignee_ids.length > 0) {
         const values = assignee_ids
           .filter(id => Number.isFinite(this.#toNumber(id)))
@@ -88,7 +84,6 @@ class Activities {
         }
       }
 
-      // Fetch assignees with names
       const assigneesRes = await client.query(`
         SELECT aa.user_id, u.name, u.email, aa.assigned_at
         FROM activity_assignees aa
@@ -110,7 +105,7 @@ class Activities {
   }
 
   // ==================== UPDATE ====================
-  static async update(id, { summary, status, assignee_ids, due_date, priority }, io) {
+  static async update(id, { summary, status, assignee_ids, due_date, priority, comments }, io) {
     const _id = this.#toNumber(id);
     if (!Number.isFinite(_id)) throw new Error('Invalid activity id');
 
@@ -126,6 +121,7 @@ class Activities {
       if (status !== undefined) { fields.push(`status = $${idx++}`); values.push(status); }
       if (due_date !== undefined) { fields.push(`due_date = $${idx++}`); values.push(due_date); }
       if (priority !== undefined) { fields.push(`priority = $${idx++}`); values.push(priority); }
+      if (comments !== undefined) { fields.push(`comments = $${idx++}`); values.push(comments?.trim() || ''); }
 
       fields.push(`updated_at = NOW()`);
       values.push(_id);
@@ -138,13 +134,12 @@ class Activities {
         UPDATE activities
         SET ${fields.join(', ')}
         WHERE id = $${idx}
-        RETURNING id, summary, status, due_date, priority, created_by, created_at, updated_at
+        RETURNING id, summary, status, due_date, priority, comments, created_by, created_at, updated_at
       `;
 
       const actRes = await client.query(updateQuery, values);
       if (actRes.rows.length === 0) throw new Error('Activity not found');
 
-      // Handle assignee changes
       if (assignee_ids !== undefined) {
         await client.query('DELETE FROM activity_assignees WHERE activity_id = $1', [_id]);
         if (Array.isArray(assignee_ids) && assignee_ids.length > 0) {
@@ -163,7 +158,6 @@ class Activities {
         }
       }
 
-      // Fetch updated assignees
       const assigneesRes = await client.query(`
         SELECT aa.user_id, u.name, u.email, aa.assigned_at
         FROM activity_assignees aa
@@ -189,7 +183,7 @@ class Activities {
 
     const query = `
       SELECT 
-        a.id, a.summary, a.status, a.due_date, a.priority,
+        a.id, a.summary, a.status, a.due_date, a.priority, a.comments,
         a.created_by, a.created_at, a.updated_at,
         COALESCE((
           SELECT JSON_AGG(
@@ -217,10 +211,7 @@ class Activities {
       pool.query(totalQuery),
     ]);
 
-    const data = result.rows.map(row => ({
-      ...row,
-      assignees: row.assignees || [],
-    }));
+    const data = result.rows.map(row => this.#toPayload(row, row.assignees || []));
 
     const nextCursor = data.length > 0 ? data[data.length - 1].created_at : null;
 
@@ -260,10 +251,7 @@ class Activities {
     if (res.rows.length === 0) throw new Error('Activity not found');
 
     const row = res.rows[0];
-    return {
-      ...row,
-      assignees: row.assignees || [],
-    };
+    return this.#toPayload(row, row.assignees || []);
   }
 
   // ==================== DELETE ====================
@@ -276,7 +264,7 @@ class Activities {
       await client.query('BEGIN');
       const res = await client.query(`
         DELETE FROM activities WHERE id = $1
-        RETURNING id, summary, status, due_date, priority, created_by, created_at, updated_at
+        RETURNING id
       `, [_id]);
       if (res.rows.length === 0) throw new Error('Activity not found');
 
