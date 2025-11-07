@@ -22732,3 +22732,290 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-06T12:11:33.862Z"}
 {"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T12:11:44.209Z"}
 {"level":"info","message":"Activity updated: 1","timestamp":"2025-11-06T12:11:56.938Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:36:45.610Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:36:45.620Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:36:45.620Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:36:43.953Z","timestamp":"2025-11-07T06:36:45.890Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-11-07T06:36:45.891Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:37:13.858Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:37:13.871Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:37:13.871Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:37:12.162Z","timestamp":"2025-11-07T06:37:14.107Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:37:14.109Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:37:14.111Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:37:18.815Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:37:50.902Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:37:50.912Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:37:50.912Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:37:49.286Z","timestamp":"2025-11-07T06:37:51.231Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:37:51.254Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:37:51.257Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:37:51.431Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T06:37:59.589Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:38:04.328Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T06:38:07.502Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-07T06:38:17.945Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:38:18.015Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_RAHUL_S_OCTOBER_2025.pdf by 46","timestamp":"2025-11-07T06:38:49.476Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:39:47.867Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:39:47.876Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:39:47.876Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:39:46.198Z","timestamp":"2025-11-07T06:39:48.140Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:39:48.142Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:39:48.144Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:39:48.224Z"}
+{"level":"info","message":"Downloading 3 Roboto font(s)…","timestamp":"2025-11-07T06:44:35.757Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:44:35.825Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:44:35.830Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:44:35.832Z"}
+{"level":"warn","message":"Failed to download Roboto-Bold.ttf (status 404)","timestamp":"2025-11-07T06:44:36.531Z"}
+{"level":"warn","message":"Failed to download Roboto-Regular.ttf (status 404)","timestamp":"2025-11-07T06:44:36.544Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:44:34.819Z","timestamp":"2025-11-07T06:44:36.771Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:44:36.773Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:44:36.775Z"}
+{"level":"warn","message":"Failed to download Roboto-Medium.ttf (status 404)","timestamp":"2025-11-07T06:44:36.805Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:44:41.420Z"}
+{"level":"info","message":"Downloading 3 Roboto font(s)…","timestamp":"2025-11-07T06:45:27.596Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:45:27.657Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:45:27.662Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:45:27.663Z"}
+{"level":"warn","message":"Failed to download Roboto-Regular.ttf (status 404)","timestamp":"2025-11-07T06:45:28.546Z"}
+{"level":"warn","message":"Failed to download Roboto-Medium.ttf (status 404)","timestamp":"2025-11-07T06:45:28.598Z"}
+{"level":"warn","message":"Failed to download Roboto-Bold.ttf (status 404)","timestamp":"2025-11-07T06:45:28.940Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-11-07T06:45:29.660Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:46:18.798Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:46:18.801Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:46:18.802Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:46:17.479Z","timestamp":"2025-11-07T06:46:19.430Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:46:19.432Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:46:19.435Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:46:19.447Z"}
+{"level":"info","message":"Downloading 3 Roboto font(s) in background...","timestamp":"2025-11-07T06:48:09.748Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:48:09.802Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:48:09.803Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:48:09.803Z"}
+{"level":"warn","message":"Font Roboto-Regular.ttf not found (status 404)","timestamp":"2025-11-07T06:48:10.600Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:48:08.885Z","timestamp":"2025-11-07T06:48:10.828Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:48:10.831Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:48:10.833Z"}
+{"level":"warn","message":"Font Roboto-Bold.ttf not found (status 404)","timestamp":"2025-11-07T06:48:11.231Z"}
+{"level":"warn","message":"Font Roboto-Medium.ttf not found (status 404)","timestamp":"2025-11-07T06:48:11.856Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:48:16.419Z"}
+{"level":"warn","message":"Font download timeout: Roboto-Regular.ttf","timestamp":"2025-11-07T06:48:20.667Z"}
+{"level":"warn","message":"Font download timeout: Roboto-Bold.ttf","timestamp":"2025-11-07T06:48:21.335Z"}
+{"level":"warn","message":"Font download timeout: Roboto-Medium.ttf","timestamp":"2025-11-07T06:48:21.980Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T06:53:38.662Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T06:53:38.669Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T06:53:38.670Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T06:53:36.986Z","timestamp":"2025-11-07T06:53:38.936Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T06:53:38.937Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T06:53:38.939Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:53:39.234Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T06:53:45.452Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T06:53:45.969Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_S_S_SEPTEMBER_2025.pdf by 46","timestamp":"2025-11-07T06:54:04.982Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T06:54:47.714Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:16:05.830Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:16:06.143Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:16:06.608Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:16:08.135Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:16:11.742Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:16:12.273Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:16:12.576Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:16:30.395Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:16:32.416Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:17:34.810Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:17:35.921Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:18:37.343Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T07:18:39.443Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T07:18:39.812Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T08:45:57.535Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T08:45:57.898Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T08:45:59.932Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T08:46:03.288Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T08:46:04.260Z"}
+{"code":"ECONNRESET","errno":-4077,"level":"error","message":"Redis client error: read ECONNRESET","stack":"Error: read ECONNRESET\n    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)","syscall":"read","timestamp":"2025-11-07T09:10:09.693Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:09.696Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:09.704Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:09.767Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:09.877Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:10.034Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:10.253Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:10.504Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:10.816Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:11.177Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:11.593Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:12.057Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:12.573Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-07T09:10:13.077Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:10:25.739Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:10:25.743Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:10:25.744Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:10:23.979Z","timestamp":"2025-11-07T09:10:26.041Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:10:26.043Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:10:26.045Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:10:27.080Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:10:28.424Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:11:09.441Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:11:09.453Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:11:09.454Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:11:07.730Z","timestamp":"2025-11-07T09:11:09.794Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:11:09.798Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:11:09.801Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:11:09.955Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:11:09.956Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T09:12:20.843Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-07T09:12:36.542Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:12:36.599Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_ZZ_ZZ_SEPTEMBER_2025.pdf by 46","timestamp":"2025-11-07T09:13:05.970Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:14:39.916Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:14:39.927Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:14:39.928Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:14:38.155Z","timestamp":"2025-11-07T09:14:40.216Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:14:40.218Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:14:40.221Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:14:40.262Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:14:40.269Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_SS_SS_2025.pdf by 46","timestamp":"2025-11-07T09:14:55.980Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:20:55.226Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:20:55.229Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:20:55.230Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:20:53.466Z","timestamp":"2025-11-07T09:20:55.536Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:20:55.538Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:20:55.541Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:20:55.746Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:20:55.752Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_CD_SEPTEMBER_2025.pdf by 46","timestamp":"2025-11-07T09:21:26.709Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:25:06.701Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:25:06.717Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:25:06.718Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:25:05.021Z","timestamp":"2025-11-07T09:25:07.095Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:25:07.097Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:25:07.099Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:25:07.251Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:25:07.255Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_DCDVCD_JULY_2025.pdf by 46","timestamp":"2025-11-07T09:25:30.356Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:25:46.523Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:25:46.526Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:25:46.526Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:25:44.758Z","timestamp":"2025-11-07T09:25:46.828Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:25:46.830Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:25:46.832Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:25:46.968Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:25:48.441Z"}
+{"level":"info","message":"User logged out, user_id: 46","timestamp":"2025-11-07T09:25:53.420Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T09:25:53.436Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-07T09:26:06.437Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:26:06.487Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_SDS_JULY_2025.pdf by 46","timestamp":"2025-11-07T09:26:31.509Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:26:47.031Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:26:47.038Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:26:47.039Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:26:45.710Z","timestamp":"2025-11-07T09:26:47.783Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:26:47.785Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:26:47.788Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:26:47.946Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:26:47.951Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_DVDV_D_DVV_2025.pdf by 46","timestamp":"2025-11-07T09:27:17.428Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:29:47.382Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:29:47.390Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:29:47.390Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:29:45.623Z","timestamp":"2025-11-07T09:29:47.700Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:29:47.702Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:29:47.704Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:29:47.816Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:29:47.840Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_SCV_VSV_2025.pdf by 46","timestamp":"2025-11-07T09:30:03.301Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:30:48.581Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:30:48.588Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:30:48.589Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:30:46.833Z","timestamp":"2025-11-07T09:30:48.908Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:30:48.910Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:30:48.912Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:30:49.427Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:30:49.448Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:31:36.949Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:31:36.961Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:31:36.961Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:31:35.193Z","timestamp":"2025-11-07T09:31:37.273Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:31:37.276Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:31:37.282Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:31:37.450Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:31:37.461Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_FVBDSB__FDBF.pdf by 46","timestamp":"2025-11-07T09:31:45.172Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:32:19.474Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:32:19.484Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:32:19.485Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:32:17.683Z","timestamp":"2025-11-07T09:32:19.756Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:32:19.763Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:32:19.768Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:32:19.878Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:32:19.879Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T09:46:50.539Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:55:13.951Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:55:13.958Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:55:13.959Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:55:12.134Z","timestamp":"2025-11-07T09:55:14.221Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:55:14.223Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:55:14.224Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:55:14.430Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_GMNHM_FMG_2012.pdf by 46","timestamp":"2025-11-07T09:55:31.973Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T09:58:09.316Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T09:58:09.326Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T09:58:09.328Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T09:58:07.559Z","timestamp":"2025-11-07T09:58:09.652Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T09:58:09.655Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T09:58:09.657Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T09:58:09.743Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_DCDC_DCDC.pdf by 46","timestamp":"2025-11-07T09:58:22.729Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_GN_BN.pdf by 46","timestamp":"2025-11-07T10:07:11.718Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T10:12:47.481Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T10:12:47.486Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T10:12:47.486Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T10:12:45.768Z","timestamp":"2025-11-07T10:12:47.872Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2025-11-07T10:12:47.874Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T10:13:11.288Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T10:13:11.299Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T10:13:11.300Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T10:13:09.584Z","timestamp":"2025-11-07T10:13:11.693Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T10:13:11.697Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T10:13:11.703Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T10:13:13.794Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_FDB_FDB.pdf by 46","timestamp":"2025-11-07T10:13:19.654Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T10:20:50.534Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T10:20:50.540Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T10:20:50.541Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T10:20:48.790Z","timestamp":"2025-11-07T10:20:50.903Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T10:20:50.906Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T10:20:50.912Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T10:20:51.423Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_WW_W_WW.pdf by 46","timestamp":"2025-11-07T10:21:01.112Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T10:27:09.860Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T10:27:09.867Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T10:27:09.868Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T10:27:08.087Z","timestamp":"2025-11-07T10:27:10.205Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T10:27:10.206Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T10:27:10.208Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T10:27:10.249Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-07T10:27:30.006Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 10, role: hr","timestamp":"2025-11-07T10:27:41.119Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T10:27:41.181Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_SCSC_SCS.pdf by 46","timestamp":"2025-11-07T10:27:59.445Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_RAHUL_SRIVASTAVA_OCTOBER_2025.pdf by 46","timestamp":"2025-11-07T10:30:16.602Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T10:34:46.144Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T10:34:46.157Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T10:34:46.158Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T10:34:44.328Z","timestamp":"2025-11-07T10:34:46.438Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T10:34:46.440Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T10:34:46.443Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T10:34:46.773Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_RAHUL_SRIVASTAVA_OCTOBER_2025.pdf by 46","timestamp":"2025-11-07T10:36:28.067Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-07T10:44:34.008Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-07T10:44:34.013Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-07T10:44:34.014Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-07T10:44:32.241Z","timestamp":"2025-11-07T10:44:34.361Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-07T10:44:34.364Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-07T10:44:34.366Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-07T10:44:34.449Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_RAHUL_S_FWSF.pdf by 46","timestamp":"2025-11-07T10:44:51.425Z"}
+{"level":"info","message":"Payslip generated: PAYSLIP_RAHUL_SRIVASTAVA_OCTOBER_2025.pdf by 46","timestamp":"2025-11-07T10:49:20.454Z"}
