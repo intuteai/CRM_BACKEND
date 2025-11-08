@@ -27,15 +27,6 @@ function needPageBreak(doc, y, neededHeight, marginBottom = 40) {
   const bottom = doc.page.height - marginBottom;
   return y + neededHeight > bottom;
 }
-function addDecoratedPage(doc, colors) {
-  doc.addPage();
-  const pageWidth = doc.page.width;
-  // thin top bar + soft header
-  doc.rect(0, 0, pageWidth, 6).fill(colors.secondary);
-  const headerGrad = doc.linearGradient(0, 0, pageWidth, 96);
-  headerGrad.stop(0, colors.lightBlue).stop(1, colors.white);
-  doc.rect(0, 6, pageWidth, 90).fill(headerGrad);
-}
 function truncateToWidth(doc, txt, maxWidth, fontName, fontSize) {
   let s = String(txt ?? '');
   return withFont(doc, fontName, fontSize, () => {
@@ -69,23 +60,23 @@ function registerFonts(doc) {
    Section drawers
    =========================== */
 function drawSectionHeader(doc, x, y, width, title, colors) {
-  const h = 30;
+  const h = 28;                                   // reduced a bit
   const grad = doc.linearGradient(x, y, x, y + h);
   grad.stop(0, colors.primary).stop(1, colors.secondary);
   doc.roundedRect(x, y, width, h, 6).fill(grad);
   withFont(doc, 'Roboto-Bold', 11, () => {
-    doc.fillColor(colors.white).text(title, x + 12, y + 8);
+    doc.fillColor(colors.white).text(title, x + 12, y + 7);
   });
   return h;
 }
 function drawTableRow(doc, x, y, width, col1W, label, amount, colors, opts = {}) {
   const labelFont = opts.labelFont || 'Roboto';
-  const labelSize = opts.labelSize || 10.5;
+  const labelSize = opts.labelSize || 10;
   const amountFont = opts.amountFont || 'Roboto-Medium';
-  const amountSize = opts.amountSize || 10.5;
-  const lineGap = opts.lineGap ?? 1.5;
+  const amountSize = opts.amountSize || 10;
+  const lineGap = opts.lineGap ?? 1.2;
   const paddingX = 10;
-  const paddingY = 6;
+  const paddingY = 5;                             // reduced
 
   const labelW = col1W - paddingX * 2;
   const amountBoxW = 110;
@@ -94,27 +85,23 @@ function drawTableRow(doc, x, y, width, col1W, label, amount, colors, opts = {})
   const amountText = amount != null && Number.isFinite(Number(amount)) ? Number(amount).toFixed(2) : '';
   const amountH = measureHeight(doc, amountText, amountBoxW, amountFont, amountSize, lineGap);
   const contentH = Math.max(labelH, amountH);
-  const rowH = Math.max(24, Math.ceil(contentH) + paddingY * 2);
+  const rowH = Math.max(22, Math.ceil(contentH) + paddingY * 2);
 
-  // background
   doc.save();
   doc.fillColor(colors.light).opacity(0.5);
   doc.rect(x, y, width, rowH).fill();
   doc.restore();
 
-  // label
   withFont(doc, labelFont, labelSize, () => {
     doc.fillColor(colors.text).text(String(label || ''), x + paddingX, y + paddingY, { width: labelW, lineGap });
   });
 
-  // amount right aligned
   withFont(doc, amountFont, amountSize, () => {
     const rightEdge = x + width - paddingX;
     const w = doc.widthOfString(amountText);
     doc.fillColor(colors.text).text(amountText, rightEdge - w, y + paddingY, { lineBreak: false });
   });
 
-  // bottom divider
   doc.save();
   doc.moveTo(x, y + rowH).lineTo(x + width, y + rowH)
      .strokeColor(colors.borderLight).lineWidth(1).stroke();
@@ -169,35 +156,34 @@ class Payslip {
       doc.rect(0, 6, pageWidth, 90).fill(headerGrad);
 
       /* ===== Logo ===== */
-      const logoSvg = path.join(__dirname, '../assets/logo.svg');
       const logoPng = path.join(__dirname, '../assets/image.png');
       let logoExists = false;
-      if (fs.existsSync(logoSvg)) {
-        const svg = fs.readFileSync(logoSvg, 'utf8');
-        svgToPDF(doc, svg, margin, 24, { width: 64, height: 64 });
+      if (fs.existsSync(logoPng)) {
+        const logoX = margin;
+        const logoY = 12;
+        const logoWidth = 100;
+        const logoHeight = 100;
+        doc.image(logoPng, logoX, logoY, { width: logoWidth, height: logoHeight });
         logoExists = true;
-      } else if (fs.existsSync(logoPng)) {
-        doc.image(logoPng, margin, 24, { width: 64, height: 64 });
-        logoExists = true;
+      } else {
+        logger.warn('Logo file missing: assets/image.png');
       }
 
-      /* ===== Company + compact PAYSLIP pill (no overlap) ===== */
-      const companyX = logoExists ? margin + 84 : margin;
-      const companyNameMaxW = Math.max(320, (pageWidth - margin) - (companyX + 180)); // leave room for pill
+      /* ===== Company + PAYSLIP pill ===== */
+      const companyX = logoExists ? margin + 110 : margin;
+      const companyNameMaxW = Math.max(320, (pageWidth - margin) - (companyX + 180));
       const companyName = 'Intute AI Technologies (OPC) Pvt. Ltd.';
       const companyTitle = truncateToWidth(doc, companyName, companyNameMaxW, 'Roboto-Bold', 18);
 
-      const companyTopY = 34;
-      const companyAddrY = 56;
+      const companyTopY = 32;
+      const companyAddrY = 54;
 
-      // pill
       const pillW = 140;
       const pillH = 36;
       const pillR = 18;
       let pillX = pageWidth - margin - pillW;
-      let pillY = 34;
+      let pillY = 32;
 
-      // avoid overlap: push down if too close to company title
       const companyTextRight = companyX + withFont(doc, 'Roboto-Bold', 18, () => doc.widthOfString(companyTitle));
       if (pillX < companyTextRight + 16) pillY = 70;
 
@@ -208,23 +194,21 @@ class Payslip {
         doc.fillColor(c.textMuted).text('A-5, Sector 68, Noida - 201301, India', companyX, companyAddrY);
       });
 
-      // pill bg
       doc.save();
       doc.fillColor(c.secondary);
       doc.roundedRect(pillX, pillY, pillW, pillH, pillR).fill();
       doc.restore();
 
-      // pill text
       withFont(doc, 'Roboto-Bold', 13, () => {
         doc.fillColor(c.white).text('PAYSLIP', pillX, pillY + 9, { width: pillW, align: 'center' });
       });
 
-      /* ===== Employee Card (dynamic height) ===== */
+      /* ===== Employee Card ===== */
       const empRows = [
         [ ['Employee Name', String(data.employee.name)], ['Employee ID', String(data.employee.id || 'N/A')] ],
         [ ['Pay Period', String(data.period)], ['Pay Date', String(data.payDate || new Date().toLocaleDateString('en-IN'))] ],
       ];
-      const cardHeaderH = 30;
+      const cardHeaderH = 28;
       const cardY = 120;
 
       const leftX = margin + 18;
@@ -235,38 +219,32 @@ class Payslip {
       const rowsH = empRows.map(row => {
         const lh = measureHeight(doc, row[0][1], valWLeft, 'Roboto-Bold', 10, 1);
         const rh = measureHeight(doc, row[1][1], valWRight, 'Roboto-Bold', 10, 1);
-        return Math.max(22, Math.ceil(Math.max(lh, rh)) + 8);
+        return Math.max(20, Math.ceil(Math.max(lh, rh)) + 6);
       }).reduce((a, b) => a + b, 0);
-      const cardHeight = cardHeaderH + 8 + rowsH + 8;
+      const cardHeight = cardHeaderH + 6 + rowsH + 6;
 
-      if (needPageBreak(doc, cardY, cardHeight + 16, marginBottom)) addDecoratedPage(doc, c);
-
-      // shadow
       doc.save();
       doc.fillColor(c.primary).opacity(0.05);
       doc.roundedRect(margin + 2, cardY + 2, contentWidth, cardHeight, 8).fill();
       doc.restore();
 
-      // card
       doc.roundedRect(margin, cardY, contentWidth, cardHeight, 8)
          .lineWidth(1).strokeColor(c.border).fillAndStroke(c.white);
 
-      // header
       doc.rect(margin, cardY, contentWidth, cardHeaderH).fill(c.light);
       doc.save();
       doc.moveTo(margin, cardY + cardHeaderH).lineTo(margin + contentWidth, cardY + cardHeaderH)
          .strokeColor(c.borderLight).lineWidth(1).stroke();
       doc.restore();
       withFont(doc, 'Roboto-Bold', 12, () => {
-        doc.fillColor(c.secondary).text('EMPLOYEE DETAILS', margin + 18, cardY + 8);
+        doc.fillColor(c.secondary).text('EMPLOYEE DETAILS', margin + 18, cardY + 7);
       });
 
-      // grid
-      let y = cardY + cardHeaderH + 8;
+      let y = cardY + cardHeaderH + 6;
       const drawKV = (row, yy) => {
         const lh = measureHeight(doc, row[0][1], valWLeft, 'Roboto-Bold', 10, 1);
         const rh = measureHeight(doc, row[1][1], valWRight, 'Roboto-Bold', 10, 1);
-        const h = Math.max(22, Math.ceil(Math.max(lh, rh)) + 8);
+        const h = Math.max(20, Math.ceil(Math.max(lh, rh)) + 6);
 
         withFont(doc, 'Roboto-Medium', 10, () => {
           doc.fillColor(c.textMuted).text(`${row[0][0]}:`, leftX, yy);
@@ -276,152 +254,117 @@ class Payslip {
           doc.fillColor(c.text).text(row[0][1], leftX + labelW, yy, { width: valWLeft, lineGap: 1 });
           doc.fillColor(c.text).text(row[1][1], rightX + labelW, yy, { width: valWRight, lineGap: 1 });
         });
-
         return h;
       };
       empRows.forEach(r => { y += drawKV(r, y); });
-      y += 16;
+      y += 12;   // reduced gap
 
-      /* ===== EARNINGS (stacked) ===== */
-      if (needPageBreak(doc, y, 30 + 24, marginBottom)) { addDecoratedPage(doc, c); y = 24; }
+      /* ===== EARNINGS ===== */
       y += drawSectionHeader(doc, margin, y, contentWidth, 'EARNINGS', c);
 
       const earnings = Array.isArray(data.earnings) ? data.earnings : [];
       const earningsLabelColW = contentWidth - 110;
 
-      earnings.forEach((row) => {
+      earnings.forEach(row => {
         const label = String(row?.label || '');
         const amount = Number.isFinite(Number(row?.amount)) ? Number(row.amount) : null;
-
-        const neededH = Math.max(measureHeight(doc, label, earningsLabelColW - 20, 'Roboto', 10.5, 1.5) + 14, 24);
-        const rowH = Math.ceil(neededH);
-
-        if (needPageBreak(doc, y, rowH + 16, marginBottom)) {
-          addDecoratedPage(doc, c);
-          y = 24 + drawSectionHeader(doc, margin, 24, contentWidth, 'EARNINGS (cont.)', c);
-        }
-
         y += drawTableRow(doc, margin, y, contentWidth, earningsLabelColW, label, amount, c,
-          { labelFont: 'Roboto', labelSize: 10.5, amountFont: 'Roboto-Medium', amountSize: 10.5, lineGap: 1.5 });
+          { labelFont: 'Roboto', labelSize: 10, amountFont: 'Roboto-Medium', amountSize: 10, lineGap: 1.2 });
       });
-
       if (earnings.length === 0) y += drawTableRow(doc, margin, y, contentWidth, contentWidth - 110, '', null, c);
-      y += 12;
+      y += 8;   // reduced
 
-      /* ===== DEDUCTIONS (stacked) ===== */
-      if (needPageBreak(doc, y, 30 + 24, marginBottom)) { addDecoratedPage(doc, c); y = 24; }
+      /* ===== DEDUCTIONS ===== */
       y += drawSectionHeader(doc, margin, y, contentWidth, 'DEDUCTIONS', c);
 
       const deductions = Array.isArray(data.deductions) ? data.deductions : [];
       const deductionsLabelColW = contentWidth - 110;
 
-      deductions.forEach((row) => {
+      deductions.forEach(row => {
         const label = String(row?.label || '');
         const amount = Number.isFinite(Number(row?.amount)) ? Number(row.amount) : null;
-
-        const neededH = Math.max(measureHeight(doc, label, deductionsLabelColW - 20, 'Roboto', 10.5, 1.5) + 14, 24);
-        const rowH = Math.ceil(neededH);
-
-        if (needPageBreak(doc, y, rowH + 16, marginBottom)) {
-          addDecoratedPage(doc, c);
-          y = 24 + drawSectionHeader(doc, margin, 24, contentWidth, 'DEDUCTIONS (cont.)', c);
-        }
-
         y += drawTableRow(doc, margin, y, contentWidth, deductionsLabelColW, label, amount, c,
-          { labelFont: 'Roboto', labelSize: 10.5, amountFont: 'Roboto-Medium', amountSize: 10.5, lineGap: 1.5 });
+          { labelFont: 'Roboto', labelSize: 10, amountFont: 'Roboto-Medium', amountSize: 10, lineGap: 1.2 });
       });
-
       if (deductions.length === 0) y += drawTableRow(doc, margin, y, contentWidth, contentWidth - 110, '', null, c);
-      y += 12;
+      y += 8;
 
       /* ===== Totals ===== */
-      const totalsBarH = 40;
-      if (needPageBreak(doc, y, totalsBarH + 100, marginBottom)) { addDecoratedPage(doc, c); y = 24; }
-
+      const totalsBarH = 36;
       let gross = 0, totalDed = 0;
       earnings.forEach(e => { if (Number.isFinite(Number(e.amount))) gross += Number(e.amount); });
       deductions.forEach(d => { if (Number.isFinite(Number(d.amount))) totalDed += Number(d.amount); });
 
       doc.rect(margin, y, contentWidth, totalsBarH).fill(c.primary);
       withFont(doc, 'Roboto-Bold', 11, () => {
-        doc.fillColor(c.white).text('GROSS EARNINGS', margin + 14, y + 12);
+        doc.fillColor(c.white).text('GROSS EARNINGS', margin + 14, y + 11);
         const gStr = gross.toFixed(2);
         const gW = doc.widthOfString(gStr);
-        doc.text(gStr, margin + contentWidth/2 - 14 - gW, y + 12, { lineBreak: false });
+        doc.text(gStr, margin + contentWidth/2 - 14 - gW, y + 11, { lineBreak: false });
 
-        doc.text('TOTAL DEDUCTIONS', margin + contentWidth/2 + 14, y + 12);
+        doc.text('TOTAL DEDUCTIONS', margin + contentWidth/2 + 14, y + 11);
         const dStr = totalDed.toFixed(2);
         const dW = doc.widthOfString(dStr);
-        doc.text(dStr, margin + contentWidth - 14 - dW, y + 12, { lineBreak: false });
+        doc.text(dStr, margin + contentWidth - 14 - dW, y + 11, { lineBreak: false });
       });
       doc.save();
       doc.strokeColor('#ffffff').opacity(0.25).lineWidth(1);
       doc.moveTo(margin + contentWidth/2, y).lineTo(margin + contentWidth/2, y + totalsBarH).stroke();
       doc.restore();
+      y += totalsBarH + 12;
 
-      y += totalsBarH + 18;
-
-      /* ===== NET PAY — Professional card (white, pill header) — DYNAMIC HEIGHT ===== */
+      /* ===== NET PAY CARD ===== */
       {
-        const cardPadX = 18;     // inner horizontal padding
-        const cardPadTop = 14;   // top padding
-        const cardPadBottom = 16;
+        const cardPadX = 18;
+        const cardPadTop = 12;
+        const cardPadBottom = 12;
+        const headerPillH = 24, headerPillR = 12, headerPillW = 120, headerPillPadX = 10;
 
-        const headerPillH = 26, headerPillR = 13, headerPillW = 126, headerPillPadX = 10;
-
-        const labelSize = 11.5;  // ₹ + "NET PAY" in pill
-        const amountSize = 22;   // amount
-        const subSize = 9.5;     // subtext
-        const lineGap = 1.2;
+        const labelSize = 11;
+        const amountSize = 20;
+        const subSize = 9;
+        const lineGap = 1.1;
 
         const netPay = Math.max(0, gross - totalDed);
         const amountStr = `₹ ${netPay.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         const subtext = 'Net of all earnings and deductions';
 
-        // measure dynamic content widths/heights (exact fonts)
         const contentW = contentWidth - cardPadX * 2;
         const amountH = measureHeight(doc, amountStr, contentW, 'Roboto-Bold', amountSize, lineGap);
-        const subH    = measureHeight(doc, subtext, contentW, 'Roboto',      subSize,   1.1);
+        const subH    = measureHeight(doc, subtext, contentW, 'Roboto', subSize, 1.0);
 
-        const gapAfterPill = 8;
-        const gapAfterAmount = 6;
+        const gapAfterPill = 6;
+        const gapAfterAmount = 4;
 
         const netBlockH = cardPadTop + headerPillH + gapAfterPill
                         + Math.ceil(amountH) + gapAfterAmount
                         + Math.ceil(subH) + cardPadBottom;
 
-        if (needPageBreak(doc, y, netBlockH + 24, marginBottom)) { addDecoratedPage(doc, c); y = 24; }
-
-        // soft shadow
         doc.save();
         doc.fillColor(c.primary).opacity(0.05);
-        doc.roundedRect(margin + 2, y + 2, contentWidth, netBlockH, 12).fill();
+        doc.roundedRect(margin + 2, y + 2, contentWidth, netBlockH, 10).fill();
         doc.restore();
 
-        // white card + border
         doc.save();
-        doc.roundedRect(margin, y, contentWidth, netBlockH, 12).fill(c.white);
+        doc.roundedRect(margin, y, contentWidth, netBlockH, 10).fill(c.white);
         doc.lineWidth(1).strokeColor(c.borderLight).stroke();
         doc.restore();
 
-        // header pill
         const pillX = margin + cardPadX;
         const pillY = y + cardPadTop;
         doc.save();
-        doc.fillColor('#e6fffb'); // teal-100
+        doc.fillColor('#e6fffb');
         doc.roundedRect(pillX, pillY, headerPillW, headerPillH, headerPillR).fill();
         doc.restore();
 
-        // tiny ₹ token
-        const tokenR = 9;
+        const tokenR = 8;
         const tokenCX = pillX + headerPillPadX + tokenR;
         const tokenCY = pillY + headerPillH / 2;
         doc.save();
-        doc.fillColor('#a7f3d0'); // teal-200-ish
+        doc.fillColor('#a7f3d0');
         doc.circle(tokenCX, tokenCY, tokenR).fill();
         doc.restore();
 
-        // "₹" inside token + "NET PAY" (same size, baseline aligned)
         withFont(doc, 'Roboto-Bold', labelSize, () => {
           const rupeeW = doc.widthOfString('₹');
           const rupeeX = tokenCX - rupeeW / 2;
@@ -435,46 +378,66 @@ class Payslip {
           doc.fillColor(c.accent).text('NET PAY', labelX, labelY, { lineBreak: false });
         });
 
-        // amount
         const amtX = margin + cardPadX;
         const amtY = pillY + headerPillH + gapAfterPill;
         withFont(doc, 'Roboto-Bold', amountSize, () => {
           doc.fillColor(c.primary).text(amountStr, amtX, amtY, { width: contentW, lineGap, ellipsis: false });
         });
 
-        // subtext (wrap safely within card)
         const subY = amtY + Math.ceil(amountH) + gapAfterAmount;
         withFont(doc, 'Roboto', subSize, () => {
-          doc.fillColor(c.textMuted).text(subtext, amtX, subY, { width: contentW, lineGap: 1.1 });
+          doc.fillColor(c.textMuted).text(subtext, amtX, subY, { width: contentW, lineGap: 1.0 });
         });
 
-        y += netBlockH + 20;
+        y += netBlockH + 12;
       }
 
-      /* ===== Amount in words (compact) ===== */
-      const wordsBlockH = 48 + 20;
-      if (needPageBreak(doc, y, wordsBlockH, marginBottom)) { addDecoratedPage(doc, c); y = 24; }
-
+      /* ===== Amount in words ===== */
       const netPayRounded = Math.round(Math.max(0, gross - totalDed));
       const words = netPayRounded > 0 ? converter.toWords(netPayRounded) : 'zero';
       const inWords = `Rupees ${words.charAt(0).toUpperCase() + words.slice(1)} Only`;
 
+      const wordsBoxH = 44;
       doc.save();
-      doc.lineWidth(1.2).strokeColor(c.accent).fill('#ecfeff');
-      doc.roundedRect(margin, y, contentWidth, 48, 8).fillAndStroke();
+      doc.lineWidth(1.1).strokeColor(c.accent).fill('#ecfeff');
+      doc.roundedRect(margin, y, contentWidth, wordsBoxH, 7).fillAndStroke();
       doc.restore();
 
-      withFont(doc, 'Roboto-Bold', 10.5, () => {
-        doc.fillColor(c.accent).text('AMOUNT IN WORDS', margin + 16, y + 10);
+      withFont(doc, 'Roboto-Bold', 10, () => {
+        doc.fillColor(c.accent).text('AMOUNT IN WORDS', margin + 14, y + 9);
       });
-      withFont(doc, 'Roboto-Medium', 10.5, () => {
-        doc.fillColor(c.text).text(inWords, margin + 16, y + 26, { width: contentWidth - 32, align: 'center' });
+      withFont(doc, 'Roboto-Medium', 10, () => {
+        doc.fillColor(c.text).text(inWords, margin + 14, y + 24, { width: contentWidth - 28, align: 'center' });
       });
+      y += wordsBoxH + 8;
 
-      y += 68;
+      /* ===== FINAL STAMP + FOOTER (single-page guarantee) ===== */
+      const stampPath = path.join(__dirname, '../assets/stamp.png');
+      const stampExists = fs.existsSync(stampPath);
+      const stampH = stampExists ? 85 : 0;
+      const stampGap = stampExists ? 20 : 20;
+      const footerH = 45;   // line + text + bottom bar
 
-      /* ===== Footer ===== */
-      if (needPageBreak(doc, y, 50, marginBottom)) { addDecoratedPage(doc, c); y = 24; }
+      const totalBottom = stampH + stampGap + footerH + 20; // extra safety
+
+      // If we are too close to the bottom, pull everything up a little
+      if (needPageBreak(doc, y, totalBottom, marginBottom)) {
+        const pullUp = (y + totalBottom) - (pageHeight - marginBottom);
+        y -= pullUp;   // move previous content up
+      }
+
+      // Stamp
+      if (stampExists) {
+        const stampW = 150;
+        const stampX = (pageWidth - stampW) / 2;
+        doc.image(stampPath, stampX, y, { width: stampW, height: stampH });
+        y += stampH + stampGap;
+      } else {
+        logger.warn('Stamp file missing: assets/stamp.png');
+        y += stampGap;
+      }
+
+      // Footer line
       doc.save();
       doc.moveTo(margin, y).lineTo(pageWidth - margin, y)
          .strokeColor(c.borderLight).lineWidth(1).stroke();
@@ -482,18 +445,13 @@ class Payslip {
 
       y += 12;
       const now = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-      withFont(doc, 'Roboto', 9, () => {
-        doc.fillColor(c.textMuted).text('This is a computer-generated payslip and does not require a signature.',
-          0, y, { align: 'center', width: pageWidth });
-      });
       withFont(doc, 'Roboto', 8, () => {
-        doc.fillColor(c.textMuted).text(`Generated on ${now}`, 0, y + 14, { align: 'center', width: pageWidth });
+        doc.fillColor(c.textMuted).text(`Generated on ${now}`, 0, y, { align: 'center', width: pageWidth });
       });
 
-      // bottom accent
+      // Bottom coloured bar (always on the same page)
       doc.rect(0, pageHeight - 5, pageWidth, 5).fill(c.secondary);
 
-      // Emit & end
       const payload = {
         filename: `PAYSLIP_${String(data.employee.name).replace(/\s+/g, '_').toUpperCase()}_${String(data.period).replace(/\s+/g, '_')}.pdf`,
         generated_at: new Date().toISOString(),
