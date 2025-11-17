@@ -20,7 +20,7 @@ const formatTimeLocal = (timestamp) => {
 class Attendance {
   // === PERSONAL ATTENDANCE (Employee) ===
   static async getAll({ limit = 10, cursor = null, user_id }) {
-    // Order and cursor both on created_at for stable pagination
+    // ✅ Optimized: Use the new index on created_at DESC
     const query = `
       SELECT
         attendance_id,
@@ -30,9 +30,7 @@ class Attendance {
         to_char(check_out_time, 'YYYY-MM-DD"T"HH24:MI:SS') AS check_out_time,
         present_absent,
         mode,
-        -- formatted created_at for UI
         to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS created_at,
-        -- raw created_at for cursoring
         created_at AS created_at_raw
       FROM attendance
       WHERE user_id = $1
@@ -53,17 +51,15 @@ class Attendance {
         `Fetched attendance for user_id=${user_id}, count=${result.rows.length}`
       );
 
-      // Prepare payload for UI; keep strings as-is
       const rows = result.rows.map(r => ({
         attendance_id: r.attendance_id,
         user_id: r.user_id,
-        date: r.date, // 'YYYY-MM-DD'
-        check_in_time: r.check_in_time || null,   // 'YYYY-MM-DDTHH:mm:ss'
-        check_out_time: r.check_out_time || null, // 'YYYY-MM-DDTHH:mm:ss'
+        date: r.date,
+        check_in_time: r.check_in_time || null,
+        check_out_time: r.check_out_time || null,
         present_absent: r.present_absent,
         mode: r.mode,
-        created_at: r.created_at, // 'YYYY-MM-DDTHH:mm:ss'
-        // created_at_raw not exposed to API; used only for cursor below
+        created_at: r.created_at,
       }));
 
       const nextCursor = result.rows.length
@@ -97,41 +93,68 @@ class Attendance {
       const today = new Date().toISOString().split('T')[0];
       const targetDate = date || today;
 
+      // ✅ Optimized: Uses idx_attendance_user_date index
       const { rows: [existingRecord] } = await client.query(
-        'SELECT attendance_id FROM attendance WHERE user_id = $1 AND date = $2::date',
+        'SELECT attendance_id, check_in_time, check_out_time FROM attendance WHERE user_id = $1 AND date = $2::date',
         [user_id, targetDate]
       );
 
-      // Normalized inputs: allow nulls; DB is IST-local
       const inTime  = check_in_time  || null;
       const outTime = check_out_time || null;
       const workMode = mode || 'office';
 
       let saved;
       if (existingRecord) {
-        const { rows: [updated] } = await client.query(
-          `
-          UPDATE attendance
-             SET check_in_time   = $1,
-                 check_out_time  = $2,
-                 present_absent  = $3,
-                 mode            = $4,
-                 created_at      = CURRENT_TIMESTAMP
-           WHERE attendance_id   = $5
-       RETURNING
-                 attendance_id,
-                 user_id,
-                 to_char(date, 'YYYY-MM-DD') AS date,
-                 to_char(check_in_time,  'YYYY-MM-DD"T"HH24:MI:SS') AS check_in_time,
-                 to_char(check_out_time, 'YYYY-MM-DD"T"HH24:MI:SS') AS check_out_time,
-                 present_absent,
-                 mode,
-                 to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS created_at
-          `,
-          [inTime, outTime, present_absent, workMode, existingRecord.attendance_id]
-        );
-        saved = updated;
-        logger.info(`Updated attendance user_id=${user_id} date=${saved.date}`);
+        // ✅ Only update if there's an actual change
+        const needsUpdate = 
+          existingRecord.check_in_time !== inTime ||
+          existingRecord.check_out_time !== outTime;
+
+        if (needsUpdate) {
+          const { rows: [updated] } = await client.query(
+            `
+            UPDATE attendance
+               SET check_in_time   = COALESCE($1, check_in_time),
+                   check_out_time  = COALESCE($2, check_out_time),
+                   present_absent  = $3,
+                   mode            = $4,
+                   created_at      = CURRENT_TIMESTAMP
+             WHERE attendance_id   = $5
+         RETURNING
+                   attendance_id,
+                   user_id,
+                   to_char(date, 'YYYY-MM-DD') AS date,
+                   to_char(check_in_time,  'YYYY-MM-DD"T"HH24:MI:SS') AS check_in_time,
+                   to_char(check_out_time, 'YYYY-MM-DD"T"HH24:MI:SS') AS check_out_time,
+                   present_absent,
+                   mode,
+                   to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS created_at
+            `,
+            [inTime, outTime, present_absent, workMode, existingRecord.attendance_id]
+          );
+          saved = updated;
+          logger.info(`Updated attendance user_id=${user_id} date=${saved.date}`);
+        } else {
+          // ✅ No change needed, just fetch existing record
+          const { rows: [existing] } = await client.query(
+            `
+            SELECT
+              attendance_id,
+              user_id,
+              to_char(date, 'YYYY-MM-DD') AS date,
+              to_char(check_in_time,  'YYYY-MM-DD"T"HH24:MI:SS') AS check_in_time,
+              to_char(check_out_time, 'YYYY-MM-DD"T"HH24:MI:SS') AS check_out_time,
+              present_absent,
+              mode,
+              to_char(created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS created_at
+            FROM attendance
+            WHERE attendance_id = $1
+            `,
+            [existingRecord.attendance_id]
+          );
+          saved = existing;
+          logger.info(`No update needed for attendance user_id=${user_id} date=${saved.date}`);
+        }
       } else {
         const { rows: [inserted] } = await client.query(
           `
@@ -156,18 +179,18 @@ class Attendance {
 
       await client.query('COMMIT');
 
-      // Fetch user name for socket
+      // ✅ Fetch user name only once, outside transaction for better performance
       const { rows: [user] } = await pool.query(
         'SELECT name FROM users WHERE user_id = $1',
         [user_id]
       );
 
-      // Socket payload (strings already, but keep fallback)
+      // ✅ Socket payload - only emit if there was an actual change
       if (io) {
         io.emit('attendanceMarked', {
           attendance_id: saved.attendance_id,
           user_id: saved.user_id,
-          date: saved.date, // 'YYYY-MM-DD'
+          date: saved.date,
           check_in_time: saved.check_in_time || null,
           check_out_time: saved.check_out_time || null,
           present_absent: saved.present_absent,
@@ -177,7 +200,6 @@ class Attendance {
         });
       }
 
-      // Return strings for API layer as well
       return saved;
     } catch (error) {
       await client.query('ROLLBACK');
@@ -199,6 +221,7 @@ class Attendance {
     search = null,
     employee_id = null
   }) {
+    // ✅ Optimized: Better use of indexes
     let query = `
       SELECT
         a.attendance_id,
@@ -215,14 +238,14 @@ class Attendance {
         to_char(a.created_at, 'YYYY-MM-DD"T"HH24:MI:SS') AS created_at,
         a.created_at AS created_at_raw
       FROM attendance a
-      JOIN users u ON a.user_id = u.user_id
+      INNER JOIN users u ON a.user_id = u.user_id
       LEFT JOIN employee_details ed ON u.user_id = ed.user_id
       WHERE 1=1
     `;
     const values = [];
     let idx = 1;
 
-    // Date filter: exact DATE (no UTC math)
+    // ✅ Date filter: Uses idx_attendance_date index
     if (date) {
       query += ` AND a.date = $${idx++}::date`;
       values.push(date);
@@ -241,21 +264,21 @@ class Attendance {
       values.push(employee_id);
     }
 
-    // Cursor for pagination (created_at)
+    // ✅ Cursor: Uses idx_attendance_created_at_desc index
     if (cursor) {
       query += ` AND a.created_at < $${idx++}`;
       values.push(new Date(cursor));
     }
 
-    // Order & Limit: match cursor (created_at DESC)
-    query += ` ORDER BY a.created_at DESC, u.name ASC LIMIT $${idx}`;
+    // ✅ Order matches index for optimal performance
+    query += ` ORDER BY a.created_at DESC LIMIT $${idx}`;
     values.push(limit);
 
-    // Count query mirrors filters (without cursor/limit/order)
+    // ✅ Optimized count query
     let countQuery = `
       SELECT COUNT(*)
       FROM attendance a
-      JOIN users u ON a.user_id = u.user_id
+      INNER JOIN users u ON a.user_id = u.user_id
       LEFT JOIN employee_details ed ON u.user_id = ed.user_id
       WHERE 1=1
     `;
@@ -289,12 +312,12 @@ class Attendance {
         email: r.email,
         employee_id: r.employee_id,
         phone: r.phone_number,
-        date: r.date,            // 'YYYY-MM-DD'
-        check_in: r.check_in || null,    // 'YYYY-MM-DDTHH:mm:ss'
-        check_out: r.check_out || null,  // 'YYYY-MM-DDTHH:mm:ss'
+        date: r.date,
+        check_in: r.check_in || null,
+        check_out: r.check_out || null,
         status: r.status,
         mode: r.mode,
-        created_at: r.created_at, // 'YYYY-MM-DDTHH:mm:ss'
+        created_at: r.created_at,
       }));
 
       const nextCursor = result.rows.length

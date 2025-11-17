@@ -62,7 +62,7 @@ router.get(
           : null,
       };
 
-      await redis.setEx(cacheKey, 300, JSON.stringify(response));
+      await redis.setEx(cacheKey, 5, JSON.stringify(response)); // ✅ Reduced to 5 seconds
       res.json(response);
     } catch (error) {
       logger.error(
@@ -167,14 +167,23 @@ router.post(
         timezone: 'Asia/Kolkata',
       };
 
-      // Invalidate cached pages for this user
+      // ✅ Enhanced cache invalidation
       setImmediate(async () => {
         try {
-          const cacheKeys = await redis.keys(`attendance_*_${req.user.user_id}`);
-          if (cacheKeys.length) await redis.del(cacheKeys);
-          logger.info(
-            `Cleared cache for attendance after marking for user_id: ${req.user.user_id}`
-          );
+          // Invalidate personal attendance cache
+          const personalCacheKeys = await redis.keys(`attendance_*_${req.user.user_id}`);
+          
+          // ✅ Invalidate HR summary cache
+          const hrCacheKeys = await redis.keys('hr_attendance_summary_*');
+          
+          const allKeys = [...personalCacheKeys, ...hrCacheKeys];
+          
+          if (allKeys.length) {
+            await redis.del(allKeys);
+            logger.info(
+              `Cleared ${personalCacheKeys.length} personal cache keys and ${hrCacheKeys.length} HR summary cache keys after attendance marked for user_id: ${req.user.user_id}`
+            );
+          }
         } catch (err) {
           logger.error('Cache invalidation error', err);
         }
@@ -228,7 +237,7 @@ router.get(
           : null,
       };
 
-      await redis.setEx(cacheKey, 300, JSON.stringify(response));
+      await redis.setEx(cacheKey, 5, JSON.stringify(response)); // ✅ Reduced to 5 seconds
       res.json(response);
     } catch (error) {
       logger.error(
