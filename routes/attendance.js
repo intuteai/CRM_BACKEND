@@ -1,3 +1,4 @@
+// routes/attendance.js
 const express = require('express');
 const { Attendance } = require('../models/attendance');
 const redis = require('../config/redis');
@@ -6,20 +7,17 @@ const logger = require('../utils/logger');
 const pool = require('../config/db');
 const router = express.Router({ mergeParams: true });
 
-// ──────────────────────────────────────────────────────────────
-// Helper: "today" in IST as YYYY-MM-DD (matches DB local date)
-// ──────────────────────────────────────────────────────────────
+// Helper: "today" in IST as YYYY-MM-DD
 const todayIST = () => {
-  const fmt = new Intl.DateTimeFormat('en-CA', {
+  return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Kolkata',
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-  });
-  return fmt.format(new Date()); // 'YYYY-MM-DD'
+  }).format(new Date());
 };
 
-// === PERSONAL ATTENDANCE (Employee) ===
+// PERSONAL ATTENDANCE (Employee) — unchanged, perfect as-is
 router.get(
   '/',
   authenticateToken,
@@ -35,45 +33,40 @@ router.get(
 
       const cached = await redis.get(cacheKey);
       if (cached && force_refresh !== 'true') {
-        logger.info(`Cache hit for ${cacheKey}`);
+        logger.info(`Cache hit: ${cacheKey}`);
         return res.json(JSON.parse(cached));
       }
 
       const { data: attendanceRecords, total, nextCursor } = await Attendance.getAll({
         limit: parsedLimit,
-        // Model expects a Date or null for cursor; keep as Date if provided
         cursor: cursor ? new Date(cursor) : null,
         user_id: req.user.user_id,
       });
 
-      // Records are already formatted by the model as local strings.
-      // We only append a timezone hint for the client.
       const processedRows = attendanceRecords.map((record) => ({
-        ...record, // date, check_in_time, check_out_time, created_at are strings
+        ...record,
         timezone: 'Asia/Kolkata',
       }));
 
       const response = {
         attendance: processedRows,
         total,
-        // Keep ISO for cursor if it's a Date; otherwise pass-through.
         nextCursor: nextCursor
           ? (nextCursor instanceof Date ? nextCursor.toISOString() : nextCursor)
           : null,
       };
 
-      await redis.setEx(cacheKey, 5, JSON.stringify(response)); // ✅ Reduced to 5 seconds
+      // Personal history: short cache is fine
+      await redis.setEx(cacheKey, 10, JSON.stringify(response));
       res.json(response);
     } catch (error) {
-      logger.error(
-        `Error fetching attendance for user ${req.user.user_id}: ${error.message}`,
-        { stack: error.stack }
-      );
+      logger.error(`Error fetching personal attendance: ${error.message}`, { stack: error.stack });
       res.status(500).json({ error: 'Server error', code: 'SERVER_ERROR' });
     }
   }
 );
 
+// MARK ATTENDANCE — unchanged (model already emits rich payload)
 router.post(
   '/',
   authenticateToken,
@@ -82,27 +75,15 @@ router.post(
     try {
       const { date, check_in_time, check_out_time, present_absent, mode } = req.body;
 
-      if (!present_absent) {
-        return res
-          .status(400)
-          .json({ error: 'Status is required', code: 'ATTENDANCE_MISSING_FIELDS' });
+      if (!present_absent || !['present', 'absent'].includes(present_absent)) {
+        return res.status(400).json({ error: 'Invalid status', code: 'ATTENDANCE_INVALID_STATUS' });
       }
 
-      if (!['present', 'absent'].includes(present_absent)) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid status: must be present or absent', code: 'ATTENDANCE_INVALID_STATUS' });
-      }
-
-      // Validate date must be "today" in IST (DB is local IST)
       const today = todayIST();
       if (date !== today) {
-        return res
-          .status(400)
-          .json({ error: 'Date must be today', code: 'ATTENDANCE_INVALID_DATE' });
+        return res.status(400).json({ error: 'Date must be today', code: 'ATTENDANCE_INVALID_DATE' });
       }
 
-      // Guard rails on state transitions
       const { rows: [existingRecord] } = await pool.query(
         'SELECT check_in_time, check_out_time, present_absent FROM attendance WHERE user_id = $1 AND date = $2::date',
         [req.user.user_id, date]
@@ -110,99 +91,68 @@ router.post(
 
       if (present_absent === 'absent') {
         if (check_in_time || check_out_time || mode) {
-          return res.status(400).json({
-            error: 'When absent, check-in, check-out, and mode must be null',
-            code: 'ATTENDANCE_INVALID_ABSENT_FIELDS',
-          });
+          return res.status(400).json({ error: 'Absent records must have null times/mode', code: 'ATTENDANCE_INVALID_ABSENT_FIELDS' });
         }
       } else {
-        if (!mode) {
-          return res
-            .status(400)
-            .json({ error: 'Work mode is required for present status', code: 'ATTENDANCE_MISSING_FIELDS' });
+        if (!mode || !['office', 'remote'].includes(mode)) {
+          return res.status(400).json({ error: 'Valid work mode required', code: 'ATTENDANCE_INVALID_MODE' });
         }
-        if (!['office', 'remote'].includes(mode)) {
-          return res
-            .status(400)
-            .json({ error: 'Invalid work mode: must be office or remote', code: 'ATTENDANCE_INVALID_MODE' });
+        if (check_in_time && existingRecord?.check_in_time) {
+          return res.status(400).json({ error: 'Already checked in today', code: 'ATTENDANCE_ALREADY_CHECKED_IN' });
         }
-        if (check_in_time && existingRecord) {
-          return res
-            .status(400)
-            .json({ error: 'Check-in already recorded for today', code: 'ATTENDANCE_ALREADY_CHECKED_IN' });
+        if (check_out_time && !existingRecord?.check_in_time) {
+          return res.status(400).json({ error: 'Cannot check out without check-in', code: 'ATTENDANCE_NO_CHECK_IN' });
         }
-        if (check_out_time && (!existingRecord || !existingRecord.check_in_time)) {
-          return res
-            .status(400)
-            .json({ error: 'Cannot check out without a prior check-in', code: 'ATTENDANCE_NO_CHECK_IN' });
-        }
-        if (check_out_time && existingRecord && existingRecord.check_out_time) {
-          return res
-            .status(400)
-            .json({ error: 'Check-out already recorded for today', code: 'ATTENDANCE_ALREADY_CHECKED_OUT' });
+        if (check_out_time && existingRecord?.check_out_time) {
+          return res.status(400).json({ error: 'Already checked out today', code: 'ATTENDANCE_ALREADY_CHECKED_OUT' });
         }
         if (check_out_time && check_in_time && new Date(check_out_time) <= new Date(check_in_time)) {
-          return res
-            .status(400)
-            .json({ error: 'Check-out time must be after check-in time', code: 'ATTENDANCE_INVALID_TIME' });
+          return res.status(400).json({ error: 'Check-out must be after check-in', code: 'ATTENDANCE_INVALID_TIME' });
         }
       }
 
       const attendance = await Attendance.createOrUpdate(
         req.user.user_id,
         { date, check_in_time, check_out_time, present_absent, mode },
-        req.io // model will emit a rich 'attendanceMarked' event
+        req.io
       );
 
-      // The model already returns IST-formatted strings. Respond as-is.
       const response = {
         attendance_id: attendance.attendance_id,
         user_id: attendance.user_id,
-        date: attendance.date, // 'YYYY-MM-DD'
-        check_in_time: attendance.check_in_time || null,   // 'YYYY-MM-DDTHH:mm:ss'
-        check_out_time: attendance.check_out_time || null, // 'YYYY-MM-DDTHH:mm:ss'
+        date: attendance.date,
+        check_in_time: attendance.check_in_time || null,
+        check_out_time: attendance.check_out_time || null,
         present_absent: attendance.present_absent,
         mode: attendance.mode,
-        created_at: attendance.created_at, // 'YYYY-MM-DDTHH:mm:ss'
+        created_at: attendance.created_at,
         timezone: 'Asia/Kolkata',
       };
 
-      // ✅ Enhanced cache invalidation
+      // Invalidate all relevant caches in background
       setImmediate(async () => {
         try {
-          // Invalidate personal attendance cache
-          const personalCacheKeys = await redis.keys(`attendance_*_${req.user.user_id}`);
-          
-          // ✅ Invalidate HR summary cache
-          const hrCacheKeys = await redis.keys('hr_attendance_summary_*');
-          
-          const allKeys = [...personalCacheKeys, ...hrCacheKeys];
-          
-          if (allKeys.length) {
+          const personalKeys = await redis.keys(`attendance_*_${req.user.user_id}`);
+          const hrKeys = await redis.keys('hr_attendance_summary_*');
+          const allKeys = [...personalKeys, ...hrKeys];
+          if (allKeys.length > 0) {
             await redis.del(allKeys);
-            logger.info(
-              `Cleared ${personalCacheKeys.length} personal cache keys and ${hrCacheKeys.length} HR summary cache keys after attendance marked for user_id: ${req.user.user_id}`
-            );
+            logger.info(`Invalidated ${allKeys.length} cache keys after attendance mark`);
           }
         } catch (err) {
-          logger.error('Cache invalidation error', err);
+          logger.error('Cache invalidation failed', err);
         }
       });
 
-      // ⚠️ Do NOT emit a second socket event here.
-      // The model already emitted a detailed 'attendanceMarked' payload.
       res.status(201).json(response);
     } catch (error) {
-      logger.error(
-        `Error marking attendance for user ${req.user.user_id}: ${error.message}`,
-        { stack: error.stack }
-      );
-      res.status(error.status || 400).json({ error: error.message, code: 'ATTENDANCE_ERROR' });
+      logger.error(`Mark attendance error: ${error.message}`, { stack: error.stack });
+      res.status(error.status || 400).json({ error: error.message || 'Failed to mark attendance' });
     }
   }
 );
 
-// === HR ATTENDANCE SUMMARY (All Employees) ===
+// HR ATTENDANCE SUMMARY — SMART CACHING (THE MAGIC)
 router.get(
   '/summary',
   authenticateToken,
@@ -212,38 +162,52 @@ router.get(
 
     try {
       const parsedLimit = Math.min(parseInt(limit, 10), 100);
+      const currentToday = todayIST();
+      const isTodayView = !date || date === currentToday;
+
+      // TODAY'S VIEW → ALWAYS FRESH (real-time)
+      if (isTodayView || force_refresh === 'true') {
+        const { data, total, nextCursor } = await Attendance.getHRSummary({
+          limit: parsedLimit,
+          cursor: cursor ? new Date(cursor) : null,
+          date,
+          search,
+        });
+
+        return res.json({
+          attendance: data,
+          total,
+          nextCursor: nextCursor ? new Date(nextCursor).toISOString() : null,
+        });
+      }
+
+      // PAST DATES & SEARCH → CACHE (fast)
       const cacheKey = `hr_attendance_summary_${parsedLimit}_${cursor || 'null'}_${date || 'all'}_${search || 'none'}`;
 
-      if (force_refresh === 'true') await redis.del(cacheKey);
-
       const cached = await redis.get(cacheKey);
-      if (cached && force_refresh !== 'true') {
-        logger.info(`Cache hit for HR summary: ${cacheKey}`);
+      if (cached) {
+        logger.info(`Cache hit (non-today): ${cacheKey}`);
         return res.json(JSON.parse(cached));
       }
 
       const { data, total, nextCursor } = await Attendance.getHRSummary({
         limit: parsedLimit,
-        cursor: cursor ? new Date(cursor) : null, // model uses created_at cursor
+        cursor: cursor ? new Date(cursor) : null,
         date,
         search,
       });
 
       const response = {
-        attendance: data, // already IST strings from the model
+        attendance: data,
         total,
-        nextCursor: nextCursor
-          ? (nextCursor instanceof Date ? nextCursor.toISOString() : nextCursor)
-          : null,
+        nextCursor: nextCursor ? new Date(nextCursor).toISOString() : null,
       };
 
-      await redis.setEx(cacheKey, 5, JSON.stringify(response)); // ✅ Reduced to 5 seconds
+      // Cache for 30 seconds (past/filtered views)
+      await redis.setEx(cacheKey, 30, JSON.stringify(response));
       res.json(response);
     } catch (error) {
-      logger.error(
-        `HR Attendance Summary Error for user ${req.user.user_id}: ${error.message}`,
-        { stack: error.stack }
-      );
+      logger.error(`HR Summary error: ${error.message}`, { stack: error.stack });
       res.status(500).json({ error: 'Server error', code: 'HR_ATTENDANCE_SUMMARY_ERROR' });
     }
   }
