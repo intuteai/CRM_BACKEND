@@ -452,3 +452,77 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:29:13.785Z"}
 {"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:29:14.235Z"}
 {"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:29:14.396Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T09:32:33.868Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T09:32:33.875Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T09:32:33.877Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T09:32:33.669Z","timestamp":"2025-11-24T09:32:35.742Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T09:32:35.746Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T09:32:35.752Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:32:44.083Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T09:33:09.599Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-24T09:33:18.368Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:33:18.444Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-24T09:33:19.598Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:33:21.023Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:33:21.270Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T09:33:30.660Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T09:34:16.101Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T09:54:37.723Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T09:54:37.728Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T09:54:37.729Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T09:54:35.985Z","timestamp":"2025-11-24T09:54:37.993Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T09:54:37.994Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T09:54:37.996Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:54:40.579Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T09:54:49.502Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:54:53.759Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:54:54.028Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:54:54.133Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T09:54:59.668Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T10:37:21.879Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T10:37:21.889Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T10:37:21.890Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:37:20.135Z","timestamp":"2025-11-24T10:37:22.165Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T10:37:22.167Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T10:37:22.170Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:37:25.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:37:34.143Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:37:34.581Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:37:36.275Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-24T10:37:58.581Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:37:58.652Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:00.359Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:00.442Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T10:38:13.470Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:38:37.275Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:38:37.623Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:38.052Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:38.149Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T10:39:11.744Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T10:39:11.746Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T10:39:11.746Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:39:10.030Z","timestamp":"2025-11-24T10:39:12.064Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T10:39:12.066Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T10:39:12.068Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:39:14.769Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:39:14.862Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:39:15.208Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:15.461Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:15.555Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:39:50.221Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:39:50.596Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:50.862Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:50.957Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:41:54.783Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:41:55.119Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:41:55.615Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:41:55.717Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:42:27.398Z","timestamp":"2025-11-24T10:42:29.429Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:29.830Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:32.092Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:34.410Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:36.780Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:39.201Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:42:45.718Z","timestamp":"2025-11-24T10:42:47.751Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:48.429Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:50.712Z"}
