@@ -175,7 +175,6 @@ router.get(
 
       const enquiries = await Enquiry.getAll({
         limit: parsedLimit,
-        // NOTE: model currently uses cursor; offset is used only in cache key
         user: req.user,
       });
 
@@ -254,8 +253,6 @@ router.put(
         status,
         last_discussion,
         next_interaction,
-
-        // NEW FIELDS – pass to model.update
         lead,
         priority, // legacy support
         source,
@@ -369,6 +366,64 @@ router.post(
       logger.error('Assign enquiry error:', err);
       const status = err.message.includes('not found') ? 404 : 400;
       res.status(status).json({ error: err.message });
+    }
+  }
+);
+
+// ===================================================================
+// MARK DONE (DESIGN -> send back to SALES)
+// ===================================================================
+router.post(
+  '/:id/mark-done',
+  authenticateToken,
+  checkPermission('Enquiries', 'can_write'),
+  async (req, res) => {
+    try {
+      const enquiryId = req.params.id;
+      const user = req.user;
+
+      // Only Design role allowed to mark done
+      if (user.role_name !== 'Design') {
+        return res
+          .status(403)
+          .json({ error: 'Only Design role can mark enquiry as done' });
+      }
+
+      // CONFIG: Sales user id to assign back to (change if your Sales user id differs)
+      const SALES_USER_ID = process.env.DEFAULT_SALES_USER_ID
+        ? parseInt(process.env.DEFAULT_SALES_USER_ID, 10)
+        : 7;
+
+      // Confirm current assignment belongs to this design user
+      const chk = await pool.query(
+        `SELECT assigned_to FROM enquiries WHERE enquiry_id = $1`,
+        [enquiryId]
+      );
+      if (chk.rows.length === 0) {
+        return res.status(404).json({ error: 'Enquiry not found' });
+      }
+      if (chk.rows[0].assigned_to !== user.user_id) {
+        return res
+          .status(403)
+          .json({ error: 'You are not the current assignee' });
+      }
+
+      const updated = await Enquiry.markDone(enquiryId, user, SALES_USER_ID, req.io);
+
+      // Invalidate caches
+      await deleteByPattern(`enquiry_*_${enquiryId}`);
+      await deleteByPattern('enquiry_list_*');
+
+      // Emit generic update as well (markDone already emits an 'assigned' event)
+      if (req.io) {
+        req.io.emit('enquiryUpdate', { ...updated, type: 'assigned' });
+      }
+
+      res.json(updated);
+    } catch (err) {
+      logger.error('Mark done error:', err);
+      const status = err.message.includes('not found') ? 404 : 400;
+      res.status(status).json({ error: err.message || 'Failed to mark done' });
     }
   }
 );
