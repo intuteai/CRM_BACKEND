@@ -55,18 +55,11 @@ class Enquiry {
     // Normalize lead value (fallback to "priority" if old frontend still sends it)
     const finalLead = normalizeLead(lead || priority || 'lead');
 
-    // Generate enquiry_id if not provided
+    // Generate enquiry_id if not provided — use DB atomic function
     let finalEnquiryId = enquiry_id;
     if (!finalEnquiryId) {
-      const year = new Date().getFullYear();
-      for (let i = 0; i < 20; i++) {
-        finalEnquiryId = `ENQ${year}${String(Math.floor(1000 + Math.random() * 9000))}`;
-        const exists = await pool.query(
-          'SELECT 1 FROM enquiries WHERE enquiry_id = $1',
-          [finalEnquiryId]
-        );
-        if (exists.rows.length === 0) break;
-      }
+      const idRes = await pool.query('SELECT get_next_enquiry_id() AS id');
+      finalEnquiryId = idRes.rows[0].id;
     }
 
     const client = await pool.connect();
