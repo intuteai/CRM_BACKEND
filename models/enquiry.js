@@ -36,6 +36,7 @@ class Enquiry {
       phone_no,
       items_required,
       source = 'Website',
+      application = null,       // <-- NEW field
       // NEW: lead replaces priority in DB (accept both)
       lead,
       priority,
@@ -83,6 +84,7 @@ class Enquiry {
           phone_no,
           items_required,
           source,
+          application,            -- NEW column
           lead,
           tags,
           stage,
@@ -97,7 +99,7 @@ class Enquiry {
           $1, $2, $3, $4, $5,
           $6, $7, $8, $9, $10,
           $11, $12, $13, $14,
-          $15, $16, $17
+          $15, $16, $17, $18
         )
         RETURNING *`,
         [
@@ -108,6 +110,7 @@ class Enquiry {
           phone_no?.trim() || null,
           items_required?.trim() || null,
           source,
+          application || null, // <-- NEW
           finalLead,
           tags,
           initialStage,
@@ -283,7 +286,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // UPDATE (lead, source, tags, due_date)
+  // UPDATE (lead, source, tags, due_date, application)
   // =================================================================
   static async update(
     enquiryId,
@@ -299,6 +302,7 @@ class Enquiry {
       lead,
       priority,
       source,
+      application, // <-- NEW
       tags,
       due_date,
     },
@@ -327,11 +331,12 @@ class Enquiry {
         last_discussion = $7,
         next_interaction= $8,
         lead            = COALESCE($9, lead),
-        source          = COALESCE($10, source),
-        tags            = COALESCE($11, tags),
-        due_date        = $12,
+        application     = COALESCE($10, application), -- <-- NEW
+        source          = COALESCE($11, source),
+        tags            = COALESCE($12, tags),
+        due_date        = $13,
         updated_at      = CURRENT_TIMESTAMP
-      WHERE enquiry_id  = $13
+      WHERE enquiry_id  = $14
       RETURNING *
     `,
       [
@@ -344,6 +349,8 @@ class Enquiry {
         last_discussion ? new Date(last_discussion) : null,
         next_interaction ? new Date(next_interaction) : null,
         leadToUse,
+        // application placeholder:
+        typeof application !== 'undefined' ? application : null,
         source || null,
         Array.isArray(tags) ? tags : null,
         due_date ? new Date(due_date) : null,

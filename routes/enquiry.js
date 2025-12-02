@@ -68,7 +68,7 @@ router.post(
 );
 
 // ===================================================================
-// CREATE NEW ENQUIRY (old + new fields, with lead)
+// CREATE NEW ENQUIRY (old + new fields, with lead & application)
 // ===================================================================
 router.post(
   '/',
@@ -90,6 +90,7 @@ router.post(
 
         // new fields
         source = 'Website',
+        application = null, // <-- NEW
         lead,
         priority, // legacy support
         tags = [],
@@ -115,6 +116,7 @@ router.post(
           last_discussion,
           next_interaction,
           source,
+          application, // <-- pass through
           lead,
           priority,
           tags,
@@ -236,7 +238,7 @@ router.get(
 );
 
 // ===================================================================
-// UPDATE (includes lead, source, tags, due_date)
+// UPDATE (includes lead, source, tags, due_date, application)
 // ===================================================================
 router.put(
   '/:id',
@@ -256,6 +258,7 @@ router.put(
         lead,
         priority, // legacy support
         source,
+        application, // <-- NEW
         tags,
         due_date,
       } = req.body;
@@ -274,6 +277,7 @@ router.put(
           lead,
           priority,
           source,
+          application, // <-- pass it through
           tags,
           due_date,
         },
