@@ -1,16 +1,12 @@
-// routes/enquiry.js
 const express = require('express');
 const Enquiry = require('../models/enquiry');
 const redis = require('../config/redis');
-const pool = require('../config/db'); // needed for watchers/templates/read receipts
+const pool = require('../config/db');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 
 const router = express.Router({ mergeParams: true });
 
-/**
- * Helper to delete redis keys by pattern safely
- */
 async function deleteByPattern(pattern) {
   const keys = await redis.keys(pattern);
   if (keys.length > 0) {
@@ -18,9 +14,7 @@ async function deleteByPattern(pattern) {
   }
 }
 
-// ===================================================================
-// GET COMMENT TEMPLATES  ✅ MUST BE BEFORE /:id
-// ===================================================================
+// GET TEMPLATES (must come before /:id)
 router.get(
   '/templates',
   authenticateToken,
@@ -41,9 +35,7 @@ router.get(
   }
 );
 
-// ===================================================================
-// REFRESH ALL ENQUIRY CACHES (admin-level)
-// ===================================================================
+// REFRESH cache
 router.post(
   '/refresh',
   authenticateToken,
@@ -67,9 +59,7 @@ router.post(
   }
 );
 
-// ===================================================================
-// CREATE NEW ENQUIRY (old + new fields, with lead & application)
-// ===================================================================
+// CREATE
 router.post(
   '/',
   authenticateToken,
@@ -77,7 +67,6 @@ router.post(
   async (req, res) => {
     try {
       const {
-        // old fields
         enquiry_id,
         company_name,
         contact_person,
@@ -87,12 +76,10 @@ router.post(
         status,
         last_discussion,
         next_interaction,
-
-        // new fields
         source = 'Website',
-        application = null, // <-- NEW
+        application = null,
         lead,
-        priority, // legacy support
+        priority,
         tags = [],
         assigned_to,
         due_date,
@@ -116,7 +103,7 @@ router.post(
           last_discussion,
           next_interaction,
           source,
-          application, // <-- pass through
+          application,
           lead,
           priority,
           tags,
@@ -127,7 +114,6 @@ router.post(
         req.user
       );
 
-      // Invalidate all enquiry list caches (for all users)
       await deleteByPattern('enquiry_list_*');
 
       logger.info(
@@ -149,19 +135,17 @@ router.post(
   }
 );
 
-// ===================================================================
-// GET ALL ENQUIRIES (role-based + per-user cache)
-// ===================================================================
+// GET ALL
 router.get(
   '/',
   authenticateToken,
   checkPermission('Enquiries', 'can_read'),
   async (req, res) => {
-    const { limit = 10, offset = 0, force_refresh = 'false' } = req.query;
+    const { limit = 10, offset = 0, force_refresh = 'false', cursor = null } =
+      req.query;
     const parsedLimit = parseInt(limit, 10) || 10;
     const parsedOffset = parseInt(offset, 10) || 0;
 
-    // Cache key includes user_id because visibility is role-based
     const cacheKey = `enquiry_list_${req.user.user_id}_${parsedLimit}_${parsedOffset}`;
 
     try {
@@ -177,11 +161,13 @@ router.get(
 
       const enquiries = await Enquiry.getAll({
         limit: parsedLimit,
+        offset: parsedOffset,
+        cursor: cursor || null,
         user: req.user,
       });
 
-      await redis.setEx(cacheKey, 300, JSON.stringify(enquiries)); // 5 minutes
-      logger.info(`Fetched ${enquiries.data.length} enquiries`);
+      await redis.setEx(cacheKey, 300, JSON.stringify(enquiries));
+      logger.info(`Fetched ${enquiries.data.length} enquiries for user ${req.user.user_id}`);
       res.json(enquiries);
     } catch (error) {
       logger.error(`Error fetching enquiries: ${error.message}`, error.stack);
@@ -192,15 +178,12 @@ router.get(
   }
 );
 
-// ===================================================================
-// GET SINGLE ENQUIRY + FULL ACTIVITY LOG (with cache)
-// ===================================================================
+// GET SINGLE
 router.get(
   '/:id',
   authenticateToken,
   checkPermission('Enquiries', 'can_read'),
   async (req, res) => {
-    // Include user_id in key so one user's view isn't reused for another
     const cacheKey = `enquiry_${req.user.user_id}_${req.params.id}`;
 
     try {
@@ -216,7 +199,7 @@ router.get(
 
       const enquiry = await Enquiry.getById(req.params.id, req.user);
       await redis.setEx(cacheKey, 300, JSON.stringify(enquiry));
-      logger.info(`Fetched enquiry: ${enquiry.enquiry_id}`);
+      logger.info(`Fetched enquiry: ${enquiry.enquiry_id} for user ${req.user.user_id}`);
       res.json(enquiry);
     } catch (error) {
       logger.error(
@@ -237,9 +220,7 @@ router.get(
   }
 );
 
-// ===================================================================
-// UPDATE (includes lead, source, tags, due_date, application)
-// ===================================================================
+// UPDATE
 router.put(
   '/:id',
   authenticateToken,
@@ -256,9 +237,9 @@ router.put(
         last_discussion,
         next_interaction,
         lead,
-        priority, // legacy support
+        priority,
         source,
-        application, // <-- NEW
+        application,
         tags,
         due_date,
       } = req.body;
@@ -277,14 +258,13 @@ router.put(
           lead,
           priority,
           source,
-          application, // <-- pass it through
+          application,
           tags,
           due_date,
         },
         req.io
       );
 
-      // Invalidate this enquiry for ALL users + all lists
       await deleteByPattern(`enquiry_*_${req.params.id}`);
       await deleteByPattern('enquiry_list_*');
 
@@ -305,9 +285,7 @@ router.put(
   }
 );
 
-// ===================================================================
-// DELETE ENQUIRY (hard delete + clear activities)
-// ===================================================================
+// DELETE
 router.delete(
   '/:id',
   authenticateToken,
@@ -316,7 +294,6 @@ router.delete(
     try {
       const enquiry = await Enquiry.delete(req.params.id, req.io);
 
-      // Invalidate this enquiry for ALL users + all lists
       await deleteByPattern(`enquiry_*_${req.params.id}`);
       await deleteByPattern('enquiry_list_*');
 
@@ -337,9 +314,7 @@ router.delete(
   }
 );
 
-// ===================================================================
-// ASSIGN / ESCALATE TO SOMEONE
-// ===================================================================
+// ASSIGN
 router.post(
   '/:id/assign',
   authenticateToken,
@@ -361,7 +336,6 @@ router.post(
         req.user
       );
 
-      // Clear detail cache for ALL users for this enquiry + all lists
       await deleteByPattern(`enquiry_*_${req.params.id}`);
       await deleteByPattern('enquiry_list_*');
 
@@ -374,9 +348,7 @@ router.post(
   }
 );
 
-// ===================================================================
-// MARK DONE (DESIGN -> send back to SALES)
-// ===================================================================
+// MARK DONE (Design only)
 router.post(
   '/:id/mark-done',
   authenticateToken,
@@ -386,14 +358,12 @@ router.post(
       const enquiryId = req.params.id;
       const user = req.user;
 
-      // Only Design role allowed to mark done
-      if (user.role_name !== 'Design') {
+      if (!String(user.role_name || '').toLowerCase().includes('design')) {
         return res
           .status(403)
           .json({ error: 'Only Design role can mark enquiry as done' });
       }
 
-      // CONFIG: Sales user id to assign back to (change if your Sales user id differs)
       const SALES_USER_ID = process.env.DEFAULT_SALES_USER_ID
         ? parseInt(process.env.DEFAULT_SALES_USER_ID, 10)
         : 7;
@@ -414,11 +384,9 @@ router.post(
 
       const updated = await Enquiry.markDone(enquiryId, user, SALES_USER_ID, req.io);
 
-      // Invalidate caches
       await deleteByPattern(`enquiry_*_${enquiryId}`);
       await deleteByPattern('enquiry_list_*');
 
-      // Emit generic update as well (markDone already emits an 'assigned' event)
       if (req.io) {
         req.io.emit('enquiryUpdate', { ...updated, type: 'assigned' });
       }
@@ -432,9 +400,7 @@ router.post(
   }
 );
 
-// ===================================================================
-// ADD COMMENT / @MENTION
-// ===================================================================
+// ADD COMMENT
 router.post(
   '/:id/comment',
   authenticateToken,
@@ -470,9 +436,7 @@ router.post(
   }
 );
 
-// ===================================================================
-// CHANGE STAGE (close won, regret, etc.)
-// ===================================================================
+// CHANGE STAGE
 router.patch(
   '/:id/stage',
   authenticateToken,
@@ -501,7 +465,6 @@ router.patch(
         req.user
       );
 
-      // Clear detail cache for ALL users + all list caches
       await deleteByPattern(`enquiry_*_${req.params.id}`);
       await deleteByPattern('enquiry_list_*');
 
@@ -513,9 +476,7 @@ router.patch(
   }
 );
 
-// ===================================================================
-// FOLLOW / UNFOLLOW ENQUIRY
-// ===================================================================
+// FOLLOW / UNFOLLOW
 router.post(
   '/:id/follow',
   authenticateToken,
@@ -555,9 +516,7 @@ router.delete(
   }
 );
 
-// ===================================================================
-// MARK ACTIVITY AS READ (read receipts)
-// ===================================================================
+// MARK ACTIVITY READ
 router.post(
   '/:enquiryId/activity/:activityId/read',
   authenticateToken,

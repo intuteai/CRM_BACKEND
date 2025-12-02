@@ -3,24 +3,28 @@ const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 const VALID_STATUSES = ['Pending', 'In Progress', 'Closed', 'Cancelled'];
-// New: allowed lead values
 const VALID_LEADS = ['hotlead', 'followup', 'lead', 'not_interested', 'closed'];
 
-/**
- * normalizeStatus: returns a valid DB status or defaults
- */
 function normalizeStatus(input, { assigned = false } = {}) {
   if (input && VALID_STATUSES.includes(input)) return input;
   return assigned ? 'In Progress' : 'Pending';
 }
 
-/**
- * normalizeLead: ensures lead uses allowed set and returns lowercase
- */
 function normalizeLead(raw) {
   if (!raw) return 'lead';
   const lower = String(raw).toLowerCase();
   return VALID_LEADS.includes(lower) ? lower : 'lead';
+}
+
+async function fetchUserName(userId) {
+  if (!userId) return null;
+  try {
+    const r = await pool.query('SELECT name FROM users WHERE user_id = $1', [userId]);
+    return r.rows.length ? r.rows[0].name : null;
+  } catch (err) {
+    logger.warn('Failed to fetch user name for', userId, err);
+    return null;
+  }
 }
 
 class Enquiry {
@@ -36,14 +40,12 @@ class Enquiry {
       phone_no,
       items_required,
       source = 'Website',
-      application = null,       // <-- NEW field
-      // NEW: lead replaces priority in DB (accept both)
+      application = null,
       lead,
       priority,
       tags = [],
       assigned_to = null,
       due_date = null,
-      // Old compatibility
       status = 'Pending',
       last_discussion = null,
       next_interaction = null,
@@ -53,15 +55,12 @@ class Enquiry {
 
     const finalLead = normalizeLead(lead || priority || 'lead');
 
-    // If enquiry_id not provided, use DB helper get_next_enquiry_id() if available
     let finalEnquiryId = enquiry_id;
     if (!finalEnquiryId) {
-      // safe fallback: try DB function then fallback to timestamp rand
       try {
         const idRes = await pool.query('SELECT get_next_enquiry_id() AS id');
         finalEnquiryId = idRes.rows[0].id;
       } catch (err) {
-        // fallback
         finalEnquiryId = `ENQ${new Date().getFullYear()}${String(
           Math.floor(1000 + Math.random() * 9000)
         )}`;
@@ -75,6 +74,7 @@ class Enquiry {
       const initialStage = assigned_to ? 'in_discussion' : 'new';
       const initialStatus = normalizeStatus(status, { assigned: !!assigned_to });
 
+      // NOTE: added created_by column (last parameter)
       const enquiryResult = await client.query(
         `INSERT INTO enquiries (
           enquiry_id,
@@ -84,7 +84,7 @@ class Enquiry {
           phone_no,
           items_required,
           source,
-          application,            -- NEW column
+          application,
           lead,
           tags,
           stage,
@@ -94,12 +94,13 @@ class Enquiry {
           due_date,
           status,
           last_discussion,
-          next_interaction
+          next_interaction,
+          created_by
         ) VALUES (
           $1, $2, $3, $4, $5,
           $6, $7, $8, $9, $10,
           $11, $12, $13, $14,
-          $15, $16, $17, $18
+          $15, $16, $17, $18, $19
         )
         RETURNING *`,
         [
@@ -110,26 +111,27 @@ class Enquiry {
           phone_no?.trim() || null,
           items_required?.trim() || null,
           source,
-          application || null, // <-- NEW
+          application || null,
           finalLead,
           tags,
           initialStage,
           assigned_to,
-          user?.user_id || null,
-          assigned_to ? new Date() : null,
+          user?.user_id || null, // assigned_by
+          assigned_to ? new Date() : null, // assigned_at
           due_date ? new Date(due_date) : null,
           initialStatus,
           last_discussion ? new Date(last_discussion) : null,
           next_interaction ? new Date(next_interaction) : null,
+          user?.user_id || null, // created_by (NEW)
         ]
       );
 
       const enquiry = enquiryResult.rows[0];
-
-      // alias for frontend compatibility (old `priority` prop)
       enquiry.priority = enquiry.lead;
 
-      // Log creation/assignment
+      // attach created_by_name for convenience
+      enquiry.created_by_name = user?.name || (await fetchUserName(enquiry.created_by));
+
       if (assigned_to && user?.user_id) {
         await client.query(
           `INSERT INTO enquiry_activities
@@ -172,26 +174,34 @@ class Enquiry {
   // =================================================================
   // GET ALL ENQUIRIES (Design sees only currently assigned to them)
   // =================================================================
-  static async getAll({ limit = 15, cursor, user }) {
-    const isDesign = user?.role_name === 'Design';
+  static async getAll({ limit = 15, offset = 0, cursor, user }) {
+    const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
+    const userId = Number(user?.user_id);
 
+    if (isDesign && (!userId || Number.isNaN(userId))) {
+      logger.warn('Design user with no numeric user_id attempted getAll, returning empty list');
+      return { data: [], total: 0, cursor: null };
+    }
+
+    // include created_by_name via join
     let query = `
       SELECT
         e.*,
         u.name  AS assigned_to_name,
-        ub.name AS assigned_by_name
+        ub.name AS assigned_by_name,
+        uc.name AS created_by_name
       FROM enquiries e
       LEFT JOIN users u  ON e.assigned_to = u.user_id
       LEFT JOIN users ub ON e.assigned_by = ub.user_id
+      LEFT JOIN users uc ON e.created_by = uc.user_id
     `;
 
     const values = [];
     const where = [];
 
-    // Design only sees enquiries currently assigned to them
     if (isDesign) {
-      where.push(`e.assigned_to = $${values.length + 1}`);
-      values.push(user.user_id);
+      where.push(`e.assigned_to = $${values.length + 1}::int`);
+      values.push(userId);
     }
 
     if (cursor) {
@@ -203,23 +213,24 @@ class Enquiry {
       query += ` WHERE ${where.join(' AND ')}`;
     }
 
-    query += ` ORDER BY e.created_at DESC LIMIT $${values.length + 1}`;
+    query += ` ORDER BY e.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
     values.push(limit);
+    values.push(offset);
+
+    logger.debug('getAll query values', { isDesign, values });
 
     const result = await pool.query(query, values);
 
-    // alias lead -> priority for frontend compatibility
     const data = result.rows.map((row) => ({
       ...row,
       priority: row.lead,
     }));
 
-    // total count with same visibility logic
     let totalResult;
     if (isDesign) {
       totalResult = await pool.query(
-        `SELECT COUNT(*) AS count FROM enquiries WHERE assigned_to = $1`,
-        [user.user_id]
+        `SELECT COUNT(*) AS count FROM enquiries WHERE assigned_to = $1::int`,
+        [userId]
       );
     } else {
       totalResult = await pool.query('SELECT COUNT(*) AS count FROM enquiries');
@@ -236,15 +247,22 @@ class Enquiry {
   // GET SINGLE ENQUIRY + ACTIVITIES (Design must be current assignee)
   // =================================================================
   static async getById(enquiryId, user) {
-    const isDesign = user?.role_name === 'Design';
+    const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
+    const userId = Number(user?.user_id);
 
     if (isDesign) {
-      // Check current assignment
+      if (!userId || Number.isNaN(userId)) {
+        logger.warn('Design user with invalid id attempted getById', { enquiryId, user });
+        throw new Error('Forbidden');
+      }
       const check = await pool.query(
-        `SELECT 1 FROM enquiries WHERE enquiry_id = $1 AND assigned_to = $2`,
-        [enquiryId, user.user_id]
+        `SELECT 1 FROM enquiries WHERE enquiry_id = $1 AND assigned_to = $2::int`,
+        [enquiryId, userId]
       );
-      if (check.rows.length === 0) throw new Error('Forbidden');
+      if (check.rows.length === 0) {
+        logger.warn(`Design user ${userId} attempted to access unassigned enquiry ${enquiryId}`);
+        throw new Error('Forbidden');
+      }
     }
 
     const [enquiryRes, activitiesRes] = await Promise.all([
@@ -253,10 +271,12 @@ class Enquiry {
         SELECT
           e.*,
           u.name  AS assigned_to_name,
-          ub.name AS assigned_by_name
+          ub.name AS assigned_by_name,
+          uc.name AS created_by_name
         FROM enquiries e
         LEFT JOIN users u  ON e.assigned_to = u.user_id
         LEFT JOIN users ub ON e.assigned_by = ub.user_id
+        LEFT JOIN users uc ON e.created_by = uc.user_id
         WHERE e.enquiry_id = $1
       `,
         [enquiryId]
@@ -273,12 +293,14 @@ class Enquiry {
       ),
     ]);
 
-    if (enquiryRes.rows.length === 0) throw new Error('Enquiry not found');
+    if (enquiryRes.rows.length === 0) {
+      throw new Error('Enquiry not found');
+    }
 
     const enquiryRow = enquiryRes.rows[0];
     const enquiry = {
       ...enquiryRow,
-      priority: enquiryRow.lead, // alias for frontend
+      priority: enquiryRow.lead,
       activities: activitiesRes.rows,
     };
 
@@ -286,7 +308,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // UPDATE (lead, source, tags, due_date, application)
+  // UPDATE
   // =================================================================
   static async update(
     enquiryId,
@@ -302,7 +324,7 @@ class Enquiry {
       lead,
       priority,
       source,
-      application, // <-- NEW
+      application,
       tags,
       due_date,
     },
@@ -331,7 +353,7 @@ class Enquiry {
         last_discussion = $7,
         next_interaction= $8,
         lead            = COALESCE($9, lead),
-        application     = COALESCE($10, application), -- <-- NEW
+        application     = COALESCE($10, application),
         source          = COALESCE($11, source),
         tags            = COALESCE($12, tags),
         due_date        = $13,
@@ -349,7 +371,6 @@ class Enquiry {
         last_discussion ? new Date(last_discussion) : null,
         next_interaction ? new Date(next_interaction) : null,
         leadToUse,
-        // application placeholder:
         typeof application !== 'undefined' ? application : null,
         source || null,
         Array.isArray(tags) ? tags : null,
@@ -363,6 +384,11 @@ class Enquiry {
     const enquiry = result.rows[0];
     enquiry.priority = enquiry.lead;
 
+    // attach created_by_name if possible
+    enquiry.created_by_name = enquiry.created_by
+      ? await fetchUserName(enquiry.created_by)
+      : null;
+
     if (io) {
       io.emit('enquiryUpdate', { ...enquiry, type: 'updated' });
     }
@@ -372,7 +398,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // ASSIGN / ESCALATE
+  // ASSIGN
   // =================================================================
   static async assign(enquiryId, { assigned_to, due_date, message }, io, user) {
     const client = await pool.connect();
@@ -388,7 +414,8 @@ class Enquiry {
           assigned_at = NOW(),
           due_date    = $3,
           stage       = 'in_discussion',
-          status      = 'In Progress'
+          status      = 'In Progress',
+          updated_at  = NOW()
         WHERE enquiry_id = $4
         RETURNING *
       `,
@@ -416,6 +443,7 @@ class Enquiry {
 
       const enquiry = res.rows[0];
       enquiry.priority = enquiry.lead;
+      enquiry.created_by_name = enquiry.created_by ? await fetchUserName(enquiry.created_by) : null;
 
       if (io) {
         io.emit('enquiryUpdate', { ...enquiry, type: 'assigned' });
@@ -435,14 +463,13 @@ class Enquiry {
   }
 
   // =================================================================
-  // markDone: Design marks as done -> reassign back to SALES_USER_ID
+  // markDone
   // =================================================================
   static async markDone(enquiryId, designUser, salesUserId = 7, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
-      // Ensure enquiry exists and is currently assigned to the design user
       const chk = await client.query(
         `SELECT assigned_to, assigned_by, stage FROM enquiries WHERE enquiry_id = $1 FOR UPDATE`,
         [enquiryId]
@@ -454,7 +481,6 @@ class Enquiry {
         throw new Error('You are not the current assignee');
       }
 
-      // Update assignment back to Sales
       const upd = await client.query(
         `
         UPDATE enquiries
@@ -472,7 +498,6 @@ class Enquiry {
 
       const updatedEnquiry = upd.rows[0];
 
-      // Log activity: assignment by design user to sales
       await client.query(
         `
         INSERT INTO enquiry_activities
@@ -489,8 +514,10 @@ class Enquiry {
 
       await client.query('COMMIT');
 
-      // provide priority alias
       updatedEnquiry.priority = updatedEnquiry.lead;
+      updatedEnquiry.created_by_name = updatedEnquiry.created_by
+        ? await fetchUserName(updatedEnquiry.created_by)
+        : null;
 
       if (io) {
         io.emit('enquiryUpdate', { ...updatedEnquiry, type: 'assigned' });
@@ -513,7 +540,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // ADD COMMENT / @MENTION
+  // addComment
   // =================================================================
   static async addComment(
     enquiryId,
@@ -556,7 +583,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // changeStage, checkOverdue, delete (kept but alias priority)
+  // changeStage, checkOverdue, delete
   // =================================================================
   static async changeStage(enquiryId, { stage, note }, io, user) {
     const validStages = [
@@ -607,6 +634,7 @@ class Enquiry {
 
     const enquiry = res.rows[0];
     enquiry.priority = enquiry.lead;
+    enquiry.created_by_name = enquiry.created_by ? await fetchUserName(enquiry.created_by) : null;
 
     if (io) {
       io.emit('enquiryUpdate', { ...enquiry, type: 'stage_change' });
@@ -670,6 +698,7 @@ class Enquiry {
 
       const enquiry = result.rows[0];
       enquiry.priority = enquiry.lead;
+      enquiry.created_by_name = enquiry.created_by ? await fetchUserName(enquiry.created_by) : null;
 
       await client.query('COMMIT');
 
