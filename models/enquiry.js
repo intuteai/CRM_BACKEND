@@ -3,18 +3,20 @@ const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 const VALID_STATUSES = ['Pending', 'In Progress', 'Closed', 'Cancelled'];
-
 // New: allowed lead values
 const VALID_LEADS = ['hotlead', 'followup', 'lead', 'not_interested', 'closed'];
 
+/**
+ * normalizeStatus: returns a valid DB status or defaults
+ */
 function normalizeStatus(input, { assigned = false } = {}) {
   if (input && VALID_STATUSES.includes(input)) return input;
-  // Default logic:
-  // - if assigned → "In Progress"
-  // - else       → "Pending"
   return assigned ? 'In Progress' : 'Pending';
 }
 
+/**
+ * normalizeLead: ensures lead uses allowed set and returns lowercase
+ */
 function normalizeLead(raw) {
   if (!raw) return 'lead';
   const lower = String(raw).toLowerCase();
@@ -23,7 +25,7 @@ function normalizeLead(raw) {
 
 class Enquiry {
   // =================================================================
-  // CREATE NEW ENQUIRY (includes old columns: status, last_discussion, next_interaction)
+  // CREATE NEW ENQUIRY
   // =================================================================
   static async create(data, io, user) {
     const {
@@ -34,17 +36,13 @@ class Enquiry {
       phone_no,
       items_required,
       source = 'Website',
-
-      // NEW: lead replaces priority in DB
-      // we accept both for backward compatibility
+      // NEW: lead replaces priority in DB (accept both)
       lead,
       priority,
-
       tags = [],
-      assigned_to = null, // optional: assign immediately
+      assigned_to = null,
       due_date = null,
-
-      // OLD COLUMNS – kept for compatibility
+      // Old compatibility
       status = 'Pending',
       last_discussion = null,
       next_interaction = null,
@@ -52,20 +50,20 @@ class Enquiry {
 
     if (!company_name?.trim()) throw new Error('Company name is required');
 
-    // Normalize lead value (fallback to "priority" if old frontend still sends it)
     const finalLead = normalizeLead(lead || priority || 'lead');
 
-    // Generate enquiry_id if not provided
+    // If enquiry_id not provided, use DB helper get_next_enquiry_id() if available
     let finalEnquiryId = enquiry_id;
     if (!finalEnquiryId) {
-      const year = new Date().getFullYear();
-      for (let i = 0; i < 20; i++) {
-        finalEnquiryId = `ENQ${year}${String(Math.floor(1000 + Math.random() * 9000))}`;
-        const exists = await pool.query(
-          'SELECT 1 FROM enquiries WHERE enquiry_id = $1',
-          [finalEnquiryId]
-        );
-        if (exists.rows.length === 0) break;
+      // safe fallback: try DB function then fallback to timestamp rand
+      try {
+        const idRes = await pool.query('SELECT get_next_enquiry_id() AS id');
+        finalEnquiryId = idRes.rows[0].id;
+      } catch (err) {
+        // fallback
+        finalEnquiryId = `ENQ${new Date().getFullYear()}${String(
+          Math.floor(1000 + Math.random() * 9000)
+        )}`;
       }
     }
 
@@ -73,11 +71,9 @@ class Enquiry {
     try {
       await client.query('BEGIN');
 
-      // derived stage + status (status must be DB-safe)
       const initialStage = assigned_to ? 'in_discussion' : 'new';
       const initialStatus = normalizeStatus(status, { assigned: !!assigned_to });
 
-      // 1. Insert main enquiry (NEW + OLD COLUMNS)
       const enquiryResult = await client.query(
         `INSERT INTO enquiries (
           enquiry_id,
@@ -130,7 +126,7 @@ class Enquiry {
       // alias for frontend compatibility (old `priority` prop)
       enquiry.priority = enquiry.lead;
 
-      // 2. Log creation/assignment activity
+      // Log creation/assignment
       if (assigned_to && user?.user_id) {
         await client.query(
           `INSERT INTO enquiry_activities
@@ -148,7 +144,6 @@ class Enquiry {
 
       await client.query('COMMIT');
 
-      // Emit real-time update
       if (io) {
         io.emit('enquiryUpdate', { ...enquiry, type: 'created' });
         if (assigned_to) {
@@ -172,7 +167,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // GET ALL ENQUIRIES (with role-based filtering, returns old columns too)
+  // GET ALL ENQUIRIES (Design sees only currently assigned to them)
   // =================================================================
   static async getAll({ limit = 15, cursor, user }) {
     const isDesign = user?.role_name === 'Design';
@@ -190,21 +185,12 @@ class Enquiry {
     const values = [];
     const where = [];
 
-    // Design only sees enquiries ever assigned to them
+    // Design only sees enquiries currently assigned to them
     if (isDesign) {
-      where.push(`
-        EXISTS (
-          SELECT 1
-          FROM enquiry_activities ea
-          WHERE ea.enquiry_id = e.enquiry_id
-            AND ea.mentions @> ARRAY[$${values.length + 1}::integer]
-            AND ea.activity_type = 'assignment'
-        )
-      `);
+      where.push(`e.assigned_to = $${values.length + 1}`);
       values.push(user.user_id);
     }
 
-    // Cursor by created_at
     if (cursor) {
       where.push(`e.created_at < $${values.length + 1}`);
       values.push(cursor);
@@ -229,17 +215,7 @@ class Enquiry {
     let totalResult;
     if (isDesign) {
       totalResult = await pool.query(
-        `
-        SELECT COUNT(*) AS count
-        FROM enquiries e
-        WHERE EXISTS (
-          SELECT 1
-          FROM enquiry_activities ea
-          WHERE ea.enquiry_id = e.enquiry_id
-            AND ea.mentions @> ARRAY[$1::integer]
-            AND ea.activity_type = 'assignment'
-        )
-      `,
+        `SELECT COUNT(*) AS count FROM enquiries WHERE assigned_to = $1`,
         [user.user_id]
       );
     } else {
@@ -254,21 +230,15 @@ class Enquiry {
   }
 
   // =================================================================
-  // GET SINGLE ENQUIRY + FULL ACTIVITY LOG (includes old columns too)
+  // GET SINGLE ENQUIRY + ACTIVITIES (Design must be current assignee)
   // =================================================================
   static async getById(enquiryId, user) {
     const isDesign = user?.role_name === 'Design';
 
-    // Visibility for Design
     if (isDesign) {
+      // Check current assignment
       const check = await pool.query(
-        `
-        SELECT 1
-        FROM enquiry_activities
-        WHERE enquiry_id = $1
-          AND mentions @> ARRAY[$2::integer]
-          AND activity_type = 'assignment'
-      `,
+        `SELECT 1 FROM enquiries WHERE enquiry_id = $1 AND assigned_to = $2`,
         [enquiryId, user.user_id]
       );
       if (check.rows.length === 0) throw new Error('Forbidden');
@@ -305,7 +275,7 @@ class Enquiry {
     const enquiryRow = enquiryRes.rows[0];
     const enquiry = {
       ...enquiryRow,
-      priority: enquiryRow.lead, // alias
+      priority: enquiryRow.lead, // alias for frontend
       activities: activitiesRes.rows,
     };
 
@@ -313,7 +283,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // UPDATE (old + new fields: lead, source, tags, due_date)
+  // UPDATE (lead, source, tags, due_date)
   // =================================================================
   static async update(
     enquiryId,
@@ -326,8 +296,6 @@ class Enquiry {
       status,
       last_discussion,
       next_interaction,
-
-      // NEW - DB column is "lead"
       lead,
       priority,
       source,
@@ -336,8 +304,6 @@ class Enquiry {
     },
     io
   ) {
-    // Only change status if caller actually provided one;
-    // otherwise leave it as is in DB.
     let safeStatus = null;
     if (typeof status !== 'undefined' && status !== null && status !== '') {
       safeStatus = normalizeStatus(status, { assigned: false });
@@ -388,7 +354,7 @@ class Enquiry {
     if (result.rows.length === 0) throw new Error('Enquiry not found');
 
     const enquiry = result.rows[0];
-    enquiry.priority = enquiry.lead; // alias
+    enquiry.priority = enquiry.lead;
 
     if (io) {
       io.emit('enquiryUpdate', { ...enquiry, type: 'updated' });
@@ -415,7 +381,7 @@ class Enquiry {
           assigned_at = NOW(),
           due_date    = $3,
           stage       = 'in_discussion',
-          status      = 'In Progress'  -- ✅ valid according to constraint
+          status      = 'In Progress'
         WHERE enquiry_id = $4
         RETURNING *
       `,
@@ -442,7 +408,7 @@ class Enquiry {
       await client.query('COMMIT');
 
       const enquiry = res.rows[0];
-      enquiry.priority = enquiry.lead; // alias
+      enquiry.priority = enquiry.lead;
 
       if (io) {
         io.emit('enquiryUpdate', { ...enquiry, type: 'assigned' });
@@ -453,6 +419,84 @@ class Enquiry {
       }
 
       return enquiry;
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
+  }
+
+  // =================================================================
+  // markDone: Design marks as done -> reassign back to SALES_USER_ID
+  // =================================================================
+  static async markDone(enquiryId, designUser, salesUserId = 7, io) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Ensure enquiry exists and is currently assigned to the design user
+      const chk = await client.query(
+        `SELECT assigned_to, assigned_by, stage FROM enquiries WHERE enquiry_id = $1 FOR UPDATE`,
+        [enquiryId]
+      );
+      if (chk.rows.length === 0) throw new Error('Enquiry not found');
+
+      const current = chk.rows[0];
+      if (current.assigned_to !== designUser.user_id) {
+        throw new Error('You are not the current assignee');
+      }
+
+      // Update assignment back to Sales
+      const upd = await client.query(
+        `
+        UPDATE enquiries
+        SET assigned_to = $1,
+            assigned_by = $2,
+            assigned_at = NOW(),
+            stage       = 'in_discussion',
+            status      = 'In Progress',
+            updated_at  = NOW()
+        WHERE enquiry_id = $3
+        RETURNING *
+      `,
+        [salesUserId, designUser.user_id, enquiryId]
+      );
+
+      const updatedEnquiry = upd.rows[0];
+
+      // Log activity: assignment by design user to sales
+      await client.query(
+        `
+        INSERT INTO enquiry_activities
+          (enquiry_id, user_id, activity_type, message, mentions)
+        VALUES ($1, $2, 'assignment', $3, $4)
+      `,
+        [
+          enquiryId,
+          designUser.user_id,
+          `Design completed work and returned enquiry to Sales (user ${salesUserId})`,
+          [salesUserId],
+        ]
+      );
+
+      await client.query('COMMIT');
+
+      // provide priority alias
+      updatedEnquiry.priority = updatedEnquiry.lead;
+
+      if (io) {
+        io.emit('enquiryUpdate', { ...updatedEnquiry, type: 'assigned' });
+        io.to(`user_${salesUserId}`).emit('notification', {
+          type: 'assigned',
+          enquiry: updatedEnquiry,
+        });
+      }
+
+      logger.info(
+        `Enquiry ${enquiryId} marked done by design ${designUser.user_id}, returned to ${salesUserId}`
+      );
+      return updatedEnquiry;
     } catch (err) {
       await client.query('ROLLBACK');
       throw err;
@@ -505,7 +549,7 @@ class Enquiry {
   }
 
   // =================================================================
-  // CHANGE STAGE (close won, regret, etc.) – also syncs status (DB-safe)
+  // changeStage, checkOverdue, delete (kept but alias priority)
   // =================================================================
   static async changeStage(enquiryId, { stage, note }, io, user) {
     const validStages = [
@@ -518,7 +562,6 @@ class Enquiry {
     ];
     if (!validStages.includes(stage)) throw new Error('Invalid stage');
 
-    // Map stage → one of the 4 allowed statuses
     const stageToStatus = {
       closed_won: 'Closed',
       closed_lost: 'Closed',
@@ -527,7 +570,6 @@ class Enquiry {
       design_review: 'In Progress',
       admin_review: 'In Progress',
     };
-
     const status = stageToStatus[stage] || 'In Progress';
 
     const res = await pool.query(
@@ -544,7 +586,6 @@ class Enquiry {
 
     if (res.rows.length === 0) throw new Error('Enquiry not found');
 
-    // Log stage change as comment activity
     await Enquiry.addComment(
       enquiryId,
       {
@@ -558,7 +599,7 @@ class Enquiry {
     );
 
     const enquiry = res.rows[0];
-    enquiry.priority = enquiry.lead; // alias
+    enquiry.priority = enquiry.lead;
 
     if (io) {
       io.emit('enquiryUpdate', { ...enquiry, type: 'stage_change' });
@@ -567,9 +608,6 @@ class Enquiry {
     return enquiry;
   }
 
-  // =================================================================
-  // AUTO-OVERDUE CHECK (call from cron every hour)
-  // =================================================================
   static async checkOverdue(io) {
     const result = await pool.query(
       `
@@ -606,9 +644,6 @@ class Enquiry {
     }
   }
 
-  // =================================================================
-  // OPTIONAL: DELETE (if you still need hard delete)
-  // =================================================================
   static async delete(enquiryId, io) {
     const client = await pool.connect();
     try {
@@ -627,7 +662,7 @@ class Enquiry {
       if (result.rows.length === 0) throw new Error('Enquiry not found');
 
       const enquiry = result.rows[0];
-      enquiry.priority = enquiry.lead; // alias
+      enquiry.priority = enquiry.lead;
 
       await client.query('COMMIT');
 
