@@ -12,6 +12,8 @@ error.log
 
 # Environment variables
 .env
+.env.local
+.env.*.local
 
 # OS / Editor files
 .DS_Store
@@ -36,7 +38,7 @@ pids
 *.local
 *.env.*
 
-# Optional:
+# Optional
 *.swp
 *.bak
 *.orig
@@ -51,3 +53,14 @@ pids
 # lockfiles (optional, only if you don't want to track them)
 # package-lock.json
 # yarn.lock
+
+# ================== CRITICAL SECURITY ADDITIONS ==================
+# Google Service Account Keys - NEVER commit these!
+secrets/
+drive-sa.json
+*-sa.json
+*.json
+
+# Any other service account keys you might download in future
+google-credentials.json
+service-account-key.json

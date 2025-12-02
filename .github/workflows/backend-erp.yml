@@ -38,6 +38,13 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/erp-backend
-            docker-compose pull erp-backend
+
+            # Stop running containers first so the image can be removed
             docker-compose down
-            docker-compose up -d 
+
+            # Remove existing image from the server (ignore error if it doesn't exist)
+            docker image rm intuteai/erp-backend:latest || true
+
+            # Pull fresh image and start containers
+            docker-compose pull erp-backend
+            docker-compose up -d

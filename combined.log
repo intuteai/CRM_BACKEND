@@ -1,136 +1,916 @@
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:44:16.814Z","timestamp":"2025-11-20T06:44:17.405Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:19.426Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:22.115Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:24.882Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:27.704Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:30.568Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:33.453Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:36.406Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:39.417Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:42.472Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:45.589Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:48.745Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:51.960Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:55.154Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:58.354Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:01.549Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:04.731Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:07.935Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:11.159Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:14.382Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:17.590Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:45:23.085Z","timestamp":"2025-11-20T06:45:23.676Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:25.551Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:28.238Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:30.996Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:33.777Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:36.626Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:39.506Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:42.469Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:45.494Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:48.559Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:51.663Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:54.827Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:58.020Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:01.242Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:04.446Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:07.677Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:10.883Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:14.099Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:17.310Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:20.499Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:23.701Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T06:46:27.826Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T06:46:27.833Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T06:46:27.834Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:46:27.612Z","timestamp":"2025-11-20T06:46:28.200Z"}
-{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T06:46:28.203Z"}
-{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T06:46:28.208Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:46:28.243Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T06:46:38.435Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:46:39.471Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T06:46:40.762Z"}
-{"level":"info","message":"User logged in: rishikaratreja@gmail.com, user_id: 73, role_id: 9, role: employee","timestamp":"2025-11-20T06:47:01.888Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:47:01.939Z"}
-{"level":"info","message":"Activity updated: 20","timestamp":"2025-11-20T06:47:51.220Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T06:54:48.920Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T06:54:48.924Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T06:54:48.925Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:54:48.715Z","timestamp":"2025-11-20T06:54:49.303Z"}
-{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T06:54:49.305Z"}
-{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T06:54:49.307Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:54:49.534Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T06:55:01.251Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T06:55:01.255Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T06:55:01.255Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:55:01.048Z","timestamp":"2025-11-20T06:55:01.637Z"}
-{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T06:55:01.641Z"}
-{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T06:55:01.643Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:55:02.228Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T07:13:36.172Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T07:13:36.175Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T07:13:36.176Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T07:13:35.953Z","timestamp":"2025-11-20T07:13:36.541Z"}
-{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T07:13:36.543Z"}
-{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T07:13:36.545Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:13:36.747Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T07:13:38.358Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T07:13:38.364Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T07:13:38.365Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T07:13:39.778Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T07:13:39.786Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T07:13:39.788Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T07:13:39.528Z","timestamp":"2025-11-20T07:13:40.116Z"}
-{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T07:13:40.121Z"}
-{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T07:13:40.124Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:13:40.241Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:22:12.039Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:22:12.447Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:04.636Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:05.024Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:15.803Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:16.047Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:16.238Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:16.456Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:18.699Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:18.903Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:21.994Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:22.206Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:28.806Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:28.996Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:33:51.454Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:33:51.823Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:34:11.267Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:34:11.500Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:39:33.415Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:39:33.805Z"}
-{"level":"info","message":"User logged out, user_id: 73","timestamp":"2025-11-20T07:39:35.574Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:39:35.592Z"}
-{"level":"info","message":"User logged in: rishikaratreja@gmail.com, user_id: 73, role_id: 9, role: employee","timestamp":"2025-11-20T07:39:47.068Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:39:47.106Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:40.133Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:40.537Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:42.039Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:42.327Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:43.915Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:44.120Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:44.524Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:44.744Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:45.123Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:45.316Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:48:55.649Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:48:55.897Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:57:31.734Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.142Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.155Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.214Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.317Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.480Z"}
-{"level":"info","message":"Database connection successful:","now":"2025-11-20T07:57:35.932Z","timestamp":"2025-11-20T07:57:36.524Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.684Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.936Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:37.247Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:37.606Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:38.013Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:38.468Z"}
-{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:38.969Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-19T10:41:27.106Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-19T10:41:27.112Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-19T10:41:27.112Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-19T10:41:27.221Z","timestamp":"2025-11-19T10:41:27.437Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-19T10:41:27.439Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-19T10:41:27.443Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-19T10:41:47.527Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-19T10:41:52.762Z"}
+{"level":"warn","message":"Failed login attempt for email: admin@compageauto.in - User not found","timestamp":"2025-11-19T10:42:07.814Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-19T10:42:16.381Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-19T10:42:16.480Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:42:18.920Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:42:19.412Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:47:25.842Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:47:44.869Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2025-11-19T10:48:38.148Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-19T10:48:38.230Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-19T10:48:38.236Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-19T10:48:38.238Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-19T10:48:38.375Z","timestamp":"2025-11-19T10:48:38.608Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-19T10:48:38.614Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-19T10:48:38.622Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-19T10:48:38.686Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:48:39.084Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:48:39.210Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:48:52.331Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:50:24.133Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-19T10:58:40.995Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-19T10:58:41.485Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-19T10:58:45.667Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-19T10:58:48.123Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:59:06.850Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T10:59:07.026Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-19T11:17:40.277Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-19T11:17:40.280Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-19T11:17:40.281Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-19T11:17:41.330Z","timestamp":"2025-11-19T11:17:41.647Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-19T11:17:41.652Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-19T11:17:41.659Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-19T11:17:41.681Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-19T11:17:54.006Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-19T11:18:02.708Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T11:18:04.172Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T11:18:04.714Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-19T11:18:16.702Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T09:09:55.911Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T09:09:55.917Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T09:09:55.917Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T09:09:56.366Z","timestamp":"2025-11-21T09:09:56.290Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T09:09:56.293Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T09:09:56.298Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:10:10.263Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:10:12.047Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-21T09:10:26.466Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:10:26.537Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:10:29.414Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:10:29.546Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:15:49.829Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:15:50.218Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:15:55.324Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:15:59.452Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:16:22.991Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:16:23.444Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:16:23.878Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:16:24.204Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:22:06.904Z"}
+{"level":"info","message":"Fetched 323 inventory items","timestamp":"2025-11-21T09:22:08.337Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-11-21T09:22:08.351Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:22:21.278Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-11-21T09:22:35.608Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:22:35.624Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-11-21T09:22:35.625Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:23:38.074Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2025-11-21T09:35:58.988Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T09:35:59.022Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T09:35:59.027Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-11-21T09:35:59.030Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T09:35:59.030Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T09:36:00.206Z","timestamp":"2025-11-21T09:36:00.145Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T09:36:00.151Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T09:36:00.157Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:36:00.267Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:36:00.269Z"}
+{"level":"info","message":"Fetched 323 inventory items","timestamp":"2025-11-21T09:36:02.685Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-11-21T09:36:02.698Z"}
+{"level":"error","message":"Error fetching orders for user 1 timeout exceeded when trying to connect","stack":"Error: timeout exceeded when trying to connect\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg-pool\\index.js:45:11\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at process.processTimers (node:internal/timers:523:7)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:39:24\n    at async Promise.all (index 5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\orders.js:38:27","timestamp":"2025-11-21T09:36:04.758Z"}
+{"level":"error","message":"timeout exceeded when trying to connect - GET /api/orders?limit=5000&offset=0&force_refresh=true","timestamp":"2025-11-21T09:36:04.761Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:36:08.958Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:36:10.748Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:36:10.901Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:41:21.737Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:41:38.289Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:41:38.777Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:41:40.481Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:41:41.419Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:42:57.360Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:43:03.119Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-21T09:43:09.103Z"}
+{"level":"error","message":"Error fetching customer invoices: timeout exceeded when trying to connect","timestamp":"2025-11-21T09:43:17.179Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-11-21T09:43:18.884Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:43:18.904Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-21T09:43:32.593Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:43:32.668Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:43:34.877Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:43:35.049Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:46:00.783Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T09:48:03.066Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T09:48:03.071Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-11-21T09:48:03.073Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T09:48:03.073Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T09:48:03.724Z","timestamp":"2025-11-21T09:48:03.690Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T09:48:03.694Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T09:48:03.696Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:48:06.206Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:50:03.421Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:50:07.890Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:50:08.571Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:50:09.066Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:50:09.193Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:52:55.587Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:52:59.842Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:53:00.497Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:53:00.859Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:53:01.101Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:53:26.827Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:53:27.400Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:53:29.509Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:53:30.140Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:55:20.072Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:55:20.496Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:55:21.066Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T09:55:22.118Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:58:21.161Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:58:21.656Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T09:58:22.627Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T09:58:23.047Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:00:46.319Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:03:50.073Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-21T10:03:52.324Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:03:53.688Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:03:54.130Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:06:20.752Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:11:55.134Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:12:01.884Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:12:02.461Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:12:02.515Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:12:02.888Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:14:23.757Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:14:40.973Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:14:43.433Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:19:39.418Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:19:39.786Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:19:40.487Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:19:40.592Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:21:00.542Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:21:00.872Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:24:27.650Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:24:28.027Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:24:28.827Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:24:29.169Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:29:33.062Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:29:35.262Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:29:35.664Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:29:36.056Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:29:36.442Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:29:37.610Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:29:37.970Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:29:39.688Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-21T10:29:40.092Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:29:41.330Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:30:07.659Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:30:10.414Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:30:10.716Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:30:13.037Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:30:13.577Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:33:22.904Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:35:12.796Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:35:14.112Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:35:18.201Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:35:18.546Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:35:19.204Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:35:19.763Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:36:08.407Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:36:13.212Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:36:13.740Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:36:14.028Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:36:14.319Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:38:19.291Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:38:19.646Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:39:25.220Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:39:25.499Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-21T10:39:27.893Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:39:28.251Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:39:28.389Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:39:28.607Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:39:28.939Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:39:29.294Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2025-11-21T10:42:57.596Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T10:42:57.613Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T10:42:57.616Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T10:42:57.616Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T10:42:58.050Z","timestamp":"2025-11-21T10:42:58.042Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T10:42:58.073Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T10:42:58.095Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:42:58.868Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:43:05.257Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:43:05.565Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:43:05.956Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T10:43:06.070Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:44:09.779Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:44:10.231Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:45:44.725Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:45:45.112Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:49:05.863Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:49:06.472Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:52:55.040Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:52:55.640Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:53:31.405Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:53:31.833Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T10:54:00.843Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T10:54:01.526Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:01:11.741Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:01:12.373Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:02:11.928Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:02:12.537Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:02:18.579Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:02:19.359Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:03:13.692Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:03:14.417Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:03:25.257Z"}
+{"level":"error","message":"Login error: Connection terminated due to connection timeout","stack":"Error: Connection terminated due to connection timeout\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\auth.js:19:22","timestamp":"2025-11-21T11:03:45.381Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-21T11:04:56.746Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:04:56.854Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:04:59.664Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:04:59.942Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:09:13.788Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:11:03.054Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:11:06.844Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:11:06.944Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:11:07.169Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:11:07.436Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:11:07.683Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:11:16.369Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:11:16.738Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:11:16.839Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:11:16.842Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:14:01.103Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:14:04.755Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:14:05.163Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:14:06.099Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:14:06.238Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:15:14.960Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:15:15.264Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:18:41.758Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:18:42.121Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:18:43.984Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:18:44.232Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:20:07.002Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:20:07.327Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:20:09.244Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:20:09.412Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:20:10.096Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:20:10.242Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:20:11.293Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:20:11.433Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:20:12.741Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:20:12.990Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:21:58.629Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:21:58.964Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:24:10.959Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:24:11.430Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:24:36.526Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:24:36.812Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T11:28:44.938Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T11:28:44.940Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T11:28:44.941Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T11:28:45.351Z","timestamp":"2025-11-21T11:28:45.355Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T11:28:45.356Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T11:28:45.358Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:28:46.206Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:29:01.599Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:29:01.988Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:29:02.616Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:29:03.375Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:32:25.936Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:32:28.829Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:32:29.600Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:32:29.671Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:32:29.762Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:32:40.329Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:32:40.518Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:32:40.860Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:32:41.045Z"}
+{"level":"error","message":"Photo upload failed for product 121:","timestamp":"2025-11-21T11:33:01.439Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:33:15.167Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:33:15.517Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:16.044Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:16.430Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:18.912Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:21.091Z"}
+{"level":"error","message":"Photo upload failed for product 121:","timestamp":"2025-11-21T11:33:31.481Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:37.708Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:38.419Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-21T11:33:55.232Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:33:58.125Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:33:58.514Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:58.852Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:33:59.229Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:34:11.169Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:34:11.571Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:34:12.135Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:34:12.486Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T11:34:45.743Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T11:34:45.750Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T11:34:45.751Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T11:34:46.323Z","timestamp":"2025-11-21T11:34:46.329Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T11:34:46.331Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T11:34:46.333Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:34:47.440Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:34:47.737Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:34:48.110Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:35:45.163Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:35:47.428Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:35:47.798Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:35:48.210Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:35:48.668Z"}
+{"level":"error","message":"Photo upload failed for product 121:","timestamp":"2025-11-21T11:35:58.249Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:36:35.744Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:36:36.144Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:36:38.086Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:36:38.568Z"}
+{"level":"error","message":"Photo upload failed for product 121:","timestamp":"2025-11-21T11:37:00.109Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:37:22.859Z"}
+{"level":"info","message":"Fetched 323 inventory items","timestamp":"2025-11-21T11:37:24.603Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-11-21T11:37:24.615Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-11-21T11:37:26.667Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:37:26.679Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:37:26.680Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-21T11:37:40.522Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:37:40.590Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:37:42.035Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:37:42.238Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:38:46.024Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-21T11:39:00.018Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-21T11:39:00.027Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-11-21T11:39:00.032Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-21T11:39:00.033Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-21T11:39:00.477Z","timestamp":"2025-11-21T11:39:00.490Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-21T11:39:00.493Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-21T11:39:00.501Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:39:00.553Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:39:01.364Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:39:01.466Z"}
+{"level":"error","message":"Photo upload failed for product 121:","timestamp":"2025-11-21T11:39:11.816Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:42:12.356Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:42:12.801Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:42:13.754Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:42:14.065Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:42:28.179Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:42:28.603Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:42:28.671Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:42:28.733Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-21T11:43:25.793Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:43:27.324Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:43:27.675Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:43:28.383Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:43:28.535Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:44:10.978Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:52:28.480Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:52:38.253Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:52:38.741Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:52:38.791Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:52:39.473Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:52:52.639Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:52:52.979Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:52:53.085Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:52:53.422Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:54:59.891Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:55:00.262Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:55:00.998Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:55:01.723Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:56:39.250Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:56:39.720Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:57:06.049Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:57:06.478Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:57:15.101Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:57:15.456Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:57:56.467Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:57:56.754Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:58:07.095Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:58:07.281Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:58:16.568Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:58:16.763Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:58:27.244Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:58:27.615Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:58:29.554Z"}
+{"level":"error","message":"Error fetching stock: timeout exceeded when trying to connect","timestamp":"2025-11-21T11:58:30.104Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:58:32.048Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:58:40.841Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:58:41.374Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:58:41.921Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T11:58:42.531Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T11:59:53.093Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T11:59:53.503Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:00:07.511Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:00:07.836Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:01:48.609Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:01:49.142Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:03:20.850Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:03:21.419Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:04:08.672Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:04:09.196Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:04:11.645Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:04:12.122Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:06:47.519Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:06:48.095Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:07:43.924Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:07:44.584Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:09:02.797Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:09:03.410Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:10:43.433Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:10:43.942Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:10:55.029Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:10:55.563Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:21:21.435Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:21:21.943Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:21:22.641Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:21:22.904Z"}
+{"level":"error","message":"Photo upload failed for product 121:","timestamp":"2025-11-21T12:22:03.183Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:22:17.224Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:22:17.787Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:22:18.309Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:22:18.779Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:22:40.716Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:22:41.066Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:22:41.577Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:22:42.012Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:23:09.764Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:23:10.187Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:23:10.805Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:23:11.309Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:24:56.596Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:24:57.021Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:24:58.046Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:24:58.395Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:27:21.772Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:27:22.227Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:27:23.747Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:27:23.845Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:28:44.680Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-21T12:29:13.277Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-21T12:29:13.785Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:29:14.235Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-21T12:29:14.396Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T09:32:33.868Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T09:32:33.875Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T09:32:33.877Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T09:32:33.669Z","timestamp":"2025-11-24T09:32:35.742Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T09:32:35.746Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T09:32:35.752Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:32:44.083Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T09:33:09.599Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-24T09:33:18.368Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:33:18.444Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-24T09:33:19.598Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:33:21.023Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:33:21.270Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T09:33:30.660Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T09:34:16.101Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T09:54:37.723Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T09:54:37.728Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T09:54:37.729Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T09:54:35.985Z","timestamp":"2025-11-24T09:54:37.993Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T09:54:37.994Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T09:54:37.996Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:54:40.579Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T09:54:49.502Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T09:54:53.759Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:54:54.028Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T09:54:54.133Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T09:54:59.668Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T10:37:21.879Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T10:37:21.889Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T10:37:21.890Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:37:20.135Z","timestamp":"2025-11-24T10:37:22.165Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T10:37:22.167Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T10:37:22.170Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:37:25.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:37:34.143Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:37:34.581Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:37:36.275Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-11-24T10:37:58.581Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:37:58.652Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:00.359Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:00.442Z"}
+{"level":"error","message":"Photo upload failed for product 120:","timestamp":"2025-11-24T10:38:13.470Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:38:37.275Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:38:37.623Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:38.052Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:38:38.149Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-24T10:39:11.744Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-24T10:39:11.746Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-24T10:39:11.746Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:39:10.030Z","timestamp":"2025-11-24T10:39:12.064Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-24T10:39:12.066Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-24T10:39:12.068Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:39:14.769Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:39:14.862Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:39:15.208Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:15.461Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:15.555Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:39:50.221Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:39:50.596Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:50.862Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:39:50.957Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-24T10:41:54.783Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-24T10:41:55.119Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:41:55.615Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-11-24T10:41:55.717Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:42:27.398Z","timestamp":"2025-11-24T10:42:29.429Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:29.830Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:32.092Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:34.410Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:36.780Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:39.201Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-24T10:42:45.718Z","timestamp":"2025-11-24T10:42:47.751Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:48.429Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-24T10:42:50.712Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T08:46:35.883Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T08:46:35.886Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T08:46:35.887Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T08:46:36.631Z","timestamp":"2025-12-01T08:46:36.214Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T08:46:36.216Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T08:46:36.218Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-01T08:58:11.468Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T08:58:11.583Z"}
+{"level":"info","message":"Fetched 0 enquiries","timestamp":"2025-12-01T08:58:13.486Z"}
+{"level":"info","message":"Fetched 0 enquiries","timestamp":"2025-12-01T08:58:13.488Z"}
+{"level":"info","message":"Fetching queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:16.241Z"}
+{"level":"info","message":"Cleared cache for queries:1:10:0","timestamp":"2025-12-01T08:58:16.243Z"}
+{"level":"info","message":"Executing query for user 1 (role: 1)","query":"\n        SELECT q.query_id AS \"queryId\", u.name AS \"customerName\", \n               q.query_text AS \"description\", q.query_status AS \"status\"\n        FROM queries q\n        LEFT JOIN users u ON q.user_id = u.user_id\n        ORDER BY q.date_of_query_raised DESC\n        LIMIT $1 OFFSET $2\n      ","timestamp":"2025-12-01T08:58:16.245Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T08:58:16.254Z"}
+{"level":"info","message":"Query result: [{\"queryId\":2,\"customerName\":\"Customer\",\"description\":\"motor 123 not working\",\"status\":\"Closed\"},{\"queryId\":1,\"customerName\":\"Customer\",\"description\":\"Sample\",\"status\":\"Closed\"}]","timestamp":"2025-12-01T08:58:16.277Z"}
+{"level":"info","message":"Fetched 2 queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:16.339Z"}
+{"level":"info","message":"Fetching queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:16.343Z"}
+{"level":"info","message":"Cleared cache for queries:1:10:0","timestamp":"2025-12-01T08:58:16.344Z"}
+{"level":"info","message":"Executing query for user 1 (role: 1)","query":"\n        SELECT q.query_id AS \"queryId\", u.name AS \"customerName\", \n               q.query_text AS \"description\", q.query_status AS \"status\"\n        FROM queries q\n        LEFT JOIN users u ON q.user_id = u.user_id\n        ORDER BY q.date_of_query_raised DESC\n        LIMIT $1 OFFSET $2\n      ","timestamp":"2025-12-01T08:58:16.345Z"}
+{"level":"info","message":"Query result: [{\"queryId\":2,\"customerName\":\"Customer\",\"description\":\"motor 123 not working\",\"status\":\"Closed\"},{\"queryId\":1,\"customerName\":\"Customer\",\"description\":\"Sample\",\"status\":\"Closed\"}]","timestamp":"2025-12-01T08:58:16.374Z"}
+{"level":"info","message":"Fetched 2 queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:16.434Z"}
+{"level":"info","message":"Fetching queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:25.184Z"}
+{"level":"info","message":"Cleared cache for queries:1:10:0","timestamp":"2025-12-01T08:58:25.185Z"}
+{"level":"info","message":"Executing query for user 1 (role: 1)","query":"\n        SELECT q.query_id AS \"queryId\", u.name AS \"customerName\", \n               q.query_text AS \"description\", q.query_status AS \"status\"\n        FROM queries q\n        LEFT JOIN users u ON q.user_id = u.user_id\n        ORDER BY q.date_of_query_raised DESC\n        LIMIT $1 OFFSET $2\n      ","timestamp":"2025-12-01T08:58:25.186Z"}
+{"level":"info","message":"Query result: [{\"queryId\":2,\"customerName\":\"Customer\",\"description\":\"motor 123 not working\",\"status\":\"Closed\"},{\"queryId\":1,\"customerName\":\"Customer\",\"description\":\"Sample\",\"status\":\"Closed\"}]","timestamp":"2025-12-01T08:58:25.215Z"}
+{"level":"info","message":"Fetched 2 queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:25.274Z"}
+{"level":"info","message":"Fetching queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:25.454Z"}
+{"level":"info","message":"Cleared cache for queries:1:10:0","timestamp":"2025-12-01T08:58:25.455Z"}
+{"level":"info","message":"Executing query for user 1 (role: 1)","query":"\n        SELECT q.query_id AS \"queryId\", u.name AS \"customerName\", \n               q.query_text AS \"description\", q.query_status AS \"status\"\n        FROM queries q\n        LEFT JOIN users u ON q.user_id = u.user_id\n        ORDER BY q.date_of_query_raised DESC\n        LIMIT $1 OFFSET $2\n      ","timestamp":"2025-12-01T08:58:25.456Z"}
+{"level":"info","message":"Query result: [{\"queryId\":2,\"customerName\":\"Customer\",\"description\":\"motor 123 not working\",\"status\":\"Closed\"},{\"queryId\":1,\"customerName\":\"Customer\",\"description\":\"Sample\",\"status\":\"Closed\"}]","timestamp":"2025-12-01T08:58:25.485Z"}
+{"level":"info","message":"Fetched 2 queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:25.544Z"}
+{"level":"info","message":"Fetching queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:25.608Z"}
+{"level":"info","message":"Cleared cache for queries:1:10:0","timestamp":"2025-12-01T08:58:25.609Z"}
+{"level":"info","message":"Executing query for user 1 (role: 1)","query":"\n        SELECT q.query_id AS \"queryId\", u.name AS \"customerName\", \n               q.query_text AS \"description\", q.query_status AS \"status\"\n        FROM queries q\n        LEFT JOIN users u ON q.user_id = u.user_id\n        ORDER BY q.date_of_query_raised DESC\n        LIMIT $1 OFFSET $2\n      ","timestamp":"2025-12-01T08:58:25.609Z"}
+{"level":"info","message":"Query result: [{\"queryId\":2,\"customerName\":\"Customer\",\"description\":\"motor 123 not working\",\"status\":\"Closed\"},{\"queryId\":1,\"customerName\":\"Customer\",\"description\":\"Sample\",\"status\":\"Closed\"}]","timestamp":"2025-12-01T08:58:25.638Z"}
+{"level":"info","message":"Fetched 2 queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:25.697Z"}
+{"level":"info","message":"Fetching queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:26.154Z"}
+{"level":"info","message":"Cleared cache for queries:1:10:0","timestamp":"2025-12-01T08:58:26.155Z"}
+{"level":"info","message":"Executing query for user 1 (role: 1)","query":"\n        SELECT q.query_id AS \"queryId\", u.name AS \"customerName\", \n               q.query_text AS \"description\", q.query_status AS \"status\"\n        FROM queries q\n        LEFT JOIN users u ON q.user_id = u.user_id\n        ORDER BY q.date_of_query_raised DESC\n        LIMIT $1 OFFSET $2\n      ","timestamp":"2025-12-01T08:58:26.156Z"}
+{"level":"info","message":"Query result: [{\"queryId\":2,\"customerName\":\"Customer\",\"description\":\"motor 123 not working\",\"status\":\"Closed\"},{\"queryId\":1,\"customerName\":\"Customer\",\"description\":\"Sample\",\"status\":\"Closed\"}]","timestamp":"2025-12-01T08:58:26.185Z"}
+{"level":"info","message":"Fetched 2 queries for user 1 (role: 1)","timestamp":"2025-12-01T08:58:26.243Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T08:59:39.780Z"}
+{"level":"info","message":"Cache hit for enquiry_list_10","timestamp":"2025-12-01T08:59:40.994Z"}
+{"level":"info","message":"Creating enquiry with provided enquiry_id: none","timestamp":"2025-12-01T09:00:49.487Z"}
+{"level":"info","message":"Attempting to generate enquiry_id: ENQ20258877","timestamp":"2025-12-01T09:00:49.487Z"}
+{"level":"info","message":"Generated unique enquiry_id: ENQ20258877","timestamp":"2025-12-01T09:00:49.520Z"}
+{"level":"info","message":"Inserting enquiry with enquiry_id: ENQ20258877","timestamp":"2025-12-01T09:00:49.520Z"}
+{"level":"info","message":"Enquiry created successfully: ENQ20258877","timestamp":"2025-12-01T09:00:49.566Z"}
+{"level":"info","message":"Enquiry created: ENQ20258877 by 1","timestamp":"2025-12-01T09:00:49.568Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T09:00:49.862Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T09:00:49.864Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-01T09:05:43.891Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T09:05:43.903Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T09:40:46.830Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T09:40:46.833Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T09:40:46.834Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T09:40:47.520Z","timestamp":"2025-12-01T09:40:47.144Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T09:40:47.147Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T09:40:47.149Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T09:42:19.788Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T09:42:19.792Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T09:42:19.793Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T09:42:20.471Z","timestamp":"2025-12-01T09:42:20.100Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T09:42:20.101Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T09:42:20.104Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-01T09:42:59.100Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:42:59.172Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T09:45:58.168Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:46:06.782Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:46:06.791Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T09:46:33.355Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T09:46:33.358Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:46:33.859Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:46:33.875Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T09:52:32.675Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T09:52:32.678Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:52:33.174Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:52:33.191Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T09:57:37.418Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T09:57:37.420Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T09:57:37.421Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T09:57:38.090Z","timestamp":"2025-12-01T09:57:37.728Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T09:57:37.731Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T09:57:37.733Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:57:40.946Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:57:40.949Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T09:59:55.430Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T09:59:55.437Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T09:59:55.438Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T09:59:56.141Z","timestamp":"2025-12-01T09:59:55.776Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T09:59:55.778Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T09:59:55.781Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:59:57.232Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T09:59:57.239Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T09:59:57.321Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_15","timestamp":"2025-12-01T09:59:57.362Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:08:14.959Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:08:15.293Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:08:17.904Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:08:18.203Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:08:18.206Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:08:18.209Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:08:26.508Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:08:26.509Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T10:08:41.955Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:08:41.994Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:09:40.868Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:09:40.870Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:09:40.983Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:09:45.943Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:09:46.570Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:09:46.744Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:10:18.035Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:10:18.283Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T10:11:29.296Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:11:29.564Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:16:44.408Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:16:44.433Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:24:36.457Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:24:39.447Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:24:39.448Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:24:39.759Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:24:39.769Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:24:39.785Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:24:53.685Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:24:53.694Z"}
+{"code":"23514","constraint":"enquiries_status_check","detail":"Failing row contains (10, ENQ20258877, ABC, xyz, test@gmail.com, 1234567890, Sample, In Discussion, 2025-12-16 05:30:00, 2025-12-23 05:30:00, 2025-12-01 09:00:49.955097, 2025-12-01 10:25:43.89772, in_discussion, 8, 1, 2025-12-01 10:25:43.89772, 2025-12-18 00:00:00, medium, null, {}).","file":"execMain.c","length":475,"level":"error","line":"2034","message":"Assign enquiry error: new row for relation \"enquiries\" violates check constraint \"enquiries_status_check\"","name":"error","routine":"ExecConstraints","schema":"public","severity":"ERROR","stack":"error: new row for relation \"enquiries\" violates check constraint \"enquiries_status_check\"\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg\\lib\\client.js:535:17\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Enquiry.assign (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\enquiry.js:343:19)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\enquiry.js:294:23","table":"enquiries","timestamp":"2025-12-01T10:25:43.625Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:26:40.828Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:26:40.831Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:26:40.984Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:26:45.374Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:26:47.760Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:26:47.761Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:26:48.030Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:26:48.035Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10","timestamp":"2025-12-01T10:26:48.055Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T10:34:03.974Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T10:34:03.978Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T10:34:03.978Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T10:34:04.805Z","timestamp":"2025-12-01T10:34:04.495Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T10:34:04.497Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T10:34:04.500Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:34:04.546Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:34:04.716Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:34:06.185Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:34:06.187Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:34:06.522Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:34:06.529Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:34:06.688Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:34:20.797Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:34:20.813Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T10:35:25.546Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:35:25.823Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T10:35:47.456Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:35:47.491Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:35:50.550Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:35:50.551Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:35:50.800Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:35:50.812Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:35:50.878Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T10:35:51.942Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:35:51.977Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T10:36:33.104Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:36:33.367Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T10:43:25.947Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T10:43:25.952Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T10:43:25.953Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T10:43:26.800Z","timestamp":"2025-12-01T10:43:26.498Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T10:43:26.501Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T10:43:26.506Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:43:26.826Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:43:28.939Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:45:58.879Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:45:58.881Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:45:59.196Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:45:59.209Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T10:46:01.969Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-01T10:46:15.657Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:46:15.711Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:46:19.256Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:46:51.152Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:46:51.153Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:47:07.949Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:47:07.954Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:47:21.144Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:47:21.145Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:21.245Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:24.205Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:24.889Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:25.060Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:25.219Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:25.388Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:25.552Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:25.707Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:25.858Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:47:35.085Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:47:35.087Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:35.184Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:47:44.262Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:47:48.325Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:47:48.330Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:48:36.730Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:48:36.732Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:48:36.907Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:48:39.914Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:48:46.820Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:48:46.989Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:49:44.470Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:49:44.471Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:49:44.641Z"}
+{"level":"info","message":"Enquiry updated (basic): ENQ20258877","timestamp":"2025-12-01T10:49:56.399Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:49:56.401Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:49:56.571Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:49:58.398Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:50:40.455Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:50:40.673Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T10:54:42.091Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T10:54:42.094Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T10:54:42.095Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T10:54:42.932Z","timestamp":"2025-12-01T10:54:42.632Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T10:54:42.634Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T10:54:42.637Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:54:42.662Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:54:42.671Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T10:54:42.737Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20258877","timestamp":"2025-12-01T10:55:00.844Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:55:00.847Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:55:01.037Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:55:03.643Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:55:04.372Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:55:04.563Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20258877","timestamp":"2025-12-01T10:55:17.487Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:55:17.488Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:55:17.666Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T10:58:03.976Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T10:58:03.980Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T10:58:03.980Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T10:58:04.599Z","timestamp":"2025-12-01T10:58:04.277Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T10:58:04.280Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T10:58:04.283Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:58:04.327Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T10:58:04.330Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T10:58:04.357Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20258877","timestamp":"2025-12-01T10:58:11.155Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:58:11.156Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:58:11.264Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:58:25.323Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:58:25.326Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20258877","timestamp":"2025-12-01T10:58:48.000Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T10:58:48.003Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T10:58:48.103Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T10:58:51.894Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T10:58:51.897Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:00:42.038Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:00:42.257Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:01:01.006Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:01:01.059Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T11:05:13.361Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T11:05:14.535Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:05:14.552Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:05:21.201Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:05:21.261Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:05:48.922Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:05:48.923Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:05:49.228Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:05:49.234Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T11:05:49.260Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:05:50.820Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:05:50.832Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:05:58.863Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:05:58.866Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:05:59.029Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:05:59.037Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T11:05:59.068Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:06:01.704Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:06:01.717Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:06:16.346Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:06:16.347Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:06:16.548Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:06:16.557Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T11:06:16.588Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:06:18.211Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:06:18.247Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T11:09:11.255Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:09:19.248Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:09:19.744Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:09:58.223Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:09:58.262Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:10:11.418Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:10:11.419Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:10:11.732Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:10:11.738Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T11:10:11.763Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:10:14.978Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T11:10:15.022Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T11:13:16.306Z"}
+{"level":"error","message":"Error fetching enquiry templates: Enquiry not found","timestamp":"2025-12-01T11:13:16.505Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T11:18:23.077Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T11:18:23.086Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T11:18:23.087Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T11:18:23.728Z","timestamp":"2025-12-01T11:18:23.429Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T11:18:23.438Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T11:18:23.449Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:18:23.507Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:18:25.938Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T11:18:30.566Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T11:18:30.569Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T11:18:30.570Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T11:18:31.179Z","timestamp":"2025-12-01T11:18:30.865Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T11:18:30.869Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T11:18:30.874Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:18:31.024Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:18:32.928Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:18:40.651Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:18:40.653Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:18:40.947Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:18:40.955Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T11:18:41.033Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T11:18:52.029Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T11:37:50.283Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:37:51.635Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:37:51.637Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:37:51.919Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:37:51.927Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T11:37:51.929Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:46:22.771Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:46:22.772Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:46:23.075Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:46:23.084Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T11:46:25.842Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-01T11:46:37.885Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T11:46:37.949Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T11:47:42.727Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T11:47:45.990Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:47:53.246Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T11:48:22.805Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T12:01:59.294Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T12:02:11.368Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20258877","timestamp":"2025-12-01T12:02:28.602Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T12:02:28.604Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T12:02:28.772Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:02:31.608Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:02:31.609Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:02:31.915Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:02:31.916Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T12:02:31.943Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20258877","timestamp":"2025-12-01T12:02:41.280Z"}
+{"level":"info","message":"Enquiry updated: ENQ20258877 by 1","timestamp":"2025-12-01T12:02:41.281Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T12:02:41.450Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T12:02:45.654Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T12:03:05.700Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:03:15.349Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:03:15.349Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:03:15.511Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:03:15.517Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T12:03:15.648Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T12:03:18.948Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T12:04:03.128Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20258877","timestamp":"2025-12-01T12:14:49.124Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T12:16:16.534Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20258877","timestamp":"2025-12-01T12:18:15.114Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T12:30:54.326Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T12:30:54.335Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T12:30:54.335Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T12:30:55.114Z","timestamp":"2025-12-01T12:30:54.880Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T12:30:54.883Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T12:30:54.886Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:30:55.044Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:30:55.935Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-01T12:31:07.778Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-01T12:31:07.781Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-01T12:31:07.782Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-01T12:31:08.373Z","timestamp":"2025-12-01T12:31:08.124Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-01T12:31:08.127Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-01T12:31:08.132Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:31:08.297Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:31:08.301Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:31:11.696Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:31:11.698Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:31:11.970Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:31:11.998Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T12:31:12.080Z"}
+{"level":"info","message":"Fetched 1 enquiries","timestamp":"2025-12-01T12:42:17.387Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:42:25.012Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-01T12:42:25.014Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:42:25.335Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-01T12:42:25.342Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0","timestamp":"2025-12-01T12:42:25.348Z"}

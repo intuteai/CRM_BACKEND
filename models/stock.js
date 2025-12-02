@@ -1,8 +1,9 @@
+// models/stock.js
 const pool = require('../config/db');
 
 class Stock {
   // --------------------------------------------------------------
-  // 1. GET ALL (now returns location)
+  // 1. GET ALL (returns image_url + location)
   // --------------------------------------------------------------
   static async getAll({ limit = 10, offset = 0 }) {
     const query = `
@@ -15,17 +16,20 @@ class Stock {
         description,
         product_code    AS "productCode",
         qty_required    AS "qtyRequired",
-        location        AS "location"
+        location        AS "location",
+        image_url       AS "imageUrl"
       FROM raw_materials
       ORDER BY product_id ASC
       LIMIT $1 OFFSET $2
     `;
     const totalQuery = 'SELECT COUNT(*) FROM raw_materials';
+
     try {
       const [itemsResult, totalResult] = await Promise.all([
         pool.query(query, [limit, offset]),
         pool.query(totalQuery),
       ]);
+
       return {
         data: itemsResult.rows,
         total: parseInt(totalResult.rows[0].count, 10),
@@ -37,7 +41,7 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 2. CREATE (accept location)
+  // 2. CREATE (adds image_url = NULL by default)
   // --------------------------------------------------------------
   static async create({
     productName,
@@ -46,13 +50,14 @@ class Stock {
     price,
     stockQuantity,
     qtyRequired,
-    location,          // <-- NEW
+    location,
+    imageUrl // optional
   }) {
     const query = `
       INSERT INTO raw_materials (
         product_name, description, product_code, price,
-        stock_quantity, qty_required, created_at, location
-      ) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, $7)
+        stock_quantity, qty_required, created_at, location, image_url
+      ) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, $7, $8)
       RETURNING
         product_id      AS "productId",
         stock_quantity  AS "stockQuantity",
@@ -62,8 +67,10 @@ class Stock {
         description,
         product_code    AS "productCode",
         qty_required    AS "qtyRequired",
-        location        AS "location"
+        location        AS "location",
+        image_url       AS "imageUrl"
     `;
+
     const values = [
       productName,
       description || null,
@@ -71,8 +78,10 @@ class Stock {
       price,
       stockQuantity ?? 0,
       qtyRequired ?? 0,
-      location || null,          // <-- NEW
+      location || null,
+      imageUrl || null
     ];
+
     try {
       const { rows } = await pool.query(query, values);
       return rows[0];
@@ -83,7 +92,7 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 3. UPDATE (accept location)
+  // 3. UPDATE (includes image_url return and optional update)
   // --------------------------------------------------------------
   static async update(productId, {
     productName,
@@ -92,7 +101,8 @@ class Stock {
     price,
     stockQuantity,
     qtyRequired,
-    location,          // <-- NEW
+    location,
+    imageUrl // optional - if undefined, keep existing
   }) {
     const query = `
       UPDATE raw_materials
@@ -103,8 +113,9 @@ class Stock {
         price          = $4,
         stock_quantity = COALESCE($5, stock_quantity),
         qty_required   = $6,
-        location       = $7
-      WHERE product_id = $8
+        location       = $7,
+        image_url      = COALESCE($8, image_url)
+      WHERE product_id = $9
       RETURNING
         product_id      AS "productId",
         stock_quantity  AS "stockQuantity",
@@ -114,8 +125,10 @@ class Stock {
         description,
         product_code    AS "productCode",
         qty_required    AS "qtyRequired",
-        location        AS "location"
+        location        AS "location",
+        image_url       AS "imageUrl"
     `;
+
     const values = [
       productName,
       description || null,
@@ -123,9 +136,11 @@ class Stock {
       price,
       stockQuantity !== undefined ? stockQuantity : null,
       qtyRequired ?? 0,
-      location !== undefined ? location : null,   // <-- NEW
+      location !== undefined ? location : null,
+      imageUrl !== undefined ? imageUrl : null,
       productId,
     ];
+
     try {
       const { rows } = await pool.query(query, values);
       if (rows.length === 0) {
@@ -169,19 +184,31 @@ class Stock {
       WHERE product_id = $2
       RETURNING product_id AS "productId", stock_quantity AS "stockQuantity"
     `;
+
     const logQuery = `
       INSERT INTO stock_adjustments (product_id, quantity, reason, created_by, created_at)
       VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
     `;
+
     try {
       await pool.query('BEGIN');
+
       const { rows: adjustRows } = await pool.query(adjustQuery, [quantity, productId]);
       if (adjustRows.length === 0) {
         throw new Error('Stock item not found');
       }
-      await pool.query(logQuery, [productId, quantity, reason || null, userId || null]);
+
+      await pool.query(logQuery, [
+        productId,
+        quantity,
+        reason || null,
+        userId || null,
+      ]);
+
       await pool.query('COMMIT');
+
       return adjustRows[0];
+
     } catch (error) {
       await pool.query('ROLLBACK');
       console.error(`Error adjusting stock for product ${productId}:`, error);
