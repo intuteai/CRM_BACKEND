@@ -1,0 +1,136 @@
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:44:16.814Z","timestamp":"2025-11-20T06:44:17.405Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:19.426Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:22.115Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:24.882Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:27.704Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:30.568Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:33.453Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:36.406Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:39.417Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:42.472Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:45.589Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:48.745Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:51.960Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:55.154Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:44:58.354Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:01.549Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:04.731Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:07.935Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:11.159Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:14.382Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:17.590Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:45:23.085Z","timestamp":"2025-11-20T06:45:23.676Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:25.551Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:28.238Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:30.996Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:33.777Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:36.626Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:39.506Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:42.469Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:45.494Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:48.559Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:51.663Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:54.827Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:45:58.020Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:01.242Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:04.446Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:07.677Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:10.883Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:14.099Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:17.310Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:20.499Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-11-20T06:46:23.701Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T06:46:27.826Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T06:46:27.833Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T06:46:27.834Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:46:27.612Z","timestamp":"2025-11-20T06:46:28.200Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T06:46:28.203Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T06:46:28.208Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:46:28.243Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T06:46:38.435Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:46:39.471Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T06:46:40.762Z"}
+{"level":"info","message":"User logged in: rishikaratreja@gmail.com, user_id: 73, role_id: 9, role: employee","timestamp":"2025-11-20T06:47:01.888Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:47:01.939Z"}
+{"level":"info","message":"Activity updated: 20","timestamp":"2025-11-20T06:47:51.220Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T06:54:48.920Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T06:54:48.924Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T06:54:48.925Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:54:48.715Z","timestamp":"2025-11-20T06:54:49.303Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T06:54:49.305Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T06:54:49.307Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:54:49.534Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T06:55:01.251Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T06:55:01.255Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T06:55:01.255Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T06:55:01.048Z","timestamp":"2025-11-20T06:55:01.637Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T06:55:01.641Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T06:55:01.643Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T06:55:02.228Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T07:13:36.172Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T07:13:36.175Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T07:13:36.176Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T07:13:35.953Z","timestamp":"2025-11-20T07:13:36.541Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T07:13:36.543Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T07:13:36.545Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:13:36.747Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T07:13:38.358Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T07:13:38.364Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T07:13:38.365Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-11-20T07:13:39.778Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-11-20T07:13:39.786Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-11-20T07:13:39.788Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T07:13:39.528Z","timestamp":"2025-11-20T07:13:40.116Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-11-20T07:13:40.121Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-11-20T07:13:40.124Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:13:40.241Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:22:12.039Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:22:12.447Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:04.636Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:05.024Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:15.803Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:16.047Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:16.238Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:16.456Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:18.699Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:18.903Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:21.994Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:22.206Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:26:28.806Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:26:28.996Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:33:51.454Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:33:51.823Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:34:11.267Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:34:11.500Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:39:33.415Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:39:33.805Z"}
+{"level":"info","message":"User logged out, user_id: 73","timestamp":"2025-11-20T07:39:35.574Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:39:35.592Z"}
+{"level":"info","message":"User logged in: rishikaratreja@gmail.com, user_id: 73, role_id: 9, role: employee","timestamp":"2025-11-20T07:39:47.068Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:39:47.106Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:40.133Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:40.537Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:42.039Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:42.327Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:43.915Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:44.120Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:44.524Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:44.744Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:45:45.123Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:45:45.316Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:48:55.649Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-11-20T07:48:55.897Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-11-20T07:57:31.734Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.142Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.155Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.214Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.317Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.480Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-11-20T07:57:35.932Z","timestamp":"2025-11-20T07:57:36.524Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.684Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:36.936Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:37.247Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:37.606Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:38.013Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:38.468Z"}
+{"address":"127.0.0.1","code":"ECONNREFUSED","errno":-4078,"level":"error","message":"Redis client error: connect ECONNREFUSED 127.0.0.1:6379","port":6379,"stack":"Error: connect ECONNREFUSED 127.0.0.1:6379\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)","syscall":"connect","timestamp":"2025-11-20T07:57:38.969Z"}
