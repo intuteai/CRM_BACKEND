@@ -1,0 +1,135 @@
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T06:25:11.596Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T06:25:11.599Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T06:25:11.603Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T06:25:11.242Z","timestamp":"2025-12-03T06:25:11.975Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T06:25:11.976Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T06:25:11.978Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T07:06:10.648Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T07:06:14.883Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-03T07:06:28.973Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T07:06:29.035Z"}
+{"level":"info","message":"Fetched 7 enquiries for user 1","timestamp":"2025-12-03T07:06:30.696Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250005 for user 1","timestamp":"2025-12-03T07:24:56.433Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20250005","timestamp":"2025-12-03T07:25:04.304Z"}
+{"level":"info","message":"Cache hit for enquiry_1_ENQ20250005","timestamp":"2025-12-03T07:25:14.113Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-03T07:25:24.498Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T07:25:24.514Z"}
+{"level":"info","message":"User logged in: sales@compageauto.com, user_id: 7, role_id: 3, role: sales","timestamp":"2025-12-03T07:25:39.333Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T07:25:39.406Z"}
+{"level":"info","message":"Fetched 7 enquiries for user 7","timestamp":"2025-12-03T07:25:41.289Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250007 for user 7","timestamp":"2025-12-03T07:25:45.061Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250001 for user 7","timestamp":"2025-12-03T07:25:50.391Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250005 for user 7","timestamp":"2025-12-03T07:30:38.318Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250004 for user 7","timestamp":"2025-12-03T07:30:53.102Z"}
+{"level":"info","message":"User logged out, user_id: 7","timestamp":"2025-12-03T07:31:01.164Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T07:31:01.174Z"}
+{"level":"info","message":"User logged in: design@compageauto.com, user_id: 8, role_id: 4, role: design","timestamp":"2025-12-03T07:31:16.047Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T07:31:16.106Z"}
+{"level":"info","message":"Fetched 5 enquiries for user 8","timestamp":"2025-12-03T07:31:17.259Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250010 for user 8","timestamp":"2025-12-03T07:31:20.189Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250001 for user 8","timestamp":"2025-12-03T07:37:44.601Z"}
+{"level":"info","message":"Cache hit for enquiry_8_ENQ20250001","timestamp":"2025-12-03T07:37:54.560Z"}
+{"level":"info","message":"Enquiry updated (extended): ENQ20250001","timestamp":"2025-12-03T07:38:04.109Z"}
+{"level":"info","message":"Enquiry updated: ENQ20250001 by 8","timestamp":"2025-12-03T07:38:04.111Z"}
+{"level":"info","message":"Fetched 5 enquiries for user 8","timestamp":"2025-12-03T07:38:04.258Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 8","timestamp":"2025-12-03T07:38:26.468Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250004 for user 8","timestamp":"2025-12-03T07:38:47.544Z"}
+{"level":"info","message":"Fetched 5 enquiries for user 8","timestamp":"2025-12-03T07:39:57.999Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250001 for user 8","timestamp":"2025-12-03T07:39:59.873Z"}
+{"level":"info","message":"Fetched 5 enquiries for user 8","timestamp":"2025-12-03T07:45:12.634Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250007 for user 8","timestamp":"2025-12-03T07:45:38.000Z"}
+{"level":"info","message":"Fetched enquiry: ENQ20250001 for user 8","timestamp":"2025-12-03T07:45:44.950Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T09:36:19.708Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T09:36:19.710Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T09:36:19.711Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T09:36:19.141Z","timestamp":"2025-12-03T09:36:19.994Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T09:36:19.995Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T09:36:19.997Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:36:23.970Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T09:36:37.906Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T09:36:37.923Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T09:36:37.925Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T09:36:37.367Z","timestamp":"2025-12-03T09:36:38.219Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T09:36:38.222Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T09:36:38.224Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:36:39.339Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T09:38:40.866Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T09:38:40.869Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T09:38:40.870Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T09:38:40.347Z","timestamp":"2025-12-03T09:38:41.204Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T09:38:41.207Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T09:38:41.211Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:38:41.242Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T09:39:37.466Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T09:39:37.476Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T09:39:37.479Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T09:39:36.958Z","timestamp":"2025-12-03T09:39:37.817Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T09:39:37.820Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T09:39:37.825Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:39:38.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T09:52:13.317Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:52:18.560Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:52:18.576Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T09:52:20.523Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-03T09:52:32.614Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:52:32.685Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T09:57:53.830Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T09:57:53.833Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:57:54.352Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-03T09:58:04.203Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T09:58:04.219Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-03T09:58:14.953Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T09:58:15.020Z"}
+{"level":"info","message":"Quotation generated: QUOTATION_2024_25_sales_AA_0001.pdf by 1","timestamp":"2025-12-03T10:01:18.124Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:03:12.521Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:03:12.939Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T10:09:16.706Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T10:09:16.710Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T10:09:16.710Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T10:09:16.304Z","timestamp":"2025-12-03T10:09:17.186Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T10:09:17.189Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T10:09:17.202Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:09:17.475Z"}
+{"level":"info","message":"Quotation generated: QUOTATION_2024_25_sales_AA_0001.pdf by 1","timestamp":"2025-12-03T10:09:34.054Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T10:15:19.471Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T10:15:19.476Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T10:15:19.476Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T10:15:19.219Z","timestamp":"2025-12-03T10:15:20.097Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T10:15:20.100Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T10:15:20.104Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:15:20.296Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:15:20.669Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:15:21.033Z"}
+{"level":"info","message":"Quotation generated: QUOTATION_2024_25_sales_AA_0001.pdf by 1","timestamp":"2025-12-03T10:15:36.590Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-03T10:20:09.434Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-03T10:20:09.439Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-03T10:20:09.439Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-03T10:20:08.878Z","timestamp":"2025-12-03T10:20:09.758Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-03T10:20:09.761Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-03T10:20:09.764Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:20:09.908Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:20:10.349Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:20:10.895Z"}
+{"level":"info","message":"Quotation generated: QUOTATION_2024_25_sales_AA_0002.pdf by 1","timestamp":"2025-12-03T10:20:33.286Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:24:57.722Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:24:58.223Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:25:04.782Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:25:05.211Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:25:29.702Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:25:30.058Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:28:33.486Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:28:33.973Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:32:21.763Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:32:22.256Z"}
+{"level":"info","message":"Quotation generated: QUOTATION_2024_25_sales_AA_0001.pdf by 1","timestamp":"2025-12-03T10:34:00.252Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:34:51.260Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:34:51.526Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:41:26.279Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:44:52.728Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:44:59.798Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:44:59.980Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-03T10:45:02.285Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-03T10:45:02.310Z"}
+{"level":"info","message":"User logged in: sales@compageauto.com, user_id: 7, role_id: 3, role: sales","timestamp":"2025-12-03T10:45:17.530Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-03T10:45:17.574Z"}
+{"level":"info","message":"Quotation generated: QUOTATION_2024_25_sales_AA_0001.pdf by 7","timestamp":"2025-12-03T10:45:52.387Z"}

@@ -1,9 +1,12 @@
+// server.js
 const express = require('express');
 const http = require('http');
 const helmet = require('helmet');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
+const path = require('path');
+
 const authRoutes = require('./routes/auth');
 const customersRoutes = require('./routes/customers');
 const ordersRoutes = require('./routes/orders');
@@ -26,11 +29,14 @@ const problemsRoutes = require('./routes/problems');
 const attendanceRoutes = require('./routes/attendance');
 const processRoutes = require('./routes/process');
 const activitiesRoutes = require('./routes/activities');
-const payslipRoutes = require('./routes/payslip'); // NEW: Payslip route
+const payslipRoutes = require('./routes/payslip');
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
 require('dotenv').config();
+
+// NEW: Quotation route (stream-only)
+const quotationRoutes = require('./routes/quotation');
 
 const app = express();
 const server = http.createServer(app);
@@ -44,7 +50,9 @@ const io = new Server(server, {
   path: '/socket.io',
 });
 
+// expose io via app and make available on req
 app.set('socketio', io);
+app.set('io', io);
 
 async function initializeServer() {
   try {
@@ -71,6 +79,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(limiter);
 
+// attach io to each request for routes that expect req.io
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -86,7 +95,6 @@ app.get('/', (req, res) => {
 });
 
 // ==================== ROUTES (ALL PREFIXED WITH /api/) ====================
-
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customersRoutes);
 app.use('/api/orders', ordersRoutes);
@@ -109,7 +117,10 @@ app.use('/api/problems', problemsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/process', processRoutes);
 app.use('/api/activities', activitiesRoutes);
-app.use('/api/payslip', payslipRoutes); // NEW: Payslip route
+app.use('/api/payslip', payslipRoutes);
+
+// NEW: mount quotation route (stream-only)
+app.use('/api/quotation', quotationRoutes);
 
 // ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);
