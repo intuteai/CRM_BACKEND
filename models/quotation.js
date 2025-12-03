@@ -133,9 +133,7 @@ class Quotation {
       try {
         registerFonts(doc);
         const footerHeight = 36; // approximate height reserved for footer
-        const footerY = doc.page.height - doc.page.margins.bottom - (footerHeight / 2); // place slightly above bottom margin
         doc.fillColor(c.muted).fontSize(9).font('Roboto');
-        // use center alignment and contentW to let it wrap if needed
         doc.text(FIXED_FOOTER, margin, doc.page.height - doc.page.margins.bottom - footerHeight + 6, {
           width: contentW,
           align: 'center',
@@ -154,9 +152,7 @@ class Quotation {
 
     // ensure footer is drawn on each newly added page
     doc.on('pageAdded', () => {
-      // draw footer for the new page immediately
       drawFooter();
-      // re-register fonts for consistency
       registerFonts(doc);
     });
 
@@ -165,7 +161,6 @@ class Quotation {
       doc.rect(0, 0, pageW, 6).fill(c.white);
 
       const headerY = 18;
-      // enforce same display dimensions for both logos (preserve aspect ratio)
       const logoMaxW = 60;
       const logoMaxH = 40;
       const leftLogo = findAsset(ASSETS.headerLeft, 'compage_header_left.png');
@@ -190,7 +185,6 @@ class Quotation {
       drawFooter();
 
       // Meta row: QuotationNo (left) and Date (right)
-      // moved lower to avoid overlap with logos
       const metaY = headerY + 56;
       doc.font('Roboto').fontSize(11).fillColor(c.text);
       doc.text(`QuotationNo.${data.quotation_no}`, margin, metaY, { align: 'left' });
@@ -204,31 +198,37 @@ class Quotation {
       doc.y = metaY + 20;
 
       // --- To block (left) and Kind Attn / Sub center ---
-      const startY = doc.y;
-      doc.font('Roboto-Bold').fontSize(14).fillColor(c.text).text('To,', margin, doc.y);
-      doc.moveDown(0.15);
+      // Start position for To block
+      doc.font('Roboto-Bold').fontSize(14).fillColor(c.text);
+      doc.text('To,', margin, doc.y);
 
-      // dotted placeholder helper
+      // dotted placeholder helper (preserves newlines)
       const dots = (val, lines = 4) => {
         if (val && String(val).trim().length) return String(val);
         return Array.from({length: lines}).map(()=>'………………….').join('\n');
       };
       doc.font('Roboto').fontSize(11).fillColor(c.text);
-      const toText = dots(data.to_address, 4);
-      doc.text(toText, { indent: 8, width: Math.max(320, contentW * 0.55), lineGap: 6 });
 
-      // Kind Attn & Sub centered below
+      const toText = dots(data.to_address, 4);
+      // Choose width for address block, and a smaller lineGap to keep good spacing
+      const toBlockWidth = Math.max(320, contentW * 0.55);
+      // Render the to-address block starting at margin + 8 (indent)
+      // Use explicit lineGap to prevent overly tight or loose lines
+      doc.text(toText, margin + 8, doc.y + 6, { width: toBlockWidth, lineGap: 4 });
+
+      // After rendering the address block, use current doc.y to place Kind Attn / Sub
+      const afterToY = doc.y;
       const kindText = (data.kind_attn && String(data.kind_attn).trim().length) ? data.kind_attn : '……………';
       const subText = (data.subject_item && String(data.subject_item).trim().length) ? data.subject_item : '______________';
 
-      // tuned Y positions (reduced spacing)
-      const kindY = startY + 32;
+      // place Kind Attn just below the To block with a small gap
+      const kindY = afterToY + 8;
       doc.font('Roboto-Bold').fontSize(13).fillColor(c.text).text(`Kind Attn: ${kindText}`, 0, kindY, { width: pageW, align: 'center' });
 
       const subY = kindY + 16;
       doc.font('Roboto-Bold').fontSize(13).fillColor(c.text).text(`Sub: Quotation for ${subText}`, 0, subY, { width: pageW, align: 'center' });
 
-      // reduce vertical gap before intro
+      // move the cursor below sub
       doc.y = subY + 18;
 
       // Intro
@@ -309,7 +309,7 @@ class Quotation {
 
       runningY = gstY + 34 + 6;
 
-      // Totals (right aligned) — draw on same baseline per row to ensure perfect vertical alignment
+      // Totals (right aligned)
       const gstPercent = Number(data.gst_percent != null ? data.gst_percent : 18);
       const gstAmount = Number((subtotal * gstPercent) / 100);
       const grandTotal = subtotal + gstAmount;
