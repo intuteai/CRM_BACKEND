@@ -37,6 +37,8 @@ require('dotenv').config();
 
 // NEW: Quotation route (stream-only)
 const quotationRoutes = require('./routes/quotation');
+// NEW: Proforma route (stream-only)
+const proformaRoutes = require('./routes/proforma');
 
 const app = express();
 const server = http.createServer(app);
@@ -121,6 +123,8 @@ app.use('/api/payslip', payslipRoutes);
 
 // NEW: mount quotation route (stream-only)
 app.use('/api/quotation', quotationRoutes);
+// NEW: mount proforma route (stream-only)
+app.use('/api/proforma', proformaRoutes);
 
 // ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);
