@@ -306,17 +306,8 @@ class Quotation {
         items.forEach((it, idx) => drawRow(it, idx));
       }
 
-      /* GST row + totals */
-      const gstY = runningY + 6;
-      if ((gstY + 34 + 6) > (doc.page.height - doc.page.margins.bottom - 90)) {
-        doc.addPage();
-        registerFonts(doc);
-        runningY = doc.page.margins.top + 12;
-      }
-      doc.rect(tableX, gstY - 4, contentW, 34).strokeColor(c.border).lineWidth(0.4).stroke();
-      doc.font('Roboto').fontSize(11).fillColor(c.text);
-      doc.text(`GST extra @IGST-${data.gst_percent ?? 18}%`, tableX + 18, gstY + 8, { width: contentW - 36, align: 'left' });
-      runningY = gstY + 34 + 6;
+      /* GST calculations (no 'GST extra' box shown) */
+      runningY = runningY + 6;
 
       const gstPercent = Number(data.gst_percent != null ? data.gst_percent : 18);
       const gstAmount = Number((subtotal * gstPercent) / 100);
