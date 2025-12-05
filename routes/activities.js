@@ -124,7 +124,7 @@ router.get('/', async (req, res) => {
 
     const data = await Activities.getAll({ limit, cursor });
     await cacheSetJSON(cacheKey, data);
-    return res.json(data);
+    return res.json(data); 
   } catch (error) {
     logger.error(`Get activities error: ${error.message}`);
     return res.status(500).json({ error: 'Server error' });
