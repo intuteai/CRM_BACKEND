@@ -174,74 +174,202 @@ class Enquiry {
   // =================================================================
   // GET ALL ENQUIRIES (Design sees only currently assigned to them)
   // =================================================================
-  static async getAll({ limit = 15, offset = 0, cursor, user }) {
-    const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
-    const userId = Number(user?.user_id);
+  // static async getAll({ limit = 15, offset = 0, cursor, user }) {
+  //   const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
+  //   const userId = Number(user?.user_id);
 
-    if (isDesign && (!userId || Number.isNaN(userId))) {
-      logger.warn('Design user with no numeric user_id attempted getAll, returning empty list');
-      return { data: [], total: 0, cursor: null };
-    }
+  //   if (isDesign && (!userId || Number.isNaN(userId))) {
+  //     logger.warn('Design user with no numeric user_id attempted getAll, returning empty list');
+  //     return { data: [], total: 0, cursor: null };
+  //   }
 
-    // include created_by_name via join
-    let query = `
-      SELECT
-        e.*,
-        u.name  AS assigned_to_name,
-        ub.name AS assigned_by_name,
-        uc.name AS created_by_name
-      FROM enquiries e
-      LEFT JOIN users u  ON e.assigned_to = u.user_id
-      LEFT JOIN users ub ON e.assigned_by = ub.user_id
-      LEFT JOIN users uc ON e.created_by = uc.user_id
-    `;
+  //   // include created_by_name via join
+  //   let query = `
+  //     SELECT
+  //       e.*,
+  //       u.name  AS assigned_to_name,
+  //       ub.name AS assigned_by_name,
+  //       uc.name AS created_by_name
+  //     FROM enquiries e
+  //     LEFT JOIN users u  ON e.assigned_to = u.user_id
+  //     LEFT JOIN users ub ON e.assigned_by = ub.user_id
+  //     LEFT JOIN users uc ON e.created_by = uc.user_id
+  //   `;
 
-    const values = [];
-    const where = [];
+  //   const values = [];
+  //   const where = [];
 
-    if (isDesign) {
-      where.push(`e.assigned_to = $${values.length + 1}::int`);
-      values.push(userId);
-    }
+  //   if (isDesign) {
+  //     where.push(`e.assigned_to = $${values.length + 1}::int`);
+  //     values.push(userId);
+  //   }
 
-    if (cursor) {
-      where.push(`e.created_at < $${values.length + 1}`);
-      values.push(cursor);
-    }
+  //   if (cursor) {
+  //     where.push(`e.created_at < $${values.length + 1}`);
+  //     values.push(cursor);
+  //   }
 
-    if (where.length) {
-      query += ` WHERE ${where.join(' AND ')}`;
-    }
+  //   if (where.length) {
+  //     query += ` WHERE ${where.join(' AND ')}`;
+  //   }
 
-    query += ` ORDER BY e.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
-    values.push(limit);
-    values.push(offset);
+  //   query += ` ORDER BY e.created_at DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+  //   values.push(limit);
+  //   values.push(offset);
 
-    logger.debug('getAll query values', { isDesign, values });
+  //   logger.debug('getAll query values', { isDesign, values });
 
-    const result = await pool.query(query, values);
+  //   const result = await pool.query(query, values);
 
-    const data = result.rows.map((row) => ({
-      ...row,
-      priority: row.lead,
-    }));
+  //   const data = result.rows.map((row) => ({
+  //     ...row,
+  //     priority: row.lead,
+  //   }));
 
-    let totalResult;
-    if (isDesign) {
-      totalResult = await pool.query(
-        `SELECT COUNT(*) AS count FROM enquiries WHERE assigned_to = $1::int`,
-        [userId]
-      );
-    } else {
-      totalResult = await pool.query('SELECT COUNT(*) AS count FROM enquiries');
-    }
+  //   let totalResult;
+  //   if (isDesign) {
+  //     totalResult = await pool.query(
+  //       `SELECT COUNT(*) AS count FROM enquiries WHERE assigned_to = $1::int`,
+  //       [userId]
+  //     );
+  //   } else {
+  //     totalResult = await pool.query('SELECT COUNT(*) AS count FROM enquiries');
+  //   }
 
-    return {
-      data,
-      total: parseInt(totalResult.rows[0].count, 10),
-      cursor: data.length ? data[data.length - 1].created_at : null,
-    };
+  //   return {
+  //     data,
+  //     total: parseInt(totalResult.rows[0].count, 10),
+  //     cursor: data.length ? data[data.length - 1].created_at : null,
+  //   };
+  // }
+  // =================================================================
+// GET ALL ENQUIRIES (Design sees only currently assigned to them)
+// =================================================================
+static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
+  const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
+  const userId = Number(user?.user_id);
+
+  if (isDesign && (!userId || Number.isNaN(userId))) {
+    logger.warn(
+      'Design user with no numeric user_id attempted getAll, returning empty list'
+    );
+    return { data: [], total: 0, cursor: null };
   }
+
+  const hasSearch = !!(search && search.trim());
+  const searchPattern = hasSearch ? `%${search.trim().toLowerCase()}%` : null;
+
+  // -------------------------
+  // DATA QUERY
+  // -------------------------
+  let dataQuery = `
+    SELECT
+      e.*,
+      u.name  AS assigned_to_name,
+      ub.name AS assigned_by_name,
+      uc.name AS created_by_name
+    FROM enquiries e
+    LEFT JOIN users u  ON e.assigned_to = u.user_id
+    LEFT JOIN users ub ON e.assigned_by = ub.user_id
+    LEFT JOIN users uc ON e.created_by = uc.user_id
+  `;
+
+  const dataWhere = [];
+  const dataValues = [];
+
+  if (isDesign) {
+    dataWhere.push(`e.assigned_to = $${dataValues.length + 1}::int`);
+    dataValues.push(userId);
+  }
+
+  if (cursor) {
+    dataWhere.push(`e.created_at < $${dataValues.length + 1}`);
+    dataValues.push(cursor);
+  }
+
+  if (hasSearch) {
+    const idx = dataValues.length + 1;
+    dataWhere.push(`
+      (
+        LOWER(e.enquiry_id::text)    LIKE $${idx} OR
+        LOWER(e.company_name)        LIKE $${idx} OR
+        LOWER(e.contact_person)      LIKE $${idx} OR
+        LOWER(e.mail_id)             LIKE $${idx} OR
+        LOWER(e.phone_no)            LIKE $${idx} OR
+        LOWER(e.items_required)      LIKE $${idx} OR
+        LOWER(e.status)              LIKE $${idx} OR
+        LOWER(e.application)         LIKE $${idx}
+      )
+    `);
+    dataValues.push(searchPattern);
+  }
+
+  if (dataWhere.length) {
+    dataQuery += ` WHERE ${dataWhere.join(' AND ')}`;
+  }
+
+  // add LIMIT/OFFSET placeholders at the end
+  const limitIndex = dataValues.length + 1;
+  const offsetIndex = dataValues.length + 2;
+
+  dataQuery += ` ORDER BY e.created_at DESC LIMIT $${limitIndex} OFFSET $${offsetIndex}`;
+  dataValues.push(limit);
+  dataValues.push(offset);
+
+  logger.debug('getAll data query values', { isDesign, dataValues });
+
+  const result = await pool.query(dataQuery, dataValues);
+
+  const data = result.rows.map((row) => ({
+    ...row,
+    priority: row.lead,
+  }));
+
+  // -------------------------
+  // COUNT QUERY (for total)
+  // -------------------------
+  let countQuery = `
+    SELECT COUNT(*) AS count
+    FROM enquiries e
+  `;
+  const countWhere = [];
+  const countValues = [];
+
+  if (isDesign) {
+    countWhere.push(`e.assigned_to = $${countValues.length + 1}::int`);
+    countValues.push(userId);
+  }
+
+  if (hasSearch) {
+    const idx = countValues.length + 1;
+    countWhere.push(`
+      (
+        LOWER(e.enquiry_id::text)    LIKE $${idx} OR
+        LOWER(e.company_name)        LIKE $${idx} OR
+        LOWER(e.contact_person)      LIKE $${idx} OR
+        LOWER(e.mail_id)             LIKE $${idx} OR
+        LOWER(e.phone_no)            LIKE $${idx} OR
+        LOWER(e.items_required)      LIKE $${idx} OR
+        LOWER(e.status)              LIKE $${idx} OR
+        LOWER(e.application)         LIKE $${idx}
+      )
+    `);
+    countValues.push(searchPattern);
+  }
+
+  if (countWhere.length) {
+    countQuery += ` WHERE ${countWhere.join(' AND ')}`;
+  }
+
+  const totalResult = await pool.query(countQuery, countValues);
+
+  return {
+    data,
+    total: parseInt(totalResult.rows[0].count, 10),
+    cursor: data.length ? data[data.length - 1].created_at : null,
+  };
+}
+
 
   // =================================================================
   // GET SINGLE ENQUIRY + ACTIVITIES (Design must be current assignee)

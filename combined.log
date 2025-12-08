@@ -67,3 +67,157 @@
 {"level":"info","message":"Activity updated: 30","timestamp":"2025-12-05T06:08:41.479Z"}
 {"level":"info","message":"User logged out, user_id: 73","timestamp":"2025-12-05T06:08:53.500Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-05T06:08:53.536Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-08T10:02:43.630Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-08T10:02:43.061Z","timestamp":"2025-12-08T10:02:43.908Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-08T10:02:46.335Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-08T10:02:49.085Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-08T10:02:51.902Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-08T10:02:54.760Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-08T10:03:00.043Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-08T10:03:00.046Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-08T10:03:00.047Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-08T10:02:59.548Z","timestamp":"2025-12-08T10:03:00.390Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-08T10:03:00.392Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-08T10:03:50.367Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-08T10:03:50.370Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-08T10:03:50.371Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-08T10:03:50.020Z","timestamp":"2025-12-08T10:03:50.865Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-08T10:03:50.870Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-08T10:03:50.875Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:03:57.934Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:04:03.182Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-08T10:04:14.196Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:04:14.261Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1","timestamp":"2025-12-08T10:04:15.689Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1","timestamp":"2025-12-08T10:04:28.561Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1","timestamp":"2025-12-08T10:04:35.585Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1","timestamp":"2025-12-08T10:04:38.265Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-08T10:22:05.206Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-08T10:22:05.210Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-08T10:22:05.211Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-08T10:22:04.737Z","timestamp":"2025-12-08T10:22:05.584Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-08T10:22:05.589Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-08T10:22:05.596Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:22:06.218Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-08T10:22:50.525Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-08T10:22:50.529Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-08T10:22:50.530Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-08T10:22:50.034Z","timestamp":"2025-12-08T10:22:50.881Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-08T10:22:50.883Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-08T10:22:50.885Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:22:52.245Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:24:18.730Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:24:30.300Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:26:05.520Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:26:05.888Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:26:05.901Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:26:06.226Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"r\")","timestamp":"2025-12-08T10:26:09.620Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"r\")","timestamp":"2025-12-08T10:26:11.236Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:26:11.936Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:26:18.925Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"a\")","timestamp":"2025-12-08T10:26:20.664Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:26:20.847Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"abc\")","timestamp":"2025-12-08T10:26:21.564Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:26:23.284Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"a\")","timestamp":"2025-12-08T10:26:24.341Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"b\")","timestamp":"2025-12-08T10:26:26.822Z"}
+{"level":"info","message":"Fetched 2 enquiries for user 1 (search=\"bh\")","timestamp":"2025-12-08T10:26:27.726Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"b\")","timestamp":"2025-12-08T10:26:31.174Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:26:31.369Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:26:37.486Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"a\")","timestamp":"2025-12-08T10:26:40.161Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:26:41.441Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"abc\")","timestamp":"2025-12-08T10:26:41.826Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:26:43.063Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"a\")","timestamp":"2025-12-08T10:26:43.246Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:26:43.416Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"b\")","timestamp":"2025-12-08T10:26:45.111Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:26:47.785Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:26:47.789Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:26:48.006Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:26:48.013Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:26:48.065Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"a\")","timestamp":"2025-12-08T10:26:50.111Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:26:50.322Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"abc\")","timestamp":"2025-12-08T10:26:50.617Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:26:51.624Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:26:51.902Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:40:30.719Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:40:34.300Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:41:31.598Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:41:51.305Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:42:08.308Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:42:09.334Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:42:12.818Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:42:12.820Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:42:13.152Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:42:13.163Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:42:13.208Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"\")","timestamp":"2025-12-08T10:42:15.653Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:42:17.407Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_10_all","timestamp":"2025-12-08T10:42:20.809Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"a\")","timestamp":"2025-12-08T10:42:22.865Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 1 (search=\"ab\")","timestamp":"2025-12-08T10:42:23.763Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"abc\")","timestamp":"2025-12-08T10:42:24.562Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"abcd\")","timestamp":"2025-12-08T10:42:24.993Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:42:33.156Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"c\")","timestamp":"2025-12-08T10:42:40.564Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"cm\")","timestamp":"2025-12-08T10:42:40.895Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"cmr\")","timestamp":"2025-12-08T10:42:41.395Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"cmr\\\")","timestamp":"2025-12-08T10:42:43.027Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"cmr\\\\\")","timestamp":"2025-12-08T10:42:43.353Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cmr\\","timestamp":"2025-12-08T10:42:45.604Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cmr","timestamp":"2025-12-08T10:42:47.807Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cm","timestamp":"2025-12-08T10:42:49.914Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_c","timestamp":"2025-12-08T10:42:50.844Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:42:51.352Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_c","timestamp":"2025-12-08T10:42:52.224Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cm","timestamp":"2025-12-08T10:42:52.622Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cmr","timestamp":"2025-12-08T10:42:53.572Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"cmre\")","timestamp":"2025-12-08T10:42:54.127Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"cmree\")","timestamp":"2025-12-08T10:42:54.306Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"cmreee\")","timestamp":"2025-12-08T10:42:54.497Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cmree","timestamp":"2025-12-08T10:43:00.481Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cmre","timestamp":"2025-12-08T10:43:03.739Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cmr","timestamp":"2025-12-08T10:43:06.838Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_cm","timestamp":"2025-12-08T10:43:07.652Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_c","timestamp":"2025-12-08T10:43:08.259Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:43:09.294Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_a","timestamp":"2025-12-08T10:43:10.206Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_ab","timestamp":"2025-12-08T10:43:10.817Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_abc","timestamp":"2025-12-08T10:43:11.332Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_abcd","timestamp":"2025-12-08T10:43:11.902Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_abc","timestamp":"2025-12-08T10:43:12.854Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_ab","timestamp":"2025-12-08T10:43:13.447Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_a","timestamp":"2025-12-08T10:43:13.966Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:43:14.562Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"k\")","timestamp":"2025-12-08T10:43:16.741Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"kk\")","timestamp":"2025-12-08T10:43:18.032Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"kkk\")","timestamp":"2025-12-08T10:43:19.070Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_kk","timestamp":"2025-12-08T10:43:22.415Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_k","timestamp":"2025-12-08T10:43:25.385Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:43:29.970Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"r\")","timestamp":"2025-12-08T10:43:32.543Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"rk\")","timestamp":"2025-12-08T10:43:33.704Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_r","timestamp":"2025-12-08T10:43:34.654Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:43:35.361Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 1 (search=\"m\")","timestamp":"2025-12-08T10:43:36.545Z"}
+{"level":"info","message":"Fetched 6 enquiries for user 1 (search=\"ma\")","timestamp":"2025-12-08T10:43:36.930Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"mar\")","timestamp":"2025-12-08T10:43:37.191Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"marb\")","timestamp":"2025-12-08T10:43:37.609Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"marbl\")","timestamp":"2025-12-08T10:43:37.919Z"}
+{"level":"info","message":"Fetched 1 enquiries for user 1 (search=\"marble\")","timestamp":"2025-12-08T10:43:38.302Z"}
+{"level":"info","message":"Fetched 0 enquiries for user 1 (search=\"marblee\")","timestamp":"2025-12-08T10:43:38.478Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_marble","timestamp":"2025-12-08T10:43:39.902Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_marbl","timestamp":"2025-12-08T10:43:43.784Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_marb","timestamp":"2025-12-08T10:43:44.127Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_mar","timestamp":"2025-12-08T10:43:44.367Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_ma","timestamp":"2025-12-08T10:43:44.576Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_m","timestamp":"2025-12-08T10:43:44.742Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:43:44.952Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:44:05.453Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-08T10:44:05.455Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:44:07.343Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-08T10:44:07.351Z"}
+{"level":"info","message":"Cache hit for enquiry_list_1_10_0_all","timestamp":"2025-12-08T10:44:07.384Z"}

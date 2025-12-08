@@ -136,17 +136,69 @@ router.post(
 );
 
 // GET ALL
+// router.get(
+//   '/',
+//   authenticateToken,
+//   checkPermission('Enquiries', 'can_read'),
+//   async (req, res) => {
+//     const { limit = 10, offset = 0, force_refresh = 'false', cursor = null } =
+//       req.query;
+//     const parsedLimit = parseInt(limit, 10) || 10;
+//     const parsedOffset = parseInt(offset, 10) || 0;
+
+//     const cacheKey = `enquiry_list_${req.user.user_id}_${parsedLimit}_${parsedOffset}`;
+
+//     try {
+//       if (force_refresh === 'true') {
+//         await redis.del(cacheKey);
+//       }
+
+//       const cached = await redis.get(cacheKey);
+//       if (cached && force_refresh !== 'true') {
+//         logger.info(`Cache hit for ${cacheKey}`);
+//         return res.json(JSON.parse(cached));
+//       }
+
+//       const enquiries = await Enquiry.getAll({
+//         limit: parsedLimit,
+//         offset: parsedOffset,
+//         cursor: cursor || null,
+//         user: req.user,
+//       });
+
+//       await redis.setEx(cacheKey, 300, JSON.stringify(enquiries));
+//       logger.info(`Fetched ${enquiries.data.length} enquiries for user ${req.user.user_id}`);
+//       res.json(enquiries);
+//     } catch (error) {
+//       logger.error(`Error fetching enquiries: ${error.message}`, error.stack);
+//       res
+//         .status(500)
+//         .json({ error: 'Internal Server Error', code: 'SERVER_ERROR' });
+//     }
+//   }
+// );
+// GET ALL
 router.get(
   '/',
   authenticateToken,
   checkPermission('Enquiries', 'can_read'),
   async (req, res) => {
-    const { limit = 10, offset = 0, force_refresh = 'false', cursor = null } =
-      req.query;
+    const {
+      limit = 10,
+      offset = 0,
+      force_refresh = 'false',
+      cursor = null,
+      search = '',
+    } = req.query;
+
     const parsedLimit = parseInt(limit, 10) || 10;
     const parsedOffset = parseInt(offset, 10) || 0;
+    const trimmedSearch = (search || '').trim();
 
-    const cacheKey = `enquiry_list_${req.user.user_id}_${parsedLimit}_${parsedOffset}`;
+    // IMPORTANT: include search in cache key so different searches are cached separately
+    const cacheKey = `enquiry_list_${req.user.user_id}_${parsedLimit}_${parsedOffset}_${
+      trimmedSearch || 'all'
+    }`;
 
     try {
       if (force_refresh === 'true') {
@@ -164,10 +216,13 @@ router.get(
         offset: parsedOffset,
         cursor: cursor || null,
         user: req.user,
+        search: trimmedSearch || null, // <--- pass search down
       });
 
       await redis.setEx(cacheKey, 300, JSON.stringify(enquiries));
-      logger.info(`Fetched ${enquiries.data.length} enquiries for user ${req.user.user_id}`);
+      logger.info(
+        `Fetched ${enquiries.data.length} enquiries for user ${req.user.user_id} (search="${trimmedSearch}")`
+      );
       res.json(enquiries);
     } catch (error) {
       logger.error(`Error fetching enquiries: ${error.message}`, error.stack);
@@ -177,6 +232,7 @@ router.get(
     }
   }
 );
+
 
 // GET SINGLE
 router.get(
