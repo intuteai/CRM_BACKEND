@@ -623,3 +623,85 @@
 {"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-12-09T13:42:27.465Z"}
 {"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T13:42:29.776Z"}
 {"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T13:42:29.824Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:04.421Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-09T14:01:04.286Z","timestamp":"2025-12-09T14:01:04.665Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:07.134Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:09.906Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:12.723Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:15.585Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:18.494Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:21.461Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:24.470Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:27.537Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:30.644Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:33.801Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:37.041Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:40.253Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:43.465Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:46.673Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:49.880Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:53.105Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:56.323Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2025-12-09T14:01:59.536Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-09T14:02:04.464Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-09T14:02:04.467Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-09T14:02:04.467Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-09T14:02:04.511Z","timestamp":"2025-12-09T14:02:04.890Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-09T14:02:04.897Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-09T14:02:04.904Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:02:04.959Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T14:02:14.617Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:02:17.909Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:02:22.592Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T14:02:27.668Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T14:02:27.670Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-09T14:02:40.314Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:02:40.373Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:02:41.299Z"}
+{"level":"info","message":"Fetched 325 inventory items","timestamp":"2025-12-09T14:02:41.753Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-12-09T14:02:41.811Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:02:44.204Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:02:44.246Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:02:48.708Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:02:48.794Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:02:51.202Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:02:51.244Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:02:59.001Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:02:59.082Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:04:35.810Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:04:35.859Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:05:02.222Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:05:02.267Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:06:06.200Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:06:06.243Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T14:10:19.142Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:10:19.157Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-12-09T14:10:19.516Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:10:21.319Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:10:21.362Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:10:25.598Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:10:25.687Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:11:07.442Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:11:07.487Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T14:11:25.682Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T14:11:25.685Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:11:26.030Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T14:11:26.046Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-12-09T14:11:26.352Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2025-12-09T14:11:26.445Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:11:34.765Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:11:34.850Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:14:33.459Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:14:33.540Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:14:37.707Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:14:37.746Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:16:18.420Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:16:18.496Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:17:12.170Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:17:12.261Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:19:45.399Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:19:45.443Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:21:14.058Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2025-12-09T14:21:14.098Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:21:38.861Z"}
+{"level":"info","message":"Fetched 325 stock items","timestamp":"2025-12-09T14:21:38.944Z"}
