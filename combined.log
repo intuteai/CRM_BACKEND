@@ -357,3 +357,19 @@
 {"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:53:06.008Z"}
 {"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-09T07:53:38.939Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T07:53:38.969Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-09T08:21:22.814Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-09T08:21:22.817Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-09T08:21:22.817Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-09T08:21:22.616Z","timestamp":"2025-12-09T08:21:23.248Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-09T08:21:23.250Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-09T08:21:23.253Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-09T08:21:42.862Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T08:21:42.963Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T08:21:45.754Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T08:21:45.883Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T08:24:21.000Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T08:25:02.959Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T08:25:05.352Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T08:25:05.641Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-09T08:26:44.254Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T08:26:44.303Z"}
