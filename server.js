@@ -35,6 +35,9 @@ const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
 require('dotenv').config();
 
+// NEW: Parts route
+const partsRoutes = require('./routes/parts');
+
 // NEW: Quotation route (stream-only)
 const quotationRoutes = require('./routes/quotation');
 // NEW: Proforma route (stream-only)
@@ -120,6 +123,9 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/process', processRoutes);
 app.use('/api/activities', activitiesRoutes);
 app.use('/api/payslip', payslipRoutes);
+
+// NEW: Parts API
+app.use('/api/parts', partsRoutes);
 
 // NEW: mount quotation route (stream-only)
 app.use('/api/quotation', quotationRoutes);
