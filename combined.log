@@ -321,3 +321,39 @@
 {"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T05:54:42.532Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T05:54:46.635Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T05:54:46.636Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-09T07:32:24.299Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-09T07:32:24.302Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-12-09T07:32:24.303Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-09T07:32:24.303Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-09T07:32:24.132Z","timestamp":"2025-12-09T07:32:24.757Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-09T07:32:24.761Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-09T07:32:24.768Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T07:32:25.029Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T07:38:28.319Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-09T07:38:47.210Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T07:38:47.264Z"}
+{"level":"info","message":"Fetched parts list (limit=10, offset=0)","timestamp":"2025-12-09T07:38:49.659Z"}
+{"level":"info","message":"Fetched parts list (limit=10, offset=0)","timestamp":"2025-12-09T07:38:49.779Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:49:47.953Z"}
+{"level":"info","message":"Created part FFP0000001 (id=1) by user 1","timestamp":"2025-12-09T07:50:02.162Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:50:02.299Z"}
+{"level":"info","message":"Updated part 1 by user 1","timestamp":"2025-12-09T07:50:17.781Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:50:17.918Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T07:51:05.774Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T07:51:06.100Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:51:06.875Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:51:07.002Z"}
+{"level":"info","message":"Created part WFA0000001 (id=2) by user 1","timestamp":"2025-12-09T07:51:21.881Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:51:22.018Z"}
+{"level":"info","message":"Created part FFP0000002 (id=3) by user 1","timestamp":"2025-12-09T07:51:41.637Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:51:41.770Z"}
+{"level":"info","message":"Deleted part 2 by user 1","timestamp":"2025-12-09T07:51:54.881Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:51:55.007Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T07:52:01.925Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T07:52:02.114Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:52:02.540Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:52:02.663Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:52:29.308Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T07:53:06.008Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-09T07:53:38.939Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T07:53:38.969Z"}
