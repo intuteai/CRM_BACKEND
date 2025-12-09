@@ -132,6 +132,35 @@ router.get('/stock', authenticateToken, async (req, res, next) => {
     }
 
     const query = `
+      SELECT product_id, product_name, stock_quantity, price, description, product_code
+      FROM inventory
+    `;
+    const { rows } = await pool.query(query);
+
+    await redis.setEx(cacheKey, 3600, JSON.stringify(rows));
+    logger.info(`Fetched ${rows.length} stock items`);
+    res.json(rows);
+  } catch (error) {
+    logger.error(`Error in GET /api/inventory/stock: ${error.message}`, error.stack);
+    next(error);
+  }
+});
+
+
+// GET /api/inventory/stock
+router.get('/stock', authenticateToken, async (req, res, next) => {
+  const { force_refresh } = req.query;
+  try {
+    const cacheKey = `inventory_stock`;
+    if (force_refresh !== 'true') {
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        logger.info(`Cache hit for ${cacheKey}`);
+        return res.json(JSON.parse(cached));
+      }
+    }
+
+    const query = `
       SELECT product_id, product_name, stock_quantity, description, product_code
       FROM inventory
     `;
