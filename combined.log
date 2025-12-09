@@ -404,3 +404,52 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T09:49:30.270Z"}
 {"level":"info","message":"User logged in: design@compageauto.com, user_id: 8, role_id: 4, role: design","timestamp":"2025-12-09T09:49:40.477Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T09:49:40.516Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-09T09:57:56.790Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-09T09:57:56.793Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2025-12-09T09:57:56.793Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-09T09:57:56.794Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-09T09:57:56.543Z","timestamp":"2025-12-09T09:57:57.198Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-09T09:57:57.202Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-09T09:57:57.208Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:18:51.603Z"}
+{"level":"info","message":"User logged out, user_id: 8","timestamp":"2025-12-09T10:18:53.200Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:18:53.233Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-09T10:19:02.604Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:19:02.659Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-12-09T10:19:04.941Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-12-09T10:19:05.087Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-12-09T10:19:27.177Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-12-09T10:19:30.817Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:19:56.564Z"}
+{"level":"info","message":"Fetched 324 inventory items","timestamp":"2025-12-09T10:19:56.741Z"}
+{"level":"info","message":"Fetched 324 inventory items","timestamp":"2025-12-09T10:19:56.880Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:20:01.846Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-12-09T10:20:03.163Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2025-12-09T10:20:03.275Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T10:20:13.026Z"}
+{"level":"info","message":"Fetched parts list (limit=1000, offset=0)","timestamp":"2025-12-09T10:20:13.139Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-09T10:20:24.117Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:20:24.135Z"}
+{"level":"info","message":"User logged in: sales@compageauto.com, user_id: 7, role_id: 3, role: sales","timestamp":"2025-12-09T10:20:35.807Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:20:35.852Z"}
+{"level":"info","message":"Fetched 10 enquiries for user 7 (search=\"\")","timestamp":"2025-12-09T10:20:38.347Z"}
+{"level":"info","message":"User logged out, user_id: 7","timestamp":"2025-12-09T10:22:39.524Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:22:39.533Z"}
+{"level":"info","message":"User logged in: design@compageauto.com, user_id: 8, role_id: 4, role: design","timestamp":"2025-12-09T10:22:51.258Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:22:51.288Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 8 (search=\"\")","timestamp":"2025-12-09T10:22:52.747Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:23:40.614Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:26:10.613Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:26:45.584Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:26:47.311Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 8 (search=\"\")","timestamp":"2025-12-09T10:28:28.684Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:29:00.596Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:30:27.630Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:33:20.578Z"}
+{"level":"info","message":"Cache hit for enquiry_list_8_10_0_all","timestamp":"2025-12-09T10:33:22.303Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:34:04.458Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:34:06.349Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-09T10:34:06.355Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:34:06.699Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-09T10:34:06.700Z"}
+{"level":"info","message":"Fetched 4 enquiries for user 8 (search=\"\")","timestamp":"2025-12-09T10:34:06.744Z"}
