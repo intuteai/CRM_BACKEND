@@ -965,3 +965,23 @@
 {"level":"info","message":"Fetched 325 inventory items","timestamp":"2025-12-10T11:08:30.276Z"}
 {"level":"info","message":"Fetched 325 inventory items","timestamp":"2025-12-10T11:08:30.368Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:08:41.479Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-10T11:54:46.177Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-10T11:54:46.179Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-10T11:54:46.180Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-10T11:54:46.165Z","timestamp":"2025-12-10T11:54:46.571Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-10T11:54:46.574Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-10T11:54:46.580Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:54:48.562Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:54:57.796Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:54:58.546Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2025-12-10T11:55:11.494Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:55:11.556Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-10T11:55:29.773Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:55:29.838Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:55:31.637Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:55:31.680Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:55:32.944Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:55:32.992Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:55:33.740Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:55:33.790Z"}
+{"level":"info","message":"Delivery challan generated: DELIVERY_CHALLAN_123.pdf by 1","timestamp":"2025-12-10T11:56:57.624Z"}

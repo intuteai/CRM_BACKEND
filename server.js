@@ -30,6 +30,7 @@ const attendanceRoutes = require('./routes/attendance');
 const processRoutes = require('./routes/process');
 const activitiesRoutes = require('./routes/activities');
 const payslipRoutes = require('./routes/payslip');
+const deliveryChallanRoutes = require('./routes/deliveryChallan');
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
@@ -131,7 +132,7 @@ app.use('/api/parts', partsRoutes);
 app.use('/api/quotation', quotationRoutes);
 // NEW: mount proforma route (stream-only)
 app.use('/api/proforma', proformaRoutes);
-
+app.use('/api/delivery-challan', deliveryChallanRoutes); 
 // ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);
 
