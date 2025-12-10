@@ -38,14 +38,18 @@ class Order {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
+
       const productIds = items.map(i => parseInt(i.product_id, 10));
       console.log('Product IDs from request:', productIds);
+
       const { rows: products } = await client.query(
         'SELECT product_id, stock_quantity FROM inventory WHERE product_id = ANY($1)',
         [productIds]
       );
       console.log('Products from DB:', products);
+
       const productMap = new Map(products.map(p => [p.product_id, p.stock_quantity]));
+
       for (const item of items) {
         const productId = parseInt(item.product_id, 10);
         const stock = productMap.get(productId);
@@ -53,7 +57,7 @@ class Order {
           console.error(`Product ${productId} not found in DB`);
           throw new Error(`Product ${productId} not found`);
         }
-        if (stock < item.quantity) throw new Error(`Insufficient stock for product ${productId}`);
+        // Allow overselling: no check for stock < item.quantity
       }
 
       const { rows: [order] } = await client.query(
@@ -61,10 +65,21 @@ class Order {
         [user_id, 'Pending', target_delivery_date || null, 'Pending']
       );
 
-      const orderItemsValues = items.map(item => [order.order_id, parseInt(item.product_id, 10), item.quantity, item.price]);
+      const orderItemsValues = items.map(item => [
+        order.order_id,
+        parseInt(item.product_id, 10),
+        item.quantity,
+        item.price
+      ]);
+
       await client.query(
         'INSERT INTO order_items (order_id, product_id, quantity, price) SELECT * FROM unnest($1::int[], $2::int[], $3::int[], $4::numeric[])',
-        [orderItemsValues.map(v => v[0]), orderItemsValues.map(v => v[1]), orderItemsValues.map(v => v[2]), orderItemsValues.map(v => v[3])]
+        [
+          orderItemsValues.map(v => v[0]),
+          orderItemsValues.map(v => v[1]),
+          orderItemsValues.map(v => v[2]),
+          orderItemsValues.map(v => v[3])
+        ]
       );
 
       const { rows: updatedStocks } = await client.query(
@@ -115,10 +130,18 @@ class Order {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      const { rows: [existingOrder] } = await client.query('SELECT * FROM orders WHERE order_id = $1', [orderId]);
+
+      const { rows: [existingOrder] } = await client.query(
+        'SELECT * FROM orders WHERE order_id = $1',
+        [orderId]
+      );
       if (!existingOrder) throw new Error('Order not found');
 
-      const { rows: existingItems } = await client.query('SELECT product_id, quantity FROM order_items WHERE order_id = $1', [orderId]);
+      const { rows: existingItems } = await client.query(
+        'SELECT product_id, quantity FROM order_items WHERE order_id = $1',
+        [orderId]
+      );
+
       const oldItemsMap = new Map(existingItems.map(i => [i.product_id, i.quantity]));
       const newItemsMap = new Map(items.map(i => [parseInt(i.product_id, 10), i.quantity]));
 
@@ -130,32 +153,52 @@ class Order {
         }
       }
 
-      const productIds = [...new Set([...existingItems.map(i => i.product_id), ...items.map(i => parseInt(i.product_id, 10))])];
-      const { rows: products } = await client.query('SELECT product_id, stock_quantity FROM inventory WHERE product_id = ANY($1)', [productIds]);
+      const productIds = [
+        ...new Set([
+          ...existingItems.map(i => i.product_id),
+          ...items.map(i => parseInt(i.product_id, 10))
+        ])
+      ];
+
+      const { rows: products } = await client.query(
+        'SELECT product_id, stock_quantity FROM inventory WHERE product_id = ANY($1)',
+        [productIds]
+      );
       const productMap = new Map(products.map(p => [p.product_id, p.stock_quantity]));
 
-      // Validate stock for updated and new items
+      // Validate products exist, allow negative inventory
       for (const [productId, newQty] of newItemsMap) {
         const oldQty = oldItemsMap.get(productId) || 0;
         const stock = productMap.get(productId);
         if (stock === undefined) throw new Error(`Product ${productId} not found`);
-        const stockChange = oldQty - newQty; // Positive if reducing qty, negative if increasing
-        if (stock + stockChange < 0) throw new Error(`Insufficient stock for product ${productId}: ${stock + oldQty} available`);
+        // No check for stock + stockChange < 0 to allow overselling
       }
 
       // Delete existing order items
       await client.query('DELETE FROM order_items WHERE order_id = $1', [orderId]);
 
       // Insert new order items
-      const orderItemsValues = items.map(item => [orderId, parseInt(item.product_id, 10), item.quantity, item.price]);
+      const orderItemsValues = items.map(item => [
+        orderId,
+        parseInt(item.product_id, 10),
+        item.quantity,
+        item.price
+      ]);
+
       await client.query(
         'INSERT INTO order_items (order_id, product_id, quantity, price) SELECT * FROM unnest($1::int[], $2::int[], $3::int[], $4::numeric[])',
-        [orderItemsValues.map(v => v[0]), orderItemsValues.map(v => v[1]), orderItemsValues.map(v => v[2]), orderItemsValues.map(v => v[3])]
+        [
+          orderItemsValues.map(v => v[0]),
+          orderItemsValues.map(v => v[1]),
+          orderItemsValues.map(v => v[2]),
+          orderItemsValues.map(v => v[3])
+        ]
       );
 
       // Update order details
       const updates = [];
       const values = [orderId];
+
       if (target_delivery_date !== undefined) {
         updates.push(`target_delivery_date = $${values.length + 1}`);
         values.push(target_delivery_date || null);
@@ -168,6 +211,7 @@ class Order {
         updates.push(`payment_status = $${values.length + 1}`);
         values.push(payment_status);
       }
+
       const { rows: [updatedOrder] } = await client.query(
         `UPDATE orders SET ${updates.join(', ')} WHERE order_id = $1 RETURNING order_id, user_id, TO_CHAR(target_delivery_date, 'YYYY-MM-DD') AS target_delivery_date, created_at, status, payment_status`,
         values
@@ -175,14 +219,19 @@ class Order {
 
       // Update stock for modified and deleted items
       const stockUpdates = [];
+
       for (const [productId, newQty] of newItemsMap) {
         const oldQty = oldItemsMap.get(productId) || 0;
         const stockChange = oldQty - newQty; // Positive if reducing qty, negative if increasing
-        if (stockChange !== 0) stockUpdates.push({ productId, quantity: stockChange });
+        if (stockChange !== 0) {
+          stockUpdates.push({ productId, quantity: stockChange });
+        }
       }
+
       for (const { productId, quantity } of deletedItems) {
         stockUpdates.push({ productId, quantity }); // Restore full quantity for deleted items
       }
+
       if (stockUpdates.length) {
         const { rows: updatedStocks } = await client.query(
           `WITH stock_changes AS (
@@ -193,7 +242,10 @@ class Order {
            FROM stock_changes sc
            WHERE i.product_id = sc.product_id
            RETURNING i.product_id, i.stock_quantity`,
-          [stockUpdates.map(s => s.productId), stockUpdates.map(s => s.quantity)]
+          [
+            stockUpdates.map(s => s.productId),
+            stockUpdates.map(s => s.quantity)
+          ]
         );
 
         // Emit stock updates via Socket.IO
