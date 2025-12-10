@@ -104,8 +104,15 @@ router.post(
   async (req, res, next) => {
     try {
       const { targetDeliveryDate, items, user_id } = req.body;
-      const orderUserId =
-        req.user.role_id === 1 ? user_id : req.user.user_id;
+
+      // Admin (1) and Sales (3) can create orders for ANY customer (user_id from body)
+      // Others: order is always for themselves
+      let orderUserId;
+      if ([1, 3].includes(req.user.role_id)) {
+        orderUserId = user_id;
+      } else {
+        orderUserId = req.user.user_id;
+      }
 
       if (!items?.length || !orderUserId) {
         return res
@@ -114,7 +121,7 @@ router.post(
       }
 
       console.log(
-        `Starting order creation for user_id: ${orderUserId}, role_id: ${req.user.role_id}`
+        `Starting order creation for user_id: ${orderUserId}, created_by role_id: ${req.user.role_id}`
       );
 
       const order = await Order.create(
@@ -150,14 +157,14 @@ router.post(
 
       setImmediate(async () => {
         try {
+          // Order changes affect everyone’s view, so clear all orders_* caches
           const [orderKeys, inventoryKeys] = await Promise.all([
-            redis.keys(`orders_*_${orderUserId}`),
+            redis.keys('orders_*'),
             redis.keys('inventory_*'),
-            redis.keys('inventory_stock'), // Invalidate stock cache
           ]);
           if (orderKeys.length) await redis.del(orderKeys);
           if (inventoryKeys.length)
-            await redis.del([...inventoryKeys, 'inventory_stock']); // Ensure inventory_stock is included
+            await redis.del([...inventoryKeys, 'inventory_stock']);
           logger.info(
             `Cleared caches for orders and inventory after creating order ${order.order_id}`
           );
@@ -181,11 +188,12 @@ router.put(
   authenticateToken,
   checkPermission('Orders', 'can_write'),
   async (req, res, next) => {
-    // Only Admin (1) or Production (5) can update orders
-    if (req.user.role_id !== 1 && req.user.role_id !== 5)
+    // Allow Admin (1), Production (5), Sales (3) to update any order
+    if (![1, 5, 3].includes(req.user.role_id)) {
       return res
         .status(403)
-        .json({ error: 'Only admins or production can update orders' });
+        .json({ error: 'Only admins, production, or sales can update orders' });
+    }
 
     try {
       const orderId = req.params.id;
@@ -261,13 +269,12 @@ router.put(
       setImmediate(async () => {
         try {
           const [orderKeys, inventoryKeys] = await Promise.all([
-            redis.keys(`orders_*_${order.user_id}`),
+            redis.keys('orders_*'),
             redis.keys('inventory_*'),
-            redis.keys('inventory_stock'), // Invalidate stock cache
           ]);
           if (orderKeys.length) await redis.del(orderKeys);
           if (inventoryKeys.length)
-            await redis.del([...inventoryKeys, 'inventory_stock']); // Ensure inventory_stock is included
+            await redis.del([...inventoryKeys, 'inventory_stock']);
           logger.info(
             `Cleared caches for orders and inventory after updating order ${orderId}`
           );
@@ -317,13 +324,12 @@ router.post(
       setImmediate(async () => {
         try {
           const [orderKeys, inventoryKeys] = await Promise.all([
-            redis.keys(`orders_*_${order.user_id}`),
+            redis.keys('orders_*'),
             redis.keys('inventory_*'),
-            redis.keys('inventory_stock'), // Invalidate stock cache
           ]);
           if (orderKeys.length) await redis.del(orderKeys);
           if (inventoryKeys.length)
-            await redis.del([...inventoryKeys, 'inventory_stock']); // Ensure inventory_stock is included
+            await redis.del([...inventoryKeys, 'inventory_stock']);
           logger.info(
             `Cleared caches for orders and inventory after cancelling order ${orderId}`
           );
