@@ -3,21 +3,22 @@ const pool = require('../config/db');
 
 class Stock {
   // --------------------------------------------------------------
-  // 1. GET ALL (returns image_url + location)
+  // 1. GET ALL (returns image_url + location + returnable_qty)
   // --------------------------------------------------------------
   static async getAll({ limit = 10, offset = 0 }) {
     const query = `
       SELECT 
-        product_id      AS "productId",
-        stock_quantity  AS "stockQuantity",
+        product_id        AS "productId",
+        stock_quantity    AS "stockQuantity",
         price,
-        created_at      AS "createdAt",
-        product_name    AS "productName",
+        created_at        AS "createdAt",
+        product_name      AS "productName",
         description,
-        product_code    AS "productCode",
-        qty_required    AS "qtyRequired",
-        location        AS "location",
-        image_url       AS "imageUrl"
+        product_code      AS "productCode",
+        qty_required      AS "qtyRequired",
+        location          AS "location",
+        image_url         AS "imageUrl",
+        returnable_qty    AS "returnableQty"
       FROM raw_materials
       ORDER BY product_id ASC
       LIMIT $1 OFFSET $2
@@ -41,7 +42,7 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 2. CREATE (adds image_url = NULL by default)
+  // 2. CREATE (adds image_url = NULL by default, includes returnable_qty)
   // --------------------------------------------------------------
   static async create({
     productName,
@@ -51,24 +52,34 @@ class Stock {
     stockQuantity,
     qtyRequired,
     location,
-    imageUrl // optional
+    imageUrl,      // optional
+    returnableQty, // optional (numeric)
   }) {
     const query = `
       INSERT INTO raw_materials (
-        product_name, description, product_code, price,
-        stock_quantity, qty_required, created_at, location, image_url
-      ) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, $7, $8)
-      RETURNING
-        product_id      AS "productId",
-        stock_quantity  AS "stockQuantity",
-        price,
-        created_at      AS "createdAt",
-        product_name    AS "productName",
+        product_name,
         description,
-        product_code    AS "productCode",
-        qty_required    AS "qtyRequired",
-        location        AS "location",
-        image_url       AS "imageUrl"
+        product_code,
+        price,
+        stock_quantity,
+        qty_required,
+        created_at,
+        location,
+        image_url,
+        returnable_qty
+      ) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, $7, $8, $9)
+      RETURNING
+        product_id        AS "productId",
+        stock_quantity    AS "stockQuantity",
+        price,
+        created_at        AS "createdAt",
+        product_name      AS "productName",
+        description,
+        product_code      AS "productCode",
+        qty_required      AS "qtyRequired",
+        location          AS "location",
+        image_url         AS "imageUrl",
+        returnable_qty    AS "returnableQty"
     `;
 
     const values = [
@@ -79,7 +90,8 @@ class Stock {
       stockQuantity ?? 0,
       qtyRequired ?? 0,
       location || null,
-      imageUrl || null
+      imageUrl || null,
+      returnableQty !== undefined ? returnableQty : 0,
     ];
 
     try {
@@ -92,7 +104,7 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 3. UPDATE (includes image_url return and optional update)
+  // 3. UPDATE (includes image_url return and optional update; adds returnable_qty)
   // --------------------------------------------------------------
   static async update(productId, {
     productName,
@@ -102,7 +114,8 @@ class Stock {
     stockQuantity,
     qtyRequired,
     location,
-    imageUrl // optional - if undefined, keep existing
+    imageUrl,      // optional - if undefined, keep existing
+    returnableQty, // optional - if undefined, keep existing
   }) {
     const query = `
       UPDATE raw_materials
@@ -114,19 +127,21 @@ class Stock {
         stock_quantity = COALESCE($5, stock_quantity),
         qty_required   = $6,
         location       = $7,
-        image_url      = COALESCE($8, image_url)
-      WHERE product_id = $9
+        image_url      = COALESCE($8, image_url),
+        returnable_qty = COALESCE($9, returnable_qty)
+      WHERE product_id = $10
       RETURNING
-        product_id      AS "productId",
-        stock_quantity  AS "stockQuantity",
+        product_id        AS "productId",
+        stock_quantity    AS "stockQuantity",
         price,
-        created_at      AS "createdAt",
-        product_name    AS "productName",
+        created_at        AS "createdAt",
+        product_name      AS "productName",
         description,
-        product_code    AS "productCode",
-        qty_required    AS "qtyRequired",
-        location        AS "location",
-        image_url       AS "imageUrl"
+        product_code      AS "productCode",
+        qty_required      AS "qtyRequired",
+        location          AS "location",
+        image_url         AS "imageUrl",
+        returnable_qty    AS "returnableQty"
     `;
 
     const values = [
@@ -138,6 +153,7 @@ class Stock {
       qtyRequired ?? 0,
       location !== undefined ? location : null,
       imageUrl !== undefined ? imageUrl : null,
+      returnableQty !== undefined ? returnableQty : null,
       productId,
     ];
 

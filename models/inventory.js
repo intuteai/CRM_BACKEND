@@ -1,14 +1,15 @@
 const pool = require('../config/db');
 
 class Inventory {
-  static async create({ product_name, stock_quantity, price, description, product_code }, io) {
+  static async create({ product_name, stock_quantity, price, description, product_code, returnable_qty = 0 }, io) {
     const query = `
-      INSERT INTO inventory (product_name, stock_quantity, price, description, product_code)
-      VALUES ($1, $2, $3, $4, $5) RETURNING *
+      INSERT INTO inventory (product_name, stock_quantity, price, description, product_code, returnable_qty)
+      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *
     `;
-    const result = await pool.query(query, [product_name, stock_quantity, price, description, product_code]);
+    const result = await pool.query(query, [product_name, stock_quantity, price, description, product_code, returnable_qty]);
     const product = result.rows[0];
-    io.emit('stockUpdate', { product_id: product.product_id, stock_quantity });
+    // emit both stock and returnable qty so clients can update UI
+    if (io) io.emit('stockUpdate', { product_id: product.product_id, stock_quantity: product.stock_quantity, returnable_qty: product.returnable_qty });
     return product;
   }
 
@@ -22,14 +23,14 @@ class Inventory {
     return { data: result.rows, total: parseInt(countResult.rows[0].count, 10) };
   }
 
-  static async update(productId, { product_name, stock_quantity, price, description, product_code }) {
+  static async update(productId, { product_name, stock_quantity, price, description, product_code, returnable_qty = 0 }) {
     const query = `
       UPDATE inventory 
-      SET product_name = $1, stock_quantity = $2, price = $3, description = $4, product_code = $5, created_at = CURRENT_TIMESTAMP
-      WHERE product_id = $6
+      SET product_name = $1, stock_quantity = $2, price = $3, description = $4, product_code = $5, returnable_qty = $6, created_at = CURRENT_TIMESTAMP
+      WHERE product_id = $7
       RETURNING *
     `;
-    const values = [product_name, stock_quantity, price, description, product_code, productId];
+    const values = [product_name, stock_quantity, price, description, product_code, returnable_qty, productId];
     const { rows } = await pool.query(query, values);
     if (rows.length === 0) {
       throw new Error('Product not found');
@@ -44,7 +45,7 @@ class Inventory {
       throw new Error('Product not found');
     }
     const product = result.rows[0];
-    io.emit('stockUpdate', { product_id: product.product_id, stock_quantity: 0 });
+    if (io) io.emit('stockUpdate', { product_id: product.product_id, stock_quantity: 0, returnable_qty: 0 });
     return product;
   }
 
