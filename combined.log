@@ -985,3 +985,27 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-10T11:55:33.740Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-10T11:55:33.790Z"}
 {"level":"info","message":"Delivery challan generated: DELIVERY_CHALLAN_123.pdf by 1","timestamp":"2025-12-10T11:56:57.624Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-11T04:09:21.363Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-11T04:09:21.369Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-11T04:09:21.370Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-11T04:09:22.273Z","timestamp":"2025-12-11T04:09:21.773Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-11T04:09:21.776Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-11T04:09:21.782Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-11T04:09:40.538Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2025-12-11T04:09:47.820Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2025-12-11T04:10:01.793Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-11T04:10:01.871Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-11T04:10:37.192Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-11T04:10:37.196Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-11T04:10:37.196Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-11T04:10:38.044Z","timestamp":"2025-12-11T04:10:37.543Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-11T04:10:37.545Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-11T04:10:37.548Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-11T04:10:39.234Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2025-12-11T04:10:45.784Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2025-12-11T04:10:45.789Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2025-12-11T04:10:45.790Z"}
+{"level":"info","message":"Database connection successful:","now":"2025-12-11T04:10:46.670Z","timestamp":"2025-12-11T04:10:46.169Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2025-12-11T04:10:46.173Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2025-12-11T04:10:46.176Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2025-12-11T04:10:48.231Z"}
