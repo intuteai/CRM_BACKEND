@@ -1,24 +1,55 @@
 // models/stock.js
 const pool = require('../config/db');
 
+function normalizeStockRow(row) {
+  if (!row) return null;
+  // rows from your queries currently come as camelCase (productId, productName).
+  // provide both canonical snake_case and camelCase for safety.
+  const product_id = row.product_id ?? row.productId ?? row.productId ?? null;
+  const product_name = (row.product_name ?? row.productName ?? row.name ?? row.product_code ?? '') + '';
+
+  return {
+    // snake_case canonical
+    product_id,
+    product_name,
+    stock_quantity: row.stock_quantity ?? row.stockQuantity ?? 0,
+    price: row.price ?? null,
+    created_at: row.created_at ?? row.createdAt ?? null,
+    description: row.description ?? null,
+    product_code: row.product_code ?? row.productCode ?? null,
+    qty_required: row.qty_required ?? row.qtyRequired ?? 0,
+    location: row.location ?? null,
+    image_url: row.image_url ?? row.imageUrl ?? null,
+    returnable_qty: row.returnable_qty ?? row.returnableQty ?? 0,
+    // camelCase aliases kept for compatibility
+    productId: product_id,
+    productName: product_name,
+    stockQuantity: row.stock_quantity ?? row.stockQuantity ?? 0,
+    qtyRequired: row.qty_required ?? row.qtyRequired ?? 0,
+    imageUrl: row.image_url ?? row.imageUrl ?? null,
+    returnableQty: row.returnable_qty ?? row.returnableQty ?? 0,
+    __raw: row,
+  };
+}
+
 class Stock {
   // --------------------------------------------------------------
-  // 1. GET ALL (returns image_url + location + returnable_qty)
+  // 1. GET ALL (returns both snake_case and camelCase)
   // --------------------------------------------------------------
   static async getAll({ limit = 10, offset = 0 }) {
     const query = `
       SELECT 
-        product_id        AS "productId",
-        stock_quantity    AS "stockQuantity",
+        product_id,
+        stock_quantity,
         price,
-        created_at        AS "createdAt",
-        product_name      AS "productName",
+        created_at,
+        product_name,
         description,
-        product_code      AS "productCode",
-        qty_required      AS "qtyRequired",
-        location          AS "location",
-        image_url         AS "imageUrl",
-        returnable_qty    AS "returnableQty"
+        product_code,
+        qty_required,
+        location,
+        image_url,
+        returnable_qty
       FROM raw_materials
       ORDER BY product_id ASC
       LIMIT $1 OFFSET $2
@@ -31,8 +62,9 @@ class Stock {
         pool.query(totalQuery),
       ]);
 
+      const rows = (itemsResult.rows || []).map(normalizeStockRow);
       return {
-        data: itemsResult.rows,
+        data: rows,
         total: parseInt(totalResult.rows[0].count, 10),
       };
     } catch (error) {
@@ -42,7 +74,7 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 2. CREATE (adds image_url = NULL by default, includes returnable_qty)
+  // 2. CREATE
   // --------------------------------------------------------------
   static async create({
     productName,
@@ -69,17 +101,17 @@ class Stock {
         returnable_qty
       ) VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, $7, $8, $9)
       RETURNING
-        product_id        AS "productId",
-        stock_quantity    AS "stockQuantity",
+        product_id,
+        stock_quantity,
         price,
-        created_at        AS "createdAt",
-        product_name      AS "productName",
+        created_at,
+        product_name,
         description,
-        product_code      AS "productCode",
-        qty_required      AS "qtyRequired",
-        location          AS "location",
-        image_url         AS "imageUrl",
-        returnable_qty    AS "returnableQty"
+        product_code,
+        qty_required,
+        location,
+        image_url,
+        returnable_qty
     `;
 
     const values = [
@@ -96,7 +128,7 @@ class Stock {
 
     try {
       const { rows } = await pool.query(query, values);
-      return rows[0];
+      return normalizeStockRow(rows[0]);
     } catch (error) {
       console.error('Error creating stock item:', error);
       throw error;
@@ -104,7 +136,7 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 3. UPDATE (includes image_url return and optional update; adds returnable_qty)
+  // 3. UPDATE
   // --------------------------------------------------------------
   static async update(productId, {
     productName,
@@ -131,17 +163,17 @@ class Stock {
         returnable_qty = COALESCE($9, returnable_qty)
       WHERE product_id = $10
       RETURNING
-        product_id        AS "productId",
-        stock_quantity    AS "stockQuantity",
+        product_id,
+        stock_quantity,
         price,
-        created_at        AS "createdAt",
-        product_name      AS "productName",
+        created_at,
+        product_name,
         description,
-        product_code      AS "productCode",
-        qty_required      AS "qtyRequired",
-        location          AS "location",
-        image_url         AS "imageUrl",
-        returnable_qty    AS "returnableQty"
+        product_code,
+        qty_required,
+        location,
+        image_url,
+        returnable_qty
     `;
 
     const values = [
@@ -162,7 +194,7 @@ class Stock {
       if (rows.length === 0) {
         throw new Error('Stock item not found');
       }
-      return rows[0];
+      return normalizeStockRow(rows[0]);
     } catch (error) {
       console.error(`Error updating stock item ${productId}:`, error);
       throw error;
@@ -170,20 +202,21 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 4. DELETE (unchanged)
+  // 4. DELETE
   // --------------------------------------------------------------
   static async delete(productId) {
     const query = `
       DELETE FROM raw_materials
       WHERE product_id = $1
-      RETURNING product_id AS "productId"
+      RETURNING product_id
     `;
     try {
       const { rows } = await pool.query(query, [productId]);
       if (rows.length === 0) {
         throw new Error('Stock item not found');
       }
-      return rows[0];
+      // return normalized minimal info
+      return { product_id: rows[0].product_id, productId: rows[0].product_id };
     } catch (error) {
       console.error(`Error deleting stock item ${productId}:`, error);
       throw error;
@@ -191,14 +224,14 @@ class Stock {
   }
 
   // --------------------------------------------------------------
-  // 5. ADJUST STOCK (unchanged)
+  // 5. ADJUST STOCK
   // --------------------------------------------------------------
   static async adjustStock({ productId, quantity, reason, userId }) {
     const adjustQuery = `
       UPDATE raw_materials
       SET stock_quantity = stock_quantity + $1
       WHERE product_id = $2
-      RETURNING product_id AS "productId", stock_quantity AS "stockQuantity"
+      RETURNING product_id, stock_quantity
     `;
 
     const logQuery = `
@@ -223,8 +256,8 @@ class Stock {
 
       await pool.query('COMMIT');
 
-      return adjustRows[0];
-
+      // return normalized row (minimal)
+      return { product_id: adjustRows[0].product_id, stock_quantity: adjustRows[0].stock_quantity, productId: adjustRows[0].product_id, stockQuantity: adjustRows[0].stock_quantity };
     } catch (error) {
       await pool.query('ROLLBACK');
       console.error(`Error adjusting stock for product ${productId}:`, error);

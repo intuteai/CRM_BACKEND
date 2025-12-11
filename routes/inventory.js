@@ -25,13 +25,6 @@ const sanitizeInput = (input) =>
     allowedAttributes: {}
   });
 
-// Helper to validate integer fields
-const isNonNegativeInteger = (v) => {
-  if (v === undefined || v === null) return true; // allow absent to default
-  const n = Number(v);
-  return Number.isInteger(n) && n >= 0;
-};
-
 // POST /api/inventory
 router.post(
   '/',
@@ -39,7 +32,7 @@ router.post(
   checkPermission('Inventory', 'can_write'),
   async (req, res, next) => {
     try {
-      const { product_name, stock_quantity, price, description, product_code, returnable_qty } =
+      const { product_name, stock_quantity, price, description, product_code } =
         req.body;
 
       if (!product_name)
@@ -49,17 +42,12 @@ router.post(
           .status(400)
           .json({ error: 'Product code must be exactly 10 characters' });
 
-      if (!isNonNegativeInteger(returnable_qty)) {
-        return res.status(400).json({ error: 'returnable_qty must be a non-negative integer' });
-      }
-
       const sanitizedData = {
         product_name: sanitizeInput(product_name),
-        stock_quantity: stock_quantity || 0,
+        stock_quantity,
         price,
         description: description ? sanitizeInput(description) : null,
-        product_code: sanitizeInput(product_code),
-        returnable_qty: returnable_qty !== undefined ? parseInt(returnable_qty, 10) : 0
+        product_code: sanitizeInput(product_code)
       };
 
       const product = await Inventory.create(sanitizedData, req.io);
@@ -97,7 +85,7 @@ router.get('/available', authenticateToken, async (req, res, next) => {
     }
 
     const query = `
-      SELECT product_id, product_name, stock_quantity, price, created_at, description, product_code, returnable_qty
+      SELECT product_id, product_name, stock_quantity, price, created_at, description, product_code
       FROM inventory LIMIT $1 OFFSET $2
     `;
     const countQuery = `SELECT COUNT(*) FROM inventory`;
@@ -171,7 +159,7 @@ router.get('/stock', authenticateToken, async (req, res, next) => {
     }
 
     const query = `
-      SELECT product_id, product_name, stock_quantity, price, description, product_code, returnable_qty
+      SELECT product_id, product_name, stock_quantity, price, description, product_code
       FROM inventory
     `;
     const { rows } = await pool.query(query);
@@ -187,79 +175,6 @@ router.get('/stock', authenticateToken, async (req, res, next) => {
   }
 });
 
-// POST /api/inventory/:id/accept-return
-// Moves qty from returnable_qty -> stock_quantity (transactional)
-router.post(
-  '/:id/accept-return',
-  authenticateToken,
-  checkPermission('Inventory', 'can_write'),
-  async (req, res, next) => {
-    const productId = parseInt(req.params.id, 10);
-    const qty = parseInt(req.body.qty, 10);
-    const notes = req.body.notes || null;
-
-    if (!Number.isInteger(qty) || qty <= 0) {
-      return res.status(400).json({ error: 'qty must be a positive integer' });
-    }
-
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-
-      const updateSql = `
-        UPDATE inventory
-        SET returnable_qty = returnable_qty - $1,
-            stock_quantity = stock_quantity + $1
-        WHERE product_id = $2
-          AND returnable_qty >= $1
-        RETURNING product_id, stock_quantity, returnable_qty
-      `;
-
-      const { rows } = await client.query(updateSql, [qty, productId]);
-
-      if (rows.length === 0) {
-        await client.query('ROLLBACK');
-        return res.status(400).json({ error: 'Not enough returnable quantity available or product not found' });
-      }
-
-      // Log audit in Activity table (keeps your existing Activity logging pattern)
-      await Activity.log(
-        req.user.user_id,
-        'ACCEPT_RETURN',
-        `Accepted return of ${qty} units for product ${productId}${notes ? `; ${notes}` : ''}`
-      );
-
-      await client.query('COMMIT');
-
-      // Invalidate caches and emit socket event
-      try {
-        const keys = await redis.keys('inventory_*');
-        if (keys.length > 0) await redis.del(keys);
-        await redis.del(`price_list_*`);
-        await redis.del('inventory_stock');
-      } catch (cacheErr) {
-        logger.warn('Failed to invalidate redis cache after accept-return', cacheErr);
-      }
-
-      if (req.io) {
-        req.io.emit('stockUpdate', {
-          product_id: rows[0].product_id,
-          stock_quantity: rows[0].stock_quantity,
-          returnable_qty: rows[0].returnable_qty
-        });
-      }
-
-      res.json({ success: true, product: rows[0] });
-    } catch (err) {
-      try { await client.query('ROLLBACK'); } catch (_) {}
-      logger.error(`Error in accept-return for product ${productId}: ${err.message}`, err.stack);
-      next(err);
-    } finally {
-      client.release();
-    }
-  }
-);
-
 // PUT /api/inventory/:id
 router.put(
   '/:id',
@@ -267,7 +182,7 @@ router.put(
   checkPermission('Inventory', 'can_write'),
   async (req, res, next) => {
     try {
-      const { product_name, stock_quantity, price, description, product_code, returnable_qty } =
+      const { product_name, stock_quantity, price, description, product_code } =
         req.body;
       const productId = req.params.id;
 
@@ -281,17 +196,12 @@ router.put(
           .status(400)
           .json({ error: 'Product code must be exactly 10 characters' });
 
-      if (!isNonNegativeInteger(returnable_qty)) {
-        return res.status(400).json({ error: 'returnable_qty must be a non-negative integer' });
-      }
-
       const sanitizedData = {
         product_name: sanitizeInput(product_name),
         stock_quantity: stock_quantity || 0,
         price: price || null,
         description: description ? sanitizeInput(description) : null,
-        product_code: sanitizeInput(product_code),
-        returnable_qty: returnable_qty !== undefined ? parseInt(returnable_qty, 10) : 0
+        product_code: sanitizeInput(product_code)
       };
 
       const updatedProduct = await Inventory.update(productId, sanitizedData);
@@ -301,8 +211,7 @@ router.put(
 
       req.io.emit('stockUpdate', {
         product_id: updatedProduct.product_id,
-        stock_quantity: updatedProduct.stock_quantity,
-        returnable_qty: updatedProduct.returnable_qty
+        stock_quantity: updatedProduct.stock_quantity
       });
       await Activity.log(
         req.user.user_id,
