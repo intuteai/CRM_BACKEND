@@ -1,6 +1,8 @@
 // models/activities.js
 
 const pool = require('../config/db');
+const { sendEmail } = require('../utils/email');
+const { generateNewTaskAssignmentHtml } = require('../utils/emailTemplates');
 
 class Activities {
   static #toNumber(v) {
@@ -21,7 +23,7 @@ class Activities {
       status: row.status,
       due_date: row.due_date,
       priority: row.priority,
-      comments: row.comments || '', // NEW
+      comments: row.comments || '',
       created_by: row.created_by,
       created_at: row.created_at,
       updated_at: row.updated_at,
@@ -55,7 +57,7 @@ class Activities {
     const _status = status || 'todo';
     const _priority = priority || 'medium';
     const _comments = comments?.trim() || '';
-    const createdBy = io?.user?.user_id ?? null;
+    const createdById = io?.user?.user_id ?? null;
 
     const client = await pool.connect();
     try {
@@ -65,7 +67,7 @@ class Activities {
         INSERT INTO activities (summary, status, due_date, priority, comments, created_by)
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id, summary, status, due_date, priority, comments, created_by, created_at, updated_at
-      `, [summary, _status, due_date ?? null, _priority, _comments, createdBy]);
+      `, [summary, _status, due_date ?? null, _priority, _comments, createdById]);
 
       const activityId = actRes.rows[0].id;
 
@@ -84,6 +86,7 @@ class Activities {
         }
       }
 
+      // Fetch assignees
       const assigneesRes = await client.query(`
         SELECT aa.user_id, u.name, u.email, aa.assigned_at
         FROM activity_assignees aa
@@ -91,10 +94,89 @@ class Activities {
         WHERE aa.activity_id = $1
       `, [activityId]);
 
+      // Fetch creator's name (for nice email)
+      let createdByName = 'System';
+      if (createdById) {
+        const creatorRes = await client.query(`
+          SELECT name FROM users WHERE user_id = $1
+        `, [createdById]);
+        if (creatorRes.rows.length > 0 && creatorRes.rows[0].name?.trim()) {
+          createdByName = creatorRes.rows[0].name.trim();
+        }
+      }
+
       await client.query('COMMIT');
 
       const activity = this.#toPayload(actRes.rows[0], assigneesRes.rows);
       this.#safeEmit(io, 'activities:created', activity);
+
+      // ──────────────────────────────────────────────────────────────
+      // Send beautiful assignment notification
+      try {
+        console.log(`[EMAIL] Starting assignment notifications for activity ${activityId}`);
+        console.log(`[EMAIL] Found ${assigneesRes.rows.length} assignees`);
+
+        const dueDateStr = due_date 
+          ? new Date(due_date).toLocaleDateString('en-IN', { 
+              weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            })
+          : 'No due date set';
+
+        for (const assignee of assigneesRes.rows) {
+          const emailAddress = assignee.email?.trim();
+
+          console.log(`[EMAIL] Checking assignee ${assignee.user_id} (${assignee.name || 'Unknown'}): email = ${emailAddress || 'MISSING'}`);
+
+          if (!emailAddress || typeof emailAddress !== 'string' || !emailAddress.includes('@')) {
+            console.log(`[EMAIL] Skipping assignee ${assignee.user_id} - invalid or missing email`);
+            continue;
+          }
+
+          const subject = `New Task Assigned to You - ${summary}`;
+
+          // Plain text fallback
+          const text = 
+            `Hello ${assignee.name || 'Team Member'},\n\n` +
+            `You have been assigned a new activity:\n\n` +
+            `• Summary: ${summary}\n` +
+            `• Priority: ${priority || _priority}\n` +
+            `• Due date: ${dueDateStr}\n` +
+            `• Status: ${_status}\n\n` +
+            `You can view and manage this task here:\n` +
+            `https://intute.biz/activities/${activityId}\n\n` +
+            `Best regards,\nIntute ERP Team`;
+
+          // Beautiful HTML version
+          const html = generateNewTaskAssignmentHtml({
+            userName: assignee.name || 'Team Member',
+            taskSummary: summary,
+            priority: priority || _priority,
+            status: _status,
+            dueDate: dueDateStr,
+            taskId: activityId,
+            createdBy: createdByName  // ← uses actual name (e.g. "Rahul")
+          });
+
+          console.log(`[EMAIL] Sending to ${emailAddress} with subject: ${subject}`);
+
+          const sent = await sendEmail({
+            to: emailAddress,
+            subject,
+            text,
+            html
+          });
+
+          if (sent) {
+            console.log(`[EMAIL] Successfully sent to ${emailAddress}`);
+          } else {
+            console.log(`[EMAIL] Failed to send to ${emailAddress}`);
+          }
+        }
+      } catch (emailError) {
+        console.error('[EMAIL] Error during assignment notifications:', emailError.message);
+      }
+      // ──────────────────────────────────────────────────────────────
+
       return activity;
     } catch (error) {
       await client.query('ROLLBACK');

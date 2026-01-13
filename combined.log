@@ -1,0 +1,299 @@
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T09:12:49.479Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T09:12:49.491Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T09:12:49.492Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T09:12:49.493Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T09:12:45.445Z","timestamp":"2026-01-13T09:12:49.776Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T09:12:49.778Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T09:12:49.780Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T09:13:07.968Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T09:13:07.982Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T09:13:07.983Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T09:13:07.984Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T09:13:03.974Z","timestamp":"2026-01-13T09:13:08.305Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T09:13:08.307Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T09:13:08.309Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T09:13:49.296Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T09:13:50.767Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2026-01-13T09:13:56.554Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T09:13:56.606Z"}
+{"level":"info","message":"Activity created: 40 by 45","timestamp":"2026-01-13T09:17:16.892Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T09:19:12.145Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T09:19:12.653Z"}
+{"level":"info","message":"Activity deleted: 40","timestamp":"2026-01-13T09:19:20.684Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T09:19:23.651Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T09:19:23.969Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T09:20:59.731Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T10:57:20.598Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T10:57:20.613Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T10:57:20.614Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T10:57:20.614Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T10:57:17.235Z","timestamp":"2026-01-13T10:57:20.923Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T10:57:20.926Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T10:57:20.930Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T10:57:28.397Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T10:57:34.205Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T10:57:34.286Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T10:57:35.036Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2026-01-13T10:57:41.751Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T10:57:41.798Z"}
+{"level":"info","message":"Activity created: 40 by 45","timestamp":"2026-01-13T10:58:09.897Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:00:06.648Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:00:06.667Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:00:06.668Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:00:06.669Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:00:03.361Z","timestamp":"2026-01-13T11:00:07.054Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:00:07.057Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:00:07.059Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:00:07.228Z"}
+{"level":"info","message":"Activity created: 41 by 45","timestamp":"2026-01-13T11:00:18.278Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:03:05.732Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:03:05.749Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:03:05.790Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:03:05.791Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:03:02.342Z","timestamp":"2026-01-13T11:03:06.033Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:03:06.064Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:03:06.067Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:03:07.224Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:04:19.981Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:04:20.012Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:04:20.014Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:04:20.014Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:04:16.950Z","timestamp":"2026-01-13T11:04:20.646Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:04:20.648Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:04:20.651Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:04:23.491Z"}
+{"level":"error","message":"Create error: invalid input syntax for type date: \"\"","timestamp":"2026-01-13T11:04:35.499Z"}
+{"level":"info","message":"Activity created: 42 by 45","timestamp":"2026-01-13T11:04:43.897Z"}
+{"level":"info","message":"Activity deleted: 42","timestamp":"2026-01-13T11:06:11.479Z"}
+{"level":"info","message":"Activity deleted: 41","timestamp":"2026-01-13T11:06:18.525Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T11:06:19.944Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:06:20.407Z"}
+{"level":"info","message":"Activity deleted: 40","timestamp":"2026-01-13T11:06:25.534Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T11:06:27.979Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:06:28.261Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:08:34.054Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:08:34.072Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:08:34.074Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:08:34.074Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:08:31.235Z","timestamp":"2026-01-13T11:08:34.928Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:08:34.931Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:08:34.936Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:08:36.226Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T11:08:49.931Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:08:50.265Z"}
+{"level":"info","message":"Activity created: 40 by 45","timestamp":"2026-01-13T11:09:06.095Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:10:40.628Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:10:40.643Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:10:40.644Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:10:40.645Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:10:37.347Z","timestamp":"2026-01-13T11:10:41.080Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:10:41.094Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:10:41.098Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:10:43.224Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T11:11:07.542Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:11:07.935Z"}
+{"level":"info","message":"Activity deleted: 40","timestamp":"2026-01-13T11:11:11.254Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:11:36.859Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:11:36.877Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:11:36.878Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:11:36.878Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:11:33.535Z","timestamp":"2026-01-13T11:11:37.233Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:11:37.235Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:11:37.237Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:11:37.285Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:15:05.498Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:15:05.519Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:15:05.568Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:15:05.568Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:15:02.197Z","timestamp":"2026-01-13T11:15:05.925Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:15:05.927Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:15:05.929Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:15:07.319Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:15:15.638Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:15:15.659Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:15:15.706Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:15:15.707Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:15:12.889Z","timestamp":"2026-01-13T11:15:16.586Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:15:16.588Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:15:16.590Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:15:18.234Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T11:16:39.507Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:16:40.025Z"}
+{"level":"info","message":"Activity created: 41 by 45","timestamp":"2026-01-13T11:17:06.910Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T11:17:09.259Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:17:09.593Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:18:19.625Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:18:19.640Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:18:19.642Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:18:19.642Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:18:16.219Z","timestamp":"2026-01-13T11:18:19.918Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:18:19.921Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:18:19.924Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:18:22.224Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:21:41.312Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:21:41.327Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:21:41.329Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:21:41.330Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:21:37.979Z","timestamp":"2026-01-13T11:21:41.680Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:21:41.692Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:21:41.694Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:21:44.227Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:24:06.534Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:24:06.549Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:24:06.549Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:24:06.550Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:24:03.635Z","timestamp":"2026-01-13T11:24:07.340Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:24:07.342Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:24:07.345Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:24:07.543Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:27:46.789Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:27:46.804Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:27:46.805Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:27:46.805Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:27:43.435Z","timestamp":"2026-01-13T11:27:47.150Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:27:47.152Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:27:47.154Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:27:47.220Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:27:53.840Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:27:53.859Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:27:53.860Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:27:53.860Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:27:50.711Z","timestamp":"2026-01-13T11:27:54.434Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:27:54.436Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:27:54.438Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:27:56.211Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:33:19.961Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:33:19.974Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:33:19.975Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:33:19.975Z"}
+{"level":"error","message":"Failed to initialize server:","timestamp":"2026-01-13T11:33:21.972Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:33:44.641Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:33:44.656Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:33:44.658Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:33:44.658Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:33:41.268Z","timestamp":"2026-01-13T11:33:44.983Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:33:44.987Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:33:44.990Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:33:45.068Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:35:56.626Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:35:56.641Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:35:56.643Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:35:56.643Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:35:53.520Z","timestamp":"2026-01-13T11:35:57.228Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:35:57.230Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:35:57.232Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:35:57.535Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:38:17.205Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:38:17.219Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:38:17.220Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:38:17.221Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:38:14.130Z","timestamp":"2026-01-13T11:38:17.854Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:38:17.865Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:38:17.867Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:38:18.214Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:43:09.523Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:43:09.538Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:43:09.539Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:43:09.539Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:43:06.599Z","timestamp":"2026-01-13T11:43:10.313Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:43:10.315Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:43:10.316Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:43:13.215Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:43:46.289Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:43:46.308Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:43:46.310Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:43:46.310Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:43:43.565Z","timestamp":"2026-01-13T11:43:47.278Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:43:47.280Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:43:47.282Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:43:48.222Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:45:24.643Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:45:24.660Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:45:24.661Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:45:24.661Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:45:21.339Z","timestamp":"2026-01-13T11:45:25.064Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:45:25.067Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:45:25.069Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:45:25.258Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:47:11.403Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:47:11.424Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:47:11.425Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:47:11.426Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:47:08.411Z","timestamp":"2026-01-13T11:47:12.174Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:47:12.177Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:47:12.179Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:47:12.229Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:48:42.114Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:48:42.132Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:48:42.133Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:48:42.133Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:48:38.814Z","timestamp":"2026-01-13T11:48:42.531Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:48:42.533Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:48:42.535Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:48:43.222Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:49:58.065Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:49:58.080Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:49:58.081Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:49:58.082Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:49:55.114Z","timestamp":"2026-01-13T11:49:58.847Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:49:58.849Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:49:58.852Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:50:00.226Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T11:52:48.495Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T11:52:48.511Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T11:52:48.512Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T11:52:48.512Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T11:52:45.304Z","timestamp":"2026-01-13T11:52:49.048Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T11:52:49.050Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T11:52:49.052Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T11:52:50.221Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T12:02:14.476Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T12:02:14.521Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T12:02:14.523Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T12:02:14.523Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T12:02:11.190Z","timestamp":"2026-01-13T12:02:14.911Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T12:02:14.913Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T12:02:14.916Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:02:15.036Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T12:02:29.688Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T12:02:29.702Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T12:02:29.736Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T12:02:29.737Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T12:02:26.306Z","timestamp":"2026-01-13T12:02:30.031Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T12:02:30.034Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T12:02:30.038Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:02:33.221Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T12:03:24.991Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T12:03:25.010Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T12:03:25.011Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T12:03:25.012Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T12:03:21.836Z","timestamp":"2026-01-13T12:03:25.569Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T12:03:25.572Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T12:03:25.576Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:03:25.759Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T12:04:30.967Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:04:31.676Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T12:04:42.292Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 9, role: employee","timestamp":"2026-01-13T12:04:48.174Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:04:48.217Z"}
+{"level":"error","message":"Create error: invalid input syntax for type date: \"\"","timestamp":"2026-01-13T12:05:03.482Z"}
+{"level":"info","message":"Activity created: 43 by 45","timestamp":"2026-01-13T12:05:12.635Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-13T12:07:45.962Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-13T12:07:45.977Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-13T12:07:45.978Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-13T12:07:45.978Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-13T12:07:42.717Z","timestamp":"2026-01-13T12:07:46.450Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-13T12:07:46.453Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-13T12:07:46.456Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:07:46.576Z"}
+{"level":"info","message":"Activity created: 44 by 45","timestamp":"2026-01-13T12:07:58.130Z"}
+{"level":"info","message":"Activity deleted: 44","timestamp":"2026-01-13T12:09:00.861Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T12:09:14.223Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:09:14.547Z"}
+{"level":"info","message":"Activity deleted: 43","timestamp":"2026-01-13T12:09:20.671Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T12:09:23.098Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:09:23.368Z"}
+{"level":"info","message":"Activity deleted: 42","timestamp":"2026-01-13T12:09:26.615Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T12:09:29.105Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:09:29.317Z"}
+{"level":"info","message":"Activity deleted: 41","timestamp":"2026-01-13T12:09:34.836Z"}
