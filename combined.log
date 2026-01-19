@@ -297,3 +297,78 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-13T12:09:29.105Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-13T12:09:29.317Z"}
 {"level":"info","message":"Activity deleted: 41","timestamp":"2026-01-13T12:09:34.836Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-19T09:34:10.591Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-19T09:34:10.606Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-19T09:34:10.606Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-19T09:34:10.607Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-19T09:34:12.104Z","timestamp":"2026-01-19T09:34:10.993Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-19T09:34:10.996Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-19T09:34:11.002Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:34:31.178Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:34:39.686Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:34:44.897Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:34:44.915Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:34:46.396Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:34:47.190Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2026-01-19T09:34:58.888Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:34:58.940Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2026-01-19T09:37:09.774Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:37:09.785Z"}
+{"level":"info","message":"User logged in: production@compageauto.com, user_id: 9, role_id: 5, role: production","timestamp":"2026-01-19T09:37:21.960Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:37:22.007Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:38:13.163Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:38:13.433Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:38:25.648Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:38:25.818Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:39:51.338Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:39:51.361Z"}
+{"level":"info","message":"Cache invalidated for part_drawings_raw_10_0_ due to force refresh","timestamp":"2026-01-19T09:39:54.126Z"}
+{"level":"info","message":"Fresh data cached for part_drawings_raw_10_0_","timestamp":"2026-01-19T09:39:54.217Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:39:56.070Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:39:56.084Z"}
+{"level":"info","message":"User logged out, user_id: 9","timestamp":"2026-01-19T09:41:00.152Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:41:00.160Z"}
+{"level":"info","message":"User logged in: production@compageauto.com, user_id: 9, role_id: 5, role: production","timestamp":"2026-01-19T09:41:13.082Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:41:13.110Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:41:15.987Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:41:16.001Z"}
+{"level":"info","message":"Cache invalidated for part_drawings_10_0_ due to force refresh","timestamp":"2026-01-19T09:43:34.961Z"}
+{"level":"info","message":"Fresh data cached for part_drawings_10_0_","timestamp":"2026-01-19T09:43:35.044Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:43:37.260Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:43:37.274Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:47:52.571Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T09:47:53.355Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T09:47:53.496Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:55:27.238Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:58:30.262Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T09:58:30.904Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T09:58:31.050Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:58:33.722Z"}
+{"level":"info","message":"User logged out, user_id: 9","timestamp":"2026-01-19T09:58:35.637Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:58:35.644Z"}
+{"level":"warn","message":"Failed login attempt for email: store@compageauto.com - User not found","timestamp":"2026-01-19T09:58:52.544Z"}
+{"level":"warn","message":"Failed login attempt for email: store@compageauto.com - User not found","timestamp":"2026-01-19T09:58:56.932Z"}
+{"level":"warn","message":"Failed login attempt for email: store@compageauto.com - User not found","timestamp":"2026-01-19T09:59:13.821Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2026-01-19T09:59:16.602Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:59:16.630Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:59:23.737Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T09:59:24.129Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T09:59:24.291Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:59:29.668Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:59:30.363Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:59:30.381Z"}
+{"level":"info","message":"User logged out, user_id: 10","timestamp":"2026-01-19T09:59:40.375Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T09:59:40.382Z"}
+{"level":"info","message":"User logged in: stores@compageauto.com, user_id: 10, role_id: 6, role: store","timestamp":"2026-01-19T09:59:58.939Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T09:59:58.966Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T10:00:00.408Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T10:00:01.010Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T10:00:01.184Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T10:02:29.224Z"}
+{"level":"info","message":"User logged out, user_id: 10","timestamp":"2026-01-19T10:02:32.783Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-19T10:02:32.790Z"}
+{"level":"info","message":"User logged in: production@compageauto.com, user_id: 9, role_id: 5, role: production","timestamp":"2026-01-19T10:02:45.237Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T10:02:45.263Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-19T10:02:48.520Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T10:02:48.914Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-01-19T10:02:49.059Z"}
