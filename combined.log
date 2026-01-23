@@ -568,3 +568,53 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-22T10:01:26.531Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-22T10:01:26.821Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-22T11:54:23.369Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)","timestamp":"2026-01-23T07:16:32.116Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-01-23T07:16:32.132Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-01-23T07:16:32.133Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-01-23T07:16:32.133Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-01-23T07:16:32.642Z","timestamp":"2026-01-23T07:16:32.554Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-01-23T07:16:32.559Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-01-23T07:16:32.567Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:16:40.564Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:16:45.802Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:16:46.038Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:16:46.980Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2026-01-23T07:16:57.464Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:16:57.511Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:16:59.462Z"}
+{"level":"info","message":"Fetched 332 inventory items","timestamp":"2026-01-23T07:16:59.944Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:17:00.605Z"}
+{"level":"info","message":"Fetched 332 stock items","timestamp":"2026-01-23T07:17:02.088Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:17:02.128Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:17:54.742Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:17:54.779Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:18:12.817Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:18:12.856Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:19:20.645Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:19:20.690Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:19:30.396Z"}
+{"level":"info","message":"Cache hit for inventory_stock","timestamp":"2026-01-23T07:19:30.436Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:19:49.958Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:19:55.538Z"}
+{"level":"info","message":"Customers fetched successfully: 10 items","timestamp":"2026-01-23T07:19:55.938Z"}
+{"data":[{"billing_address":"Unknown Billing Address","city":"Unknown City","contact_person":"Default Contact","email":"customer@example.com","gst":null,"id":1,"name":"Customer","orders":7,"phone":"0000000000","queries":2,"shipping_address":"Unknown Shipping Address"},{"billing_address":"No","city":"Delhi","contact_person":"None","email":"customer1@example.com","gst":null,"id":2,"name":"Customer1","orders":4,"phone":"0000000000","queries":0,"shipping_address":"No"},{"billing_address":"afjkdrvjhh","city":"kolkata","contact_person":"shyamal khamrai","email":"aishiaitrisolution@gmail.com","gst":null,"id":3,"name":"shyamal khamrai","orders":3,"phone":"4567152877","queries":0,"shipping_address":"kolkata"},{"billing_address":"Plot No. 9 Site-IV Industrial Area Sahibabad-201010","city":"Sahibabad GZB","contact_person":"SHIV OM SINGH","email":"sf.purchase@paharpur.com","gst":"09AABCP8017C1ZN","id":4,"name":"Paharpur Cooling Towers Ltd","orders":1,"phone":"7376988977","queries":0,"shipping_address":"Plot No. 9 Site-IV Industrial Area Sahibabad-201010"},{"billing_address":"G-14, Vardhman AC Market, CSE Blocl-E, (Near Astha Kunj Society, Sector-18 Rohini Delhi, North Delhi, Delhi-110085.","city":"New Delhi","contact_person":"Sunit Bahl ","email":"sunitbahl46@gmail.com","gst":"07ABQPB6747E1ZK","id":5,"name":"Eco Motor ","orders":10,"phone":"9818169532","queries":0,"shipping_address":"G-14, Vardhman AC Market, CSE Blocl-E, (Near Astha Kunj Society, Sector-18 Rohini Delhi, North Delhi, Delhi-110085."},{"billing_address":"Office No.-3, Sarthak Premises Ingale Nagar, Near Zeal College Narhe Dhayari Road, Narhe Pune Place of Supply: MAHARASHTRA  ","city":"Pune ","contact_person":"Rajesh ","email":"nrcontrols@gmail.com","gst":"06AAACC3923F1Z4","id":6,"name":"NR Control ","orders":19,"phone":"8830898785","queries":0,"shipping_address":"Office No.-3, Sarthak Premises Ingale Nagar, Near Zeal College Narhe Dhayari Road, Narhe Pune Place of Supply: MAHARASHTRA  "},{"billing_address":"round Floor 668 Dheerkheda Industrial Area Hapur Road Dheerkheda Meerut Place of Supply: UTTRA PRADESH","city":"Thane","contact_person":"Heera Lal","email":"sales@autonxt.in","gst":"09AAOCA7739H1Z4","id":7,"name":"Autonxt Automation ","orders":6,"phone":"9702505707","queries":0,"shipping_address":"Ground Floor 668 Dheerkheda Industrial Area Hapur Road Dheerkheda Meerut Place of Supply: UTTRA PRADESH"},{"billing_address":"1, Crooked Lane, Room No. G-2, Ground Floor, Kolkata - 700069, West Bengal","city":"Kolkata ","contact_person":"Shankarlal Agarwal","email":"howrahgasesltd@gmail.com","gst":"22AAACH6649B1Z0","id":8,"name":"Howrah Gases ","orders":0,"phone":"9830024305","queries":0,"shipping_address":"1, Crooked Lane, Room No. G-2, Ground Floor, Kolkata - 700069, West Bengal"},{"billing_address":"Plot no: 311,Vill. Kakra,Rawli road,Muradnagar,Pin 201206 Ghaziabad, U.P.","city":"Muradnagar, Ghaziabad","contact_person":"Pankaj","email":"info@fluisystech.com","gst":"09ASMPS9923J1ZT","id":9,"name":"Fluisys","orders":6,"phone":"9560529090","queries":0,"shipping_address":"Plot no: 311,Vill. Kakra,Rawli road,Muradnagar,Pin 201206 Ghaziabad, U.P."},{"billing_address":"Plot No. 1A, Cama Industries Estate, Service Road, Goregaon East, Mumbai-400063","city":"Mumbai","contact_person":"Ganahar","email":"account@ha-ko.com","gst":"27AAECH8731N1Z2","id":10,"name":"HA-KO Industries","orders":6,"phone":"9004007978","queries":0,"shipping_address":"Plot No. 1A, Cama Industries Estate, Service Road, Goregaon East, Mumbai-400063"}],"level":"info","limit":10,"message":"Cache hit for customers_10_0","offset":0,"timestamp":"2026-01-23T07:19:56.017Z","total":30}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:19:56.806Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:20:06.611Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:20:06.652Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:20:06.694Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:20:08.905Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:21:14.578Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:21:14.947Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:21:14.995Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:21:33.156Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:21:34.273Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:21:34.311Z"}
+{"level":"info","message":"Cache hit for inventory_available_1000_0","timestamp":"2026-01-23T07:21:34.351Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:22:20.577Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:31:46.421Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:31:46.698Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:32:07.073Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:32:07.249Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:36:56.556Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-01-23T07:36:58.619Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-01-23T07:36:59.394Z"}
