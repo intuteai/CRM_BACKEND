@@ -28,8 +28,8 @@ router.get(
       }
 
       const isAdmin = req.user.role_id === 1;
-      const isProduction = req.user.role_id === 5; // Production can see all orders
-      const isSales = req.user.role_id === 3; // Sales can also see all orders
+      const isProduction = req.user.role_id === 5;
+      const isSales = req.user.role_id === 3;
 
       console.log(
         `Fetching orders for user_id: ${req.user.user_id}, role_id: ${req.user.role_id}, isAdmin: ${isAdmin}, isProduction: ${isProduction}, isSales: ${isSales}, cursor: ${cursor}, limit: ${parsedLimit}`
@@ -38,8 +38,6 @@ router.get(
       const { data: orders, total, nextCursor } = await Order.getAll({
         limit: parsedLimit,
         cursor: cursor ? new Date(cursor) : null,
-        // Admin, Production, Sales -> see all orders (no user_id filter)
-        // Others -> only orders where orders.user_id = req.user.user_id
         user_id: isAdmin || isProduction || isSales ? null : req.user.user_id,
       });
 
@@ -105,8 +103,6 @@ router.post(
     try {
       const { targetDeliveryDate, items, user_id } = req.body;
 
-      // Admin (1) and Sales (3) can create orders for ANY customer (user_id from body)
-      // Others: order is always for themselves
       let orderUserId;
       if ([1, 3].includes(req.user.role_id)) {
         orderUserId = user_id;
@@ -157,7 +153,6 @@ router.post(
 
       setImmediate(async () => {
         try {
-          // Order changes affect everyone’s view, so clear all orders_* caches
           const [orderKeys, inventoryKeys] = await Promise.all([
             redis.keys('orders_*'),
             redis.keys('inventory_*'),
@@ -188,7 +183,6 @@ router.put(
   authenticateToken,
   checkPermission('Orders', 'can_write'),
   async (req, res, next) => {
-    // Allow Admin (1), Production (5), Sales (3) to update any order
     if (![1, 5, 3].includes(req.user.role_id)) {
       return res
         .status(403)
@@ -209,6 +203,7 @@ router.put(
       const validOrderStatuses = [
         'Pending',
         'Processing',
+        'Testing',   // added
         'Shipped',
         'Delivered',
       ];
