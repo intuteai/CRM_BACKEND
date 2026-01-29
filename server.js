@@ -132,12 +132,19 @@ app.use('/api/parts', partsRoutes);
 app.use('/api/quotation', quotationRoutes);
 // NEW: mount proforma route (stream-only)
 app.use('/api/proforma', proformaRoutes);
+
 app.use('/api/delivery-challan', deliveryChallanRoutes); 
 
 // ──────────────────────────────────────────────────────────────
 // Start daily due-tomorrow email reminder job
 require('./jobs/daily-due-reminders');
-logger.info('Daily due-tomorrow reminder job scheduled (runs at 11:00 AM IST)');
+logger.info('Daily due-tomorrow reminder job scheduled (11:00 AM IST)');
+// ──────────────────────────────────────────────────────────────
+
+// ──────────────────────────────────────────────────────────────
+// Start daily task summaries job (manager + individual users)
+require('./jobs/daily-task-summaries');
+logger.info('Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)');
 // ──────────────────────────────────────────────────────────────
 
 // ==================== GLOBAL ERROR HANDLER ====================
