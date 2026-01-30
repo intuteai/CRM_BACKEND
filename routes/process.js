@@ -6,52 +6,47 @@ const logger = require('../utils/logger');
 const redis = require('../config/redis');
 const pool = require('../config/db');
 
-console.log('Pool in processRoutes.js:', pool ? 'Defined' : 'Undefined');
-
-const formatResponse = (workOrder) => ({
+const formatWorkOrderResponse = (workOrder) => ({
   workOrderId: workOrder.workOrderId,
   orderId: workOrder.orderId,
-  componentId: workOrder.componentId,
-  componentName: workOrder.componentName,
-  productType: workOrder.productType,
   instanceGroupId: workOrder.instanceGroupId,
   instanceName: workOrder.instanceName,
   instanceType: workOrder.instanceType,
-  quantity: workOrder.quantity,
   targetDate: workOrder.targetDate,
   status: workOrder.status,
   createdAt: workOrder.createdAt,
-  processes: workOrder.processes.map((process) => ({
-    processId: process.processId,
-    processName: process.processName,
-    sequence: process.sequence,
-    responsiblePerson: process.responsiblePerson,
-    description: process.description,
-    status: process.status,
-    completedQuantity: process.completedQuantity,
-    rawQuantityUsed: process.rawQuantityUsed,
-    completionDate: process.completionDate,
-  })),
-  materials: workOrder.materials.map((material) => ({
-    workOrderMaterialId: material.workOrderMaterialId,
-    materialId: material.materialId,
-    rawMaterialId: material.rawMaterialId,
-    quantity: material.quantity,
-  })),
-  orderStages: workOrder.orderStages.map((stage) => ({
-    stageName: stage.stageName,
-    stageDate: stage.stageDate,
+  stages: workOrder.stages ?? [],
+  components: workOrder.components.map((component) => ({
+    workOrderComponentId: component.workOrderComponentId,
+    componentId: component.componentId,
+    componentName: component.componentName,
+    productType: component.productType,
+    quantity: component.quantity,
+    processes: component.processes.map((process) => ({
+      processId: process.processId,
+      processName: process.processName,
+      sequence: process.sequence,
+      responsiblePerson: process.responsiblePerson,
+      description: process.description,
+      status: process.status,
+      completedQuantity: process.completedQuantity,
+      inUseQuantity: process.inUseQuantity,
+      allowedQuantity: process.allowedQuantity,
+      completionDate: process.completionDate,
+    })),
+    materials: component.materials.map((material) => ({
+      workOrderMaterialId: material.workOrderMaterialId,
+      rawMaterialId: material.rawMaterialId,
+      rawMaterialName: material.rawMaterialName,
+      quantity: material.quantity,
+    })),
   })),
   timezone: 'Asia/Kolkata',
 });
 
-async function getTotalCompletedQuantity(workOrderId, processId) {
-  const result = await pool.query(
-    'SELECT COALESCE(SUM(completed_quantity), 0) as total FROM process_status WHERE work_order_id = $1 AND process_id != $2',
-    [workOrderId, processId]
-  );
-  return parseInt(result.rows[0].total) || 0;
-}
+// ────────────────────────────────────────────────
+//  STATIC ROUTES FIRST
+// ────────────────────────────────────────────────
 
 router.get(
   '/orders',
@@ -59,39 +54,602 @@ router.get(
   checkPermission('Processes', 'can_read'),
   async (req, res, next) => {
     try {
-      console.log(
-        'Entering /api/process/orders route for user:',
-        req.user.userId
-      );
-      console.log('Calling Process.getOrders');
       const orders = await Process.getOrders();
-      console.log('Orders fetched from Process.getOrders:', orders);
-
       const orderIds = orders.map((order) => order.order_id);
       const { rows: customers } = await pool.query(
         'SELECT DISTINCT o.order_id, u.name FROM orders o JOIN users u ON o.user_id = u.user_id WHERE o.order_id = ANY($1)',
         [orderIds]
       );
-      const customerMap = new Map(
-        customers.map((c) => [c.order_id, c.name || 'Unknown'])
+      const customerMap = new Map(customers.map((c) => [c.order_id, c.name || 'Unknown']));
+
+      res.json(
+        orders.map((order) => ({
+          orderId: order.order_id,
+          status: order.status,
+          targetDeliveryDate: order.target_delivery_date
+            ? order.target_delivery_date.toISOString().split('T')[0]
+            : null,
+          createdAt: order.created_at,
+          customerName: customerMap.get(order.order_id),
+          timezone: 'Asia/Kolkata',
+        }))
+      );
+    } catch (error) {
+      logger.error(`Error fetching orders: ${error.message}`, { stack: error.stack });
+      next(error);
+    }
+  }
+);
+
+router.get(
+  '/components',
+  authenticateToken,
+  checkPermission('Processes', 'can_read'),
+  async (req, res, next) => {
+    try {
+      const components = await Process.getComponents();
+      res.json(components);
+    } catch (error) {
+      logger.error(`Components fetch error: ${error.message}`, { stack: error.stack });
+      next(error);
+    }
+  }
+);
+
+router.post(
+  '/components',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res, next) => {
+    const { component_name, product_type } = req.body;
+    if (!component_name || !product_type) {
+      return res.status(400).json({ error: 'component_name and product_type required' });
+    }
+
+    try {
+      const component = await Process.createComponent({ component_name, product_type }, req.io);
+      res.status(201).json(component);
+    } catch (error) {
+      logger.error(`Create component failed: ${error.message}`, { stack: error.stack });
+      res.status(error.status || 400).json({ error: error.message });
+    }
+  }
+);
+
+router.post(
+  '/components/:componentId/processes',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res, next) => {
+    const { componentId } = req.params;
+    const { process_name, sequence, responsible_person, description } = req.body;
+
+    if (!process_name || sequence == null) {
+      return res.status(400).json({ error: 'process_name and sequence required' });
+    }
+
+    try {
+      const process = await Process.createComponentProcess(
+        componentId,
+        { process_name, sequence, responsible_person, description },
+        req.io
+      );
+      res.status(201).json(process);
+    } catch (error) {
+      logger.error(`Create process failed - component ${componentId}: ${error.message}`, { stack: error.stack });
+      res.status(error.status || 400).json({ error: error.message });
+    }
+  }
+);
+
+// ────────────────────────────────────────────────
+//  WORK ORDER COMPONENT ROUTES
+// ────────────────────────────────────────────────
+
+router.post(
+  '/work-orders/:workOrderId/components',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res, next) => {
+    const { workOrderId } = req.params;
+    const { component_id, quantity } = req.body;
+
+    if (!component_id || !quantity) {
+      return res.status(400).json({ error: 'component_id and quantity required' });
+    }
+
+    if (!Number.isInteger(Number(quantity)) || Number(quantity) <= 0) {
+      return res.status(400).json({ error: 'quantity must be a positive integer' });
+    }
+
+    try {
+      const workOrderComponent = await Process.createWorkOrderComponent(
+        workOrderId,
+        { component_id, quantity },
+        req.io
       );
 
-      const response = orders.map((order) => ({
-        orderId: order.order_id,
-        status: order.status,
-        targetDeliveryDate: order.target_delivery_date
-          ? order.target_delivery_date.toISOString().split('T')[0]
-          : null,
-        createdAt: order.created_at,
-        customerName: customerMap.get(order.order_id),
-        timezone: 'Asia/Kolkata',
-      }));
-      console.log('Response to frontend:', response);
-      res.json(response);
+      const { rows: [comp] } = await pool.query(
+        'SELECT component_name, product_type FROM components WHERE component_id = $1',
+        [component_id]
+      );
+
+      const response = {
+        workOrderComponentId: workOrderComponent.workOrderComponentId,
+        workOrderId: workOrderComponent.workOrderId,
+        componentId: workOrderComponent.componentId,
+        componentName: comp.component_name,
+        productType: comp.product_type,
+        quantity: workOrderComponent.quantity,
+        processes: [],
+        materials: [],
+      };
+
+      setImmediate(async () => {
+        try {
+          const { rows: [wo] } = await pool.query('SELECT order_id FROM work_orders WHERE work_order_id = $1', [workOrderId]);
+          if (wo) {
+            const keys = await redis.keys(`processes_${wo.order_id}_*`);
+            if (keys.length) await redis.del(keys);
+          }
+        } catch (err) {
+          logger.error('Cache invalidation failed after component attachment', err);
+        }
+      });
+
+      res.status(201).json(response);
+    } catch (error) {
+      logger.error(`Attach component failed - work order ${workOrderId}: ${error.message}`, { stack: error.stack });
+      res.status(error.status || 400).json({ error: error.message });
+    }
+  }
+);
+
+router.get(
+  '/components/:workOrderComponentId/processes',
+  authenticateToken,
+  checkPermission('Processes', 'can_read'),
+  async (req, res) => {
+    const { workOrderComponentId } = req.params;
+
+    try {
+      const { rows } = await pool.query(
+        `
+        SELECT
+          cp.process_id,
+          cp.process_name,
+          cp.sequence,
+          cp.description,
+          ps.status,
+          ps.completed_quantity,
+          ps.in_use_quantity,
+          ps.allowed_quantity,
+          ps.completion_date,
+          ps.responsible_person
+        FROM work_order_components woc
+        JOIN component_processes cp
+          ON cp.component_id = woc.component_id
+        LEFT JOIN process_status ps
+          ON ps.process_id = cp.process_id
+         AND ps.work_order_component_id = woc.work_order_component_id
+        WHERE woc.work_order_component_id = $1
+        ORDER BY cp.sequence
+        `,
+        [workOrderComponentId]
+      );
+
+      res.json(
+        rows.map(r => ({
+          processId: r.process_id,
+          processName: r.process_name,
+          sequence: r.sequence,
+          description: r.description,
+          status: r.status || 'Pending',
+          completedQuantity: r.completed_quantity ?? 0,
+          inUseQuantity: r.in_use_quantity ?? 0,
+          allowedQuantity: r.allowed_quantity ?? 0,
+          completionDate: r.completion_date,
+          responsiblePerson: r.responsible_person,
+        }))
+      );
     } catch (error) {
       logger.error(
-        `Error fetching orders for user ${req.user.userId}: ${error.message}, { stack: error.stack }`
+        `Fetch processes failed - component ${workOrderComponentId}: ${error.message}`,
+        { stack: error.stack }
       );
+      res.status(500).json({ error: 'Failed to fetch processes' });
+    }
+  }
+);
+
+router.put(
+  '/components/:workOrderComponentId/process-status',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res) => {
+    const { workOrderComponentId } = req.params;
+    const { process_id, completed_quantity, in_use_quantity, completion_date, responsible_person } = req.body;
+
+    if (!process_id) {
+      return res.status(400).json({ error: 'process_id required' });
+    }
+
+    if (completed_quantity != null && (!Number.isInteger(Number(completed_quantity)) || Number(completed_quantity) < 0)) {
+      return res.status(400).json({ error: 'completed_quantity must be non-negative integer' });
+    }
+
+    if (in_use_quantity != null && (!Number.isInteger(Number(in_use_quantity)) || Number(in_use_quantity) < 0)) {
+      return res.status(400).json({ error: 'in_use_quantity must be non-negative integer' });
+    }
+
+    if (completion_date && !/^\d{4}-\d{2}-\d{2}$/.test(completion_date)) {
+      return res.status(400).json({ error: 'completion_date must be in YYYY-MM-DD format' });
+    }
+
+    try {
+      const result = await Process.updateProcessStatus(workOrderComponentId, {
+        process_id,
+        completed_quantity: completed_quantity !== undefined ? Number(completed_quantity) : undefined,
+        in_use_quantity: in_use_quantity !== undefined ? Number(in_use_quantity) : undefined,
+        completion_date,
+        responsible_person,
+      });
+
+      setImmediate(async () => {
+        try {
+          const { rows: [woc] } = await pool.query(
+            'SELECT wo.order_id FROM work_order_components woc JOIN work_orders wo ON woc.work_order_id = wo.work_order_id WHERE woc.work_order_component_id = $1',
+            [workOrderComponentId]
+          );
+          if (woc) {
+            const keys = await redis.keys(`processes_${woc.order_id}_*`);
+            if (keys.length) await redis.del(keys);
+          }
+        } catch (err) {
+          logger.error('Cache invalidation failed after process status update', err);
+        }
+      });
+
+      if (req.io) {
+        req.io.emit('processUpdate', {
+          workOrderComponentId,
+          processId: process_id,
+        });
+      }
+
+      res.json(result);
+    } catch (error) {
+      logger.error(
+        `Process status update failed - component ${workOrderComponentId}: ${error.message}`,
+        { stack: error.stack }
+      );
+      res.status(error.status || 400).json({ error: error.message });
+    }
+  }
+);
+
+router.get(
+  '/components/:workOrderComponentId/materials',
+  authenticateToken,
+  checkPermission('Processes', 'can_read'),
+  async (req, res) => {
+    const { workOrderComponentId } = req.params;
+
+    try {
+      const { rows } = await pool.query(
+        `
+        SELECT
+          wom.work_order_material_id,
+          wom.raw_material_id,
+          rm.product_name AS raw_material_name,
+          wom.quantity
+        FROM work_order_materials wom
+        JOIN raw_materials rm
+          ON rm.product_id = wom.raw_material_id
+        WHERE wom.work_order_component_id = $1
+        ORDER BY wom.work_order_material_id
+        `,
+        [workOrderComponentId]
+      );
+
+      res.json(
+        rows.map(r => ({
+          workOrderMaterialId: r.work_order_material_id,
+          rawMaterialId: r.raw_material_id,
+          rawMaterialName: r.raw_material_name,
+          quantity: r.quantity,
+        }))
+      );
+    } catch (error) {
+      logger.error(`Fetch materials failed - component ${workOrderComponentId}: ${error.message}`, { stack: error.stack });
+      res.status(500).json({ error: 'Failed to fetch materials' });
+    }
+  }
+);
+
+router.post(
+  '/components/:workOrderComponentId/materials',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res) => {
+    const { workOrderComponentId } = req.params;
+    const { raw_material_id, quantity } = req.body;
+
+    if (!raw_material_id || !quantity) {
+      return res.status(400).json({ error: 'raw_material_id and quantity required' });
+    }
+
+    if (!Number.isInteger(Number(quantity)) || Number(quantity) <= 0) {
+      return res.status(400).json({ error: 'quantity must be a positive integer' });
+    }
+
+    try {
+      const material = await Process.createWorkOrderMaterial(workOrderComponentId, {
+        raw_material_id,
+        quantity,
+      });
+
+      const { rows: [rm] } = await pool.query(
+        'SELECT product_name FROM raw_materials WHERE product_id = $1',
+        [raw_material_id]
+      );
+
+      setImmediate(async () => {
+        try {
+          const { rows: [woc] } = await pool.query(
+            'SELECT wo.order_id FROM work_order_components woc JOIN work_orders wo ON woc.work_order_id = wo.work_order_id WHERE woc.work_order_component_id = $1',
+            [workOrderComponentId]
+          );
+          if (woc) {
+            const keys = await redis.keys(`processes_${woc.order_id}_*`);
+            if (keys.length) await redis.del(keys);
+          }
+        } catch (err) {
+          logger.error('Cache invalidation failed after material creation/update', err);
+        }
+      });
+
+      res.status(201).json({
+        workOrderMaterialId: material.workOrderMaterialId,
+        workOrderComponentId: material.workOrderComponentId,
+        rawMaterialId: material.rawMaterialId,
+        rawMaterialName: rm?.product_name || null,
+        quantity: material.quantity,
+      });
+    } catch (error) {
+      logger.error(
+        `Material creation/update failed - component ${workOrderComponentId}: ${error.message}`,
+        { stack: error.stack }
+      );
+      res.status(error.status || 400).json({ error: error.message });
+    }
+  }
+);
+
+router.put(
+  '/components/:workOrderComponentId/materials/:materialId',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res) => {
+    const { workOrderComponentId, materialId } = req.params;
+    const { quantity } = req.body;
+
+    if (!quantity || !Number.isInteger(Number(quantity)) || Number(quantity) <= 0) {
+      return res.status(400).json({ error: 'quantity must be a positive integer' });
+    }
+
+    try {
+      const { rows } = await pool.query(
+        `UPDATE work_order_materials
+         SET quantity = $1
+         WHERE work_order_component_id = $2 
+         AND work_order_material_id = $3
+         RETURNING work_order_material_id, raw_material_id, quantity`,
+        [Number(quantity), workOrderComponentId, materialId]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Material not found' });
+      }
+
+      // Recalculate total material and update allowed_quantity
+      const { rows: [{ total_material }] } = await pool.query(
+        `SELECT COALESCE(SUM(quantity), 0) AS total_material
+         FROM work_order_materials
+         WHERE work_order_component_id = $1`,
+        [workOrderComponentId]
+      );
+
+      await pool.query(
+        `UPDATE process_status 
+         SET allowed_quantity = $1 
+         WHERE work_order_component_id = $2`,
+        [parseInt(total_material, 10), workOrderComponentId]
+      );
+
+      setImmediate(async () => {
+        try {
+          const { rows: [woc] } = await pool.query(
+            'SELECT wo.order_id FROM work_order_components woc JOIN work_orders wo ON woc.work_order_id = wo.work_order_id WHERE woc.work_order_component_id = $1',
+            [workOrderComponentId]
+          );
+          if (woc) {
+            const keys = await redis.keys(`processes_${woc.order_id}_*`);
+            if (keys.length) await redis.del(keys);
+          }
+        } catch (err) {
+          logger.error('Cache invalidation failed after material update', err);
+        }
+      });
+
+      res.json(rows[0]);
+    } catch (error) {
+      logger.error(
+        `Material update failed - component ${workOrderComponentId} material ${materialId}: ${error.message}`,
+        { stack: error.stack }
+      );
+      res.status(500).json({ error: 'Failed to update material' });
+    }
+  }
+);
+
+router.delete(
+  '/components/:workOrderComponentId/materials/:materialId',
+  authenticateToken,
+  checkPermission('Processes', 'can_delete'),
+  async (req, res) => {
+    const { workOrderComponentId, materialId } = req.params;
+
+    try {
+      const { rows } = await pool.query(
+        `DELETE FROM work_order_materials
+         WHERE work_order_component_id = $1 
+         AND work_order_material_id = $2
+         RETURNING work_order_material_id`,
+        [workOrderComponentId, materialId]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Material not found' });
+      }
+
+      // Recalculate total material and update allowed_quantity
+      const { rows: [{ total_material }] } = await pool.query(
+        `SELECT COALESCE(SUM(quantity), 0) AS total_material
+         FROM work_order_materials
+         WHERE work_order_component_id = $1`,
+        [workOrderComponentId]
+      );
+
+      await pool.query(
+        `UPDATE process_status 
+         SET allowed_quantity = $1 
+         WHERE work_order_component_id = $2`,
+        [parseInt(total_material, 10), workOrderComponentId]
+      );
+
+      setImmediate(async () => {
+        try {
+          const { rows: [woc] } = await pool.query(
+            'SELECT wo.order_id FROM work_order_components woc JOIN work_orders wo ON woc.work_order_id = wo.work_order_id WHERE woc.work_order_component_id = $1',
+            [workOrderComponentId]
+          );
+          if (woc) {
+            const keys = await redis.keys(`processes_${woc.order_id}_*`);
+            if (keys.length) await redis.del(keys);
+          }
+        } catch (err) {
+          logger.error('Cache invalidation failed after material deletion', err);
+        }
+      });
+
+      if (req.io) {
+        req.io.emit('materialDeleted', {
+          workOrderComponentId,
+          materialId,
+        });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      logger.error(
+        `Material deletion failed - component ${workOrderComponentId} material ${materialId}: ${error.message}`,
+        { stack: error.stack }
+      );
+      res.status(500).json({ error: 'Failed to delete material' });
+    }
+  }
+);
+
+// ────────────────────────────────────────────────
+//  PARAMETERIZED ROUTES
+// ────────────────────────────────────────────────
+
+router.post(
+  '/:orderId/work-orders',
+  authenticateToken,
+  checkPermission('Processes', 'can_write'),
+  async (req, res, next) => {
+    const { orderId } = req.params;
+    const { instance_group_id, target_date } = req.body;
+
+    try {
+      const workOrder = await Process.createWorkOrder(orderId, { instance_group_id, target_date }, req.io);
+
+      const { rows: [ig] = [{}] } = instance_group_id
+        ? await pool.query(
+            'SELECT instance_name, instance_type FROM instance_groups WHERE instance_group_id = $1',
+            [instance_group_id]
+          )
+        : [];
+
+      const response = {
+        workOrderId: workOrder.work_order_id,
+        orderId: workOrder.order_id,
+        instanceGroupId: workOrder.instance_group_id,
+        instanceName: ig.instance_name || null,
+        instanceType: ig.instance_type || null,
+        targetDate: workOrder.target_date,
+        status: workOrder.status,
+        createdAt: workOrder.created_at,
+        components: [],
+        timezone: 'Asia/Kolkata',
+      };
+
+      setImmediate(async () => {
+        try {
+          const keys = await redis.keys(`processes_${orderId}_*`);
+          if (keys.length) await redis.del(keys);
+        } catch (err) {
+          logger.error('Cache invalidation failed after work order creation', err);
+        }
+      });
+
+      res.status(201).json(response);
+    } catch (error) {
+      logger.error(`Create work order failed - order ${orderId}: ${error.message}`, { stack: error.stack });
+      res.status(error.status || 400).json({ error: error.message });
+    }
+  }
+);
+
+router.get(
+  '/:orderId',
+  authenticateToken,
+  checkPermission('Processes', 'can_read'),
+  async (req, res, next) => {
+    const { orderId } = req.params;
+    const { instance_group_id, limit, cursor, force_refresh } = req.query;
+    const userId = req.user?.userId || 'anon';
+    const cacheKey = `processes_${orderId}_${instance_group_id || 'all'}_${limit || 10}_${cursor || 'none'}_${userId}`;
+
+    try {
+      if (force_refresh === 'true') {
+        await redis.del(cacheKey);
+      }
+
+      const cached = await redis.get(cacheKey);
+      if (cached) {
+        return res.json(JSON.parse(cached));
+      }
+
+      const result = await Process.getAll({
+        order_id: orderId,
+        instance_group_id,
+        limit: parseInt(limit, 10) || 10,
+        cursor,
+      });
+
+      const response = {
+        workOrders: result.data.map(formatWorkOrderResponse),
+        total: result.total,
+        nextCursor: result.nextCursor,
+      };
+
+      await redis.setEx(cacheKey, 300, JSON.stringify(response));
+      res.json(response);
+    } catch (error) {
+      logger.error(`Processes fetch error - order ${orderId}: ${error.message}`, { stack: error.stack });
       next(error);
     }
   }
@@ -102,16 +660,11 @@ router.get(
   authenticateToken,
   checkPermission('Processes', 'can_read'),
   async (req, res, next) => {
-    const { orderId } = req.params;
     try {
-      console.log(`Fetching instance groups for order ${orderId}`);
-      const instanceGroups = await Process.getInstanceGroups(orderId);
-      console.log('Instance groups fetched:', instanceGroups);
+      const instanceGroups = await Process.getInstanceGroups(req.params.orderId);
       res.json(instanceGroups);
     } catch (error) {
-      logger.error(
-        `Error fetching instance groups for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
+      logger.error(`Instance groups error - order ${req.params.orderId}: ${error.message}`, { stack: error.stack });
       next(error);
     }
   }
@@ -124,1034 +677,85 @@ router.post(
   async (req, res, next) => {
     const { orderId } = req.params;
     const { instance_name, instance_type } = req.body;
+
+    if (!instance_name || !instance_type) {
+      return res.status(400).json({ error: 'instance_name and instance_type required' });
+    }
+
     try {
-      if (!instance_name || !instance_type) {
-        return res.status(400).json({
-          error: 'Invalid input: instance_name and instance_type required',
-        });
-      }
-      console.log(
-        `Creating instance group for order ${orderId}:, { instance_name, instance_type }`
-      );
-      const instanceGroup = await Process.createInstanceGroup(
-        orderId,
-        { instance_name, instance_type },
-        req.io
-      );
-      console.log('Instance group created:', instanceGroup);
+      const instanceGroup = await Process.createInstanceGroup(orderId, { instance_name, instance_type }, req.io);
       res.status(201).json(instanceGroup);
     } catch (error) {
-      logger.error(
-        `Error creating instance group for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
+      logger.error(`Create instance group failed - order ${orderId}: ${error.message}`, { stack: error.stack });
       res.status(error.status || 400).json({ error: error.message });
     }
   }
 );
 
+// ────────────────────────────────────────────────
+//  WORK ORDER STAGE ROUTES (NEW)
+// ────────────────────────────────────────────────
+
 router.get(
-  '/components',
+  '/work-orders/:workOrderId/stages',
   authenticateToken,
   checkPermission('Processes', 'can_read'),
   async (req, res, next) => {
+    const { workOrderId } = req.params;
+
     try {
-      console.log('Fetching components');
-      const components = await Process.getComponents();
-      console.log('Components fetched:', components);
-      res.json(components);
+      const stages = await Process.getWorkOrderStages(workOrderId);
+      res.json(stages);
     } catch (error) {
       logger.error(
-        `Error fetching components: ${error.message}, { stack: error.stack }`
+        `Work order stages fetch failed - workOrder ${workOrderId}: ${error.message}`,
+        { stack: error.stack }
       );
       next(error);
     }
   }
 );
 
-router.post(
-  '/components',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { component_name, product_type } = req.body;
-    try {
-      if (!component_name || !product_type) {
-        return res.status(400).json({
-          error: 'Invalid input: component_name and product_type required',
-        });
-      }
-      console.log('Creating component:', { component_name, product_type });
-      const component = await Process.createComponent(
-        { component_name, product_type },
-        req.io
-      );
-      console.log('Component created:', component);
-      res.status(201).json(component);
-    } catch (error) {
-      logger.error(
-        `Error creating component ${component_name}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.post(
-  '/components/:componentId/processes',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { componentId } = req.params;
-    const { process_name, sequence, responsible_person, description } =
-      req.body;
-    try {
-      if (!process_name || sequence == null) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid input: process_name and sequence required' });
-      }
-      console.log(
-        `Creating process for component ${componentId}:, { process_name, sequence }`
-      );
-      const process = await Process.createComponentProcess(
-        componentId,
-        { process_name, sequence, responsible_person, description },
-        req.io
-      );
-      console.log('Process created:', process);
-      res.status(201).json(process);
-    } catch (error) {
-      logger.error(
-        `Error creating process for component ${componentId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.get(
-  '/components/:componentId/materials',
-  authenticateToken,
-  checkPermission('Processes', 'can_read'),
-  async (req, res, next) => {
-    const { componentId } = req.params;
-    try {
-      console.log(`Fetching materials for component ${componentId}`);
-      const { rows } = await pool.query(
-        `SELECT material_id, component_id, raw_material_id, quantity_per_unit, required_quantity
-       FROM component_raw_materials
-       WHERE component_id = $1`,
-        [componentId]
-      );
-      const materials = rows.map((row) => ({
-        materialId: row.material_id,
-        componentId: row.component_id,
-        rawMaterialId: row.raw_material_id,
-        quantityPerUnit: row.quantity_per_unit,
-        requiredQuantity: row.required_quantity,
-      }));
-      console.log('Materials fetched:', materials);
-      res.json(materials);
-    } catch (error) {
-      logger.error(
-        `Error fetching materials for component ${componentId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
 router.put(
-  '/components/:componentId/materials/:materialId',
+  '/work-orders/:workOrderId/stages',
   authenticateToken,
   checkPermission('Processes', 'can_write'),
   async (req, res, next) => {
-    const { componentId, materialId } = req.params;
-    const { quantity_per_unit, required_quantity } = req.body;
+    const { workOrderId } = req.params;
+    const { stage_name, stage_date } = req.body;
+
+    if (!stage_name) {
+      return res.status(400).json({ error: 'stage_name is required' });
+    }
+
     try {
-      if (
-        (quantity_per_unit != null &&
-          (!Number.isInteger(Number(quantity_per_unit)) ||
-            Number(quantity_per_unit) < 0)) ||
-        (required_quantity != null &&
-          (!Number.isInteger(Number(required_quantity)) ||
-            Number(required_quantity) < 0))
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid input: quantity_per_unit and required_quantity must be non-negative integers',
-        });
-      }
-      if (quantity_per_unit == null && required_quantity == null) {
-        return res.status(400).json({
-          error:
-            'Invalid input: at least one of quantity_per_unit or required_quantity must be provided',
-        });
-      }
-      if (
-        quantity_per_unit != null &&
-        required_quantity != null &&
-        Number(quantity_per_unit) < Number(required_quantity)
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid input: quantity_per_unit must be at least required_quantity',
-        });
-      }
-      console.log(
-        `Updating material ${materialId} for component ${componentId}:, { quantity_per_unit, required_quantity }`
+      const result = await Process.updateWorkOrderStage(
+        workOrderId,
+        { stage_name, stage_date: stage_date || null },
+        req.io
       );
-      const client = await pool.connect();
-      try {
-        await client.query('BEGIN');
-        const {
-          rows: [component],
-        } = await client.query(
-          'SELECT component_id FROM components WHERE component_id = $1',
-          [componentId]
-        );
-        if (!component) throw new Error(`Component ${componentId} not found`);
 
-        const sets = [];
-        const values = [];
-        let i = 1;
-
-        if (quantity_per_unit != null) {
-          sets.push(`quantity_per_unit = $${i}`);
-          values.push(quantity_per_unit);
-          i++;
-        }
-        if (required_quantity != null) {
-          sets.push(`required_quantity = $${i}`);
-          values.push(required_quantity);
-          i++;
-        }
-        if (!sets.length) {
-          throw new Error(
-            'Invalid input: at least one of quantity_per_unit or required_quantity must be provided'
+      // invalidate order-level process cache
+      setImmediate(async () => {
+        try {
+          const { rows: [wo] } = await pool.query(
+            'SELECT order_id FROM work_orders WHERE work_order_id = $1',
+            [workOrderId]
           );
-        }
-        values.push(materialId, componentId);
-
-        const {
-          rows: [material],
-        } = await client.query(
-          `UPDATE component_raw_materials
-     SET ${sets.join(', ')}
-     WHERE material_id = $${i} AND component_id = $${i + 1}
-     RETURNING material_id, component_id, raw_material_id, quantity_per_unit, required_quantity`,
-          values
-        );
-
-        if (!material)
-          throw new Error(
-            `Material ${materialId} not found for component ${componentId}`
-          );
-
-        if (required_quantity != null) {
-          const { rows: workOrders } = await client.query(
-            'SELECT work_order_id, order_id FROM work_orders WHERE component_id = $1',
-            [componentId]
-          );
-
-          for (const wo of workOrders) {
-            await client.query(
-              'UPDATE work_orders SET quantity = $1 WHERE work_order_id = $2',
-              [required_quantity, wo.work_order_id]
-            );
+          if (wo) {
             const keys = await redis.keys(`processes_${wo.order_id}_*`);
             if (keys.length) await redis.del(keys);
-            logger.info(
-              `Cleared caches for processes after updating work order ${wo.work_order_id}`
-            );
           }
-        }
-
-        if (req.io) {
-          req.io.emit('componentRawMaterialUpdate', {
-            materialId: material.material_id,
-            componentId: material.component_id,
-            rawMaterialId: material.raw_material_id,
-            quantityPerUnit: material.quantity_per_unit,
-            requiredQuantity: material.required_quantity,
-          });
-        }
-
-        await client.query('COMMIT');
-        const response = {
-          materialId: material.material_id,
-          componentId: material.component_id,
-          rawMaterialId: material.raw_material_id,
-          quantityPerUnit: material.quantity_per_unit,
-          requiredQuantity: material.required_quantity,
-        };
-        console.log('Material updated:', response);
-        res.json(response);
-      } catch (error) {
-        await client.query('ROLLBACK');
-        if (error.message.includes('Insufficient quantity_per_unit')) {
-          res.status(400).json({ error: error.message });
-        } else {
-          throw error;
-        }
-      } finally {
-        client.release();
-      }
-    } catch (error) {
-      logger.error(
-        `Error updating material ${materialId} for component ${componentId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.post(
-  '/components/:componentId/materials',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { componentId } = req.params;
-    const { raw_material_id, quantity_per_unit, required_quantity } = req.body;
-    try {
-      if (
-        !raw_material_id ||
-        quantity_per_unit == null ||
-        required_quantity == null
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid input: raw_material_id, quantity_per_unit, and required_quantity required',
-        });
-      }
-      if (
-        !Number.isInteger(Number(quantity_per_unit)) ||
-        Number(quantity_per_unit) < 0 ||
-        !Number.isInteger(Number(required_quantity)) ||
-        Number(required_quantity) < 0
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid input: quantity_per_unit and required_quantity must be non-negative integers',
-        });
-      }
-      if (quantity_per_unit < required_quantity) {
-        return res.status(400).json({
-          error:
-            'Invalid input: quantity_per_unit must be at least required_quantity',
-        });
-      }
-      console.log(
-        `Assigning raw material to component ${componentId}:, { raw_material_id, quantity_per_unit, required_quantity }`
-      );
-      const material = await Process.createComponentRawMaterial(
-        componentId,
-        { raw_material_id, quantity_per_unit, required_quantity },
-        req.io
-      );
-      console.log('Material assigned:', material);
-      res.status(201).json(material);
-    } catch (error) {
-      logger.error(
-        `Error assigning raw material to component ${componentId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.get(
-  '/:orderId/stages',
-  authenticateToken,
-  checkPermission('Processes', 'can_read'),
-  async (req, res, next) => {
-    const { orderId } = req.params;
-    const { force_refresh } = req.query;
-    const cacheKey = `stages_${orderId}_${req.user?.userId || 'anon'}`;
-
-    try {
-      console.log(`Fetching stages for order ${orderId}`);
-      if (force_refresh === 'true') {
-        await redis.del(cacheKey);
-        console.log(`Cache cleared for key: ${cacheKey}`);
-      }
-
-      const cached = await redis.get(cacheKey);
-      if (cached) {
-        console.log(`Cache hit for key: ${cacheKey}`);
-        return res.json(JSON.parse(cached));
-      }
-
-      const { rows } = await pool.query(
-        `SELECT stage_name, TO_CHAR(stage_date, 'YYYY-MM-DD') AS stage_date
-       FROM order_stages
-       WHERE order_id = $1
-       ORDER BY stage_date`,
-        [orderId]
-      );
-
-      const response = rows.map((row) => ({
-        stageName: row.stage_name,
-        stageDate: row.stage_date,
-      }));
-
-      console.log('Stages fetched:', response);
-      await redis.setEx(cacheKey, 300, JSON.stringify(response));
-      res.json(response);
-    } catch (error) {
-      logger.error(
-        `Error fetching stages for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.post(
-  '/:orderId/stages',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { orderId } = req.params;
-    const { stage_name } = req.body;
-    try {
-      if (!stage_name) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid input: stage_name required' });
-      }
-      if (
-        !['Assembly', 'Testing', 'PDI', 'Packing', 'Dispatch'].includes(stage_name)
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid stage_name: must be Assembly, Testing, PDI, Packing, or Dispatch',
-        });
-      }
-
-      console.log(`Creating stage for order ${orderId}: { stage_name }`);
-
-      const client = await pool.connect();
-      try {
-        await client.query('BEGIN');
-
-        // Verify order exists
-        const { rows: [order] } = await client.query(
-          'SELECT order_id FROM orders WHERE order_id = $1',
-          [orderId]
-        );
-        if (!order) {
-          throw new Error(`Order ${orderId} not found`);
-        }
-
-        // Check if stage already exists
-        const { rows: [existingStage] } = await client.query(
-          'SELECT stage_id FROM order_stages WHERE order_id = $1 AND stage_name = $2',
-          [orderId, stage_name]
-        );
-        if (existingStage) {
-          throw new Error(`Stage ${stage_name} already exists for order ${orderId}`);
-        }
-
-        // Insert new stage without status
-        const { rows: [stage] } = await client.query(
-          `INSERT INTO order_stages (order_id, stage_name, stage_date)
-           VALUES ($1, $2, NULL)
-           RETURNING stage_id, order_id, stage_name, TO_CHAR(stage_date, 'YYYY-MM-DD') AS stage_date`,
-          [orderId, stage_name]
-        );
-
-        await client.query('COMMIT');
-
-        // Clear caches
-        setImmediate(async () => {
-          try {
-            const stageKeys = await redis.keys(`stages_${orderId}_*`);
-            const processKeys = await redis.keys(`processes_${orderId}_*`);
-            const keys = [...stageKeys, ...processKeys];
-            if (keys.length) await redis.del(keys);
-            logger.info(
-              `Cleared caches for stages and processes after creating stage for order ${orderId}`
-            );
-            console.log(`Cache cleared for order ${orderId}`);
-          } catch (err) {
-            logger.error('Cache invalidation error', err);
-          }
-        });
-
-        // Emit Socket.IO event
-        if (req.io) {
-          req.io.emit('stageUpdate', {
-            stageId: stage.stage_id,
-            orderId: stage.order_id,
-            stageName: stage.stage_name,
-            stageDate: stage.stage_date,
-          });
-        }
-
-        const response = {
-          stageId: stage.stage_id,
-          orderId: stage.order_id,
-          stageName: stage.stage_name,
-          stageDate: stage.stage_date,
-          timezone: 'Asia/Kolkata',
-        };
-
-        console.log('Stage created:', response);
-        res.status(201).json(response);
-      } catch (error) {
-        await client.query('ROLLBACK');
-        throw error;
-      } finally {
-        client.release();
-      }
-    } catch (error) {
-      logger.error(
-        `Error creating stage for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.get(
-  '/:orderId',
-  authenticateToken,
-  checkPermission('Processes', 'can_read'),
-  async (req, res, next) => {
-    const { orderId } = req.params;
-    const {
-      instance_group_id,
-      limit,
-      cursor,
-      force_refresh,
-      responsible_person,
-      overdue,
-    } = req.query;
-    const userId = req.user?.userId || 'anon';
-    const cacheKey = `processes_${orderId}_${instance_group_id || 'all'}_${limit || 10}_${cursor || 'none'}_${userId}`;
-
-    try {
-      console.log(
-        'Pool in GET /:orderId route:',
-        pool ? 'Defined' : 'Undefined'
-      );
-      console.log(
-        `Fetching processes for order ${orderId} with params:, { instance_group_id, limit, cursor, responsible_person, overdue }`
-      );
-      if (force_refresh === 'true') {
-        await redis.del(cacheKey);
-        console.log(`Cache cleared for key: ${cacheKey}`);
-      }
-
-      const cached = await redis.get(cacheKey);
-      if (cached) {
-        console.log(`Cache hit for key: ${cacheKey}`);
-        return res.json(JSON.parse(cached));
-      }
-
-      const processes = await Process.getAll({
-        order_id: orderId,
-        instance_group_id,
-        limit: parseInt(limit, 10),
-        cursor,
-        responsible_person,
-        overdue: overdue === 'true',
-      });
-      console.log('Processes fetched:', processes);
-      const response = {
-        workOrders: processes.data.map(formatResponse),
-        total: processes.total,
-        nextCursor: processes.nextCursor,
-      };
-      console.log('Response to frontend:', response);
-
-      await redis.setEx(cacheKey, 300, JSON.stringify(response));
-      res.json(response);
-    } catch (error) {
-      logger.error(
-        `Error fetching processes for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
-      next(error);
-    }
-  }
-);
-
-router.post(
-  '/:orderId',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { orderId } = req.params;
-    const { component_id, instance_group_id, quantity, target_date } = req.body;
-    try {
-      if (!component_id || !quantity) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid input: component_id and quantity required' });
-      }
-      console.log(
-        'Pool in POST /:orderId route:',
-        pool ? 'Defined' : 'Undefined'
-      );
-      console.log(
-        `Creating work order for order ${orderId}:, { component_id, instance_group_id, quantity, target_date }`
-      );
-      const workOrder = await Process.create(
-        orderId,
-        { component_id, instance_group_id, quantity, target_date },
-        req.io
-      );
-      const {
-        rows: [component],
-      } = await pool.query(
-        'SELECT component_name, product_type FROM components WHERE component_id = $1',
-        [workOrder.componentId]
-      );
-      const {
-        rows: [instanceGroup],
-      } = instance_group_id
-        ? await pool.query(
-            'SELECT instance_name, instance_type FROM instance_groups WHERE instance_group_id = $1',
-            [workOrder.instanceGroupId]
-          )
-        : { rows: [{}] };
-
-      const response = formatResponse({
-        ...workOrder,
-        componentName: component.component_name,
-        productType: component.product_type,
-        instanceName: instanceGroup.instance_name || null,
-        instanceType: instanceGroup.instance_type || null,
-        processes: [],
-        materials: [],
-        orderStages: [],
-      });
-      console.log('Work order created:', response);
-
-      setImmediate(async () => {
-        try {
-          const keys = await redis.keys(`processes_${orderId}_*`);
-          if (keys.length) await redis.del(keys);
-          logger.info(
-            `Cleared caches for processes after creating work order for order ${orderId}`
-          );
-          console.log(`Cache cleared for order ${orderId}`);
         } catch (err) {
-          logger.error('Cache invalidation error', err);
+          logger.error('Cache invalidation failed after stage update', err);
         }
       });
 
-      res.status(201).json(response);
+      res.json(result);
     } catch (error) {
       logger.error(
-        `Error creating work order for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.put(
-  '/:workOrderId/process-status',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res) => {
-    const { workOrderId } = req.params;
-    const {
-      process_id,
-      status,
-      completed_quantity,
-      raw_quantity_used,
-      completion_date,
-      responsible_person,
-    } = req.body;
-
-    try {
-      if (!process_id || !status) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid input: process_id and status required' });
-      }
-      if (!['Pending', 'In Progress', 'Completed'].includes(status)) {
-        return res.status(400).json({
-          error: 'Invalid status: must be Pending, In Progress, or Completed',
-        });
-      }
-      if (
-        completed_quantity != null &&
-        (!Number.isInteger(Number(completed_quantity)) ||
-          Number(completed_quantity) < 0)
-      ) {
-        return res.status(400).json({
-          error: 'Invalid completed_quantity: must be a non-negative integer',
-        });
-      }
-      if (
-        raw_quantity_used != null &&
-        (!Number.isInteger(Number(raw_quantity_used)) ||
-          Number(raw_quantity_used) < 0)
-      ) {
-        return res.status(400).json({
-          error: 'Invalid raw_quantity_used: must be a non-negative integer',
-        });
-      }
-      if (
-        completed_quantity != null &&
-        raw_quantity_used != null &&
-        Number(completed_quantity) > Number(raw_quantity_used)
-      ) {
-        return res.status(400).json({
-          error: 'Completed quantity cannot exceed raw quantity used',
-        });
-      }
-      if (completion_date && !/^\d{4}-\d{2}-\d{2}$/.test(completion_date)) {
-        return res.status(400).json({
-          error: 'Invalid completion_date: must be in YYYY-MM-DD format',
-        });
-      }
-      if (
-        responsible_person != null &&
-        (typeof responsible_person !== 'string' ||
-          responsible_person.length > 255)
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid responsible_person: must be a string with max length 255',
-        });
-      }
-
-      const client = await pool.connect();
-      try {
-        await client.query('BEGIN');
-
-        const {
-          rows: [wo],
-        } = await client.query(
-          'SELECT work_order_id, component_id, quantity, order_id FROM work_orders WHERE work_order_id = $1',
-          [workOrderId]
-        );
-        if (!wo) throw new Error(`Work order ${workOrderId} not found`);
-
-        const {
-          rows: [proc],
-        } = await client.query(
-          'SELECT process_id FROM component_processes WHERE process_id = $1 AND component_id = $2',
-          [process_id, wo.component_id]
-        );
-        if (!proc)
-          throw new Error(
-            `Process ${process_id} not found for component ${wo.component_id}`
-          );
-
-        const {
-          rows: [agg],
-        } = await client.query(
-          'SELECT COALESCE(SUM(completed_quantity), 0) AS total FROM process_status WHERE work_order_id = $1 AND process_id != $2',
-          [workOrderId, process_id]
-        );
-        const newTotal =
-          Number(agg.total || 0) + Number(completed_quantity || 0);
-        if (newTotal > Number(wo.quantity)) {
-          throw new Error(
-            `Total completed quantity (${newTotal}) exceeds work order quantity (${wo.quantity})`
-          );
-        }
-
-        const sets = ['status = $1'];
-        const values = [status];
-        let i = 2;
-
-        if (completed_quantity != null) {
-          sets.push(`completed_quantity = $${i}`);
-          values.push(Number(completed_quantity));
-          i++;
-        }
-        if (raw_quantity_used != null) {
-          sets.push(`raw_quantity_used = $${i}`);
-          values.push(Number(raw_quantity_used));
-          i++;
-        }
-        if (completion_date !== undefined) {
-          if (completion_date) {
-            sets.push(`completion_date = $${i}`);
-            values.push(completion_date);
-            i++;
-          } else {
-            sets.push(`completion_date = NULL`);
-          }
-        }
-        if (responsible_person != null) {
-          sets.push(`responsible_person = $${i}`);
-          values.push(responsible_person);
-          i++;
-        }
-
-        values.push(workOrderId, process_id);
-
-        const updateSql = `
-        UPDATE process_status
-        SET ${sets.join(', ')}
-        WHERE work_order_id = $${i} AND process_id = $${i + 1}
-        RETURNING status_id
-      `;
-        const upd = await client.query(updateSql, values);
-
-        if (upd.rowCount === 0) {
-          const insertSql = `
-          INSERT INTO process_status
-            (work_order_id, process_id, status, completed_quantity, raw_quantity_used, completion_date, responsible_person)
-          VALUES
-            ($1, $2, $3, $4, $5, $6, $7)
-          ON CONFLICT (work_order_id, process_id)
-          DO UPDATE SET
-            status = EXCLUDED.status,
-            completed_quantity = COALESCE(EXCLUDED.completed_quantity, process_status.completed_quantity),
-            raw_quantity_used = COALESCE(EXCLUDED.raw_quantity_used, process_status.raw_quantity_used),
-            completion_date = EXCLUDED.completion_date,
-            responsible_person = EXCLUDED.responsible_person
-          RETURNING status_id
-        `;
-          await client.query(insertSql, [
-            workOrderId,
-            process_id,
-            status,
-            completed_quantity != null ? Number(completed_quantity) : null,
-            raw_quantity_used != null ? Number(raw_quantity_used) : null,
-            completion_date || null,
-            responsible_person ?? null,
-          ]);
-        }
-
-        const { rows: psStatuses } = await client.query(
-          'SELECT status FROM process_status WHERE work_order_id = $1',
-          [workOrderId]
-        );
-        const allDone =
-          psStatuses.length &&
-          psStatuses.every((r) => r.status === 'Completed');
-        const anyIP = psStatuses.some((r) => r.status === 'In Progress');
-        const woStatus = allDone
-          ? 'Completed'
-          : anyIP
-            ? 'In Progress'
-            : 'Pending';
-        await client.query(
-          'UPDATE work_orders SET status = $1 WHERE work_order_id = $2',
-          [woStatus, workOrderId]
-        );
-
-        const {
-          rows: [uwo],
-        } = await client.query(
-          `SELECT wo.work_order_id, wo.order_id, wo.component_id, c.component_name, c.product_type,
-                wo.instance_group_id, ig.instance_name, ig.instance_type,
-                wo.quantity,
-                TO_CHAR(wo.target_date, 'YYYY-MM-DD') AS target_date,
-                wo.status,
-                TO_CHAR(wo.created_at, 'YYYY-MM-DD') AS created_at
-         FROM work_orders wo
-         JOIN components c ON wo.component_id = c.component_id
-         LEFT JOIN instance_groups ig ON wo.instance_group_id = ig.instance_group_id
-         WHERE wo.work_order_id = $1`,
-          [workOrderId]
-        );
-
-        const { rows: prows } = await client.query(
-          `SELECT cp.process_id, cp.process_name, cp.sequence,
-                COALESCE(ps.responsible_person, cp.responsible_person) AS responsible_person,
-                cp.description, ps.status, ps.completed_quantity, ps.raw_quantity_used,
-                TO_CHAR(ps.completion_date, 'YYYY-MM-DD') AS completion_date
-         FROM component_processes cp
-         LEFT JOIN process_status ps ON cp.process_id = ps.process_id AND ps.work_order_id = $1
-         WHERE cp.component_id = $2
-         ORDER BY cp.sequence`,
-          [workOrderId, uwo.component_id]
-        );
-
-        const { rows: mats } = await client.query(
-          `SELECT wom.work_order_material_id, wom.material_id, crm.raw_material_id, wom.quantity
-         FROM work_order_materials wom
-         JOIN component_raw_materials crm ON wom.material_id = crm.material_id
-         WHERE wom.work_order_id = $1`,
-          [workOrderId]
-        );
-
-        const { rows: stages } = await client.query(
-          `SELECT stage_name, TO_CHAR(stage_date, 'YYYY-MM-DD') AS stage_date
-         FROM order_stages
-         WHERE order_id = $1`,
-          [uwo.order_id]
-        );
-
-        await client.query('COMMIT');
-
-        setImmediate(async () => {
-          try {
-            const keys = await redis.keys(`processes_${uwo.order_id}_*`);
-            if (keys.length) await redis.del(keys);
-          } catch (err) {
-            logger.error('Cache invalidation error', err);
-          }
-        });
-        if (req.io)
-          req.io.emit('processUpdate', {
-            workOrderId: workOrderId,
-            processId: process_id,
-            status,
-          });
-
-        const response = {
-          workOrderId: uwo.work_order_id,
-          orderId: uwo.order_id,
-          componentId: uwo.component_id,
-          componentName: uwo.component_name,
-          productType: uwo.product_type,
-          instanceGroupId: uwo.instance_group_id,
-          instanceName: uwo.instance_name,
-          instanceType: uwo.instance_type,
-          quantity: uwo.quantity,
-          targetDate: uwo.target_date,
-          status: uwo.status,
-          createdAt: uwo.created_at,
-          processes: prows.map((p) => ({
-            processId: p.process_id,
-            processName: p.process_name,
-            sequence: p.sequence,
-            responsiblePerson: p.responsible_person,
-            description: p.description,
-            status: p.status,
-            completedQuantity: p.completed_quantity,
-            rawQuantityUsed: p.raw_quantity_used,
-            completionDate: p.completion_date,
-          })),
-          materials: mats.map((m) => ({
-            workOrderMaterialId: m.work_order_material_id,
-            materialId: m.material_id,
-            rawMaterialId: m.raw_material_id,
-            quantity: m.quantity,
-          })),
-          orderStages: stages.map((s) => ({
-            stageName: s.stage_name,
-            stageDate: s.stage_date,
-          })),
-          timezone: 'Asia/Kolkata',
-        };
-
-        return res.json(response);
-      } catch (err) {
-        await client.query('ROLLBACK');
-        logger.error(
-          `Error updating process status for work order ${workOrderId}: ${err.message}, { stack: err.stack }`
-        );
-        return res.status(400).json({ error: err.message });
-      } finally {
-        client.release();
-      }
-    } catch (err) {
-      logger.error(
-        `Error updating process status for work order ${workOrderId}: ${err.message}, { stack: err.stack }`
-      );
-      return res.status(400).json({ error: err.message });
-    }
-  }
-);
-
-router.put(
-  '/:orderId/stages',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { orderId } = req.params;
-    const { stage_name, stage_date } = req.body;
-    try {
-      if (!stage_name || !stage_date) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid input: stage_name and stage_date required' });
-      }
-      if (
-        !['Assembly', 'Testing', 'PDI', 'Packing', 'Dispatch'].includes(
-          stage_name
-        )
-      ) {
-        return res.status(400).json({
-          error:
-            'Invalid stage_name: must be Assembly, Testing, PDI, Packing, or Dispatch',
-        });
-      }
-      console.log(
-        `Updating order stage for order ${orderId}:, { stage_name, stage_date }`
-      );
-      const stage = await Process.updateOrderStage(
-        orderId,
-        { stage_name, stage_date },
-        req.io
-      );
-      console.log('Order stage updated:', stage);
-
-      setImmediate(async () => {
-        try {
-          const stageKeys = await redis.keys(`stages_${orderId}_*`);
-          const processKeys = await redis.keys(`processes_${orderId}_*`);
-          const keys = [...stageKeys, ...processKeys];
-          if (keys.length) await redis.del(keys);
-          logger.info(
-            `Cleared caches for stages and processes after updating stage for order ${orderId}`
-          );
-          console.log(`Cache cleared for order ${orderId}`);
-        } catch (err) {
-          logger.error('Cache invalidation error', err);
-        }
-      });
-
-      res.json({
-        stageId: stage.stageId,
-        orderId: stage.orderId,
-        stageName: stage.stageName,
-        stageDate: stage.stageDate,
-        timezone: 'Asia/Kolkata',
-      });
-    } catch (error) {
-      logger.error(
-        `Error updating order stage for order ${orderId}: ${error.message}, { stack: error.stack }`
-      );
-      res.status(error.status || 400).json({ error: error.message });
-    }
-  }
-);
-
-router.post(
-  '/:workOrderId/materials',
-  authenticateToken,
-  checkPermission('Processes', 'can_write'),
-  async (req, res, next) => {
-    const { workOrderId } = req.params;
-    const { material_id, quantity } = req.body;
-    try {
-      if (!material_id || quantity == null) {
-        return res
-          .status(400)
-          .json({ error: 'Invalid input: material_id and quantity required' });
-      }
-      console.log(
-        `Creating work order material for work order ${workOrderId}:, { material_id, quantity }`
-      );
-      const workOrderMaterial = await Process.createWorkOrderMaterial(
-        workOrderId,
-        { material_id, quantity },
-        req.io
-      );
-      console.log('Work order material created:', workOrderMaterial);
-      res.status(201).json({
-        workOrderMaterialId: workOrderMaterial.workOrderMaterialId,
-        workOrderId: workOrderMaterial.workOrderId,
-        materialId: workOrderMaterial.materialId,
-        quantity: workOrderMaterial.quantity,
-      });
-    } catch (error) {
-      logger.error(
-        `Error creating work order material for work order ${workOrderId}: ${error.message}, { stack: error.stack }`
+        `Work order stage update failed - workOrder ${workOrderId}: ${error.message}`,
+        { stack: error.stack }
       );
       res.status(error.status || 400).json({ error: error.message });
     }
