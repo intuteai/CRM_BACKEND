@@ -12,7 +12,7 @@ function getISTDate() {
 }
 
 function isWeekendIST() {
-  return getISTDate().getDay() === 0 || getISTDate().getDay() === 6;
+  return getISTDate().getDay() === 0; // Only Sunday
 }
 
 function formatDateLong(date) {
@@ -221,9 +221,9 @@ async function runDailyTaskSummary({ isEvening }) {
 
 // ===================== CRON SCHEDULES =====================
 
-// Morning – 11:00 AM IST
+// Morning – 9:00 AM IST
 cron.schedule(
-  '0 11 * * *',
+  '0 9 * * *',
   () => runDailyTaskSummary({ isEvening: false }),
   { timezone: 'Asia/Kolkata' }
 );
@@ -235,4 +235,4 @@ cron.schedule(
   { timezone: 'Asia/Kolkata' }
 );
 
-console.log('[DAILY SUMMARY] Cron scheduled → 11:00 AM & 6:30 PM IST (weekdays only)');
+console.log('[DAILY SUMMARY] Cron scheduled → 9:00 AM & 6:30 PM IST (Monday-Saturday)');
