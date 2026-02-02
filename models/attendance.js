@@ -3,7 +3,7 @@ const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 class Attendance {
-  // PERSONAL ATTENDANCE (Employee) — unchanged
+  // PERSONAL ATTENDANCE (Employee)
   static async getAll({ limit = 10, cursor = null, user_id }) {
     const query = `
       SELECT
@@ -42,7 +42,8 @@ class Attendance {
         created_at: r.created_at,
       }));
 
-      const nextCursor = result.rows.length
+      // ✅ FIXED: Only set nextCursor if we got a full page
+      const nextCursor = result.rows.length === limit
         ? result.rows[result.rows.length - 1].created_at_raw
         : null;
 
@@ -171,7 +172,7 @@ class Attendance {
     }
   }
 
-  // HR ATTENDANCE SUMMARY — FIXED: const → let for query strings
+  // HR ATTENDANCE SUMMARY
   static async getHRSummary({
     limit = 20,
     cursor = null,
@@ -179,7 +180,6 @@ class Attendance {
     search = null,
     employee_id = null
   }) {
-    // ← FIXED: Changed to let so we can append safely
     let query = `
       SELECT
         a.attendance_id,
@@ -267,7 +267,8 @@ class Attendance {
         created_at: r.created_at,
       }));
 
-      const nextCursor = result.rows.length
+      // ✅ FIXED: Only set nextCursor if we got a full page
+      const nextCursor = result.rows.length === limit
         ? result.rows[result.rows.length - 1].created_at_raw
         : null;
 
