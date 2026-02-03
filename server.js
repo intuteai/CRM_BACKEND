@@ -31,9 +31,11 @@ const processRoutes = require('./routes/process');
 const activitiesRoutes = require('./routes/activities');
 const payslipRoutes = require('./routes/payslip');
 const deliveryChallanRoutes = require('./routes/deliveryChallan');
+
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
+
 require('dotenv').config();
 
 // NEW: Parts route
@@ -41,6 +43,7 @@ const partsRoutes = require('./routes/parts');
 
 // NEW: Quotation route (stream-only)
 const quotationRoutes = require('./routes/quotation');
+
 // NEW: Proforma route (stream-only)
 const proformaRoutes = require('./routes/proforma');
 
@@ -56,7 +59,7 @@ const io = new Server(server, {
   path: '/socket.io',
 });
 
-// expose io via app and make available on req
+// expose io
 app.set('socketio', io);
 app.set('io', io);
 
@@ -85,7 +88,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(limiter);
 
-// attach io to each request for routes that expect req.io
+// attach io to req
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -93,14 +96,16 @@ app.use((req, res, next) => {
 
 io.on('connection', (socket) => {
   logger.info('Socket.IO client connected:', socket.id);
-  socket.on('disconnect', () => logger.info('Socket.IO client disconnected:', socket.id));
+  socket.on('disconnect', () =>
+    logger.info('Socket.IO client disconnected:', socket.id)
+  );
 });
 
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the ERP Backend API' });
 });
 
-// ==================== ROUTES (ALL PREFIXED WITH /api/) ====================
+// ==================== ROUTES ====================
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customersRoutes);
 app.use('/api/orders', ordersRoutes);
@@ -124,27 +129,29 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/process', processRoutes);
 app.use('/api/activities', activitiesRoutes);
 app.use('/api/payslip', payslipRoutes);
+app.use('/api/delivery-challan', deliveryChallanRoutes);
 
-// NEW: Parts API
+// NEW APIs
 app.use('/api/parts', partsRoutes);
-
-// NEW: mount quotation route (stream-only)
 app.use('/api/quotation', quotationRoutes);
-// NEW: mount proforma route (stream-only)
 app.use('/api/proforma', proformaRoutes);
 
-app.use('/api/delivery-challan', deliveryChallanRoutes); 
-
 // ──────────────────────────────────────────────────────────────
-// Start daily due-tomorrow email reminder job
+// CRON JOBS
+// ──────────────────────────────────────────────────────────────
+
+// Daily due-tomorrow email reminder
 require('./jobs/daily-due-reminders');
 logger.info('Daily due-tomorrow reminder job scheduled (11:00 AM IST)');
-// ──────────────────────────────────────────────────────────────
 
-// ──────────────────────────────────────────────────────────────
-// Start daily task summaries job (manager + individual users)
+// Daily task summaries
 require('./jobs/daily-task-summaries');
 logger.info('Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)');
+
+// ✅ NEW: Attendance summary job
+require('./jobs/attendanceSummary');
+logger.info('Attendance summary job scheduled');
+
 // ──────────────────────────────────────────────────────────────
 
 // ==================== GLOBAL ERROR HANDLER ====================
@@ -152,14 +159,17 @@ app.use(errorHandler);
 
 // ==================== START SERVER ====================
 const PORT = process.env.PORT || 8000;
-initializeServer().then(() => {
-  server.listen(PORT, () => {
-    logger.info(`Server running on port ${PORT}`);
+
+initializeServer()
+  .then(() => {
+    server.listen(PORT, () => {
+      logger.info(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    logger.error('Server startup failed:', err.stack);
+    process.exit(1);
   });
-}).catch((err) => {
-  logger.error('Server startup failed:', err.stack);
-  process.exit(1);
-});
 
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received. Shutting down gracefully...');
