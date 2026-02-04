@@ -2,6 +2,7 @@ const express = require('express');
 const Inventory = require('../models/inventory');
 const Activity = require('../models/activity');
 const redis = require('../config/redis');
+const pool = require('../config/db');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const sanitizeHtml = require('sanitize-html');
@@ -407,6 +408,85 @@ router.get(
       res.json({ data: holds, total: holds.length });
     } catch (error) {
       logger.error(`Error fetching holds for product ${req.params.id}: ${error.message}`, error.stack);
+      next(error);
+    }
+  }
+);
+
+// --------------------------------------------------
+// POST /api/inventory/:id/accept-return - ACCEPT RETURN
+// --------------------------------------------------
+router.post(
+  '/:id/accept-return',
+  authenticateToken,
+  checkPermission('Inventory', 'can_write'),
+  async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+      const { qty } = req.body;
+
+      if (!qty || qty <= 0) {
+        return res.status(400).json({ error: 'Quantity must be greater than 0' });
+      }
+
+      // Get current product state
+      const { rows: productRows } = await pool.query(
+        'SELECT stock_quantity, returnable_qty, product_name FROM inventory WHERE product_id = $1',
+        [productId]
+      );
+
+      if (!productRows.length) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      const product = productRows[0];
+      const qtyToAccept = parseInt(qty);
+
+      if (qtyToAccept > product.returnable_qty) {
+        return res.status(400).json({ 
+          error: `Cannot accept more than available returnable quantity (${product.returnable_qty})` 
+        });
+      }
+
+      // Update: add to stock_quantity, subtract from returnable_qty
+      const { rows: updatedRows } = await pool.query(
+        `UPDATE inventory 
+         SET stock_quantity = stock_quantity + $1,
+             returnable_qty = returnable_qty - $1
+         WHERE product_id = $2
+         RETURNING *`,
+        [qtyToAccept, productId]
+      );
+
+      const updatedProduct = updatedRows[0];
+
+      await Activity.log(
+        req.user.user_id,
+        'ACCEPT_RETURN',
+        `Accepted ${qtyToAccept} units return for product ${productId} (${product.product_name})`
+      );
+
+      // Emit socket event
+      if (req.io) {
+        req.io.emit('stockUpdate', {
+          product_id: updatedProduct.product_id,
+          stock_quantity: updatedProduct.stock_quantity,
+          returnable_qty: updatedProduct.returnable_qty,
+        });
+        logger.info(`📡 Emitted stockUpdate event for accept-return on product ${productId}`);
+      }
+
+      // Invalidate caches
+      const keys = await redis.keys('inventory_*');
+      if (keys.length > 0) await redis.del(keys);
+
+      logger.info(`✅ Return accepted: ${qtyToAccept} units for product ${productId} (${product.product_name}) by ${req.user.user_id}`);
+      res.json({
+        message: 'Return accepted successfully',
+        product: updatedProduct
+      });
+    } catch (error) {
+      logger.error(`❌ Error accepting return for product ${req.params.id}: ${error.message}`, error.stack);
       next(error);
     }
   }
