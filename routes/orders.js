@@ -194,19 +194,24 @@ router.put(
       const { items, payment_status, targetDeliveryDate, status } =
         req.body;
 
-      if (!items?.length)
+      // items is optional — omit it entirely for status/payment-only updates.
+      // If it IS supplied it must contain at least one line item.
+      if (items !== undefined && !items.length) {
         return res
           .status(400)
-          .json({ error: 'Invalid items: must be a non-empty array' });
+          .json({ error: 'Items cannot be an empty array' });
+      }
+
+      // Cancellation has its own endpoint with the goods_returned gate.
+      // Reject it here so the model's throw is never the first line of
+      // defence for what is really a routing mistake.
+      if (status === 'Cancelled') {
+        return res.status(400).json({
+          error: 'Use POST /orders/:id/cancel to cancel an order',
+        });
+      }
 
       const validPaymentStatuses = ['Pending', 'Paid'];
-      const validOrderStatuses = [
-        'Pending',
-        'Processing',
-        'Testing',   // added
-        'Shipped',
-        'Delivered',
-      ];
 
       if (
         payment_status &&
@@ -218,14 +223,8 @@ router.put(
           )}`,
         });
       }
-
-      if (status && !validOrderStatuses.includes(status)) {
-        return res.status(400).json({
-          error: `Invalid status: must be ${validOrderStatuses.join(
-            ', '
-          )}`,
-        });
-      }
+      // Order-status lifecycle validation (valid transitions, downgrade
+      // prevention, etc.) is enforced by the model.  No whitelist here.
 
       const order = await Order.updateOrder(
         orderId,
@@ -296,11 +295,14 @@ router.post(
   async (req, res, next) => {
     try {
       const orderId = req.params.id;
+      const { goods_returned = false } = req.body;
+
       const order = await Order.cancelOrder(
         orderId,
         req.user.user_id,
         req.user.role_id,
-        req.io
+        req.io,
+        { goods_returned }
       );
       const itemsDetails = await Order.getItemsByOrderIds([orderId]);
       const totalAmount = (itemsDetails[orderId] || []).reduce(
