@@ -1,4 +1,4 @@
-// routes/activities.js
+// routes/activities.js - COMPLETE FINAL VERSION
 
 const express = require('express');
 const Activities = require('../models/activities');
@@ -8,9 +8,11 @@ const logger = require('../utils/logger');
 
 const router = express.Router({ mergeParams: true });
 
-// ------------------------ Utils --------------------------
+// ======================== CONFIGURATION ========================
 const CACHE_TTL_SECONDS = 300;
 const ACTIVITIES_PREFIX = 'activities_';
+
+// ======================== UTILITY FUNCTIONS ========================
 
 function toInt(v, { def = 10, min = 1, max = 100 } = {}) {
   const n = Number.parseInt(v, 10);
@@ -26,8 +28,8 @@ function toBool(v) {
 
 function listCacheKey({ limit, cursor }) {
   return cursor
-    ? `${ACTIVITIES_PREFIX}list_${limit}_${cursor}`
-    : `${ACTIVITIES_PREFIX}list_${limit}`;
+    ? `${ACTIVITIES_PREFIX}list_${limit}_${encodeURIComponent(cursor)}`
+    : `${ACTIVITIES_PREFIX}list_${limit}_initial`;
 }
 
 function itemCacheKey(id) {
@@ -50,6 +52,7 @@ async function invalidateActivitiesCache() {
     if (keysToDelete.length) {
       await redis.del(keysToDelete);
     }
+    logger.debug(`Cache invalidated: ${ACTIVITIES_PREFIX}*`);
   } catch (e) {
     logger.warn(`Cache invalidation skipped: ${e.message}`);
   }
@@ -60,7 +63,7 @@ async function cacheGetJSON(key) {
     const raw = await redis.get(key);
     return raw ? JSON.parse(raw) : null;
   } catch (e) {
-    logger.warn(`Redis GET failed: ${e.message}`);
+    logger.warn(`Redis GET failed for ${key}: ${e.message}`);
     return null;
   }
 }
@@ -69,24 +72,29 @@ async function cacheSetJSON(key, value, ttl = CACHE_TTL_SECONDS) {
   try {
     await redis.setEx(key, ttl, JSON.stringify(value));
   } catch (e) {
-    logger.warn(`Redis SETEX failed: ${e.message}`);
+    logger.warn(`Redis SETEX failed for ${key}: ${e.message}`);
   }
 }
 
-// ------------------------ Middleware -----------------------
+// ======================== MIDDLEWARE ========================
+
 router.use(authenticateToken, (req, res, next) => {
   req.io = req.app?.get?.('io') || { emit: () => {} };
   req.io.user = req.user;
   next();
 });
 
-// ------------------------ Routes ---------------------------
+// ======================== ROUTES ========================
 
-// POST /api/activities
+/**
+ * POST /api/activities
+ * Create a new activity
+ */
 router.post('/', async (req, res) => {
   try {
     const { summary, status, assignee_ids, due_date, priority, comments } = req.body;
 
+    // Validation
     if (!summary || !Array.isArray(assignee_ids) || assignee_ids.length === 0) {
       return res.status(400).json({ error: 'Summary and assignee_ids[] required' });
     }
@@ -96,34 +104,51 @@ router.post('/', async (req, res) => {
       req.io
     );
 
-    await invalidateActivitiesCache();
-    logger.info(`Activity created: ${activity.id} by ${req.user.user_id}`);
+    // Invalidate cache asynchronously (non-blocking)
+    setImmediate(() => invalidateActivitiesCache());
+    
+    logger.info(`Activity created: ${activity.id} by user ${req.user.user_id}`);
     return res.status(201).json(activity);
   } catch (error) {
-    logger.error(`Create error: ${error.message}`);
+    logger.error(`Create activity error: ${error.message}`);
     return res.status(400).json({ error: error.message });
   }
 });
 
-// GET /api/activities
+/**
+ * GET /api/activities
+ * Get paginated list of activities
+ */
 router.get('/', async (req, res) => {
-  const limit = toInt(req.query.limit, { def: 10, min: 1, max: 100 });
+  const limit = toInt(req.query.limit, { def: 50, min: 1, max: 100 });
   const cursor = req.query.cursor || null;
   const forceRefresh = toBool(req.query.force_refresh);
   const cacheKey = listCacheKey({ limit, cursor });
 
   try {
+    // Check cache first (unless force refresh)
     if (!forceRefresh) {
       const cached = await cacheGetJSON(cacheKey);
-      if (cached) return res.json(cached);
+      if (cached) {
+        logger.debug(`Cache hit: ${cacheKey}`);
+        return res.json(cached);
+      }
     } else {
-      try { await redis.del(cacheKey); } catch (e) {
+      try { 
+        await redis.del(cacheKey); 
+        logger.debug(`Cache cleared: ${cacheKey}`);
+      } catch (e) {
         logger.warn(`Redis DEL failed: ${e.message}`);
       }
     }
 
+    // Fetch from database
     const data = await Activities.getAll({ limit, cursor });
-    await cacheSetJSON(cacheKey, data);
+    
+    // Cache asynchronously (non-blocking)
+    setImmediate(() => cacheSetJSON(cacheKey, data));
+    
+    logger.debug(`Activities fetched: ${data.data.length} items, total: ${data.total}`);
     return res.json(data); 
   } catch (error) {
     logger.error(`Get activities error: ${error.message}`);
@@ -131,63 +156,95 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/activities/:id
+/**
+ * GET /api/activities/:id
+ * Get a single activity by ID
+ */
 router.get('/:id', async (req, res) => {
   const id = req.params.id;
   const cacheKey = itemCacheKey(id);
   const forceRefresh = toBool(req.query.force_refresh);
 
   try {
+    // Check cache first (unless force refresh)
     if (!forceRefresh) {
       const cached = await cacheGetJSON(cacheKey);
-      if (cached) return res.json(cached);
+      if (cached) {
+        logger.debug(`Cache hit: ${cacheKey}`);
+        return res.json(cached);
+      }
     } else {
-      try { await redis.del(cacheKey); } catch (e) {
+      try { 
+        await redis.del(cacheKey); 
+        logger.debug(`Cache cleared: ${cacheKey}`);
+      } catch (e) {
         logger.warn(`Redis DEL failed: ${e.message}`);
       }
     }
 
+    // Fetch from database
     const activity = await Activities.getById(id);
-    await cacheSetJSON(cacheKey, activity);
+    
+    // Cache asynchronously (non-blocking)
+    setImmediate(() => cacheSetJSON(cacheKey, activity));
+    
+    logger.debug(`Activity fetched: ${id}`);
     return res.json(activity);
   } catch (error) {
     const status = error.message === 'Activity not found' ? 404 : 500;
-    if (status === 500) logger.error(`Get activity ${id} error: ${error.message}`);
+    if (status === 500) {
+      logger.error(`Get activity ${id} error: ${error.message}`);
+    }
     return res.status(status).json({ error: error.message });
   }
 });
 
-// PUT /api/activities/:id
+/**
+ * PUT /api/activities/:id
+ * Update an activity
+ */
 router.put('/:id', async (req, res) => {
   const id = req.params.id;
   try {
     const { summary, status, assignee_ids, due_date, priority, comments } = req.body;
+    
     const activity = await Activities.update(
       id,
       { summary, status, assignee_ids, due_date, priority, comments },
       req.io
     );
 
-    await invalidateActivitiesCache();
-    logger.info(`Activity updated: ${activity.id}`);
+    // Invalidate cache asynchronously (non-blocking)
+    setImmediate(() => invalidateActivitiesCache());
+    
+    logger.info(`Activity updated: ${activity.id} by user ${req.user.user_id}`);
     return res.json(activity);
   } catch (error) {
     const status = error.message === 'Activity not found' ? 404 : 400;
+    logger.error(`Update activity ${id} error: ${error.message}`);
     return res.status(status).json({ error: error.message });
   }
 });
 
-// DELETE /api/activities/:id
+/**
+ * DELETE /api/activities/:id
+ * Delete an activity
+ */
 router.delete('/:id', async (req, res) => {
   const id = req.params.id;
   try {
     const activity = await Activities.delete(id, req.io);
-    await invalidateActivitiesCache();
-    logger.info(`Activity deleted: ${activity.id}`);
+    
+    // Invalidate cache asynchronously (non-blocking)
+    setImmediate(() => invalidateActivitiesCache());
+    
+    logger.info(`Activity deleted: ${activity.id} by user ${req.user.user_id}`);
     return res.json({ message: 'Activity deleted', activity });
   } catch (error) {
     const status = error.message === 'Activity not found' ? 404 : 500;
-    if (status === 500) logger.error(`Delete error: ${error.message}`);
+    if (status === 500) {
+      logger.error(`Delete activity ${id} error: ${error.message}`);
+    }
     return res.status(status).json({ error: error.message });
   }
 });

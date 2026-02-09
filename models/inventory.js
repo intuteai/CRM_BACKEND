@@ -175,7 +175,7 @@ class Inventory {
   }
 
   // --------------------------------------------------
-  // DELETE PRODUCT (GUARDED)
+  // DELETE PRODUCT (GUARDED) - FIXED: Handles released holds
   // --------------------------------------------------
   static async delete(productId, io) {
     // Check for active holds
@@ -201,7 +201,17 @@ class Inventory {
       throw new Error('Cannot delete product with non-zero stock');
     }
 
-    // Safe to delete
+    // Delete all released holds first to avoid foreign key constraint violation
+    const { rowCount: deletedHoldsCount } = await pool.query(
+      `DELETE FROM inventory_holds WHERE product_id = $1 AND status = 'RELEASED'`,
+      [productId]
+    );
+
+    if (deletedHoldsCount > 0) {
+      console.log(`🗑️ Deleted ${deletedHoldsCount} released holds for product ${productId}`);
+    }
+
+    // Safe to delete product
     const { rows } = await pool.query(
       'DELETE FROM inventory WHERE product_id = $1 RETURNING *',
       [productId]

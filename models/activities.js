@@ -1,4 +1,4 @@
-// models/activities.js
+// models/activities.js - COMPLETE FINAL VERSION
 
 const pool = require('../config/db');
 const { sendEmail } = require('../utils/email');
@@ -15,7 +15,6 @@ class Activities {
     try { io.emit(event, payload); } catch {}
   }
 
-  // Updated payload to include comments
   static #toPayload(row, assignees = []) {
     return {
       id: row.id,
@@ -86,7 +85,6 @@ class Activities {
         }
       }
 
-      // Fetch assignees
       const assigneesRes = await client.query(`
         SELECT aa.user_id, u.name, u.email, aa.assigned_at
         FROM activity_assignees aa
@@ -94,7 +92,6 @@ class Activities {
         WHERE aa.activity_id = $1
       `, [activityId]);
 
-      // Fetch creator's name (for nice email)
       let createdByName = 'System';
       if (createdById) {
         const creatorRes = await client.query(`
@@ -108,74 +105,74 @@ class Activities {
       await client.query('COMMIT');
 
       const activity = this.#toPayload(actRes.rows[0], assigneesRes.rows);
+      
+      // Emit socket event AFTER commit
       this.#safeEmit(io, 'activities:created', activity);
 
-      // ──────────────────────────────────────────────────────────────
-      // Send beautiful assignment notification
-      try {
-        console.log(`[EMAIL] Starting assignment notifications for activity ${activityId}`);
-        console.log(`[EMAIL] Found ${assigneesRes.rows.length} assignees`);
+      // Send emails asynchronously (non-blocking)
+      setImmediate(async () => {
+        try {
+          console.log(`[EMAIL] Starting assignment notifications for activity ${activityId}`);
+          console.log(`[EMAIL] Found ${assigneesRes.rows.length} assignees`);
 
-        const dueDateStr = due_date 
-          ? new Date(due_date).toLocaleDateString('en-IN', { 
-              weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-            })
-          : 'No due date set';
+          const dueDateStr = due_date 
+            ? new Date(due_date).toLocaleDateString('en-IN', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+              })
+            : 'No due date set';
 
-        for (const assignee of assigneesRes.rows) {
-          const emailAddress = assignee.email?.trim();
+          for (const assignee of assigneesRes.rows) {
+            const emailAddress = assignee.email?.trim();
 
-          console.log(`[EMAIL] Checking assignee ${assignee.user_id} (${assignee.name || 'Unknown'}): email = ${emailAddress || 'MISSING'}`);
+            console.log(`[EMAIL] Checking assignee ${assignee.user_id} (${assignee.name || 'Unknown'}): email = ${emailAddress || 'MISSING'}`);
 
-          if (!emailAddress || typeof emailAddress !== 'string' || !emailAddress.includes('@')) {
-            console.log(`[EMAIL] Skipping assignee ${assignee.user_id} - invalid or missing email`);
-            continue;
+            if (!emailAddress || typeof emailAddress !== 'string' || !emailAddress.includes('@')) {
+              console.log(`[EMAIL] Skipping assignee ${assignee.user_id} - invalid or missing email`);
+              continue;
+            }
+
+            const subject = `New Task Assigned to You - ${summary}`;
+
+            const text = 
+              `Hello ${assignee.name || 'Team Member'},\n\n` +
+              `You have been assigned a new activity:\n\n` +
+              `• Summary: ${summary}\n` +
+              `• Priority: ${priority || _priority}\n` +
+              `• Due date: ${dueDateStr}\n` +
+              `• Status: ${_status}\n\n` +
+              `You can view and manage this task here:\n` +
+              `https://intute.biz/activities/${activityId}\n\n` +
+              `Best regards,\nIntute ERP Team`;
+
+            const html = generateNewTaskAssignmentHtml({
+              userName: assignee.name || 'Team Member',
+              taskSummary: summary,
+              priority: priority || _priority,
+              status: _status,
+              dueDate: dueDateStr,
+              taskId: activityId,
+              createdBy: createdByName
+            });
+
+            console.log(`[EMAIL] Sending to ${emailAddress} with subject: ${subject}`);
+
+            const sent = await sendEmail({
+              to: emailAddress,
+              subject,
+              text,
+              html
+            });
+
+            if (sent) {
+              console.log(`[EMAIL] Successfully sent to ${emailAddress}`);
+            } else {
+              console.log(`[EMAIL] Failed to send to ${emailAddress}`);
+            }
           }
-
-          const subject = `New Task Assigned to You - ${summary}`;
-
-          // Plain text fallback
-          const text = 
-            `Hello ${assignee.name || 'Team Member'},\n\n` +
-            `You have been assigned a new activity:\n\n` +
-            `• Summary: ${summary}\n` +
-            `• Priority: ${priority || _priority}\n` +
-            `• Due date: ${dueDateStr}\n` +
-            `• Status: ${_status}\n\n` +
-            `You can view and manage this task here:\n` +
-            `https://intute.biz/activities/${activityId}\n\n` +
-            `Best regards,\nIntute ERP Team`;
-
-          // Beautiful HTML version
-          const html = generateNewTaskAssignmentHtml({
-            userName: assignee.name || 'Team Member',
-            taskSummary: summary,
-            priority: priority || _priority,
-            status: _status,
-            dueDate: dueDateStr,
-            taskId: activityId,
-            createdBy: createdByName  // ← uses actual name (e.g. "Rahul")
-          });
-
-          console.log(`[EMAIL] Sending to ${emailAddress} with subject: ${subject}`);
-
-          const sent = await sendEmail({
-            to: emailAddress,
-            subject,
-            text,
-            html
-          });
-
-          if (sent) {
-            console.log(`[EMAIL] Successfully sent to ${emailAddress}`);
-          } else {
-            console.log(`[EMAIL] Failed to send to ${emailAddress}`);
-          }
+        } catch (emailError) {
+          console.error('[EMAIL] Error during assignment notifications:', emailError.message);
         }
-      } catch (emailError) {
-        console.error('[EMAIL] Error during assignment notifications:', emailError.message);
-      }
-      // ──────────────────────────────────────────────────────────────
+      });
 
       return activity;
     } catch (error) {
@@ -248,8 +245,12 @@ class Activities {
       `, [_id]);
 
       await client.query('COMMIT');
+      
       const activity = this.#toPayload(actRes.rows[0], assigneesRes.rows);
+      
+      // Emit socket event AFTER commit
       this.#safeEmit(io, 'activities:updated', activity);
+      
       return activity;
     } catch (error) {
       await client.query('ROLLBACK');
@@ -262,6 +263,25 @@ class Activities {
   // ==================== GET ALL ====================
   static async getAll({ limit = 10, cursor = null } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+
+    // Parse composite cursor (id:created_at)
+    let cursorId = null;
+    let cursorCreatedAt = null;
+    
+    if (cursor) {
+      try {
+        if (cursor.includes(':')) {
+          const [id, timestamp] = cursor.split(':');
+          cursorId = parseInt(id, 10);
+          cursorCreatedAt = timestamp;
+        } else {
+          // Legacy timestamp-only cursor
+          cursorCreatedAt = cursor;
+        }
+      } catch (e) {
+        console.warn('Invalid cursor format:', cursor);
+      }
+    }
 
     const query = `
       SELECT 
@@ -281,21 +301,28 @@ class Activities {
           WHERE aa.activity_id = a.id
         ), '[]') AS assignees
       FROM activities a
-      WHERE ($1::timestamp IS NULL OR a.created_at < $1::timestamp)
+      WHERE (
+        $1::timestamp IS NULL 
+        OR a.created_at < $1::timestamp 
+        OR (a.created_at = $1::timestamp AND a.id < $2)
+      )
       ORDER BY a.created_at DESC, a.id DESC
-      LIMIT $2
+      LIMIT $3
     `;
 
     const totalQuery = 'SELECT COUNT(*)::int FROM activities';
 
     const [result, totalRes] = await Promise.all([
-      pool.query(query, [cursor, _limit]),
+      pool.query(query, [cursorCreatedAt, cursorId, _limit]),
       pool.query(totalQuery),
     ]);
 
     const data = result.rows.map(row => this.#toPayload(row, row.assignees || []));
 
-    const nextCursor = data.length > 0 ? data[data.length - 1].created_at : null;
+    // Return composite cursor for stable pagination
+    const nextCursor = data.length === _limit && data.length > 0
+      ? `${data[data.length - 1].id}:${data[data.length - 1].created_at}`
+      : null;
 
     return {
       data,
@@ -351,8 +378,12 @@ class Activities {
       if (res.rows.length === 0) throw new Error('Activity not found');
 
       await client.query('COMMIT');
+      
       const activity = { id: res.rows[0].id };
+      
+      // Emit socket event AFTER commit
       this.#safeEmit(io, 'activities:deleted', activity);
+      
       return activity;
     } catch (error) {
       await client.query('ROLLBACK');
