@@ -1,0 +1,24 @@
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-02-24T11:01:20.683Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-02-24T11:01:20.690Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-02-24T11:01:20.697Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-02-24T11:01:20.715Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-02-24T11:01:20.716Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-02-24T11:01:20.717Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-02-24T11:01:21.597Z","timestamp":"2026-02-24T11:01:21.157Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-02-24T11:01:21.163Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-02-24T11:01:21.171Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-02-24T17:41:41.594Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-02-24T17:41:41.607Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-02-24T17:41:41.616Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-02-24T17:41:41.629Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-02-24T17:41:41.631Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-02-24T17:41:41.631Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-02-25T03:34:29.225Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-02-25T03:34:29.244Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-02-25T03:34:29.259Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-02-25T03:34:29.281Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-02-25T03:34:29.282Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-02-25T03:34:29.283Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-02-25T03:34:30.238Z","timestamp":"2026-02-25T03:34:29.608Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-02-25T03:34:29.612Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-02-25T03:34:29.621Z"}
