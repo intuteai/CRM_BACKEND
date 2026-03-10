@@ -31,25 +31,38 @@ class IAOrders {
         vcu_serial: i.vcu_serial,
         vcu_make:   i.vcu_make,
         vcu_model:  i.vcu_model,
-        hmi_imei:   i.hmi_imei,
-        hmi_make:   i.hmi_make,
-        hmi_model:  i.hmi_model,
+        hmi_imei:   i.hmi_imei   || null,
+        hmi_make:   i.hmi_make   || null,
+        hmi_model:  i.hmi_model  || null,
       })),
     };
   }
 
   static #validateItem(item) {
-    const { vcu_serial, vcu_make, vcu_model, hmi_imei, hmi_make, hmi_model } = item;
+    const { vcu_serial, vcu_make, vcu_model } = item;
     if (!vcu_serial?.trim()) throw new Error('VCU serial is required');
     if (!vcu_make?.trim())   throw new Error('VCU make is required');
     if (!vcu_model?.trim())  throw new Error('VCU model is required');
-    if (!hmi_imei?.trim())   throw new Error('HMI IMEI is required');
-    if (!hmi_make?.trim())   throw new Error('HMI make is required');
-    if (!hmi_model?.trim())  throw new Error('HMI model is required');
+
+    // HMI is optional — but if any HMI field is provided, all must be provided
+    const hasHmi = item.hmi_imei?.trim() || item.hmi_make?.trim() || item.hmi_model?.trim();
+    if (hasHmi) {
+      if (!item.hmi_imei?.trim())  throw new Error('HMI IMEI is required when HMI details are provided');
+      if (!item.hmi_make?.trim())  throw new Error('HMI make is required when HMI details are provided');
+      if (!item.hmi_model?.trim()) throw new Error('HMI model is required when HMI details are provided');
+    }
   }
 
   static async #insertItemSafe(client, order_id, item) {
-    const { vcu_serial, vcu_make, vcu_model, hmi_imei, hmi_make, hmi_model } = item;
+    const {
+      vcu_serial, vcu_make, vcu_model,
+      hmi_imei = null, hmi_make = null, hmi_model = null,
+    } = item;
+
+    const hmiImei  = hmi_imei?.trim()  || null;
+    const hmiMake  = hmi_make?.trim()  || null;
+    const hmiModel = hmi_model?.trim() || null;
+
     try {
       const res = await client.query(`
         INSERT INTO ia_order_items
@@ -58,7 +71,7 @@ class IAOrders {
         RETURNING item_id, vcu_serial, vcu_make, vcu_model, hmi_imei, hmi_make, hmi_model
       `, [order_id,
           vcu_serial.trim(), vcu_make.trim(), vcu_model.trim(),
-          hmi_imei.trim(),   hmi_make.trim(), hmi_model.trim()]);
+          hmiImei, hmiMake, hmiModel]);
       return res.rows[0];
     } catch (err) {
       if (err.code === '23505') {
@@ -77,7 +90,7 @@ class IAOrders {
     if (!customer_name || !invoice_number || !dispatch_date)
       throw new Error('customer_name, invoice_number and dispatch_date are required');
     if (!Array.isArray(items) || items.length === 0)
-      throw new Error('At least one VCU+HMI item is required');
+      throw new Error('At least one VCU item is required');
 
     items.forEach(item => this.#validateItem(item));
 
