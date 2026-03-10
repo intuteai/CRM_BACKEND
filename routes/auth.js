@@ -53,8 +53,10 @@ router.post('/login', async (req, res) => {
       6: 'store',
       7: 'dispatch',
       8: 'accounts',
-      9: 'employee', // Added
-      10: 'hr', // Added
+      9: 'employee',
+      10: 'hr',
+      11: 'ia_employee', // Intute employee
+      12: 'ia_hr',       // Intute HR
     };
     const role = roleMap[user.role_id] || 'unknown';
 

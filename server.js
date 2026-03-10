@@ -31,6 +31,7 @@ const processRoutes = require('./routes/process');
 const activitiesRoutes = require('./routes/activities');
 const payslipRoutes = require('./routes/payslip');
 const deliveryChallanRoutes = require('./routes/deliveryChallan');
+const iaOrdersRoutes = require('./routes/iaOrders');
 
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
@@ -130,6 +131,7 @@ app.use('/api/process', processRoutes);
 app.use('/api/activities', activitiesRoutes);
 app.use('/api/payslip', payslipRoutes);
 app.use('/api/delivery-challan', deliveryChallanRoutes);
+app.use('/api/ia-orders', iaOrdersRoutes);
 
 // NEW APIs
 app.use('/api/parts', partsRoutes);
