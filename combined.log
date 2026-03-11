@@ -1,0 +1,51 @@
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-11T06:46:52.336Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-11T06:46:52.345Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-11T06:46:52.351Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:46:52.509Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-11T06:46:53.888Z","timestamp":"2026-03-11T06:46:52.784Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:46:55.197Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:46:57.955Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:00.767Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:03.624Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:06.527Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:09.496Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:12.523Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:15.580Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:18.672Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:21.844Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:25.042Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:28.257Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:31.468Z"}
+{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:34.694Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-11T06:47:41.069Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-11T06:47:41.076Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-11T06:47:41.083Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-11T06:47:41.101Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-11T06:47:41.102Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-11T06:47:41.102Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-11T06:47:42.552Z","timestamp":"2026-03-11T06:47:41.452Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-11T06:47:41.458Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-11T06:47:41.463Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:47:52.622Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:47:52.639Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:47:53.911Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:47:53.916Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2026-03-11T06:48:03.022Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:48:03.045Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:48:03.058Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:48:05.502Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:48:05.651Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:13.273Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:13.308Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:53:13.849Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:16.455Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:16.456Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:16.457Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:16.741Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:16.763Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:53:16.856Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:18.789Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:53:18.941Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:54:48.558Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:54:48.560Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:54:48.561Z"}
