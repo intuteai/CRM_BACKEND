@@ -45,8 +45,8 @@ router.post(
       if (!product_name) {
         return res.status(400).json({ error: 'Product name is required' });
       }
-      if (!product_code || product_code.length !== 10) {
-        return res.status(400).json({ error: 'Product code must be exactly 10 characters' });
+      if (!product_code || product_code.length !== 11) {
+        return res.status(400).json({ error: 'Product code must be exactly 11 characters' });
       }
       if (stock_quantity < 0) {
         return res.status(400).json({ error: 'Stock quantity cannot be negative' });
@@ -189,8 +189,8 @@ router.put(
       if (price !== undefined && price < 0) {
         return res.status(400).json({ error: 'Price must be >= 0' });
       }
-      if (!product_code || product_code.length !== 10) {
-        return res.status(400).json({ error: 'Product code must be exactly 10 characters' });
+      if (!product_code || product_code.length !== 11) {
+        return res.status(400).json({ error: 'Product code must be exactly 11 characters' });
       }
 
       // Prepare update data - ALL fields can be updated by anyone with write permission
@@ -210,7 +210,7 @@ router.put(
         updateData.stock_quantity = parsedQty;
         logger.info(`🔧 Updating stock_quantity to ${parsedQty}`);
       }
-      
+
       if (returnable_qty !== undefined) {
         const parsedReturnable = parseInt(returnable_qty);
         if (isNaN(parsedReturnable) || parsedReturnable < 0) {
@@ -443,14 +443,14 @@ router.post(
       const qtyToAccept = parseInt(qty);
 
       if (qtyToAccept > product.returnable_qty) {
-        return res.status(400).json({ 
-          error: `Cannot accept more than available returnable quantity (${product.returnable_qty})` 
+        return res.status(400).json({
+          error: `Cannot accept more than available returnable quantity (${product.returnable_qty})`
         });
       }
 
       // Update: add to stock_quantity, subtract from returnable_qty
       const { rows: updatedRows } = await pool.query(
-        `UPDATE inventory 
+        `UPDATE inventory
          SET stock_quantity = stock_quantity + $1,
              returnable_qty = returnable_qty - $1
          WHERE product_id = $2

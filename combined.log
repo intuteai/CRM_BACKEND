@@ -1,51 +1,124 @@
-{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-11T06:46:52.336Z"}
-{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-11T06:46:52.345Z"}
-{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-11T06:46:52.351Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:46:52.509Z"}
-{"level":"info","message":"Database connection successful:","now":"2026-03-11T06:46:53.888Z","timestamp":"2026-03-11T06:46:52.784Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:46:55.197Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:46:57.955Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:00.767Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:03.624Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:06.527Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:09.496Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:12.523Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:15.580Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:18.672Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:21.844Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:25.042Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:28.257Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:31.468Z"}
-{"code":"ENOTFOUND","errno":-3008,"hostname":"erp-redis","level":"error","message":"Redis client error: getaddrinfo ENOTFOUND erp-redis","stack":"Error: getaddrinfo ENOTFOUND erp-redis\n    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)","syscall":"getaddrinfo","timestamp":"2026-03-11T06:47:34.694Z"}
-{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-11T06:47:41.069Z"}
-{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-11T06:47:41.076Z"}
-{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-11T06:47:41.083Z"}
-{"level":"info","message":"Connected to Redis","timestamp":"2026-03-11T06:47:41.101Z"}
-{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-11T06:47:41.102Z"}
-{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-11T06:47:41.102Z"}
-{"level":"info","message":"Database connection successful:","now":"2026-03-11T06:47:42.552Z","timestamp":"2026-03-11T06:47:41.452Z"}
-{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-11T06:47:41.458Z"}
-{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-11T06:47:41.463Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:47:52.622Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:47:52.639Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:47:53.911Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:47:53.916Z"}
-{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2026-03-11T06:48:03.022Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:48:03.045Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:48:03.058Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:48:05.502Z"}
-{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:48:05.651Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:13.273Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:13.308Z"}
-{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:53:13.849Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:16.455Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:16.456Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:53:16.457Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:16.741Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:16.763Z"}
-{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:53:16.856Z"}
-{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-11T06:53:18.789Z"}
-{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-11T06:53:18.941Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:54:48.558Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:54:48.560Z"}
-{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-11T06:54:48.561Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-16T10:38:56.300Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-16T10:38:56.309Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-16T10:38:56.321Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-16T10:38:56.344Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-16T10:38:56.347Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-16T10:38:56.347Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-16T10:38:52.395Z","timestamp":"2026-03-16T10:38:56.735Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-16T10:38:56.736Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-16T10:38:56.739Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:39:07.264Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:39:07.302Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T10:45:19.666Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T10:45:19.685Z"}
+{"level":"info","message":"User logged in: admin@compageauto.com, user_id: 1, role_id: 1, role: admin","timestamp":"2026-03-16T10:48:11.211Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:48:11.264Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:48:11.266Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T10:48:17.463Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T10:48:17.467Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:48:17.817Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:48:17.835Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T10:49:46.399Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T10:49:47.773Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T10:53:17.892Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T10:53:19.436Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T10:53:19.908Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T10:53:20.096Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-16T11:01:51.666Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-16T11:01:51.678Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-16T11:01:51.686Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-16T11:01:51.705Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-16T11:01:51.706Z"}
+{"level":"info","message":"Invalidated 1 cache keys matching pattern: inventory_*","timestamp":"2026-03-16T11:01:51.708Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-16T11:01:51.708Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-16T11:01:47.726Z","timestamp":"2026-03-16T11:01:52.073Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-16T11:01:52.075Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-16T11:01:52.077Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:01:52.314Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:01:52.317Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:01:53.860Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-16T11:02:08.260Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-16T11:02:08.274Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-16T11:02:08.286Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-16T11:02:08.315Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-16T11:02:08.365Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-16T11:02:08.366Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-16T11:02:04.285Z","timestamp":"2026-03-16T11:02:08.631Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-16T11:02:08.634Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-16T11:02:08.637Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:08.758Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:08.762Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:10.868Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:02:15.879Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:15.919Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:02:16.101Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:02:19.305Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:02:19.308Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:02:19.309Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:19.603Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:19.611Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:02:19.718Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:02:21.278Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:02:21.777Z"}
+{"level":"info","message":"Product added: Code Test by 1","timestamp":"2026-03-16T11:02:59.318Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:02:59.696Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:02:59.789Z"}
+{"level":"info","message":"🔧 UPDATE request for product 409 by user 1","timestamp":"2026-03-16T11:04:42.481Z"}
+{"level":"info","message":"🔧 Request body:","timestamp":"2026-03-16T11:04:42.481Z"}
+{"level":"info","message":"🔧 Updating stock_quantity to 0","timestamp":"2026-03-16T11:04:42.482Z"}
+{"level":"info","message":"🔧 Updating returnable_qty to 0","timestamp":"2026-03-16T11:04:42.482Z"}
+{"level":"info","message":"🔧 Final update data:","timestamp":"2026-03-16T11:04:42.482Z"}
+{"level":"info","message":"📡 Emitted stockUpdate event for product 409","timestamp":"2026-03-16T11:04:42.564Z"}
+{"level":"info","message":"✅ Product updated successfully: Code Test","timestamp":"2026-03-16T11:04:42.599Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:04:43.028Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:04:43.127Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:05:10.488Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:05:10.538Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:05:10.681Z"}
+{"level":"info","message":"🔧 UPDATE request for product 409 by user 1","timestamp":"2026-03-16T11:05:44.967Z"}
+{"level":"info","message":"🔧 Request body:","timestamp":"2026-03-16T11:05:44.968Z"}
+{"level":"info","message":"🔧 Updating stock_quantity to 0","timestamp":"2026-03-16T11:05:44.972Z"}
+{"level":"info","message":"🔧 Updating returnable_qty to 0","timestamp":"2026-03-16T11:05:44.975Z"}
+{"level":"info","message":"🔧 Final update data:","timestamp":"2026-03-16T11:05:44.982Z"}
+{"level":"info","message":"📡 Emitted stockUpdate event for product 409","timestamp":"2026-03-16T11:05:45.059Z"}
+{"level":"info","message":"✅ Product updated successfully: Code Test","timestamp":"2026-03-16T11:05:45.092Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:05:45.529Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:05:45.621Z"}
+{"level":"info","message":"Product deleted: Code Test by 1","timestamp":"2026-03-16T11:05:52.817Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:05:52.945Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:05:53.038Z"}
+{"level":"info","message":"User logged out, user_id: 1","timestamp":"2026-03-16T11:05:58.297Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:05:58.302Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:05:58.310Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:05:58.310Z"}
+{"level":"info","message":"User logged in: production@compageauto.com, user_id: 9, role_id: 5, role: production","timestamp":"2026-03-16T11:06:13.691Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:06:13.721Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:06:13.732Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:06:16.753Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:06:16.915Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:12:42.350Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:12:42.378Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:12:42.795Z"}
+{"level":"error","message":"Error creating inventory: null value in column \"price\" of relation \"price_list\" violates not-null constraint","timestamp":"2026-03-16T11:13:33.338Z"}
+{"level":"error","message":"null value in column \"price\" of relation \"price_list\" violates not-null constraint - POST /api/inventory","timestamp":"2026-03-16T11:13:33.339Z"}
+{"level":"info","message":"Product added: Testing by 9","timestamp":"2026-03-16T11:13:39.044Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:13:39.460Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:13:39.584Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:13:43.138Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:13:43.802Z"}
+{"level":"info","message":"Fetched 350 inventory items with availability","timestamp":"2026-03-16T11:13:44.170Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:14:11.570Z"}
+{"level":"info","message":"User logged out, user_id: 9","timestamp":"2026-03-16T11:23:25.349Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:23:25.354Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:23:25.363Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:23:25.364Z"}
+{"level":"info","message":"User logged out, user_id: 9","timestamp":"2026-03-16T11:23:25.521Z"}
+{"level":"info","message":"User logged in: sales@compageauto.com, user_id: 7, role_id: 3, role: sales","timestamp":"2026-03-16T11:23:44.620Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:23:44.666Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:23:44.667Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-16T11:23:47.307Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-16T11:23:47.471Z"}
+{"level":"info","message":"User logged out, user_id: 7","timestamp":"2026-03-16T11:23:54.451Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:23:54.453Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:23:54.458Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-16T11:23:54.469Z"}
