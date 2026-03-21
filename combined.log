@@ -404,3 +404,133 @@
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-17T08:00:58.239Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-17T08:00:58.241Z"}
 {"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-17T08:00:58.241Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-21T05:45:47.459Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-21T05:45:47.467Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-21T05:45:47.473Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-21T05:45:47.492Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-21T05:45:47.493Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-21T05:45:47.494Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-21T05:45:48.390Z","timestamp":"2026-03-21T05:45:47.869Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-21T05:45:47.872Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-21T05:45:47.876Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:01.640Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:01.708Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:46:05.739Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:46:05.741Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:06.019Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:06.023Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:46:06.898Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:46:06.907Z"}
+{"level":"info","message":"User logged in: production@compageauto.com, user_id: 9, role_id: 5, role: production","timestamp":"2026-03-21T05:46:21.109Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:21.129Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:21.142Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:46:26.075Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:46:26.477Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:49:59.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:49:59.265Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:50:00.139Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:50:33.229Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:50:33.247Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:50:33.947Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:50:49.223Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:50:49.229Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:50:49.374Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:51:13.227Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:51:13.240Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:51:13.375Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:51:40.231Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:51:40.243Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:51:40.377Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:51:49.236Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:51:49.249Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:51:49.381Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:52:21.230Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:52:21.250Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:52:21.899Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:52:32.239Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:52:32.254Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:52:32.391Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:52:51.221Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:52:51.238Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:52:51.376Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:53:24.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:53:24.249Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:53:24.908Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:53:36.232Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:53:36.248Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:53:36.387Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:53:51.241Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:53:51.259Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:53:51.391Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:53:54.237Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:53:54.254Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:53:54.377Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:54:12.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:54:12.250Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:54:12.381Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:54:49.237Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:54:49.252Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:54:49.919Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:55:03.235Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:55:03.254Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:55:03.386Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:55:27.238Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:55:27.258Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:55:27.388Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:55:29.228Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:55:29.254Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:55:29.381Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:56:30.241Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:56:30.257Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:56:30.907Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:56:49.240Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:56:49.253Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:56:49.387Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:57:15.230Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:57:15.262Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:57:15.377Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:57:18.220Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:57:18.228Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:57:18.363Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:57:30.877Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:57:32.038Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T05:57:32.200Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:57:48.824Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:57:49.783Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:57:50.235Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:57:54.902Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:57:55.862Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T05:57:56.014Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:57:57.973Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:57:58.946Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:57:59.086Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:58:00.997Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:58:01.877Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T05:58:02.029Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:58:11.606Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:58:12.541Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:58:12.685Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:58:46.070Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:58:47.053Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T05:58:47.527Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:59:15.103Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:59:16.359Z"}
+{"level":"info","message":"Fetched stock data","timestamp":"2026-03-21T05:59:16.760Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T05:59:31.956Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T05:59:33.407Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T05:59:33.561Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:00:22.247Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T06:00:22.283Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T06:00:22.710Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:03:58.230Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T06:03:58.235Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:04:06.233Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T06:04:06.239Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:04:09.231Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T06:04:09.236Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:04:19.431Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T06:04:20.849Z"}
+{"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T06:04:21.324Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:05:26.344Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:05:26.345Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-21T06:05:26.345Z"}
