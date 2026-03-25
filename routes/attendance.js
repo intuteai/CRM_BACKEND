@@ -1,11 +1,23 @@
 // routes/attendance.js
+
 const express = require('express');
 const { Attendance } = require('../models/attendance');
 const redis = require('../config/redis');
 const { authenticateToken, checkPermission } = require('../middleware/auth');
 const logger = require('../utils/logger');
 const pool = require('../config/db');
+
 const router = express.Router({ mergeParams: true });
+
+// ── Org / Role constants ─────────────────────────────────────
+const IA_ROLES = [11, 12];
+const COM_ROLES = [9, 10];
+
+function getOrgRoles(roleId) {
+  if (IA_ROLES.includes(roleId)) return IA_ROLES;
+  if (COM_ROLES.includes(roleId)) return COM_ROLES;
+  return [];
+}
 
 // Helper: "today" in IST as YYYY-MM-DD
 const todayIST = () => {
@@ -17,7 +29,8 @@ const todayIST = () => {
   }).format(new Date());
 };
 
-// PERSONAL ATTENDANCE (Employee) — unchanged, perfect as-is
+// ── PERSONAL ATTENDANCE (Employee) ──────────────────────────
+// Unchanged — user only ever sees their own records
 router.get(
   '/',
   authenticateToken,
@@ -56,7 +69,6 @@ router.get(
           : null,
       };
 
-      // Personal history: short cache is fine
       await redis.setEx(cacheKey, 10, JSON.stringify(response));
       res.json(response);
     } catch (error) {
@@ -66,7 +78,8 @@ router.get(
   }
 );
 
-// MARK ATTENDANCE — unchanged (model already emits rich payload)
+// ── MARK ATTENDANCE ──────────────────────────────────────────
+// Unchanged
 router.post(
   '/',
   authenticateToken,
@@ -91,7 +104,10 @@ router.post(
 
       if (present_absent === 'absent') {
         if (check_in_time || check_out_time || mode) {
-          return res.status(400).json({ error: 'Absent records must have null times/mode', code: 'ATTENDANCE_INVALID_ABSENT_FIELDS' });
+          return res.status(400).json({
+            error: 'Absent records must have null times/mode',
+            code: 'ATTENDANCE_INVALID_ABSENT_FIELDS',
+          });
         }
       } else {
         if (!mode || !['office', 'remote'].includes(mode)) {
@@ -129,7 +145,6 @@ router.post(
         timezone: 'Asia/Kolkata',
       };
 
-      // Invalidate all relevant caches in background
       setImmediate(async () => {
         try {
           const personalKeys = await redis.keys(`attendance_*_${req.user.user_id}`);
@@ -152,7 +167,9 @@ router.post(
   }
 );
 
-// HR ATTENDANCE SUMMARY — SMART CACHING (THE MAGIC)
+// ── HR ATTENDANCE SUMMARY ────────────────────────────────────
+// Now filters by org — Compage HR sees only Compage employees,
+// IA HR sees only IA employees
 router.get(
   '/summary',
   authenticateToken,
@@ -165,13 +182,20 @@ router.get(
       const currentToday = todayIST();
       const isTodayView = !date || date === currentToday;
 
-      // TODAY'S VIEW → ALWAYS FRESH (real-time)
+      // Determine which roles this HR can see based on their own org
+      const orgRoles = getOrgRoles(req.user.role_id);
+      if (orgRoles.length === 0) {
+        return res.status(403).json({ error: 'Not authorized to view attendance summary' });
+      }
+
+      // TODAY → always fresh (real-time)
       if (isTodayView || force_refresh === 'true') {
         const { data, total, nextCursor } = await Attendance.getHRSummary({
           limit: parsedLimit,
           cursor: cursor ? new Date(cursor) : null,
           date,
           search,
+          orgRoles, // ← pass org filter
         });
 
         return res.json({
@@ -181,8 +205,9 @@ router.get(
         });
       }
 
-      // PAST DATES & SEARCH → CACHE (fast)
-      const cacheKey = `hr_attendance_summary_${parsedLimit}_${cursor || 'null'}_${date || 'all'}_${search || 'none'}`;
+      // PAST / SEARCH → cached
+      // Include role in cache key so Compage HR and IA HR never share cache
+      const cacheKey = `hr_attendance_summary_${parsedLimit}_${cursor || 'null'}_${date || 'all'}_${search || 'none'}_roles_${orgRoles.join('_')}`;
 
       const cached = await redis.get(cacheKey);
       if (cached) {
@@ -195,6 +220,7 @@ router.get(
         cursor: cursor ? new Date(cursor) : null,
         date,
         search,
+        orgRoles, // ← pass org filter
       });
 
       const response = {
@@ -203,7 +229,6 @@ router.get(
         nextCursor: nextCursor ? new Date(nextCursor).toISOString() : null,
       };
 
-      // Cache for 30 seconds (past/filtered views)
       await redis.setEx(cacheKey, 30, JSON.stringify(response));
       res.json(response);
     } catch (error) {

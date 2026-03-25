@@ -621,3 +621,205 @@
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T09:29:03.851Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-21T09:29:09.893Z"}
 {"level":"info","message":"Fetched 349 inventory items with availability","timestamp":"2026-03-21T09:29:10.051Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T07:15:15.210Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T07:15:15.221Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T07:15:15.229Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T07:15:15.254Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T07:15:15.255Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T07:15:15.256Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T07:15:14.650Z","timestamp":"2026-03-24T07:15:15.538Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T07:15:15.540Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T07:15:15.542Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 12, role: ia_hr","timestamp":"2026-03-24T07:16:20.431Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:16:20.486Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:16:20.523Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T07:17:41.130Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T07:17:41.144Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T07:17:41.156Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T07:17:41.183Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T07:17:41.185Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T07:17:41.186Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T07:17:40.633Z","timestamp":"2026-03-24T07:17:41.520Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T07:17:41.523Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T07:17:41.526Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:17:41.551Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:17:46.073Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T07:18:03.011Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T07:18:03.025Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T07:18:03.035Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T07:18:03.058Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T07:18:03.064Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T07:18:03.077Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T07:18:02.538Z","timestamp":"2026-03-24T07:18:03.427Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T07:18:03.429Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T07:18:03.432Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:03.464Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:08.060Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T07:18:22.485Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T07:18:22.502Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T07:18:22.515Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T07:18:22.541Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T07:18:22.543Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T07:18:22.543Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T07:18:22.009Z","timestamp":"2026-03-24T07:18:22.897Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T07:18:22.901Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T07:18:22.904Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:23.102Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:23.108Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T07:18:41.533Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T07:18:41.547Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T07:18:41.562Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T07:18:41.592Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T07:18:41.595Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T07:18:41.595Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T07:18:41.076Z","timestamp":"2026-03-24T07:18:41.963Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T07:18:41.965Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T07:18:41.968Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:42.149Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:43.074Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T07:18:58.098Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T07:18:58.123Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T07:18:58.142Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2026-03-24T07:18:58.159Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T07:18:58.197Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T07:18:58.198Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T07:18:58.200Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T07:18:57.614Z","timestamp":"2026-03-24T07:18:58.503Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T07:18:58.507Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T07:18:58.514Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:58.581Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T07:18:59.811Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T11:08:50.166Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T11:08:50.179Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T11:08:50.191Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2026-03-24T11:08:50.200Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T11:08:50.219Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T11:08:50.221Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T11:08:50.222Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T11:08:49.449Z","timestamp":"2026-03-24T11:08:50.498Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T11:08:50.500Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T11:08:50.503Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:08:53.076Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:08:56.065Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:19:01.494Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:19:01.503Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:14.503Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:14.539Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:17.829Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:17.878Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:18.677Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:18.728Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:19.173Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:19.222Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:19.578Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:19.612Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:20.006Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:29:20.058Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:36.760Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:29:36.777Z"}
+{"level":"warn","message":"Failed login attempt for email: admin@intuteai.in - User not found","timestamp":"2026-03-24T11:29:47.504Z"}
+{"level":"warn","message":"Failed login attempt for email: admin@intuteai.in - User not found","timestamp":"2026-03-24T11:29:52.582Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 12, role: ia_hr","timestamp":"2026-03-24T11:30:13.951Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:13.990Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:14.047Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:30:15.922Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:15.963Z"}
+{"level":"info","message":"User logged out, user_id: 46","timestamp":"2026-03-24T11:30:24.394Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:30:24.398Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:30:24.407Z"}
+{"level":"warn","message":"Failed login attempt for email: rahulsrivastava503@gmail.com - Incorrect password","timestamp":"2026-03-24T11:30:31.354Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 11, role: ia_employee","timestamp":"2026-03-24T11:30:37.168Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:37.220Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:37.224Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:30:39.050Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:39.087Z"}
+{"level":"info","message":"User logged out, user_id: 45","timestamp":"2026-03-24T11:30:41.762Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:30:41.767Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:30:41.772Z"}
+{"level":"info","message":"User logged in: hr@compageauto.com, user_id: 117, role_id: 10, role: hr","timestamp":"2026-03-24T11:30:51.914Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:51.963Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:30:51.965Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:31:56.587Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:31:56.587Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:31:57.214Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:31:57.225Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:34:09.826Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:34:09.830Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:34:16.851Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:34:16.857Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:37:45.711Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:37:45.749Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:37:48.467Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:37:48.470Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:37:49.098Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:37:49.137Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:37:57.547Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:37:57.549Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:37:58.164Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:37:58.166Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:39:30.079Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:39:30.085Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:39:32.993Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:39:32.998Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:39:33.686Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:39:33.692Z"}
+{"level":"info","message":"User logged out, user_id: 117","timestamp":"2026-03-24T11:39:48.281Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:39:48.285Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:39:48.292Z"}
+{"level":"info","message":"User logged in: hr@intuteai.in, user_id: 46, role_id: 12, role: ia_hr","timestamp":"2026-03-24T11:40:03.943Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:40:03.981Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:40:04.030Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:40:44.194Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:40:44.196Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:40:44.790Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:40:44.814Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:43:15.029Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:43:15.038Z"}
+{"level":"error","message":"Login error: Connection terminated due to connection timeout","stack":"Error: Connection terminated due to connection timeout\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg-pool\\index.js:45:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\auth.js:19:22","timestamp":"2026-03-24T11:43:27.049Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-24T11:43:44.444Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-24T11:43:44.476Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-24T11:43:44.496Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-24T11:43:44.547Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-24T11:43:44.549Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-24T11:43:44.551Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-24T11:43:43.798Z","timestamp":"2026-03-24T11:43:44.856Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-24T11:43:44.859Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-24T11:43:44.863Z"}
+{"level":"info","message":"User logged in: rahulsrivastava503@gmail.com, user_id: 45, role_id: 11, role: ia_employee","timestamp":"2026-03-24T11:43:54.911Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:43:54.957Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:43:54.983Z"}
+{"level":"error","message":"Error fetching attendance for user_id=45: timeout exceeded when trying to connect","stack":"Error: timeout exceeded when trying to connect\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg-pool\\index.js:45:11\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at process.processTimers (node:internal/timers:523:7)\n    at async Promise.all (index 1)\n    at async Attendance.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\attendance.js:31:37)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\attendance.js:53:62","timestamp":"2026-03-24T11:43:59.248Z"}
+{"level":"error","message":"Error fetching personal attendance: timeout exceeded when trying to connect","stack":"Error: timeout exceeded when trying to connect\n    at C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\pg-pool\\index.js:45:11\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at listOnTimeout (node:internal/timers:549:9)\n    at process.processTimers (node:internal/timers:523:7)\n    at async Promise.all (index 1)\n    at async Attendance.getAll (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\models\\attendance.js:31:37)\n    at async C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\routes\\attendance.js:53:62","timestamp":"2026-03-24T11:43:59.248Z"}
+{"level":"info","message":"User logged out, user_id: 45","timestamp":"2026-03-24T11:44:39.212Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:44:39.218Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:44:39.226Z"}
+{"level":"warn","message":"Failed login attempt for email: em027@compageauto.com - User not found","timestamp":"2026-03-24T11:45:20.422Z"}
+{"level":"warn","message":"Failed login attempt for email: em027@compageauto.com - User not found","timestamp":"2026-03-24T11:45:23.954Z"}
+{"level":"warn","message":"Failed login attempt for email: em027@compageauto.in - Incorrect password","timestamp":"2026-03-24T11:46:00.536Z"}
+{"level":"info","message":"User logged in: em027@compageauto.in, user_id: 101, role_id: 9, role: employee","timestamp":"2026-03-24T11:46:23.059Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:46:23.100Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:46:23.106Z"}
+{"level":"info","message":"User logged out, user_id: 101","timestamp":"2026-03-24T11:47:05.421Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:47:05.425Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-24T11:47:05.433Z"}
+{"level":"warn","message":"Failed login attempt for email: hr@compageauto.in - User not found","timestamp":"2026-03-24T11:47:17.781Z"}
+{"level":"info","message":"User logged in: hr@compageauto.com, user_id: 117, role_id: 10, role: hr","timestamp":"2026-03-24T11:47:24.107Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:47:24.155Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-24T11:47:24.213Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-03-25T06:32:27.258Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-03-25T06:32:27.271Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-03-25T06:32:27.281Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-03-25T06:32:27.308Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-03-25T06:32:27.309Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-03-25T06:32:27.313Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-03-25T06:32:25.748Z","timestamp":"2026-03-25T06:32:27.571Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-03-25T06:32:27.574Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-03-25T06:32:27.578Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-25T06:33:15.341Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-25T06:33:15.353Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-25T06:33:22.660Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-03-25T06:33:22.672Z"}
+{"level":"warn","message":"Failed login attempt for email: hr@compageauto.in - User not found","timestamp":"2026-03-25T06:33:33.735Z"}
+{"level":"info","message":"User logged in: hr@compageauto.com, user_id: 117, role_id: 10, role: hr","timestamp":"2026-03-25T06:33:40.868Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-25T06:33:40.895Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-25T06:33:40.912Z"}

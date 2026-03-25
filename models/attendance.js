@@ -1,9 +1,11 @@
 // models/attendance.js
+
 const pool = require('../config/db');
 const logger = require('../utils/logger');
 
 class Attendance {
-  // PERSONAL ATTENDANCE (Employee)
+  // ── PERSONAL ATTENDANCE (Employee) ──────────────────────────
+  // Unchanged — user sees only their own records
   static async getAll({ limit = 10, cursor = null, user_id }) {
     const query = `
       SELECT
@@ -42,7 +44,6 @@ class Attendance {
         created_at: r.created_at,
       }));
 
-      // ✅ FIXED: Only set nextCursor if we got a full page
       const nextCursor = result.rows.length === limit
         ? result.rows[result.rows.length - 1].created_at_raw
         : null;
@@ -58,7 +59,8 @@ class Attendance {
     }
   }
 
-  // MARK ATTENDANCE — FULL RICH SOCKET PAYLOAD
+  // ── MARK ATTENDANCE ──────────────────────────────────────────
+  // Unchanged
   static async createOrUpdate(
     user_id,
     { date, check_in_time, check_out_time, present_absent, mode },
@@ -82,7 +84,7 @@ class Attendance {
 
       let saved;
       if (existingRecord) {
-        const needsUpdate = 
+        const needsUpdate =
           existingRecord.check_in_time !== inTime ||
           existingRecord.check_out_time !== outTime;
 
@@ -136,7 +138,6 @@ class Attendance {
 
       await client.query('COMMIT');
 
-      // Fetch full user details for rich socket event
       const { rows: [fullUser] } = await pool.query(
         `SELECT u.name, u.email, ed.employee_id
          FROM users u
@@ -145,7 +146,6 @@ class Attendance {
         [user_id]
       );
 
-      // Emit FULL rich payload — frontend uses this directly
       if (io) {
         io.emit('attendanceMarked', {
           attendance_id: saved.attendance_id,
@@ -172,14 +172,20 @@ class Attendance {
     }
   }
 
-  // HR ATTENDANCE SUMMARY
+  // ── HR ATTENDANCE SUMMARY ────────────────────────────────────
+  // orgRoles: array of role_ids to filter by e.g. [9,10] or [11,12]
   static async getHRSummary({
     limit = 20,
     cursor = null,
     date = null,
     search = null,
-    employee_id = null
+    employee_id = null,
+    orgRoles = [],
   }) {
+    if (orgRoles.length === 0) {
+      throw new Error('orgRoles required for HR summary');
+    }
+
     let query = `
       SELECT
         a.attendance_id,
@@ -198,7 +204,7 @@ class Attendance {
       FROM attendance a
       INNER JOIN users u ON a.user_id = u.user_id
       LEFT JOIN employee_details ed ON u.user_id = ed.user_id
-      WHERE 1=1
+      WHERE u.role_id = ANY($1::int[])
     `;
 
     let countQuery = `
@@ -206,13 +212,13 @@ class Attendance {
       FROM attendance a
       INNER JOIN users u ON a.user_id = u.user_id
       LEFT JOIN employee_details ed ON u.user_id = ed.user_id
-      WHERE 1=1
+      WHERE u.role_id = ANY($1::int[])
     `;
 
-    const values = [];
-    const countValues = [];
-    let idx = 1;
-    let cidx = 1;
+    const values = [orgRoles];
+    const countValues = [orgRoles];
+    let idx = 2;
+    let cidx = 2;
 
     if (date) {
       query += ` AND a.date = $${idx++}::date`;
@@ -267,7 +273,6 @@ class Attendance {
         created_at: r.created_at,
       }));
 
-      // ✅ FIXED: Only set nextCursor if we got a full page
       const nextCursor = result.rows.length === limit
         ? result.rows[result.rows.length - 1].created_at_raw
         : null;
