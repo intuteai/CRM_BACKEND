@@ -823,3 +823,94 @@
 {"level":"info","message":"User logged in: hr@compageauto.com, user_id: 117, role_id: 10, role: hr","timestamp":"2026-03-25T06:33:40.868Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-25T06:33:40.895Z"}
 {"level":"info","message":"Socket.IO client connected:","timestamp":"2026-03-25T06:33:40.912Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-04-15T09:57:37.277Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-04-15T09:57:37.286Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-04-15T09:57:37.295Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-04-15T09:57:37.318Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-04-15T09:57:37.319Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-04-15T09:57:37.319Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-04-15T09:57:37.709Z","timestamp":"2026-04-15T09:57:37.578Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-04-15T09:57:37.582Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-04-15T09:57:37.585Z"}
+{"level":"info","message":"User logged in: hr@compageauto.com, user_id: 117, role_id: 10, role: hr","timestamp":"2026-04-15T10:15:21.477Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:15:21.583Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:15:21.589Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:15:32.716Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:15:32.719Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:15:33.495Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:15:33.509Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:15:33.529Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:15:34.906Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:15:47.428Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:15:47.434Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:15:48.073Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:15:48.077Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:15:48.086Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-04-15T10:16:10.443Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-04-15T10:16:10.462Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-04-15T10:16:10.479Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2026-04-15T10:16:10.497Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-04-15T10:16:10.532Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-04-15T10:16:10.534Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-04-15T10:16:10.534Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-04-15T10:16:10.953Z","timestamp":"2026-04-15T10:16:10.835Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-04-15T10:16:10.840Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-04-15T10:16:10.846Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:16:11.123Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:16:13.772Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:16:13.921Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:16:24.919Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:16:24.924Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:16:25.600Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:16:25.627Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:16:32.357Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:16:32.364Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:16:33.011Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:16:33.037Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:16:33.046Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:16:34.103Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:18:17.471Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:18:17.473Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:18:18.075Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:18:18.102Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:18:18.922Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:21:42.397Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:21:42.402Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:21:42.793Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:21:42.823Z"}
+{"level":"info","message":"Cache hit: employees_20_null_none_none_roles_9_10","timestamp":"2026-04-15T10:21:43.805Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-04-15T10:30:21.094Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-04-15T10:30:21.106Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-04-15T10:30:21.127Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-04-15T10:30:21.155Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-04-15T10:30:21.156Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-04-15T10:30:21.156Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-04-15T10:30:21.545Z","timestamp":"2026-04-15T10:30:21.451Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-04-15T10:30:21.453Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-04-15T10:30:21.456Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:30:21.635Z"}
+{"level":"info","message":"Daily due-tomorrow reminder job scheduled (11:00 AM IST)","timestamp":"2026-04-15T10:30:35.403Z"}
+{"level":"info","message":"Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)","timestamp":"2026-04-15T10:30:35.441Z"}
+{"level":"info","message":"Attendance summary job scheduled","timestamp":"2026-04-15T10:30:35.462Z"}
+{"level":"error","message":"Redis client error: Connection timeout","stack":"Error: Connection timeout\n    at Socket.<anonymous> (C:\\Users\\Rahul\\OneDrive\\Desktop\\Projects\\ERP-CRM\\CRM_BACKEND\\node_modules\\@redis\\client\\dist\\lib\\client\\socket.js:177:124)\n    at Object.onceWrapper (node:events:632:28)\n    at Socket.emit (node:events:518:28)\n    at Socket._onTimeout (node:net:604:8)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)","timestamp":"2026-04-15T10:30:35.478Z"}
+{"level":"info","message":"Connected to Redis","timestamp":"2026-04-15T10:30:35.514Z"}
+{"level":"info","message":"Cleared all part_drawings and inventory caches","timestamp":"2026-04-15T10:30:35.519Z"}
+{"level":"info","message":"Cleared all part_drawings_raw and raw_materials caches","timestamp":"2026-04-15T10:30:35.520Z"}
+{"level":"info","message":"Database connection successful:","now":"2026-04-15T10:30:35.996Z","timestamp":"2026-04-15T10:30:35.891Z"}
+{"level":"info","message":"Redis connection successful:","timestamp":"2026-04-15T10:30:35.931Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-04-15T10:30:35.940Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:30:36.079Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:30:36.080Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:30:43.068Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:30:43.071Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:30:43.632Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:30:43.648Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:33:56.203Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:33:56.213Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:34:35.205Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:34:35.215Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:34:36.833Z"}
+{"level":"info","message":"Socket.IO client disconnected:","timestamp":"2026-04-15T10:34:36.838Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:34:37.409Z"}
+{"level":"info","message":"Socket.IO client connected:","timestamp":"2026-04-15T10:34:37.456Z"}
+{"level":"info","message":"Cache hit: employees_100_null_none_none_roles_9_10","timestamp":"2026-04-15T10:35:34.478Z"}

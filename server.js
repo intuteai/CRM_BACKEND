@@ -32,21 +32,16 @@ const activitiesRoutes = require('./routes/activities');
 const payslipRoutes = require('./routes/payslip');
 const deliveryChallanRoutes = require('./routes/deliveryChallan');
 const iaOrdersRoutes = require('./routes/iaOrders');
+const partsRoutes = require('./routes/parts');
+const quotationRoutes = require('./routes/quotation');
+const proformaRoutes = require('./routes/proforma');
+const employeeDetailsRoutes = require('./routes/employeeDetails'); // NEW
 
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
 const logger = require('./utils/logger');
 
 require('dotenv').config();
-
-// NEW: Parts route
-const partsRoutes = require('./routes/parts');
-
-// NEW: Quotation route (stream-only)
-const quotationRoutes = require('./routes/quotation');
-
-// NEW: Proforma route (stream-only)
-const proformaRoutes = require('./routes/proforma');
 
 const app = express();
 const server = http.createServer(app);
@@ -60,7 +55,6 @@ const io = new Server(server, {
   path: '/socket.io',
 });
 
-// expose io
 app.set('socketio', io);
 app.set('io', io);
 
@@ -89,7 +83,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(limiter);
 
-// attach io to req
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -132,29 +125,22 @@ app.use('/api/activities', activitiesRoutes);
 app.use('/api/payslip', payslipRoutes);
 app.use('/api/delivery-challan', deliveryChallanRoutes);
 app.use('/api/ia-orders', iaOrdersRoutes);
-
-// NEW APIs
 app.use('/api/parts', partsRoutes);
 app.use('/api/quotation', quotationRoutes);
 app.use('/api/proforma', proformaRoutes);
+app.use('/api/employee-details', employeeDetailsRoutes); // NEW
 
 // ──────────────────────────────────────────────────────────────
 // CRON JOBS
 // ──────────────────────────────────────────────────────────────
-
-// Daily due-tomorrow email reminder
 require('./jobs/daily-due-reminders');
 logger.info('Daily due-tomorrow reminder job scheduled (11:00 AM IST)');
 
-// Daily task summaries
 require('./jobs/daily-task-summaries');
 logger.info('Daily task summaries job scheduled (11:00 AM & 6:30 PM IST, weekdays)');
 
-// ✅ NEW: Attendance summary job
 require('./jobs/attendanceSummary');
 logger.info('Attendance summary job scheduled');
-
-// ──────────────────────────────────────────────────────────────
 
 // ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);
