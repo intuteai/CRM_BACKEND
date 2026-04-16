@@ -11,7 +11,7 @@ const authRoutes = require('./routes/auth');
 const customersRoutes = require('./routes/customers');
 const ordersRoutes = require('./routes/orders');
 const inventoryRoutes = require('./routes/inventory');
-const stockRoutes = require('./routes/stock'); 
+const stockRoutes = require('./routes/stock');
 const queriesRoutes = require('./routes/queries');
 const reportsRoutes = require('./routes/reports');
 const userRoutes = require('./routes/users');
@@ -35,7 +35,8 @@ const iaOrdersRoutes = require('./routes/iaOrders');
 const partsRoutes = require('./routes/parts');
 const quotationRoutes = require('./routes/quotation');
 const proformaRoutes = require('./routes/proforma');
-const employeeDetailsRoutes = require('./routes/employeeDetails'); // NEW
+const employeeDetailsRoutes = require('./routes/employeeDetails');
+const motorRecipesRoutes = require('./routes/motorRecipes'); // NEW
 
 const limiter = require('./middleware/rateLimit');
 const errorHandler = require('./middleware/error');
@@ -128,7 +129,8 @@ app.use('/api/ia-orders', iaOrdersRoutes);
 app.use('/api/parts', partsRoutes);
 app.use('/api/quotation', quotationRoutes);
 app.use('/api/proforma', proformaRoutes);
-app.use('/api/employee-details', employeeDetailsRoutes); // NEW
+app.use('/api/employee-details', employeeDetailsRoutes);
+app.use('/api/motor-recipes', motorRecipesRoutes); // NEW
 
 // ──────────────────────────────────────────────────────────────
 // CRON JOBS
