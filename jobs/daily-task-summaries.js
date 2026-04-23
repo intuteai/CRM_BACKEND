@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const pool = require('../config/db');
-const { sendEmail } = require('../utils/email');
+const { sendEmail } = require('../services/email');
 const { generateDailyTaskSummaryHtml } = require('../utils/emailTemplates');
 
 const MANAGER_EMAIL = process.env.MANAGER_DAILY_REPORT_EMAIL;

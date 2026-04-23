@@ -1,7 +1,7 @@
 // jobs/daily-due-reminders.js
 const cron = require('node-cron');
 const pool = require('../config/db');
-const { sendEmail } = require('../utils/email');
+const { sendEmail } = require('../services/email');
 const { generateDueTomorrowReminderHtml } = require('../utils/emailTemplates');
 
 console.log('[DAILY REMINDER] Job file loaded - scheduled for 11:00 AM IST');
