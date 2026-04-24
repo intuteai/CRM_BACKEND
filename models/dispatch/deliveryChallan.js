@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const logger = require('../../utils/logger');
 
-const FONT_DIR = path.join(__dirname, '../assets/fonts');
+const FONT_DIR = path.join(__dirname, '../../assets/fonts');
 
 const COMPANY_NAME = 'COMPAGE AUTOMATION SYSTEMS PVT. LTD.';
 const COMPANY_ADDR =

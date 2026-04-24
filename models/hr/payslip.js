@@ -38,7 +38,7 @@ function truncateToWidth(doc, txt, maxWidth, fontName, fontSize) {
 /* ===========================
    Fonts
    =========================== */
-const FONT_DIR = path.join(__dirname, '../assets/fonts');
+const FONT_DIR = path.join(__dirname, '../../assets/fonts');
 function registerFonts(doc) {
   const reg = (name, file) => {
     const p = path.join(FONT_DIR, file);
