@@ -1,290 +1,373 @@
-# ERP Backend Documentation
+# Intute ERP — Backend API
 
-This document provides an overview of the ERP (Enterprise Resource Planning) backend built with Node.js and Express. It supports customer management, order processing, inventory tracking, query handling, and reporting, with real-time updates and robust security features.
+A full-featured Enterprise Resource Planning (ERP) and CRM backend built with Node.js and Express. Covers the complete business lifecycle: sales pipeline, manufacturing, invoicing, dispatch, HR, and operations — with real-time updates, automated email reports, PDF generation, and an AI order chatbot.
+
+---
 
 ## Table of Contents
-1. [Overview](#overview)
-2. [Architecture](#architecture)
-3. [Features](#features)
-4. [Prerequisites](#prerequisites)
-5. [Setup](#setup)
-6. [Environment Variables](#environment-variables)
-7. [API Endpoints](#api-endpoints)
-8. [Database Schema](#database-schema)
-9. [Real-Time Updates](#real-time-updates)
-10. [Security](#security)
-11. [Logging](#logging)
-12. [Testing](#testing)
-13. [Troubleshooting](#troubleshooting)
-14. [Future Enhancements](#future-enhancements)
+
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Project Structure](#project-structure)
+- [API Modules](#api-modules)
+- [Authentication & Authorization](#authentication--authorization)
+- [Cron Jobs](#cron-jobs)
+- [Caching](#caching)
+- [PDF Generation](#pdf-generation)
+- [Email Service](#email-service)
+- [Real-time (Socket.IO)](#real-time-socketio)
+- [Logging](#logging)
+- [Scripts](#scripts)
 
 ---
 
-## Overview
-The ERP backend is designed to manage business operations efficiently. It integrates with PostgreSQL (Aiven-hosted) for persistent storage, Redis for caching, and Socket.IO for real-time updates. It's optimized for development in Visual Studio Code (VS Code) and supports a React frontend with Context API and Axios.
+## Tech Stack
 
-- **Purpose**: Backend for customer, order, inventory, and query management.
-- **Tech Stack**: Node.js, Express, PostgreSQL, Redis, Socket.IO, JWT, Winston.
-- **Deployment**: Local (currently), scalable to cloud platforms.
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js + Express.js |
+| Database | PostgreSQL (`pg`) |
+| Cache | Redis (`redis@4`) |
+| Real-time | Socket.IO |
+| Authentication | JWT + bcrypt |
+| Email | Nodemailer (Gmail SMTP) |
+| PDF | PDFKit |
+| File Storage | Google Drive API (service account) |
+| Scheduling | node-cron |
+| Logging | Winston |
+| Security | Helmet, express-rate-limit, CORS |
+| Validation | express-validator |
+| Testing | Jest + Supertest |
 
 ---
 
-## Architecture
-The backend follows a modular, layered architecture:
-- **Config**: Database and service connections (`db.js`, `redis.js`, `socket.js`).
-- **Middleware**: Authentication, validation, error handling (`auth.js`, `validate.js`, `error.js`).
-- **Models**: Business logic and DB operations (`user.js`, `order.js`, etc.).
-- **Routes**: RESTful API endpoints (`auth.js`, `customers.js`, etc.).
-- **Utils**: Helpers (`logger.js`, `email.js`).
-- **Server**: Entry point (`server.js`).
+## Getting Started
 
-### File Structure
-```
-erp-backend/
-├── config/
-│   ├── db.js
-│   ├── redis.js
-│   └── socket.js
-├── middleware/
-│   ├── auth.js
-│   ├── error.js
-│   ├── rateLimit.js
-│   └── validate.js
-├── models/
-│   ├── user.js
-│   ├── order.js
-│   ├── inventory.js
-│   ├── query.js
-│   └── activity.js
-├── routes/
-│   ├── auth.js
-│   ├── customers.js
-│   ├── orders.js
-│   ├── inventory.js
-│   ├── queries.js
-│   └── reports.js
-├── utils/
-│   ├── logger.js
-│   └── email.js
-├── tests/
-│   └── auth.test.js
-├── .env
-├── server.js
-└── package.json
+### Prerequisites
+
+- Node.js 18+
+- PostgreSQL
+- Redis
+
+### Installation
+
+```bash
+git clone <repo-url>
+cd CRM_BACKEND
+npm install
 ```
 
-## Features
-- **Authentication**: JWT-based with role-based access control (RBAC).
-- **Customer Management**: CRUD for users with `role_id = 2`.
-- **Order Management**: Transactional order creation with inventory updates.
-- **Inventory Management**: Stock tracking with real-time updates via Socket.IO.
-- **Query Management**: Customer query raising and response tracking.
-- **Reporting**: Order summaries and inventory status.
-- **Performance**: Redis caching, pagination (`limit`, `offset`).
-- **Security**: Helmet headers, rate limiting, input validation.
-- **Real-Time**: Socket.IO for stock and query updates.
-- **Logging**: Winston logs actions and errors.
+### Development
+
+```bash
+npm run dev
+```
+
+### Production
+
+```bash
+npm start
+```
 
 ---
-
-## Prerequisites
-- **Node.js**: v20.17.0 or higher.
-- **PostgreSQL**: Aiven-hosted instance (or local).
-- **Redis**: Local server (e.g., `C:\Redis\redis-server.exe`).
-- **VS Code**: Recommended with extensions:
-  - ESLint, Prettier, REST Client, PostgreSQL.
-
----
-
-## Setup
-1. **Clone or Create Project**:
-   - Directory: `C:\Users\HP\OneDrive\Desktop\Erp-backend`.
-   - Initialize: `npm init -y`.
-
-2. **Install Dependencies**:
-   ```bash
-   npm install express pg jsonwebtoken bcryptjs dotenv cors redis socket.io winston nodemailer express-validator helmet express-rate-limit
-   npm install --save-dev nodemon jest supertest eslint prettier
-   ```
-
-3. **Configure Environment**:
-   - Create `.env`:
-   ```
-   PORT=5000
-   DB_HOST=erp-db-rahulsrivastava503-2bda.h.aivencloud.com
-   DB_PORT=23132
-   DB_USER=avnadmin
-   DB_PASSWORD=AVNS_U6TztJofgiQujs9et13
-   DB_NAME=defaultdb
-   JWT_SECRET=your_strong_secret_key_32_chars_minimum
-   REDIS_HOST=localhost
-   REDIS_PORT=6379
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=your_app_specific_password
-   ```
-
-4. **Start Redis**:
-   - Run in a separate terminal:
-   ```powershell
-   cd C:\Redis
-   .\redis-server.exe
-   ```
-
-5. **Run Server**:
-   - In VS Code terminal:
-   ```bash
-   npm run dev
-   ```
-   - Output:
-   ```
-   Server running on port 5000
-   Connected to Redis
-   Connected to PostgreSQL
-   ```
 
 ## Environment Variables
-| Variable | Description | Example Value |
-|----------|-------------|---------------|
-| PORT | Server port | 5000 |
-| DB_HOST | PostgreSQL host | erp-db-rahulsrivastava503-2bda.h.aivencloud.com |
-| DB_PORT | PostgreSQL port | 23132 |
-| DB_USER | PostgreSQL user | avnadmin |
-| DB_PASSWORD | PostgreSQL password | AVNS_U6TztJofgiQujs9et13 |
-| DB_NAME | Database name | defaultdb |
-| JWT_SECRET | JWT secret key | your_strong_secret_key_32_chars_minimum |
-| REDIS_HOST | Redis host | localhost |
-| REDIS_PORT | Redis port | 6379 |
-| EMAIL_USER | Email sender address | your_email@gmail.com |
-| EMAIL_PASS | Email app-specific password | your_app_specific_password |
 
-## API Endpoints
+Create a `.env` file in the project root:
 
-### Authentication
-- **POST /auth/signup**
-  - Description: Register a new user.
-  - Body: `{"name":"string","email":"string","password":"string","role_id":number}`
-  - Response: 201 `{ "token": "jwt" }`
+```env
+# Database
+DB_HOST=your-db-host
+DB_PORT=5432
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+DB_NAME=your-db-name
 
-- **POST /auth/login**
-  - Description: Log in a user.
-  - Body: `{"email":"string","password":"string"}`
-  - Response: 200 `{ "token": "jwt" }`
+# Auth
+JWT_SECRET=your_jwt_secret_minimum_32_chars
 
-### Customers
-- **GET /customers**
-  - Description: List customers (role_id = 2).
-  - Headers: `Authorization: Bearer <token>`
-  - Query Params: `limit`, `offset`
-  - Response: 200 `{ "data": [{ "user_id": number, "name": string, "email": string }], "total": number }`
+# Redis
+REDIS_URL=redis://127.0.0.1:6379
 
-- **PUT /customers/:id**
-  - Description: Update customer details.
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{"name":"string","email":"string"}`
-  - Response: 200 `{ updated_user }`
+# Email (Gmail SMTP)
+EMAIL_USER=your@gmail.com
+EMAIL_PASS=your-app-password
 
-### Orders
-- **GET /orders**
-  - Description: List orders (filter by user_id optional).
-  - Headers: `Authorization: Bearer <token>`
-  - Query Params: `limit`, `offset`, `user_id`
-  - Response: 200 `{ "data": [order_objects], "total": number }`
+# Frontend
+FRONTEND_URL=http://localhost:5173
+PORT=8000
 
-- **POST /orders**
-  - Description: Create an order with items.
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{"target_delivery_date":"YYYY-MM-DD","items":[{"product_id":number,"quantity":number}]}`
-  - Response: 201 `{ order_object }`
+# Google Drive
+GOOGLE_SERVICE_ACCOUNT_PATH=secrets/drive-sa.json
+GOOGLE_DRIVE_FOLDER_ID=your-folder-id
 
-### Inventory
-- **GET /inventory**
-  - Description: List inventory items.
-  - Headers: `Authorization: Bearer <token>`
-  - Query Params: `limit`, `offset`
-  - Response: 200 `{ "data": [product_objects], "total": number }`
+# Reports
+MANAGER_DAILY_REPORT_EMAIL=manager@example.com
+```
 
-- **POST /inventory**
-  - Description: Add a product.
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{"product_name":"string","stock_quantity":number,"price":number}`
-  - Response: 201 `{ product_object }`
+---
 
-### Queries
-- **GET /queries**
-  - Description: List queries.
-  - Headers: `Authorization: Bearer <token>`
-  - Query Params: `limit`, `offset`
-  - Response: 200 `{ "data": [query_objects], "total": number }`
+## Project Structure
 
-- **POST /queries**
-  - Description: Raise a query.
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{"query_text":"string"}`
-  - Response: 201 `{ query_object }`
+```
+CRM_BACKEND/
+├── server.js                   # App entry point
+├── config/
+│   ├── db.js                   # PostgreSQL pool
+│   └── redis.js                # Redis client
+├── routes/
+│   ├── auth.js
+│   ├── core/                   # customers, orders, inventory, stock, users, reports, dashboard
+│   ├── sales/                  # enquiry, quotation, proforma, price-list
+│   ├── manufacturing/          # bom, parts, part-drawings, motor-recipes, process
+│   ├── invoicing/              # customer-invoices, purchase-invoices
+│   ├── dispatch/               # dispatch-tracking, delivery-challan, ia-orders
+│   ├── hr/                     # attendance, employee-details, payslip
+│   └── operations/             # queries, activities, problems, pdi
+├── controllers/                # Business logic (mirrors routes/)
+├── models/                     # Database queries (mirrors routes/)
+├── middleware/
+│   ├── auth.js                 # JWT authentication + RBAC
+│   ├── error.js                # Global error handler
+│   ├── rateLimit.js            # Request rate limiter
+│   └── validate.js             # Input validation rules
+├── jobs/
+│   ├── daily-due-reminders.js  # 11:00 AM — task due-tomorrow reminders
+│   ├── daily-task-summaries.js # 9:00 AM & 6:30 PM — team task reports
+│   └── attendanceSummary.js    # 10:00 AM & 7:30 PM — attendance reports
+├── services/
+│   ├── email.js                # Nodemailer wrapper
+│   └── googleDrive.js          # Google Drive upload
+├── chatbot/                    # AI order chatbot (routes + logic)
+├── utils/
+│   ├── logger.js               # Winston logger
+│   └── emailTemplates.js       # HTML email template generators
+├── assets/
+│   └── fonts/                  # Roboto fonts for PDF generation
+├── secrets/
+│   └── drive-sa.json           # Google service account (gitignored)
+└── logs/
+    ├── error.log
+    └── combined.log
+```
 
-- **PUT /queries/:id/respond**
-  - Description: Respond to a query.
-  - Headers: `Authorization: Bearer <token>`
-  - Body: `{"response":"string"}`
-  - Response: 200 `{ updated_query }`
+---
 
-### Reports
-- **GET /reports/order-summary**
-  - Description: Aggregated order report.
-  - Headers: `Authorization: Bearer <token>`
-  - Query Params: `limit`, `offset`
-  - Response: 200 `{ "data": [summary_objects], "total": number }`
+## API Modules
 
-- **GET /reports/inventory-status**
-  - Description: Low-stock inventory report.
-  - Headers: `Authorization: Bearer <token>`
-  - Response: 200 `{ "data": [low_stock_items], "total": number }`
+### Authentication — `/api/auth`
 
-## Database Schema
-- **roles**: role_id (PK), role_name
-- **users**: user_id (PK), name, email (UNIQUE), password_hash, role_id (FK roles), created_at
-- **permissions**: permission_id (PK), role_id (FK roles), module, can_read, can_write, can_delete
-- **inventory**: product_id (PK), product_name, stock_quantity, price, created_at
-- **orders**: order_id (PK), user_id (FK users), status, target_delivery_date, payment_status, created_at
-- **order_items**: order_item_id (PK), order_id (FK orders), product_id (FK inventory), quantity, price
-- **queries**: query_id (PK), user_id (FK users), query_text, date_of_query_raised, query_status, last_updated
-- **query_responses**: response_id (PK), query_id (FK queries), responded_by (FK users), response, response_date
-- **activity_logs**: log_id (PK), user_id (FK users), action, details, timestamp
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/login` | Login with email + password, returns JWT |
+| GET | `/verify-token` | Verify JWT validity |
+| GET | `/user` | Get current authenticated user |
+| POST | `/logout` | Logout (clears cookie) |
+| PUT | `/update-password` | Update user password |
 
-## Real-Time Updates
-- **Socket.IO**: Broadcasts events:
-  - `stockUpdate`: When inventory changes (POST /orders, POST /inventory).
-  - `newQuery`: When a query is raised (POST /queries).
-- **Usage**: Frontend can listen via socket.io-client.
+---
 
-## Security
-- **JWT**: Tokens with 1-hour expiry, verified on protected routes.
-- **RBAC**: Permissions checked via permissions table.
-- **Helmet**: Secure HTTP headers.
-- **Rate Limiting**: 100 requests per IP per 15 minutes.
-- **Validation**: Input validation with express-validator.
+### Core
+
+| Prefix | Description |
+|---|---|
+| `/api/customers` | Customer CRUD |
+| `/api/orders` | Order management |
+| `/api/inventory` | Inventory tracking |
+| `/api/stock` | Stock management |
+| `/api/users` | User management |
+| `/api/reports` | Business reports |
+| `/api/dashboard` | Dashboard summary data |
+
+---
+
+### Sales
+
+| Prefix | Description |
+|---|---|
+| `/api/enquiry` | Enquiry pipeline (CRUD, assignees, comments, stage transitions, follow-up, mark-done) |
+| `/api/enquiry-requirements` | Linked requirements per enquiry |
+| `/api/quotation` | Quotation generation and PDF export |
+| `/api/proforma` | Proforma invoice generation and PDF export |
+| `/api/price-list` | Product price list management |
+
+---
+
+### Manufacturing
+
+| Prefix | Description |
+|---|---|
+| `/api/bom` | Bill of Materials (CRUD) |
+| `/api/parts` | Part master data |
+| `/api/part-drawings` | Part drawing documents |
+| `/api/part-drawings-raw` | Raw material drawings |
+| `/api/motor-recipes` | Motor formulation recipes |
+| `/api/process` | Manufacturing process definitions |
+
+---
+
+### Invoicing
+
+| Prefix | Description |
+|---|---|
+| `/api/customer-invoices` | Customer invoice generation and management |
+| `/api/purchase-invoices` | Purchase (vendor) invoice management |
+
+---
+
+### Dispatch
+
+| Prefix | Description |
+|---|---|
+| `/api/dispatch-tracking` | Shipment tracking |
+| `/api/delivery-challan` | Delivery challan generation and PDF export |
+| `/api/ia-orders` | Inter-company / IA orders |
+
+---
+
+### HR
+
+| Prefix | Description |
+|---|---|
+| `/api/attendance` | Employee attendance (check-in / check-out) |
+| `/api/employee-details` | Employee profiles and details |
+| `/api/payslip` | Payslip generation and PDF export |
+
+---
+
+### Operations
+
+| Prefix | Description |
+|---|---|
+| `/api/activities` | Task and activity management |
+| `/api/queries` | Customer and internal queries |
+| `/api/problems` | Issue / problem tracking |
+| `/api/pdi` | Pre-dispatch inspection records |
+
+---
+
+### Chatbot
+
+| Prefix | Description |
+|---|---|
+| `/api/orders/chatbot` | AI-powered natural language order query interface |
+
+---
+
+## Authentication & Authorization
+
+All protected routes use **JWT Bearer tokens** (also accepted via HTTP-only cookie).
+
+- Tokens are verified in `middleware/auth.js`
+- User record is validated against the database on every request
+- **Role-based access control (RBAC)** is enforced at the module+action level via a `permissions` table
+
+**Supported roles:** `admin`, `sales`, `design`, `production`, `store`, `dispatch`, `accounts`, `employee`, `hr`, `ia_employee`, `ia_hr`, `customer`
+
+---
+
+## Cron Jobs
+
+All jobs run in **Asia/Kolkata (IST)** timezone via `node-cron`.
+
+| Job | Schedule | Description |
+|---|---|---|
+| Due-tomorrow reminders | 11:00 AM daily | Emails each assignee their tasks due the next day |
+| Morning task summary | 9:00 AM Mon–Sat | Sends pending task report to team + manager |
+| Evening task summary | 6:30 PM Mon–Sat | Sends pending + completed-today report to team + manager |
+| Attendance check-in | 10:00 AM Mon–Sat | Emails manager a check-in summary for the day |
+| Attendance check-out | 7:30 PM Mon–Sat | Emails manager a check-out summary with hours worked |
+
+---
+
+## Caching
+
+Redis is used to cache frequently read, expensive queries.
+
+- **Part drawings** — cached per `(limit, offset, search)` combination
+- **Inventory** — cached per `(limit, offset)` combination
+- **Queries** — cached per `(userId, roleId, limit, offset)` combination
+- Cache is invalidated on write operations and cleared on server startup
+- TTL: 300 seconds (5 minutes) per entry
+- Custom `redis.delPattern(pattern)` helper for wildcard key invalidation
+
+---
+
+## PDF Generation
+
+PDFs are generated server-side using **PDFKit** with custom Roboto fonts from `assets/fonts/`.
+
+Documents that support PDF export:
+
+| Document | Route |
+|---|---|
+| Quotation | `POST /api/quotation/generate` |
+| Proforma Invoice | `POST /api/proforma/generate` |
+| Delivery Challan | `POST /api/delivery-challan/generate` |
+| Payslip | `POST /api/payslip/generate` |
+
+Generated PDFs can optionally be uploaded to Google Drive via the `googleDrive` service.
+
+---
+
+## Email Service
+
+Emails are sent via **Gmail SMTP** using Nodemailer (`services/email.js`).
+
+```js
+await sendEmail({ to, subject, text, html });
+```
+
+- Validates recipient, subject, and body before sending
+- Logs message ID on success, error on failure
+- Automated reports use HTML templates from `utils/emailTemplates.js`:
+  - `generateDueTomorrowReminderHtml()`
+  - `generateDailyTaskSummaryHtml()`
+  - `generateAttendanceCheckInSummaryHtml()`
+  - `generateAttendanceCheckOutSummaryHtml()`
+
+---
+
+## Real-time (Socket.IO)
+
+A Socket.IO server runs alongside the HTTP server.
+
+- CORS-restricted to `FRONTEND_URL`
+- `io` is accessible on `app.get('io')` and injected into every request as `req.io`
+- Controllers emit events on data mutations for live UI updates
+
+---
 
 ## Logging
-- **Winston**: Logs to error.log (errors) and combined.log (all events).
-- Examples:
-  ```
-  {"level":"info","message":"User signed up: test@example.com","timestamp":"2025-02-26T..."}
-  {"level":"error","message":"Invalid token - POST /orders","timestamp":"2025-02-26T..."}
-  ```
 
-## Testing
-- **Unit Tests**: tests/auth.test.js (expandable).
-- **Run**: `npm test`.
-- **Manual Testing**: Use VS Code REST Client with test.rest.
+Winston logs are written to:
 
-## Troubleshooting
-- **Token Expired**: Re-run POST /auth/login.
-- **Permission Denied**: Add to permissions table.
-- **Stock Insufficient**: Add inventory via POST /inventory.
-- **Connection Errors**: Verify .env, Redis (C:\Redis), and PostgreSQL (Aiven).
+| File | Content |
+|---|---|
+| `logs/error.log` | Errors only |
+| `logs/combined.log` | All log levels |
 
-## Future Enhancements
-- **Deployment**: Host on Heroku/AWS.
-- **Frontend**: Integrate with React.
-- **Tests**: Expand test suite.
-- **Features**: Add financials, advanced reporting.
+Console output is enabled in all environments. All entries are JSON-formatted with timestamps.
+
+```json
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-04-24T11:40:31.498Z"}
+```
+
+---
+
+## Scripts
+
+```bash
+npm run dev      # Start with nodemon (auto-reload)
+npm start        # Start in production
+npm test         # Run Jest test suite
+npm run lint     # ESLint check
+npm run format   # Prettier format
+```
+
+---
+
+## License
+
+Private — Intute AI. All rights reserved.

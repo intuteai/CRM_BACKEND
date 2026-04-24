@@ -78,15 +78,11 @@ app.set('io', io);
 async function initializeServer() {
   try {
     const pool = require('./config/db');
-    const dbResult = await pool.query('SELECT NOW()');
-    logger.info('Database connection successful:', dbResult.rows[0]);
+    await pool.query('SELECT 1');
 
-    const redis = require('./config/redis');
-    await redis.set('test', 'Redis works!');
-    const redisReply = await redis.get('test');
-    logger.info('Redis connection successful:', redisReply);
+    require('./config/redis');
   } catch (err) {
-    logger.error('Failed to initialize server:', err.stack);
+    logger.error('Server initialization failed:', err.stack);
     process.exit(1);
   }
 }
@@ -164,13 +160,8 @@ app.use('/api',             chatbotOrderRoutes);
 
 // ==================== CRON JOBS ====================
 require('./jobs/daily-due-reminders');
-logger.info('Daily due-tomorrow reminder job scheduled (11:00 AM IST)');
-
 require('./jobs/daily-task-summaries');
-logger.info('Daily task summaries job scheduled (9:00 AM & 6:30 PM IST, weekdays)');
-
 require('./jobs/attendanceSummary');
-logger.info('Attendance summary job scheduled');
 
 // ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);

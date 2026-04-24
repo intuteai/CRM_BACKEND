@@ -11,14 +11,9 @@ const redisClient = redis.createClient({
 redisClient.delPattern = async function (pattern) {
   try {
     const keys = await this.keys(pattern);
-    if (keys.length > 0) {
-      await this.del(keys);
-      logger.info(`Deleted ${keys.length} Redis keys matching pattern: ${pattern}`);
-    } else {
-      logger.info(`No Redis keys found for pattern: ${pattern}`);
-    }
+    if (keys.length > 0) await this.del(keys);
   } catch (err) {
-    logger.error(`Error deleting Redis keys for pattern ${pattern}: ${err.message}`, err.stack);
+    logger.error(`Redis delPattern failed for "${pattern}": ${err.message}`);
     throw err;
   }
 };

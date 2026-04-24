@@ -1,16 +1,17 @@
 const rateLimit = require('express-rate-limit');
+const logger = require('../utils/logger');
 
 const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 5000, // Increased to 5000 requests
-  message: { error: 'Too many requests, please wait and try again', code: 'RATE_LIMIT_EXCEEDED' },
-  keyGenerator: (req) => {
-    // Use user_id for authenticated users, fallback to IP
-    return req.user ? req.user.user_id : req.ip;
+  windowMs: 10 * 60 * 1000,
+  max: 5000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.user ? String(req.user.user_id) : req.ip,
+  handler: (req, res, next, options) => {
+    logger.warn(`Rate limit exceeded — ${req.user ? `user ${req.user.user_id}` : `IP ${req.ip}`} at ${req.method} ${req.url}`);
+    res.status(options.statusCode).json(options.message);
   },
-  onLimitReached: (req, res, options) => {
-    logger.warn(`Rate limit hit by ${req.user ? `user ${req.user.user_id}` : `IP ${req.ip}`} at ${req.url}`);
-  }
+  message: { error: 'Too many requests, please wait and try again', code: 'RATE_LIMIT_EXCEEDED' },
 });
 
 module.exports = limiter;

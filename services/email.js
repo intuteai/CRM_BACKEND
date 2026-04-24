@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 require('dotenv').config();
+const logger = require('../utils/logger');
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -9,32 +10,27 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) {
-    console.error('[EMAIL] Transporter verification failed:', error.message);
+    logger.error('Email transporter verification failed: ' + error.message);
   } else {
-    console.log('[EMAIL] Transporter ready and verified');
+    logger.info('Email transporter ready and verified');
   }
 });
 
 const sendEmail = async ({ to, subject, text = '', html = '' }) => {
-  if (!to) {
-    console.error('[EMAIL ERROR] No recipient (to) provided');
-    return false;
-  }
-
-  if (typeof to !== 'string' || !to.trim()) {
-    console.error('[EMAIL ERROR] Invalid recipient:', to);
+  if (!to || typeof to !== 'string' || !to.trim()) {
+    logger.error('sendEmail: invalid or missing recipient', { to });
     return false;
   }
 
   if (!subject || typeof subject !== 'string' || !subject.trim()) {
-    console.error('[EMAIL ERROR] Missing or invalid subject');
+    logger.error('sendEmail: missing or invalid subject');
     return false;
   }
 
   if (!text && !html) {
-    console.error('[EMAIL ERROR] No content (text or html) provided');
+    logger.error('sendEmail: no content (text or html) provided');
     return false;
   }
 
@@ -51,10 +47,10 @@ const sendEmail = async ({ to, subject, text = '', html = '' }) => {
       html: finalHtml,
     });
 
-    console.log(`[EMAIL SUCCESS] Sent to: ${recipient} | Message ID: ${info.messageId}`);
+    logger.info(`Email sent to ${recipient} | Message-ID: ${info.messageId}`);
     return true;
   } catch (err) {
-    console.error('[EMAIL FAILED] to:', recipient, err.message);
+    logger.error(`Email failed to ${recipient}: ${err.message}`);
     return false;
   }
 };

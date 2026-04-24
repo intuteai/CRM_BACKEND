@@ -1,37 +1,29 @@
-// jobs/daily-due-reminders.js
 const cron = require('node-cron');
 const pool = require('../config/db');
 const { sendEmail } = require('../services/email');
 const { generateDueTomorrowReminderHtml } = require('../utils/emailTemplates');
-
-console.log('[DAILY REMINDER] Job file loaded - scheduled for 11:00 AM IST');
+const logger = require('../utils/logger');
 
 async function sendDueTomorrowReminders() {
   try {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
-    
+
     const tomorrowStr = tomorrow.toISOString().split('T')[0];
     const tomorrowFormatted = tomorrow.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
 
-    console.log(`[DAILY REMINDER] Running at ${today.toLocaleString('en-IN')} | Looking for tasks due on ${tomorrowStr}`);
+    logger.info(`[Daily Reminder] Running | Looking for tasks due on ${tomorrowStr}`);
 
     const query = `
-      SELECT 
-        a.id,
-        a.summary,
-        a.priority,
-        a.status,
-        a.due_date,
-        u.user_id,
-        u.name,
-        u.email
+      SELECT
+        a.id, a.summary, a.priority, a.status, a.due_date,
+        u.user_id, u.name, u.email
       FROM activities a
       JOIN activity_assignees aa ON aa.activity_id = a.id
       JOIN users u ON u.user_id = aa.user_id
@@ -44,75 +36,56 @@ async function sendDueTomorrowReminders() {
     const { rows } = await pool.query(query, [tomorrowStr]);
 
     if (rows.length === 0) {
-      console.log('[DAILY REMINDER] No unfinished tasks due tomorrow');
+      logger.info('[Daily Reminder] No unfinished tasks due tomorrow — skipping');
       return;
     }
 
-    console.log(`[DAILY REMINDER] Found ${rows.length} unfinished tasks due tomorrow`);
+    logger.info(`[Daily Reminder] Found ${rows.length} unfinished task(s) due tomorrow`);
 
-    // Group by user
     const tasksByUser = {};
-
     for (const row of rows) {
       const email = row.email.trim();
       if (!tasksByUser[email]) {
-        tasksByUser[email] = {
-          name: row.name || 'Team Member',
-          tasks: []
-        };
+        tasksByUser[email] = { name: row.name || 'Team Member', tasks: [] };
       }
       tasksByUser[email].tasks.push({
         id: row.id,
         summary: row.summary,
         priority: row.priority,
-        status: row.status
+        status: row.status,
       });
     }
 
-    // Send emails
     for (const [email, data] of Object.entries(tasksByUser)) {
       const taskCount = data.tasks.length;
       const subject = `Reminder: ${taskCount} task${taskCount === 1 ? '' : 's'} due tomorrow`;
 
-      // Plain text fallback
-      const taskListText = data.tasks.map(t => 
+      const taskListText = data.tasks.map(t =>
         `• ${t.summary} (Priority: ${t.priority}, Status: ${t.status})\n  View: https://intute.biz/activities/${t.id}`
       ).join('\n\n');
 
-      const text = 
+      const text =
         `Hello ${data.name},\n\n` +
         `The following task${taskCount === 1 ? ' is' : 's are'} due tomorrow (${tomorrowStr}):\n\n` +
         `${taskListText}\n\n` +
-        `Please make sure to complete them on time!\n\n` +
-        `Best regards,\nIntute ERP Team`;
+        `Please make sure to complete them on time!\n\nBest regards,\nIntute ERP Team`;
 
-      // Beautiful HTML
       const html = generateDueTomorrowReminderHtml({
         userName: data.name,
         tomorrowDate: tomorrowFormatted,
         taskCount,
-        tasks: data.tasks
+        tasks: data.tasks,
       });
 
-      console.log(`[DAILY REMINDER] Sending reminder to ${email} (${taskCount} task${taskCount === 1 ? '' : 's'})`);
-
-      await sendEmail({
-        to: email,
-        subject,
-        text,
-        html
-      });
+      logger.info(`[Daily Reminder] Sending to ${email} (${taskCount} task${taskCount === 1 ? '' : 's'})`);
+      await sendEmail({ to: email, subject, text, html });
     }
 
-    console.log('[DAILY REMINDER] All reminders processed successfully');
+    logger.info('[Daily Reminder] All reminders dispatched successfully');
   } catch (error) {
-    console.error('[DAILY REMINDER] Error:', error.message);
+    logger.error('[Daily Reminder] Error: ' + error.message);
   }
 }
 
-// Schedule
-cron.schedule('0 11 * * *', sendDueTomorrowReminders, {
-  timezone: 'Asia/Kolkata'
-});
-
-console.log('[DAILY REMINDER] Cron scheduled → 11:00 AM IST every day');
+cron.schedule('0 11 * * *', sendDueTomorrowReminders, { timezone: 'Asia/Kolkata' });
+logger.info('Daily due-tomorrow reminder job scheduled (11:00 AM IST)');

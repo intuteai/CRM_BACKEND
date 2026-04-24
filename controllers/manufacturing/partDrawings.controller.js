@@ -4,14 +4,12 @@ const logger = require('../../utils/logger');
 
 async function deleteByPattern(pattern) {
   const keys = await redis.keys(pattern);
-  if (keys.length > 0) { await redis.del(keys); logger.info(`Invalidated ${keys.length} cache keys matching: ${pattern}`); }
+  if (keys.length > 0) await redis.del(keys);
 }
 
-// Clear all caches on startup
 (async () => {
   await deleteByPattern('part_drawings_*');
   await deleteByPattern('inventory_*');
-  logger.info('Cleared all part_drawings and inventory caches');
 })();
 
 exports.getAll = async (req, res) => {
