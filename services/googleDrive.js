@@ -51,4 +51,25 @@ async function uploadBufferToDrive(buffer, mimeType, filename) {
   };
 }
 
-module.exports = { uploadBufferToDrive };
+async function streamFileToDrive(fileId, res) {
+  const client = await auth.getClient();
+  const drive   = google.drive({ version: 'v3', auth: client });
+
+  const meta = await drive.files.get({
+    fileId,
+    fields: 'mimeType,name',
+    supportsAllDrives: true,
+  });
+  const mimeType = meta.data.mimeType || 'application/octet-stream';
+
+  res.setHeader('Content-Type', mimeType);
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+
+  const dl = await drive.files.get(
+    { fileId, alt: 'media', supportsAllDrives: true },
+    { responseType: 'stream' }
+  );
+  dl.data.pipe(res);
+}
+
+module.exports = { uploadBufferToDrive, streamFileToDrive };

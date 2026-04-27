@@ -20,6 +20,25 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.search = async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    const { rows } = await require('../../config/db').query(
+      `SELECT c.customer_id, u.name
+       FROM customers c
+       JOIN users u ON c.user_id = u.user_id
+       WHERE u.name ILIKE $1
+       ORDER BY u.name
+       LIMIT 20`,
+      [`%${q}%`]
+    );
+    res.json(rows);
+  } catch (err) {
+    logger.error(`Customer search error: ${err.message}`);
+    res.status(500).json({ error: 'Search failed', code: 'SERVER_ERROR' });
+  }
+};
+
 exports.create = async (req, res) => {
   try {
     const { name, contact_person, city, phone, email, gst, shipping_address, billing_address } = req.body;

@@ -8,6 +8,7 @@ const ROLE_MAP = {
   1: 'admin', 2: 'customer', 3: 'sales', 4: 'design',
   5: 'production', 6: 'store', 7: 'dispatch', 8: 'accounts',
   9: 'employee', 10: 'hr', 11: 'ia_employee', 12: 'ia_hr',
+  13: 'service_repair',
 };
 
 exports.login = async (req, res) => {

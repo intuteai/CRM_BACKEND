@@ -50,6 +50,9 @@ const activitiesRoutes       = require('./routes/operations/activities');
 const problemsRoutes         = require('./routes/operations/problems');
 const pdiRoutes              = require('./routes/operations/pdi');
 
+// ── Service & Repair routes ───────────────────────────────────
+const serviceRepairRoutes    = require('./routes/service/serviceRepair');
+
 // ── Chatbot routes ────────────────────────────────────────────
 const chatbotOrderRoutes     = require('./chatbot/routes/orderChatbotRoutes');
 
@@ -154,6 +157,9 @@ app.use('/api/queries',     queriesRoutes);
 app.use('/api/activities',  activitiesRoutes);
 app.use('/api/problems',    problemsRoutes);
 app.use('/api/pdi',         pdiRoutes);
+
+// Service & Repair
+app.use('/api/service-repair', serviceRepairRoutes);
 
 // Chatbot
 app.use('/api',             chatbotOrderRoutes);

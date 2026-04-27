@@ -22,6 +22,7 @@ const validateCustomerInput = (req, res, next) => {
   next();
 };
 
+router.get('/search', authenticateToken, controller.search);
 router.get('/', authenticateToken, checkPermission('Customers', 'can_read'), validatePagination, controller.getAll);
 router.post('/', authenticateToken, checkPermission('Customers', 'can_create'), validateCustomerInput, controller.create);
 
