@@ -1,6 +1,6 @@
 # Intute ERP — Backend API
 
-A full-featured Enterprise Resource Planning (ERP) and CRM backend built with Node.js and Express. Covers the complete business lifecycle: sales pipeline, manufacturing, invoicing, dispatch, HR, and operations — with real-time updates, automated email reports, PDF generation, and an AI order chatbot.
+A full-featured Enterprise Resource Planning (ERP) and CRM backend built with Node.js and Express. Covers the complete business lifecycle: sales pipeline, manufacturing, invoicing, dispatch, HR, operations, and after-sales service/repair — with real-time updates, automated email reports, PDF generation, and an AI order chatbot.
 
 ---
 
@@ -11,6 +11,16 @@ A full-featured Enterprise Resource Planning (ERP) and CRM backend built with No
 - [Environment Variables](#environment-variables)
 - [Project Structure](#project-structure)
 - [API Modules](#api-modules)
+  - [Authentication](#authentication----apiauth)
+  - [Core](#core)
+  - [Sales](#sales)
+  - [Manufacturing](#manufacturing)
+  - [Invoicing](#invoicing)
+  - [Dispatch](#dispatch)
+  - [HR](#hr)
+  - [Operations](#operations)
+  - [Service](#service)
+  - [Chatbot](#chatbot)
 - [Authentication & Authorization](#authentication--authorization)
 - [Cron Jobs](#cron-jobs)
 - [Caching](#caching)
@@ -124,7 +134,8 @@ CRM_BACKEND/
 │   ├── invoicing/              # customer-invoices, purchase-invoices
 │   ├── dispatch/               # dispatch-tracking, delivery-challan, ia-orders
 │   ├── hr/                     # attendance, employee-details, payslip
-│   └── operations/             # queries, activities, problems, pdi
+│   ├── operations/             # queries, activities, problems, pdi
+│   └── service/                # service-repair records + photo uploads
 ├── controllers/                # Business logic (mirrors routes/)
 ├── models/                     # Database queries (mirrors routes/)
 ├── middleware/
@@ -244,6 +255,30 @@ CRM_BACKEND/
 | `/api/queries` | Customer and internal queries |
 | `/api/problems` | Issue / problem tracking |
 | `/api/pdi` | Pre-dispatch inspection records |
+
+---
+
+### Service
+
+| Prefix | Description |
+|---|---|
+| `/api/service-repair` | Service and repair record management with photo uploads |
+
+#### `/api/service-repair` endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | List all service repair records (paginated: `limit`, `offset`) |
+| GET | `/:id` | Get a single record by ID |
+| POST | `/` | Create a new service repair record |
+| PUT | `/:id` | Update an existing record |
+| DELETE | `/:id` | Delete a record |
+| POST | `/:id/photo` | Upload the dispatch / challan receiving photo (max 10 MB) |
+| POST | `/:id/repaired-photo` | Append a repaired-item photo to the record's photo array (max 10 MB) |
+
+**Key fields:** `customer_name`, `dispatch_material_no`, `part_details`, `receiving_quantity`, `dispatch_quantity`, `fault_query`, `actual_issue`, `repair_status` (`pending` | `in_progress` | `completed`), `service_type` (`repair` | …), `responsibility_person`, `testing_responsibility`, `sent_date`, `remarks`, `chalan_photo_url`, `delivery_challan_photo_url`, `repaired_photos_urls[]`
+
+All endpoints require the `ServiceRepair` permission (`can_read` / `can_write` / `can_delete`).
 
 ---
 
