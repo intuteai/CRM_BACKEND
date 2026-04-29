@@ -54,7 +54,12 @@ const pdiRoutes              = require('./routes/operations/pdi');
 const serviceRepairRoutes    = require('./routes/service/serviceRepair');
 
 // ── Chatbot routes ────────────────────────────────────────────
-const chatbotOrderRoutes     = require('./chatbot/routes/orderChatbotRoutes');
+const chatbotOrderRoutes          = require('./chatbot/routes/orderChatbotRoutes');
+const chatbotCustomerInvoiceRoutes= require('./chatbot/routes/customerInvoiceChatbotRoutes');
+const chatbotCustomerRoutes       = require('./chatbot/routes/customerChatbotRoutes');
+const chatbotInventoryRoutes      = require('./chatbot/routes/inventoryChatbotRoutes');
+const chatbotRawMaterialRoutes    = require('./chatbot/routes/rawMaterialChatbotRoutes');
+const chatbotBOMRoutes            = require('./chatbot/routes/bomChatbotRoutes');
 
 // ── Middleware & utilities ────────────────────────────────────
 const limiter       = require('./middleware/rateLimit');
@@ -163,6 +168,11 @@ app.use('/api/service-repair', serviceRepairRoutes);
 
 // Chatbot
 app.use('/api',             chatbotOrderRoutes);
+app.use('/api',             chatbotCustomerInvoiceRoutes);
+app.use('/api',             chatbotCustomerRoutes);
+app.use('/api',             chatbotInventoryRoutes);
+app.use('/api',             chatbotRawMaterialRoutes);
+app.use('/api',             chatbotBOMRoutes);
 
 // ==================== CRON JOBS ====================
 require('./jobs/daily-due-reminders');
