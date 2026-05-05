@@ -20,6 +20,7 @@ const enquiryRoutes          = require('./routes/sales/enquiry');
 const enquiryReqRoutes       = require('./routes/sales/enquiryRequirements');
 const quotationRoutes        = require('./routes/sales/quotation');
 const proformaRoutes         = require('./routes/sales/proforma');
+const purchaseOrderRoutes    = require('./routes/sales/purchaseOrder');
 const priceListRoutes        = require('./routes/sales/priceList');
 
 // ── Manufacturing routes ──────────────────────────────────────
@@ -133,6 +134,7 @@ app.use('/api/enquiry',              enquiryRoutes);
 app.use('/api/enquiry-requirements', enquiryReqRoutes);
 app.use('/api/quotation',            quotationRoutes);
 app.use('/api/proforma',             proformaRoutes);
+app.use('/api/purchase-order',       purchaseOrderRoutes);
 app.use('/api/price-list',           priceListRoutes);
 
 // Manufacturing
