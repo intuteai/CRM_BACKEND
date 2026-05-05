@@ -145,9 +145,29 @@ class PurchaseOrder {
 
       const notesH  = measureH(doc, notesText, halfW - 6, 'Roboto', FS_ORD, 3);
       const rightH  = 2 * 13 + 6 + notesH;
-      const addrH   = toAddr ? measureH(doc, toAddr, halfW - 6, 'Roboto', FS_ORD, 2) : 0;
-      const leftH   = 3 * 13 + addrH + 10;
-      const ORD_H   = Math.max(leftH, rightH) + 12;
+
+      // ── Constrained widths for To name rendering ──────────────
+      // "To, " prefix takes ~18px at 9pt; name gets the remainder
+      const toPrefixW   = 18;
+      const nameRenderW = halfW - 10 - toPrefixW; // width available for name text
+
+      const toNameText  = toName ? toName : '';
+
+      // Measure name height within its actual render width
+      const nameLineH = toNameText
+        ? measureH(doc, toNameText, nameRenderW, 'Roboto', FS_ORD, 2)
+        : 0;
+
+      // Address block height within left column
+      const addrH = toAddr
+        ? measureH(doc, toAddr, halfW - 10, 'Roboto', FS_ORD, 2)
+        : 0;
+
+      // Left column: ORDER No + DATE rows (2×13) + To/name row + address + padding
+      const LEFT_FIXED_ROWS = 2;
+      const toRowH          = Math.max(13, nameLineH + 4);
+      const leftH           = LEFT_FIXED_ROWS * 13 + toRowH + addrH + 16;
+      const ORD_H           = Math.max(leftH, rightH) + 12;
 
       const TBL_HDR_H = 20;
       const TOT_ROW_H = 20;
@@ -223,23 +243,36 @@ class PurchaseOrder {
          ══════════════════════════════════════════════════════════ */
       vLines(curY, ORD_H, [halfX]);
 
-      // Rule below ORDER No. + DATE / Ref No. + Date rows (6 + 13 + 13 = 32)
+      // Divider below ORDER No. + DATE rows
       hRule(curY + 32);
 
+      // ── Left column ──────────────────────────────────────────
       let lY = curY + 6;
+
       doc.font('Roboto').fontSize(FS_ORD).fillColor('#000000');
-      doc.text(`ORDER No. ${data.po_no}`, mg + 6, lY, { width: halfW }); lY += 13;
-      doc.text(`DATE – ${dateStr}`,       mg + 6, lY, { width: halfW }); lY += 13;
-      doc.font('Roboto-Bold').fontSize(FS_ORD)
-         .text('To, ', mg + 6, lY, { continued: true, width: halfW });
-      doc.font('Roboto')
-         .text(toName ? `M/S  ${toName}` : '', { continued: false });
+      doc.text(`ORDER No. ${data.po_no}`, mg + 6, lY, { width: halfW - 4, lineBreak: false });
       lY += 13;
+      doc.text(`DATE – ${dateStr}`, mg + 6, lY, { width: halfW - 4, lineBreak: false });
+      lY += 13;
+
+      // ── Render "To, " bold + name wrapped within left column ──
+      // Both "To, " and the name are constrained to halfW - 10 total width.
+      // lineBreak: true ensures long names wrap instead of overflowing.
+      doc.font('Roboto-Bold').fontSize(FS_ORD).fillColor('#000000')
+         .text('To, ', mg + 6, lY, { continued: true, width: halfW - 10 });
+      doc.font('Roboto').fontSize(FS_ORD).fillColor('#000000')
+         .text(toNameText, { continued: false, width: nameRenderW, lineBreak: true });
+
+      // Advance lY by the measured height of the name (min 13px)
+      lY += Math.max(13, nameLineH + 2);
+
+      // Address — constrained to left column, wraps naturally
       if (toAddr) {
-        doc.font('Roboto').fontSize(FS_ORD)
-           .text(toAddr, mg + 6, lY, { width: halfW - 4, lineGap: 2 });
+        doc.font('Roboto').fontSize(FS_ORD).fillColor('#000000')
+           .text(toAddr, mg + 6, lY, { width: halfW - 10, lineGap: 2 });
       }
 
+      // ── Right column ─────────────────────────────────────────
       let rY = curY + 6;
       doc.font('Roboto').fontSize(FS_ORD).fillColor('#000000');
       doc.text(`Ref No. – ${data.ref_no || ''}`, halfX + 6, rY, { width: halfW }); rY += 13;
@@ -323,7 +356,6 @@ class PurchaseOrder {
       });
 
       curY += TERMS_H;
-      // No hRule — Terms flows directly into Sign-off
 
       /* ══════════════════════════════════════════════════════════
          SECTION 6 — SIGN-OFF
@@ -346,31 +378,21 @@ class PurchaseOrder {
       sY += 20;
 
       /* ══════════════════════════════════════════════════════════
-         SECTION 7 — FOOTER (inside box, each line centered in its own row)
-
-         Layout:
-           ─────────────────────────────────────────  ← hRule
-               Registered Office & Factory: ...       ← FOOTER1 (centered)
-           ─────────────────────────────────────────  ← hRule
-               E-mail : ...   Website: ...            ← FOOTER2 (centered)
-           ─────────────────────────────────────────  ← outer box bottom
+         SECTION 7 — FOOTER
          ══════════════════════════════════════════════════════════ */
-
-      // Line above FOOTER1
       hRule(sY);
       sY += 4;
       doc.font('Roboto').fontSize(8).fillColor('#000000')
          .text(FOOTER1, mg, sY, { width: cW, align: 'center' });
       sY += FOOTER_ROW_H;
 
-      // Line between FOOTER1 and FOOTER2
       hRule(sY);
       sY += 4;
       doc.font('Roboto').fontSize(8).fillColor('#000000')
          .text(FOOTER2, mg, sY, { width: cW, align: 'center' });
       sY += FOOTER_ROW_H;
 
-      /* ── Draw outer box last with exact actual height ────────── */
+      /* ── Draw outer box ──────────────────────────────────────── */
       doc.rect(mg, BOX_TOP, cW, sY - BOX_TOP)
          .strokeColor('#000000').lineWidth(LW).stroke();
 
