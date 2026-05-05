@@ -130,3 +130,85 @@ exports.cancel = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// ---------------------------------------------------------------------------
+// GET /api/orders/export
+// Returns all orders the requester is authorised to see as a CSV download.
+// Respects the same role-based visibility rules as getAll.
+// ---------------------------------------------------------------------------
+exports.exportOrders = async (req, res, next) => {
+  try {
+    const isAdmin      = req.user.role_id === 1;
+    const isProduction = req.user.role_id === 5;
+    const isSales      = req.user.role_id === 3;
+
+    // Fetch all orders — no pagination, no Redis cache for exports
+    const { data: orders } = await Order.getAll({
+      limit: 100000,
+      cursor: null,
+      user_id: isAdmin || isProduction || isSales ? null : req.user.user_id,
+    });
+
+    const orderIds = orders.map(o => o.order_id);
+    const itemsByOrder = orderIds.length ? await Order.getItemsByOrderIds(orderIds) : {};
+
+    // Build one flat row per order
+    const rows = await Promise.all(
+      orders.map(async (order) => {
+        const customerResult = await pool.query(
+          'SELECT name FROM users WHERE user_id = $1',
+          [order.user_id]
+        );
+        const items = itemsByOrder[order.order_id] || [];
+        const totalAmount = items
+          .reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0)
+          .toFixed(2);
+        const itemsSummary = items
+          .map(i => `${i.productName} (Qty: ${i.quantity})`)
+          .join('; ');
+
+        return [
+          order.order_id,
+          customerResult.rows[0]?.name || 'Unknown',
+          itemsSummary,
+          totalAmount,
+          order.status,
+          order.target_delivery_date || 'Not Set',
+          order.payment_status,
+          new Date(order.created_at).toISOString(),
+        ];
+      })
+    );
+
+    // Assemble CSV
+    const headers = [
+      'Order ID',
+      'Customer Name',
+      'Items',
+      'Total Amount (INR)',
+      'Status',
+      'Target Delivery',
+      'Payment Status',
+      'Created At',
+    ];
+
+    const escape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+
+    const csvLines = [
+      headers.map(escape).join(','),
+      ...rows.map(row => row.map(escape).join(',')),
+    ].join('\n');
+
+    const filename = `orders_export_${new Date().toISOString().split('T')[0]}.csv`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('X-Total-Exported', rows.length.toString());
+
+    logger.info(`Orders export: ${rows.length} rows sent to user ${req.user.user_id}`);
+    res.send(csvLines);
+  } catch (error) {
+    logger.error(`Error in GET /api/orders/export: ${error.message}`, { stack: error.stack });
+    next(error);
+  }
+};
