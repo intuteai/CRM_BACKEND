@@ -112,6 +112,50 @@ const ServiceRepair = {
     );
     return rows[0] || null;
   },
+
+  async appendFaultPhoto(record_id, url) {
+    const { rows } = await pool.query(
+      `UPDATE service_repair_records
+       SET fault_photos_urls = array_append(COALESCE(fault_photos_urls, '{}'), $1)
+       WHERE record_id = $2
+       RETURNING *`,
+      [url, record_id]
+    );
+    return rows[0] || null;
+  },
+
+  async appendActualIssuePhoto(record_id, url) {
+    const { rows } = await pool.query(
+      `UPDATE service_repair_records
+       SET actual_issue_photos_urls = array_append(COALESCE(actual_issue_photos_urls, '{}'), $1)
+       WHERE record_id = $2
+       RETURNING *`,
+      [url, record_id]
+    );
+    return rows[0] || null;
+  },
+
+  async appendChalanPhoto(record_id, url) {
+    const { rows } = await pool.query(
+      `UPDATE service_repair_records
+       SET chalan_photos_urls = array_append(COALESCE(chalan_photos_urls, '{}'), $1)
+       WHERE record_id = $2
+       RETURNING *`,
+      [url, record_id]
+    );
+    return rows[0] || null;
+  },
+
+  async appendDeliveryChallanPhoto(record_id, url) {
+    const { rows } = await pool.query(
+      `UPDATE service_repair_records
+       SET delivery_challan_photos_urls = array_append(COALESCE(delivery_challan_photos_urls, '{}'), $1)
+       WHERE record_id = $2
+       RETURNING *`,
+      [url, record_id]
+    );
+    return rows[0] || null;
+  },
 };
 
 module.exports = ServiceRepair;

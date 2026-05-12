@@ -119,6 +119,89 @@ exports.uploadPhoto = async (req, res) => {
   }
 };
 
+// Upload a chalan photo (appended to array)
+exports.uploadChalanPhoto = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file provided', code: 'VALIDATION_ERROR' });
+    if (!ALLOWED_MIME.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF, PDF', code: 'VALIDATION_ERROR' });
+    }
+    const { id } = req.params;
+    const filename = `service_repair_${id}_chalan_${Date.now()}.${resolveExt(req.file.mimetype)}`;
+    const { directUrl } = await uploadBufferToDrive(req.file.buffer, req.file.mimetype, filename);
+    const record = await ServiceRepair.appendChalanPhoto(id, directUrl);
+    if (!record) return res.status(404).json({ error: 'Record not found', code: 'NOT_FOUND' });
+    logger.info(`ServiceRepair chalan photo appended for record ${id}`);
+    res.json({ url: directUrl, record });
+  } catch (err) {
+    logger.error('ServiceRepair uploadChalanPhoto error:', err);
+    res.status(500).json({ error: 'Failed to upload chalan photo', code: 'SERVER_ERROR' });
+  }
+};
+
+// Upload a delivery challan photo (appended to array)
+exports.uploadDeliveryChallanPhoto = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file provided', code: 'VALIDATION_ERROR' });
+    if (!ALLOWED_MIME.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF, PDF', code: 'VALIDATION_ERROR' });
+    }
+    const { id } = req.params;
+    const filename = `service_repair_${id}_delivery_challan_${Date.now()}.${resolveExt(req.file.mimetype)}`;
+    const { directUrl } = await uploadBufferToDrive(req.file.buffer, req.file.mimetype, filename);
+    const record = await ServiceRepair.appendDeliveryChallanPhoto(id, directUrl);
+    if (!record) return res.status(404).json({ error: 'Record not found', code: 'NOT_FOUND' });
+    logger.info(`ServiceRepair delivery challan photo appended for record ${id}`);
+    res.json({ url: directUrl, record });
+  } catch (err) {
+    logger.error('ServiceRepair uploadDeliveryChallanPhoto error:', err);
+    res.status(500).json({ error: 'Failed to upload delivery challan photo', code: 'SERVER_ERROR' });
+  }
+};
+
+// Upload one of the fault/query photos (appended to array)
+exports.uploadFaultPhoto = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file provided', code: 'VALIDATION_ERROR' });
+    if (!ALLOWED_MIME.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF', code: 'VALIDATION_ERROR' });
+    }
+
+    const { id } = req.params;
+    const filename = `service_repair_${id}_fault_${Date.now()}.${resolveExt(req.file.mimetype)}`;
+    const { directUrl } = await uploadBufferToDrive(req.file.buffer, req.file.mimetype, filename);
+
+    const record = await ServiceRepair.appendFaultPhoto(id, directUrl);
+    if (!record) return res.status(404).json({ error: 'Record not found', code: 'NOT_FOUND' });
+
+    logger.info(`ServiceRepair fault photo appended for record ${id}`);
+    res.json({ url: directUrl, record });
+  } catch (err) {
+    logger.error('ServiceRepair uploadFaultPhoto error:', err);
+    res.status(500).json({ error: 'Failed to upload fault photo', code: 'SERVER_ERROR' });
+  }
+};
+
+// Upload one of the actual-issue photos (appended to array)
+exports.uploadActualIssuePhoto = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file provided', code: 'VALIDATION_ERROR' });
+    if (!ALLOWED_MIME.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF', code: 'VALIDATION_ERROR' });
+    }
+    const { id } = req.params;
+    const filename = `service_repair_${id}_actual_issue_${Date.now()}.${resolveExt(req.file.mimetype)}`;
+    const { directUrl } = await uploadBufferToDrive(req.file.buffer, req.file.mimetype, filename);
+    const record = await ServiceRepair.appendActualIssuePhoto(id, directUrl);
+    if (!record) return res.status(404).json({ error: 'Record not found', code: 'NOT_FOUND' });
+    logger.info(`ServiceRepair actual issue photo appended for record ${id}`);
+    res.json({ url: directUrl, record });
+  } catch (err) {
+    logger.error('ServiceRepair uploadActualIssuePhoto error:', err);
+    res.status(500).json({ error: 'Failed to upload actual issue photo', code: 'SERVER_ERROR' });
+  }
+};
+
 // Upload one of the repaired photos (appended to array)
 exports.uploadRepairedPhoto = async (req, res) => {
   try {
