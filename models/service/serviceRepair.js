@@ -146,6 +146,16 @@ const ServiceRepair = {
     return rows[0] || null;
   },
 
+  async removePhoto(record_id, field, url) {
+    const allowed = ['fault_photos_urls', 'actual_issue_photos_urls', 'chalan_photos_urls', 'delivery_challan_photos_urls', 'repaired_photos_urls'];
+    if (!allowed.includes(field)) throw new Error('Invalid photo field');
+    const { rows } = await pool.query(
+      `UPDATE service_repair_records SET ${field} = array_remove(${field}, $1) WHERE record_id = $2 RETURNING *`,
+      [url, record_id]
+    );
+    return rows[0] || null;
+  },
+
   async appendDeliveryChallanPhoto(record_id, url) {
     const { rows } = await pool.query(
       `UPDATE service_repair_records

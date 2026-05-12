@@ -119,6 +119,23 @@ exports.uploadPhoto = async (req, res) => {
   }
 };
 
+// Remove a photo URL from any array field
+exports.deletePhoto = async (req, res) => {
+  try {
+    const { field, url } = req.body;
+    if (!field || !url) {
+      return res.status(400).json({ error: 'field and url are required', code: 'VALIDATION_ERROR' });
+    }
+    const record = await ServiceRepair.removePhoto(req.params.id, field, url);
+    if (!record) return res.status(404).json({ error: 'Record not found', code: 'NOT_FOUND' });
+    logger.info(`ServiceRepair photo removed from ${field} for record ${req.params.id}`);
+    res.json(record);
+  } catch (err) {
+    logger.error('ServiceRepair deletePhoto error:', err);
+    res.status(500).json({ error: err.message || 'Failed to remove photo', code: 'SERVER_ERROR' });
+  }
+};
+
 // Upload a chalan photo (appended to array)
 exports.uploadChalanPhoto = async (req, res) => {
   try {

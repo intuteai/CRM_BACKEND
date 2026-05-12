@@ -11,7 +11,8 @@ router.get('/',    checkPermission('ServiceRepair', 'can_read'),  controller.get
 router.get('/:id', checkPermission('ServiceRepair', 'can_read'),  controller.getById);
 router.post('/',   checkPermission('ServiceRepair', 'can_write'), controller.create);
 router.put('/:id',    checkPermission('ServiceRepair', 'can_write'),  controller.update);
-router.delete('/:id', checkPermission('ServiceRepair', 'can_delete'), controller.remove);
+router.delete('/:id',       checkPermission('ServiceRepair', 'can_delete'), controller.remove);
+router.delete('/:id/photo', checkPermission('ServiceRepair', 'can_write'),  controller.deletePhoto);
 
 router.post('/:id/photo',                   checkPermission('ServiceRepair', 'can_write'), upload.single('photo'), controller.uploadPhoto);
 router.post('/:id/chalan-photo',            checkPermission('ServiceRepair', 'can_write'), upload.single('photo'), controller.uploadChalanPhoto);
