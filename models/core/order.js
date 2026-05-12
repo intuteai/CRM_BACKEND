@@ -229,9 +229,10 @@ class Order {
         throw new Error(`Invalid status transition: ${oldStatus} → ${newStatus}`);
       }
 
-      // 2c) Downgrade block — covers Shipped→Processing, Delivered→Shipped, etc.
-      if (STATUS_RANK[newStatus] < STATUS_RANK[oldStatus]) {
-        throw new Error(`Status downgrade not allowed: ${oldStatus} → ${newStatus}`);
+      // 2c) Downgrade block — only applies once the order has been dispatched
+      //     (inventory was already consumed at that point; can't reverse it).
+      if (STATUS_RANK[newStatus] < STATUS_RANK[oldStatus] && STATUS_RANK[oldStatus] >= STATUS_RANK['Shipped']) {
+        throw new Error('Status cannot be downgraded once an order has been shipped');
       }
 
       // 2d) Partially Delivered requires a reason.
