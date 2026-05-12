@@ -7,18 +7,20 @@ const logger = require('../../utils/logger');
 // absent — it is a terminal side-exit and must always go through cancelOrder().
 // ---------------------------------------------------------------------------
 const STATUS_RANK = {
-  Pending:    0,
-  Processing: 1,
-  Testing:    2,
-  Shipped:    3,
-  Delivered:  4,
+  Pending:               0,
+  Processing:            1,
+  Testing:               2,
+  'Ready for Shipment':  3,
+  Shipped:               4,
+  'Partially Delivered': 5,
+  Delivered:             6,
 };
 
 class Order {
   static async getAll({ limit = 10, cursor = null, user_id }) {
     const query = user_id
-      ? 'SELECT order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status FROM orders WHERE user_id = $1 AND ($2::timestamp IS NULL OR created_at < $2) ORDER BY created_at DESC LIMIT $3'
-      : 'SELECT order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status FROM orders WHERE $1::timestamp IS NULL OR created_at < $1 ORDER BY created_at DESC LIMIT $2';
+      ? 'SELECT order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status, status_reason FROM orders WHERE user_id = $1 AND ($2::timestamp IS NULL OR created_at < $2) ORDER BY created_at DESC LIMIT $3'
+      : 'SELECT order_id, user_id, TO_CHAR(target_delivery_date, \'YYYY-MM-DD\') AS target_delivery_date, created_at, status, payment_status, status_reason FROM orders WHERE $1::timestamp IS NULL OR created_at < $1 ORDER BY created_at DESC LIMIT $2';
     const countQuery = user_id ? 'SELECT COUNT(*) FROM orders WHERE user_id = $1' : 'SELECT COUNT(*) FROM orders';
     const values = user_id ? [user_id, cursor, limit] : [cursor, limit];
     const [result, countResult] = await Promise.all([
@@ -195,7 +197,7 @@ class Order {
     }
   }
 
-  static async updateOrder(orderId, { target_delivery_date, items, status, payment_status }, io) {
+  static async updateOrder(orderId, { target_delivery_date, items, status, payment_status, status_reason }, io) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -230,6 +232,11 @@ class Order {
       // 2c) Downgrade block — covers Shipped→Processing, Delivered→Shipped, etc.
       if (STATUS_RANK[newStatus] < STATUS_RANK[oldStatus]) {
         throw new Error(`Status downgrade not allowed: ${oldStatus} → ${newStatus}`);
+      }
+
+      // 2d) Partially Delivered requires a reason.
+      if (status === 'Partially Delivered' && !status_reason) {
+        throw new Error('A reason is required when marking an order as Partially Delivered');
       }
 
       // ------------------------------------------------------------------
@@ -291,11 +298,15 @@ class Order {
         updates.push(`payment_status = $${values.length + 1}`);
         values.push(payment_status);
       }
+      if (status_reason !== undefined) {
+        updates.push(`status_reason = $${values.length + 1}`);
+        values.push(status_reason || null);
+      }
 
       if (!updates.length) throw new Error('No fields provided to update');
 
       const { rows: [updatedOrder] } = await client.query(
-        `UPDATE orders SET ${updates.join(', ')} WHERE order_id = $1 RETURNING order_id, user_id, TO_CHAR(target_delivery_date, 'YYYY-MM-DD') AS target_delivery_date, created_at, status, payment_status`,
+        `UPDATE orders SET ${updates.join(', ')} WHERE order_id = $1 RETURNING order_id, user_id, TO_CHAR(target_delivery_date, 'YYYY-MM-DD') AS target_delivery_date, created_at, status, payment_status, status_reason`,
         values
       );
 
@@ -334,12 +345,12 @@ class Order {
       }
 
       // ------------------------------------------------------------------
-      // 6. Ship hook — CONSUME INVENTORY & RELEASE HOLDS
-      //    When transitioning to 'Shipped', we:
-      //    1. Deduct physical stock (CAN GO NEGATIVE for build-to-order)
-      //    2. Release the holds (they're no longer needed)
+      // 6. Dispatch hook — CONSUME INVENTORY & RELEASE HOLDS
+      //    Fires the first time an order crosses the dispatch threshold,
+      //    whether it lands on Shipped, Partially Delivered, or Delivered
+      //    directly (e.g. Ready for Shipment → Delivered skipping Shipped).
       // ------------------------------------------------------------------
-      if (STATUS_RANK[oldStatus] < STATUS_RANK['Shipped'] && newStatus === 'Shipped') {
+      if (STATUS_RANK[oldStatus] < STATUS_RANK['Shipped'] && STATUS_RANK[newStatus] >= STATUS_RANK['Shipped']) {
         const { rows: dispatchItems } = await client.query(
           'SELECT product_id, quantity FROM order_items WHERE order_id = $1',
           [orderId]
@@ -376,7 +387,7 @@ class Order {
           }
 
           logger.info(
-            `Order ${orderId} shipped: consumed inventory for ${dispatchItems.length} products, released ${releasedHolds.length} holds`
+            `Order ${orderId} dispatched (→${newStatus}): consumed inventory for ${dispatchItems.length} products, released ${releasedHolds.length} holds`
           );
 
           if (io) {

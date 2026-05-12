@@ -21,6 +21,7 @@ A full-featured Enterprise Resource Planning (ERP) and CRM backend built with No
   - [Operations](#operations)
   - [Service](#service)
   - [Chatbot](#chatbot)
+- [Order Status Lifecycle](#order-status-lifecycle)
 - [Authentication & Authorization](#authentication--authorization)
 - [Cron Jobs](#cron-jobs)
 - [Caching](#caching)
@@ -49,6 +50,7 @@ A full-featured Enterprise Resource Planning (ERP) and CRM backend built with No
 | Security | Helmet, express-rate-limit, CORS |
 | Validation | express-validator |
 | Testing | Jest + Supertest |
+| Deployment | AWS |
 
 ---
 
@@ -188,12 +190,23 @@ CRM_BACKEND/
 | Prefix | Description |
 |---|---|
 | `/api/customers` | Customer CRUD |
-| `/api/orders` | Order management |
+| `/api/orders` | Order management (see [Order Status Lifecycle](#order-status-lifecycle)) |
 | `/api/inventory` | Inventory tracking |
 | `/api/stock` | Stock management |
 | `/api/users` | User management |
 | `/api/reports` | Business reports |
 | `/api/dashboard` | Dashboard summary data |
+
+#### `/api/orders` key endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/` | List orders (paginated, role-scoped) |
+| POST | `/` | Create order |
+| PUT | `/:id/update` | Update order fields, status, payment status, status reason |
+| POST | `/:id/cancel` | Cancel order (enforces goods-returned gate for delivered orders) |
+| GET | `/export` | Download all orders as CSV (includes Status Reason column) |
+| POST | `/chatbot` | Natural language order queries |
 
 ---
 
@@ -236,7 +249,7 @@ CRM_BACKEND/
 
 | Prefix | Description |
 |---|---|
-| `/api/dispatch-tracking` | Shipment tracking |
+| `/api/dispatch-tracking` | Shipment tracking (status synced bidirectionally with orders via DB trigger) |
 | `/api/delivery-challan` | Delivery challan generation and PDF export |
 | `/api/ia-orders` | Inter-company / IA orders |
 
@@ -267,21 +280,27 @@ CRM_BACKEND/
 
 | Prefix | Description |
 |---|---|
-| `/api/service-repair` | Service and repair record management with photo uploads |
+| `/api/service-repair` | Service and repair record management with multi-photo uploads per stage |
 
 #### `/api/service-repair` endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/` | List all service repair records (paginated: `limit`, `offset`) |
-| GET | `/:id` | Get a single record by ID |
-| POST | `/` | Create a new service repair record |
-| PUT | `/:id` | Update an existing record |
+| GET | `/` | List all records (paginated: `limit`, `offset`) |
+| GET | `/:id` | Get a single record |
+| POST | `/` | Create a new record |
+| PUT | `/:id` | Update record fields |
 | DELETE | `/:id` | Delete a record |
-| POST | `/:id/photo` | Upload the dispatch / challan receiving photo (max 10 MB) |
-| POST | `/:id/repaired-photo` | Append a repaired-item photo to the record's photo array (max 10 MB) |
+| POST | `/:id/chalan-photo` | Append a chalan / received photo (image or PDF, max 10 MB) |
+| POST | `/:id/delivery-challan-photo` | Append a delivery challan photo (image or PDF, max 10 MB) |
+| POST | `/:id/fault-photo` | Append a fault / query photo |
+| POST | `/:id/actual-issue-photo` | Append an actual issue photo |
+| POST | `/:id/repaired-photo` | Append a repaired-item photo |
+| DELETE | `/:id/photo` | Remove a photo URL from any array field (`{ field, url }` in body) |
 
-**Key fields:** `customer_name`, `dispatch_material_no`, `part_details`, `receiving_quantity`, `dispatch_quantity`, `fault_query`, `actual_issue`, `repair_status` (`pending` | `in_progress` | `completed`), `service_type` (`repair` | …), `responsibility_person`, `testing_responsibility`, `sent_date`, `remarks`, `chalan_photo_url`, `delivery_challan_photo_url`, `repaired_photos_urls[]`
+**Photo array fields:** `chalan_photos_urls`, `delivery_challan_photos_urls`, `fault_photos_urls`, `actual_issue_photos_urls`, `repaired_photos_urls`
+
+All photo uploads are stored in Google Drive. Allowed types: JPEG, PNG, WebP, GIF, PDF (challan fields only).
 
 All endpoints require the `ServiceRepair` permission (`can_read` / `can_write` / `can_delete`).
 
@@ -300,6 +319,39 @@ All chatbot endpoints accept `POST` with `{ "message": "<natural language query>
 | `POST /api/stock/chatbot` | Raw material / stock queries |
 | `POST /api/bom/chatbot` | Bill of Materials queries |
 
+**Supported order chatbot commands:**
+`show all orders`, `show recent orders`, `show pending orders`, `show processing orders`, `show testing orders`, `show ready for shipment orders`, `show shipped orders`, `show partially delivered orders`, `show delivered orders`, `show cancelled orders`, `count orders by status`
+
+---
+
+## Order Status Lifecycle
+
+The `order_status` PostgreSQL enum defines the canonical status progression:
+
+```
+Pending → Processing → Testing → Ready for Shipment → Shipped → Partially Delivered → Delivered
+                                                               ↘ (can skip to Delivered directly)
+```
+
+| Status | Rank | Notes |
+|---|---|---|
+| Pending | 0 | Initial state on creation |
+| Processing | 1 | |
+| Testing | 2 | |
+| Ready for Shipment | 3 | |
+| Shipped | 4 | **Dispatch threshold** — inventory deducted, holds released |
+| Partially Delivered | 5 | `status_reason` required |
+| Delivered | 6 | Final state |
+| Cancelled | — | Terminal side-exit via `POST /:id/cancel` |
+
+**Inventory deduction** fires the first time an order crosses rank ≥ 4 (Shipped), regardless of whether intermediate statuses were used. This handles direct jumps like Testing → Delivered.
+
+**`status_reason`** (`text`, nullable) stores a free-text explanation for the current status. Required when setting `Partially Delivered`. Always editable independently of status.
+
+**`payment_status`** (`Pending` | `Paid`) is editable at any lifecycle stage, including after delivery.
+
+**Status transitions** are forward-only (no downgrade). The `dispatch_tracking_details` table stays in sync via a bidirectional PostgreSQL trigger (`sync_orders_status` ↔ `sync_dispatch_status`) with a loop guard.
+
 ---
 
 ## Authentication & Authorization
@@ -310,7 +362,7 @@ All protected routes use **JWT Bearer tokens** (also accepted via HTTP-only cook
 - User record is validated against the database on every request
 - **Role-based access control (RBAC)** is enforced at the module+action level via a `permissions` table
 
-**Supported roles:** `admin`, `sales`, `design`, `production`, `store`, `dispatch`, `accounts`, `employee`, `hr`, `ia_employee`, `ia_hr`, `customer`
+**Supported roles:** `admin`, `sales`, `design`, `production`, `store`, `dispatch`, `accounts`, `employee`, `hr`, `ia_employee`, `ia_hr`, `customer`, `service_repair`
 
 ---
 
@@ -384,6 +436,7 @@ A Socket.IO server runs alongside the HTTP server.
 - CORS-restricted to `FRONTEND_URL`
 - `io` is accessible on `app.get('io')` and injected into every request as `req.io`
 - Controllers emit events on data mutations for live UI updates
+- Stock update events (`stockUpdate`) broadcast after inventory deduction on order dispatch
 
 ---
 

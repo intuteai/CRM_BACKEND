@@ -12,6 +12,7 @@ async function buildOrderResponse(order, orderId, io) {
   return {
     id: order.order_id,
     status: order.status,
+    statusReason: order.status_reason || null,
     targetDeliveryDate: order.target_delivery_date,
     paymentStatus: order.payment_status,
     customerName: customer.rows[0]?.name || 'Unknown',
@@ -59,6 +60,7 @@ exports.getAll = async (req, res, next) => {
       const totalAmount = items.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0);
       return {
         id: order.order_id, status: order.status,
+        statusReason: order.status_reason || null,
         targetDeliveryDate: order.target_delivery_date,
         paymentStatus: order.payment_status,
         customerName: customer.rows[0]?.name || 'Unknown',
@@ -97,14 +99,14 @@ exports.update = async (req, res) => {
   }
   try {
     const orderId = req.params.id;
-    const { items, payment_status, targetDeliveryDate, status } = req.body;
+    const { items, payment_status, targetDeliveryDate, status, status_reason } = req.body;
     if (items !== undefined && !items.length) return res.status(400).json({ error: 'Items cannot be an empty array' });
     if (status === 'Cancelled') return res.status(400).json({ error: 'Use POST /orders/:id/cancel to cancel an order' });
     const validPaymentStatuses = ['Pending', 'Paid'];
     if (payment_status && !validPaymentStatuses.includes(payment_status)) {
       return res.status(400).json({ error: `Invalid payment_status: must be ${validPaymentStatuses.join(', ')}` });
     }
-    const order = await Order.updateOrder(orderId, { target_delivery_date: targetDeliveryDate, items, status, payment_status }, req.io);
+    const order = await Order.updateOrder(orderId, { target_delivery_date: targetDeliveryDate, items, status, payment_status, status_reason }, req.io);
     const response = await buildOrderResponse(order, orderId, req.io);
     setImmediate(() => invalidateOrderCaches());
     res.json(response);
@@ -173,6 +175,7 @@ exports.exportOrders = async (req, res, next) => {
           itemsSummary,
           totalAmount,
           order.status,
+          order.status_reason || '',
           order.target_delivery_date || 'Not Set',
           order.payment_status,
           new Date(order.created_at).toISOString(),
@@ -187,6 +190,7 @@ exports.exportOrders = async (req, res, next) => {
       'Items',
       'Total Amount (INR)',
       'Status',
+      'Status Reason',
       'Target Delivery',
       'Payment Status',
       'Created At',
