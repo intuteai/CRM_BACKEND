@@ -125,7 +125,8 @@ CRM_BACKEND/
 ├── server.js                   # App entry point
 ├── config/
 │   ├── db.js                   # PostgreSQL pool
-│   └── redis.js                # Redis client
+│   ├── redis.js                # Redis client
+│   └── socket.js               # Socket.IO initialisation
 ├── routes/
 │   ├── auth.js
 │   ├── core/                   # customers, orders, inventory, stock, users, reports, dashboard
@@ -150,7 +151,7 @@ CRM_BACKEND/
 ├── services/
 │   ├── email.js                # Nodemailer wrapper
 │   └── googleDrive.js          # Google Drive upload
-├── chatbot/                    # AI order chatbot (routes + logic)
+├── chatbot/                    # AI chatbots (orders, customers, invoices, inventory, stock, BOM)
 ├── utils/
 │   ├── logger.js               # Winston logger
 │   └── emailTemplates.js       # HTML email template generators
@@ -158,6 +159,9 @@ CRM_BACKEND/
 │   └── fonts/                  # Roboto fonts for PDF generation
 ├── secrets/
 │   └── drive-sa.json           # Google service account (gitignored)
+├── tests/
+│   └── auth.test.js            # Jest + Supertest test suite
+├── Dockerfile                  # Docker container image
 └── logs/
     ├── error.log
     └── combined.log
@@ -201,6 +205,7 @@ CRM_BACKEND/
 | `/api/enquiry-requirements` | Linked requirements per enquiry |
 | `/api/quotation` | Quotation generation and PDF export |
 | `/api/proforma` | Proforma invoice generation and PDF export |
+| `/api/purchase-order` | Purchase order generation and PDF export |
 | `/api/price-list` | Product price list management |
 
 ---
@@ -284,9 +289,16 @@ All endpoints require the `ServiceRepair` permission (`can_read` / `can_write` /
 
 ### Chatbot
 
-| Prefix | Description |
+All chatbot endpoints accept `POST` with `{ "message": "<natural language query>" }` and require authentication.
+
+| Endpoint | Domain |
 |---|---|
-| `/api/orders/chatbot` | AI-powered natural language order query interface |
+| `POST /api/orders/chatbot` | Order queries |
+| `POST /api/customer-invoices/chatbot` | Customer invoice queries |
+| `POST /api/customers/chatbot` | Customer queries |
+| `POST /api/inventory/chatbot` | Inventory queries |
+| `POST /api/stock/chatbot` | Raw material / stock queries |
+| `POST /api/bom/chatbot` | Bill of Materials queries |
 
 ---
 
@@ -339,6 +351,7 @@ Documents that support PDF export:
 |---|---|
 | Quotation | `POST /api/quotation/generate` |
 | Proforma Invoice | `POST /api/proforma/generate` |
+| Purchase Order | `POST /api/purchase-order/generate` |
 | Delivery Challan | `POST /api/delivery-challan/generate` |
 | Payslip | `POST /api/payslip/generate` |
 
