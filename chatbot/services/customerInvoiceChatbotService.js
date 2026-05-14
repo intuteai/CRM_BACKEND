@@ -16,7 +16,7 @@ class CustomerInvoiceChatbotService {
         success: false,
         response: `I didn't understand that. Try: "show all invoices", "show high value invoices", "total invoice value", or "show monthly invoice trend".`,
       };
-    }
+    } 
 
     const handlers = {
       INVOICE_LIST_ALL:       () => CustomerInvoiceChatbot.getAllForChatbot(10),
