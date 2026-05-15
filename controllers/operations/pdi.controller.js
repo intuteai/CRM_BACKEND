@@ -1,6 +1,29 @@
 const Pdi = require('../../models/operations/pdi');
+const PDIGenerator = require('../../models/operations/pdi_generator');
 const redis = require('../../config/redis');
 const logger = require('../../utils/logger');
+
+exports.generate = async (req, res) => {
+  try {
+    const data = req.body || {};
+    if (!data.pdi_no) return res.status(400).json({ error: 'pdi_no required' });
+    const safeName = String(data.pdi_no).replace(/[^a-zA-Z0-9_\-]/g, '_');
+    const filename = `PDI_${safeName}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    const pdfStream = PDIGenerator.generate(data);
+    pdfStream.on('error', (streamErr) => {
+      logger.error('PDI stream error:', streamErr);
+      if (!res.headersSent) res.status(500).json({ error: 'PDF stream failed' });
+      else res.destroy();
+    });
+    pdfStream.pipe(res);
+    logger.info(`PDI generated: ${filename} by ${req.user?.user_id}`);
+  } catch (err) {
+    logger.error('PDI generate error:', err);
+    if (!res.headersSent) res.status(500).json({ error: 'Failed to generate PDI PDF' });
+  }
+};
 
 exports.create = async (req, res) => {
   try {

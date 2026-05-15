@@ -3,6 +3,7 @@ const router = express.Router({ mergeParams: true });
 const { authenticateToken } = require('../../middleware/auth');
 const controller = require('../../controllers/operations/pdi.controller');
 
+router.post('/generate', authenticateToken, controller.generate);
 router.post('/', authenticateToken, controller.create);
 router.get('/', authenticateToken, controller.getAll);
 router.get('/:id', authenticateToken, controller.getOne);
