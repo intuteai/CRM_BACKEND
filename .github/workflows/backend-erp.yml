@@ -2,10 +2,6 @@ name: Deploy CRM Backend to EC2
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-      - 'CRM_BACKEND/**'
 
 jobs:
   deploy-backend:
@@ -42,7 +38,7 @@ jobs:
             # Stop running containers first so the image can be removed
             docker-compose down
 
-            # Remove existing image from the server (ignore error if it doesn't exist)
+            # Remove existing image from the server
             docker image rm intuteai/erp-backend:latest || true
 
             # Pull fresh image and start containers
