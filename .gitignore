@@ -64,3 +64,4 @@ drive-sa.json
 # Any other service account keys you might download in future
 google-credentials.json
 service-account-key.json
+.gstack/
