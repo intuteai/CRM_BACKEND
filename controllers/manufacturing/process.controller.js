@@ -6,7 +6,7 @@ const logger = require('../../utils/logger');
 const formatWorkOrderResponse = (workOrder) => ({
   workOrderId: workOrder.workOrderId, orderId: workOrder.orderId, instanceGroupId: workOrder.instanceGroupId,
   instanceName: workOrder.instanceName, instanceType: workOrder.instanceType, targetDate: workOrder.targetDate,
-  status: workOrder.status, createdAt: workOrder.createdAt, stages: workOrder.stages ?? [],
+  status: workOrder.status, createdAt: workOrder.createdAt, stages: workOrder.stages ?? [], testing: workOrder.testing ?? [],
   components: workOrder.components.map(component => ({
     workOrderComponentId: component.workOrderComponentId, componentId: component.componentId,
     componentName: component.componentName, productType: component.productType, quantity: component.quantity,
@@ -157,7 +157,7 @@ exports.createWorkOrder = async (req, res, next) => {
     const workOrder = await Process.createWorkOrder(orderId, { instance_group_id, target_date }, req.io);
     const { rows: [ig] = [{}] } = instance_group_id ? await pool.query('SELECT instance_name, instance_type FROM instance_groups WHERE instance_group_id = $1', [instance_group_id]) : [];
     setImmediate(async () => { const keys = await redis.keys(`processes_${orderId}_*`); if (keys.length) await redis.del(keys); });
-    res.status(201).json({ workOrderId: workOrder.work_order_id, orderId: workOrder.order_id, instanceGroupId: workOrder.instance_group_id, instanceName: ig?.instance_name || null, instanceType: ig?.instance_type || null, targetDate: workOrder.target_date, status: workOrder.status, createdAt: workOrder.created_at, components: [], timezone: 'Asia/Kolkata' });
+    res.status(201).json({ workOrderId: workOrder.work_order_id, orderId: workOrder.order_id, instanceGroupId: workOrder.instance_group_id, instanceName: ig?.instance_name || null, instanceType: ig?.instance_type || null, targetDate: workOrder.target_date, status: workOrder.status, createdAt: workOrder.created_at, components: [], testing: [], timezone: 'Asia/Kolkata' });
   } catch (error) { logger.error(`Create work order failed - order ${orderId}: ${error.message}`, { stack: error.stack }); res.status(error.status || 400).json({ error: error.message }); }
 };
 
@@ -207,4 +207,36 @@ exports.updateWorkOrderStage = async (req, res, next) => {
     });
     res.json(result);
   } catch (error) { logger.error(`Work order stage update failed - workOrder ${workOrderId}: ${error.message}`, { stack: error.stack }); res.status(error.status || 400).json({ error: error.message }); }
+};
+
+exports.getTestingResults = async (req, res, next) => {
+  try {
+    res.json(await Process.getTestingResults(req.params.workOrderId));
+  } catch (error) {
+    logger.error(`Testing results fetch failed - workOrder ${req.params.workOrderId}: ${error.message}`, { stack: error.stack });
+    next(error);
+  }
+};
+
+exports.upsertTestingResult = async (req, res, next) => {
+  const { workOrderId } = req.params;
+  const { testing_type, qty, test_date, controller_type } = req.body;
+  if (!testing_type) return res.status(400).json({ error: 'testing_type is required' });
+  if (qty !== undefined && qty !== null && qty !== '' && (!Number.isInteger(Number(qty)) || Number(qty) < 0)) {
+    return res.status(400).json({ error: 'qty must be a non-negative integer' });
+  }
+  if (test_date && !/^\d{4}-\d{2}-\d{2}$/.test(test_date)) {
+    return res.status(400).json({ error: 'test_date must be in YYYY-MM-DD format' });
+  }
+  try {
+    const result = await Process.upsertTestingResult(workOrderId, { testing_type, qty, test_date, controller_type }, req.io);
+    setImmediate(async () => {
+      const { rows: [wo] } = await pool.query('SELECT order_id FROM work_orders WHERE work_order_id = $1', [workOrderId]);
+      if (wo) { const keys = await redis.keys(`processes_${wo.order_id}_*`); if (keys.length) await redis.del(keys); }
+    });
+    res.json(result);
+  } catch (error) {
+    logger.error(`Testing result update failed - workOrder ${workOrderId}: ${error.message}`, { stack: error.stack });
+    res.status(error.status || 400).json({ error: error.message });
+  }
 };

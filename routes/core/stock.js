@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 *
 
 const validateStockInput = (req, res, next) => {
   const { productName, description, productCode, price, stockQuantity, qtyRequired, location, imageUrl } = req.body;
-  if (!productName || typeof productName !== 'string' || (description && typeof description !== 'string') || !productCode || typeof productCode !== 'string' || (price === undefined || typeof price !== 'number' || price < 0) || (stockQuantity !== undefined && (typeof stockQuantity !== 'number' || stockQuantity < 0)) || (qtyRequired !== undefined && (typeof qtyRequired !== 'number' || qtyRequired < 0)) || (location !== undefined && typeof location !== 'string') || (imageUrl !== undefined && imageUrl !== null && typeof imageUrl !== 'string')) {
+  if (!productName || typeof productName !== 'string' || (description && typeof description !== 'string') || !productCode || typeof productCode !== 'string' || productCode.length !== 11 || (price === undefined || typeof price !== 'number' || price < 0) || (stockQuantity !== undefined && (typeof stockQuantity !== 'number' || stockQuantity < 0)) || (qtyRequired !== undefined && (typeof qtyRequired !== 'number' || qtyRequired < 0)) || (location !== undefined && typeof location !== 'string') || (imageUrl !== undefined && imageUrl !== null && typeof imageUrl !== 'string')) {
     return res.status(400).json({ error: 'Invalid input data', code: 'INVALID_INPUT' });
   }
   next();
@@ -22,6 +22,7 @@ const validateAdjustInput = (req, res, next) => {
   next();
 };
 
+router.get('/check-part-number', authenticateToken, controller.checkPartNumber);
 router.get('/', authenticateToken, checkPermission('Stock', 'can_read'), controller.getAll);
 router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, controller.create);
 router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, controller.update);

@@ -8,6 +8,7 @@ router.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100, message: 'Too many re
 
 router.post('/', authenticateToken, checkPermission('Inventory', 'can_write'), controller.create);
 router.get('/available', authenticateToken, controller.getAvailable);
+router.get('/check-part-number', authenticateToken, controller.checkPartNumber);
 router.get('/', authenticateToken, checkPermission('Inventory', 'can_read'), controller.getAll);
 router.put('/:id', authenticateToken, checkPermission('Inventory', 'can_write'), controller.update);
 router.delete('/:id', authenticateToken, checkPermission('Inventory', 'can_write'), controller.delete);

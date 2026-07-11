@@ -8,11 +8,24 @@ const sanitize = (input) => sanitizeHtml(input, { allowedTags: [], allowedAttrib
 
 exports.create = async (req, res, next) => {
   try {
-    const { product_name, stock_quantity, price, description, product_code, returnable_qty = 0 } = req.body;
+    const { product_name, stock_quantity, price, description, product_code, returnable_qty = 0, part_number_auto } = req.body;
     if (!product_name) return res.status(400).json({ error: 'Product name is required' });
     if (!product_code || product_code.length !== 11) return res.status(400).json({ error: 'Product code must be exactly 11 characters' });
     if (stock_quantity < 0) return res.status(400).json({ error: 'Stock quantity cannot be negative' });
     if (returnable_qty < 0) return res.status(400).json({ error: 'Returnable quantity cannot be negative' });
+
+    if (!part_number_auto) {
+      const partNumber = product_code.slice(0, 4);
+      const { rows: conflictRows } = await pool.query(
+        'SELECT product_id, product_name FROM inventory WHERE part_number = $1',
+        [partNumber]
+      );
+      if (conflictRows.length > 0) {
+        return res.status(400).json({
+          error: `Part Number ${partNumber} is already used by ${conflictRows[0].product_name} (#${conflictRows[0].product_id})`,
+        });
+      }
+    }
 
     const sanitizedData = {
       product_name: sanitize(product_name),
@@ -23,12 +36,39 @@ exports.create = async (req, res, next) => {
       returnable_qty: returnable_qty || 0,
     };
     const product = await Inventory.create(sanitizedData, req.io);
+
+    let partNumberWarning = null;
+    if (part_number_auto) {
+      const correctedPartNumber = String(product.product_id).padStart(4, '0');
+      const currentPartNumber = product.product_code.slice(0, 4);
+      if (product.product_id > 9999) {
+        partNumberWarning = 'Product ID exceeds 9999 — Part Number could not be auto-assigned. Please set it manually.';
+      } else if (correctedPartNumber !== currentPartNumber) {
+        const correctedCode = correctedPartNumber + product.product_code.slice(4);
+        try {
+          const { rows: [updatedRow] } = await pool.query(
+            'UPDATE inventory SET product_code = $1 WHERE product_id = $2 RETURNING *',
+            [correctedCode, product.product_id]
+          );
+          Object.assign(product, updatedRow);
+        } catch (correctionError) {
+          logger.error(`Failed to auto-correct part number for inventory product ${product.product_id}: ${correctionError.message}`, correctionError.stack);
+          partNumberWarning = correctionError.code === '23505'
+            ? `Auto-assigned part number ${correctedPartNumber} conflicts with an existing entry — please set it manually.`
+            : `Could not auto-assign part number ${correctedPartNumber} — please set it manually.`;
+        }
+      }
+    }
+
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
     await redis.del('price_list_*');
     logger.info(`Product added: ${product.product_name} by ${req.user.user_id}`);
-    res.status(201).json(product);
+    res.status(201).json(partNumberWarning ? { ...product, partNumberWarning } : product);
   } catch (error) {
+    if (error.code === '23505' && error.constraint === 'inventory_part_number_unique') {
+      return res.status(400).json({ error: 'Part Number is already in use' });
+    }
     if (error.code === '23505' && error.constraint === 'unique_product_code') {
       return res.status(400).json({ error: 'Product code must be unique' });
     }
@@ -73,6 +113,29 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
+exports.checkPartNumber = async (req, res, next) => {
+  try {
+    const { part_number, exclude_id } = req.query;
+    if (!part_number || !/^\d{4}$/.test(part_number)) {
+      return res.status(400).json({ error: 'part_number must be a 4-digit string' });
+    }
+    let query = 'SELECT product_id, product_name FROM inventory WHERE part_number = $1';
+    const params = [part_number];
+    if (exclude_id) {
+      query += ' AND product_id != $2';
+      params.push(exclude_id);
+    }
+    const { rows } = await pool.query(query, params);
+    if (rows.length === 0) {
+      return res.json({ available: true, conflictProductId: null, conflictProductName: null });
+    }
+    res.json({ available: false, conflictProductId: rows[0].product_id, conflictProductName: rows[0].product_name });
+  } catch (error) {
+    logger.error(`Error checking inventory part number: ${error.message}`, error.stack);
+    next(error);
+  }
+};
+
 exports.update = async (req, res, next) => {
   try {
     const productId = req.params.id;
@@ -80,6 +143,17 @@ exports.update = async (req, res, next) => {
     if (!product_name) return res.status(400).json({ error: 'Product name is required' });
     if (price !== undefined && price < 0) return res.status(400).json({ error: 'Price must be >= 0' });
     if (!product_code || product_code.length !== 11) return res.status(400).json({ error: 'Product code must be exactly 11 characters' });
+
+    const partNumber = product_code.slice(0, 4);
+    const { rows: conflictRows } = await pool.query(
+      'SELECT product_id, product_name FROM inventory WHERE part_number = $1 AND product_id != $2',
+      [partNumber, productId]
+    );
+    if (conflictRows.length > 0) {
+      return res.status(400).json({
+        error: `Part Number ${partNumber} is already used by ${conflictRows[0].product_name} (#${conflictRows[0].product_id})`,
+      });
+    }
 
     const updateData = {
       product_name: sanitize(product_name),
@@ -108,6 +182,9 @@ exports.update = async (req, res, next) => {
     await redis.del('price_list_*');
     res.json(updatedProduct);
   } catch (error) {
+    if (error.code === '23505' && error.constraint === 'inventory_part_number_unique') {
+      return res.status(400).json({ error: 'Part Number is already in use' });
+    }
     if (error.code === '23505' && error.constraint === 'unique_product_code') {
       return res.status(400).json({ error: 'Product code must be unique' });
     }

@@ -16,6 +16,8 @@ router.put('/components/:workOrderComponentId/materials/:materialId', authentica
 router.delete('/components/:workOrderComponentId/materials/:materialId', authenticateToken, checkPermission('Processes', 'can_delete'), controller.deleteMaterial);
 router.get('/work-orders/:workOrderId/stages', authenticateToken, checkPermission('Processes', 'can_read'), controller.getWorkOrderStages);
 router.put('/work-orders/:workOrderId/stages', authenticateToken, checkPermission('Processes', 'can_write'), controller.updateWorkOrderStage);
+router.get('/work-orders/:workOrderId/testing', authenticateToken, checkPermission('Processes', 'can_read'), controller.getTestingResults);
+router.put('/work-orders/:workOrderId/testing', authenticateToken, checkPermission('Processes', 'can_write'), controller.upsertTestingResult);
 router.post('/:orderId/work-orders', authenticateToken, checkPermission('Processes', 'can_write'), controller.createWorkOrder);
 router.get('/:orderId/instance-groups', authenticateToken, checkPermission('Processes', 'can_read'), controller.getInstanceGroups);
 router.post('/:orderId/instance-groups', authenticateToken, checkPermission('Processes', 'can_write'), controller.createInstanceGroup);

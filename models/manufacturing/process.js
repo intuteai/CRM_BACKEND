@@ -458,7 +458,20 @@ class Process {
             FROM work_order_stages wos
             WHERE wos.work_order_id = wo.work_order_id
           ), '[]'::json) AS stages,
-          
+
+          COALESCE((
+            SELECT json_agg(
+              json_build_object(
+                'testingType', wtr.testing_type,
+                'qty', wtr.qty,
+                'testDate', TO_CHAR(wtr.test_date, 'YYYY-MM-DD'),
+                'controllerType', wtr.controller_type
+              )
+            )
+            FROM work_order_testing_results wtr
+            WHERE wtr.work_order_id = wo.work_order_id
+          ), '[]'::json) AS testing,
+
           (SELECT COUNT(DISTINCT wo2.work_order_id)
            FROM work_orders wo2
            ${totalWhere}
@@ -488,6 +501,7 @@ class Process {
         status: row.status,
         createdAt: row.created_at,
         stages: row.stages ?? [],
+        testing: row.testing ?? [],
         components: row.components ?? [],
         total: parseInt(row.total, 10) || 0
       }));
@@ -941,6 +955,74 @@ class Process {
     );
 
     return rows;
+  }
+
+  static async getTestingResults(work_order_id) {
+    const pool = require('../../config/db');
+
+    const workOrderIdNum = parseInt(work_order_id, 10);
+    if (isNaN(workOrderIdNum)) throw new Error('Invalid work_order_id');
+
+    const { rows } = await pool.query(
+      `SELECT testing_type, qty, TO_CHAR(test_date, 'YYYY-MM-DD') AS test_date, controller_type
+       FROM work_order_testing_results
+       WHERE work_order_id = $1`,
+      [workOrderIdNum]
+    );
+
+    const byType = new Map(rows.map((r) => [r.testing_type, r]));
+    return ['Primary', 'Final'].map((type) => {
+      const r = byType.get(type);
+      return {
+        testingType: type,
+        qty: r ? r.qty : null,
+        testDate: r ? r.test_date : null,
+        controllerType: r ? r.controller_type : null,
+      };
+    });
+  }
+
+  static async upsertTestingResult(work_order_id, { testing_type, qty, test_date, controller_type }, io) {
+    const pool = require('../../config/db');
+
+    const workOrderIdNum = parseInt(work_order_id, 10);
+    if (isNaN(workOrderIdNum)) throw new Error('Invalid work_order_id');
+    if (!['Primary', 'Final'].includes(testing_type)) {
+      throw new Error('testing_type must be Primary or Final');
+    }
+
+    const { rows: [wo] } = await pool.query(
+      'SELECT work_order_id FROM work_orders WHERE work_order_id = $1',
+      [workOrderIdNum]
+    );
+    if (!wo) throw new Error(`Work order ${workOrderIdNum} not found`);
+
+    let qtyNum = null;
+    if (qty !== null && qty !== undefined && qty !== '') {
+      qtyNum = parseInt(qty, 10);
+      if (isNaN(qtyNum)) throw new Error('qty must be a number');
+    }
+
+    const { rows: [result] } = await pool.query(
+      `INSERT INTO work_order_testing_results (work_order_id, testing_type, qty, test_date, controller_type)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (work_order_id, testing_type)
+       DO UPDATE SET qty = EXCLUDED.qty, test_date = EXCLUDED.test_date, controller_type = EXCLUDED.controller_type, updated_at = CURRENT_TIMESTAMP
+       RETURNING testing_type, qty, TO_CHAR(test_date, 'YYYY-MM-DD') AS test_date, controller_type`,
+      [workOrderIdNum, testing_type, qtyNum, test_date || null, controller_type || null]
+    );
+
+    if (io) {
+      io.emit('workOrderTestingUpdate', {
+        workOrderId: workOrderIdNum,
+        testingType: result.testing_type,
+        qty: result.qty,
+        testDate: result.test_date,
+        controllerType: result.controller_type,
+      });
+    }
+
+    return result;
   }
 }
 
