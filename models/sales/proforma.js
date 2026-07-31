@@ -8,7 +8,7 @@ const path = require('path');
 const logger = require('../../utils/logger');
 
 const FONT_DIR = path.join(__dirname, '../../assets/fonts');
-const ASSETS = { signature: path.join(__dirname, '../assets/compage_signature.png') };
+const ASSETS = { signature: path.join(__dirname, '../../assets/compage_signature.png') };
 
 // === FIXED VALUES ===
 const COMPANY_NAME = 'COMPAGE AUTOMATION SYSTEMS PVT. LTD.';

@@ -97,9 +97,9 @@ const FIXED_FOOTER_LINE1 = "Factory:20-21,NewDLFIndustrialArea,Faridabad-121003,
 const FIXED_FOOTER_LINE2 = "Website: www.compageauto.com  |  GST No.: 06AAACC3923F1Z4";
 
 const ASSETS = {
-  headerLeft: path.join(__dirname, '../assets/compage_header_left.png'),
-  headerRight: path.join(__dirname, '../assets/compage_header_right.png'),
-  signature: path.join(__dirname, '../assets/compage_signature.png'),
+  headerLeft: path.join(__dirname, '../../assets/compage_header_left.png'),
+  headerRight: path.join(__dirname, '../../assets/compage_header_right.png'),
+  signature: path.join(__dirname, '../../assets/compage_signature.png'),
 };
 function findAsset(preferredPath, fallbackName) {
   if (fs.existsSync(preferredPath)) return preferredPath;

@@ -156,7 +156,7 @@ class Payslip {
       doc.rect(0, 6, pageWidth, 90).fill(headerGrad);
 
       /* ===== Logo ===== */
-      const logoPng = path.join(__dirname, '../assets/image.png');
+      const logoPng = path.join(__dirname, '../../assets/image.png');
       let logoExists = false;
       if (fs.existsSync(logoPng)) {
         const logoX = margin;
@@ -412,7 +412,7 @@ class Payslip {
       y += wordsBoxH + 8;
 
       /* ===== FINAL STAMP + FOOTER (single-page guarantee) ===== */
-      const stampPath = path.join(__dirname, '../assets/stamp.png');
+      const stampPath = path.join(__dirname, '../../assets/stamp.png');
       const stampExists = fs.existsSync(stampPath);
       const stampH = stampExists ? 85 : 0;
       const stampGap = stampExists ? 20 : 20;
