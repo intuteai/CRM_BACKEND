@@ -10,6 +10,7 @@ router.use(authenticateToken, (req, res, next) => {
 });
 
 router.get('/', checkPermission('ia_orders', 'can_read'), controller.getAll);
+router.get('/check-serials', checkPermission('ia_orders', 'can_read'), controller.checkSerials);
 router.get('/:id', checkPermission('ia_orders', 'can_read'), controller.getOne);
 router.post('/', checkPermission('ia_orders', 'can_write'), controller.create);
 router.put('/:id', checkPermission('ia_orders', 'can_write'), controller.update);

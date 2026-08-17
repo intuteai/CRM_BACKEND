@@ -52,6 +52,21 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.checkSerials = async (req, res) => {
+  try {
+    const serials = String(req.query.serials || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    if (serials.length === 0) return res.json({ taken: [] });
+    const taken = await IAOrders.checkSerialsAvailability(serials);
+    return res.json({ taken });
+  } catch (err) {
+    logger.error(`GET ia_orders/check-serials error: ${err.message}`);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
 exports.getOne = async (req, res) => {
   try {
     const order = await IAOrders.getById(req.params.id);

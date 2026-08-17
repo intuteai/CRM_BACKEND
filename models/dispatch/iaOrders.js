@@ -134,6 +134,18 @@ class IAOrders {
     }
   }
 
+  // ==================== CHECK SERIAL AVAILABILITY ====================
+  static async checkSerialsAvailability(serials) {
+    const list = [...new Set((serials || []).map(s => String(s).trim()).filter(Boolean))];
+    if (list.length === 0) return [];
+
+    const res = await pool.query(
+      'SELECT vcu_serial FROM ia_order_items WHERE vcu_serial = ANY($1::text[])',
+      [list]
+    );
+    return res.rows.map(r => r.vcu_serial);
+  }
+
   // ==================== GET ALL ====================
   static async getAll({ limit = 20, cursor = null } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 20, 1), 100);
