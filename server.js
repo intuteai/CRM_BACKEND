@@ -44,6 +44,7 @@ const iaOrdersRoutes         = require('./routes/dispatch/iaOrders');
 const attendanceRoutes       = require('./routes/hr/attendance');
 const employeeDetailsRoutes  = require('./routes/hr/employeeDetails');
 const payslipRoutes          = require('./routes/hr/payslip');
+const invoiceRoutes          = require('./routes/hr/invoice');
 
 // ── Operations routes ─────────────────────────────────────────
 const queriesRoutes          = require('./routes/operations/queries');
@@ -158,6 +159,7 @@ app.use('/api/ia-orders',         iaOrdersRoutes);
 app.use('/api/attendance',       attendanceRoutes);
 app.use('/api/employee-details', employeeDetailsRoutes);
 app.use('/api/payslip',          payslipRoutes);
+app.use('/api/invoice',          invoiceRoutes);
 
 // Operations
 app.use('/api/queries',     queriesRoutes);
