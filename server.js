@@ -45,6 +45,7 @@ const attendanceRoutes       = require('./routes/hr/attendance');
 const employeeDetailsRoutes  = require('./routes/hr/employeeDetails');
 const payslipRoutes          = require('./routes/hr/payslip');
 const invoiceRoutes          = require('./routes/hr/invoice');
+const invoiceRecordsRoutes   = require('./routes/hr/invoiceRecords');
 
 // ── Operations routes ─────────────────────────────────────────
 const queriesRoutes          = require('./routes/operations/queries');
@@ -160,6 +161,7 @@ app.use('/api/attendance',       attendanceRoutes);
 app.use('/api/employee-details', employeeDetailsRoutes);
 app.use('/api/payslip',          payslipRoutes);
 app.use('/api/invoice',          invoiceRoutes);
+app.use('/api/invoice-records',  invoiceRecordsRoutes);
 
 // Operations
 app.use('/api/queries',     queriesRoutes);

@@ -115,6 +115,23 @@ function gridCell(doc, x, y, w, h, opts = {}) {
   });
 }
 
+// Mirrors gridCell's internal layout math to compute the height a cell's
+// content actually needs, given a fixed width — without this, a value too
+// long to fit on one line wraps and silently overflows the cell's drawn
+// border into whatever is below it (seen in practice: a long invoice number
+// overlapping the Date row beneath it).
+function measureGridCellHeight(doc, width, opts = {}) {
+  const { label, value, valueFont = 'Roboto', valueSize = 9.5, padX = 6, padY = 4, labelSize = 7.5 } = opts;
+  let h = padY;
+  if (label) h += labelSize + 3;
+  // lineGap 0 matches gridCell's actual doc.text() call below, which passes
+  // none — any mismatch here would make this estimate drift from what's
+  // really drawn (either under-measuring, risking the very overflow this
+  // function exists to prevent, or over-measuring and wasting space).
+  h += Math.ceil(measureHeight(doc, value, width - padX * 2, valueFont, valueSize, 0));
+  return h + padY;
+}
+
 /* ===========================
    Invoice
    =========================== */
@@ -198,16 +215,12 @@ class Invoice {
       const leftW = contentWidth * 0.58;
       const rightW = contentWidth - leftW;
       const rightX = margin + leftW;
-      const metaRowH = 18;
-      const billingH = metaRowH * 4;
+      const metaRowMinH = 18;
+      const metaValueW = rightW * 0.58;
 
       const billingLines = [data.billing.address, data.billing.phone ? `Phone: ${data.billing.phone}` : null,
         data.billing.email ? `Email: ${data.billing.email}` : null, data.billing.gst ? `GST: ${data.billing.gst}` : null]
         .filter(Boolean).join('\n');
-
-      gridCell(doc, margin, y, leftW, billingH, {
-        label: `To, ${data.billing.name}`, value: billingLines, valueSize: 8.5,
-      });
 
       const metaRows = [
         ['Invoice No.', data.invoiceNumber],
@@ -215,13 +228,36 @@ class Invoice {
         ['Order No.', data.orderNo || '-'],
         ['Order Date', data.orderDate || '-'],
       ];
+      // Each row's height is driven by whichever value actually needs more
+      // room — a long invoice number no longer overflows into the row below.
+      const metaRowHeights = metaRows.map(([, value]) =>
+        Math.max(metaRowMinH, measureGridCellHeight(doc, metaValueW, { value, valueSize: 8.5 }))
+      );
+
+      const billingCellH = Math.max(
+        metaRowMinH * 4,
+        measureGridCellHeight(doc, leftW, { label: `To, ${data.billing.name}`, value: billingLines, valueSize: 8.5, labelSize: 7.5 })
+      );
+      const metaTotalH = metaRowHeights.reduce((a, b) => a + b, 0);
+      const billingH = Math.max(billingCellH, metaTotalH);
+      // If the billing side ends up taller, give the extra room to the last
+      // meta row so the two columns still end at exactly the same y.
+      if (billingH > metaTotalH) metaRowHeights[metaRowHeights.length - 1] += billingH - metaTotalH;
+
+      gridCell(doc, margin, y, leftW, billingH, {
+        label: `To, ${data.billing.name}`, value: billingLines, valueSize: 8.5,
+      });
+
+      let metaRowY = y;
       metaRows.forEach(([label, value], idx) => {
-        gridCell(doc, rightX, y + idx * metaRowH, rightW * 0.42, metaRowH, {
+        const rowH = metaRowHeights[idx];
+        gridCell(doc, rightX, metaRowY, rightW * 0.42, rowH, {
           value: label, valueFont: 'Roboto-Medium', valueSize: 8.5, bg: '#f8fafc',
         });
-        gridCell(doc, rightX + rightW * 0.42, y + idx * metaRowH, rightW * 0.58, metaRowH, {
+        gridCell(doc, rightX + rightW * 0.42, metaRowY, rightW * 0.58, rowH, {
           value, valueSize: 8.5,
         });
+        metaRowY += rowH;
       });
       y += billingH;
 
