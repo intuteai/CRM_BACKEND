@@ -25,6 +25,7 @@ const priceListRoutes        = require('./routes/sales/priceList');
 
 // ── Manufacturing routes ──────────────────────────────────────
 const bomRoutes              = require('./routes/manufacturing/bom');
+const iptKitsRoutes          = require('./routes/manufacturing/iptKits');
 const partsRoutes            = require('./routes/manufacturing/parts');
 const partDrawingsRoutes     = require('./routes/manufacturing/partDrawings');
 const partDrawingsRawRoutes  = require('./routes/manufacturing/partDrawingsRaw');
@@ -141,6 +142,7 @@ app.use('/api/price-list',           priceListRoutes);
 
 // Manufacturing
 app.use('/api/bom',               bomRoutes);
+app.use('/api/ipt-kits',          iptKitsRoutes);
 app.use('/api/parts',             partsRoutes);
 app.use('/api/part-drawings',     partDrawingsRoutes);
 app.use('/api/part-drawings-raw', partDrawingsRawRoutes);
