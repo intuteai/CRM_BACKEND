@@ -162,4 +162,51 @@ describe('IPT Kit Assembly API', () => {
     expect(cursor).toBeNull();
     expect(seenIds.sort()).toEqual([...createdIds].sort());
   });
+
+  it('updates a kit\'s component serials', async () => {
+    const created = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9020', controller_serial: 'C9020', gearbox_serial: 'G9020',
+        harness_serial: 'H9020', cluster_serial: 'CL9020', vcu_serial: 'VCL9020', dcdc_serial: 'D9020',
+      });
+    createdKitIds.push(created.body.kit_id);
+
+    const updated = await request(app)
+      .put(`/api/ipt-kits/${created.body.kit_id}`)
+      .set('Authorization', `Bearer ${productionToken}`)
+      .send({
+        motor_serial: 'M9021', controller_serial: 'C9020', gearbox_serial: 'G9020',
+        harness_serial: 'H9020', cluster_serial: 'CL9020', vcu_serial: 'VCL9020', dcdc_serial: 'D9020',
+      });
+    expect(updated.statusCode).toBe(200);
+    expect(updated.body.motor_serial).toBe('M9021');
+    expect(updated.body.kit_serial).toBe(created.body.kit_serial);
+  });
+
+  it('deletes a kit and frees its component serials for reuse', async () => {
+    const created = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9030', controller_serial: 'C9030', gearbox_serial: 'G9030',
+        harness_serial: 'H9030', cluster_serial: 'CL9030', vcu_serial: 'VCL9030', dcdc_serial: 'D9030',
+      });
+
+    const del = await request(app)
+      .delete(`/api/ipt-kits/${created.body.kit_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(del.statusCode).toBe(200);
+
+    const reused = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9030', controller_serial: 'C9031', gearbox_serial: 'G9031',
+        harness_serial: 'H9031', cluster_serial: 'CL9031', vcu_serial: 'VCL9031', dcdc_serial: 'D9031',
+      });
+    expect(reused.statusCode).toBe(201);
+    createdKitIds.push(reused.body.kit_id);
+  });
 });

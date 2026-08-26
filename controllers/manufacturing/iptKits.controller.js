@@ -31,3 +31,24 @@ exports.getOne = async (req, res) => {
     return res.status(err.message === 'Kit not found' ? 404 : 500).json({ error: err.message });
   }
 };
+
+exports.update = async (req, res) => {
+  try {
+    const kit = await IPTKits.update(req.params.id, req.body, req.io);
+    logger.info(`ipt_kit updated: ${kit.kit_id} by user ${req.user.user_id}`);
+    return res.json(kit);
+  } catch (err) {
+    logger.error(`PUT ipt-kits/${req.params.id} error: ${err.message}`);
+    return res.status(err.message === 'Kit not found' ? 404 : 400).json({ error: err.message, field: err.field ?? null });
+  }
+};
+
+exports.delete = async (req, res) => {
+  try {
+    const result = await IPTKits.delete(req.params.id, req.io);
+    logger.info(`ipt_kit deleted: ${result.kit_id} by user ${req.user.user_id}`);
+    return res.json({ message: 'Kit deleted', kit_id: result.kit_id });
+  } catch (err) {
+    return res.status(err.message === 'Kit not found' ? 404 : 500).json({ error: err.message });
+  }
+};

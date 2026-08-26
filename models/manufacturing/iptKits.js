@@ -90,6 +90,61 @@ class IPTKits {
     }
   }
 
+  // ==================== UPDATE ====================
+  static async update(id, data, io) {
+    this.#validate(data);
+    const normalized = this.#normalized(data);
+    const updatedBy = io?.user?.user_id ?? null;
+
+    try {
+      const res = await pool.query(`
+        UPDATE ipt_kits SET
+          motor_serial = $1, controller_serial = $2, gearbox_serial = $3,
+          harness_serial = $4, cluster_serial = $5, vcu_serial = $6, dcdc_serial = $7,
+          updated_by = $8, updated_at = NOW()
+        WHERE kit_id = $9
+        RETURNING *
+      `, [
+        normalized.motor_serial, normalized.controller_serial, normalized.gearbox_serial,
+        normalized.harness_serial, normalized.cluster_serial, normalized.vcu_serial, normalized.dcdc_serial,
+        updatedBy, id,
+      ]);
+
+      if (res.rows.length === 0) throw new Error('Kit not found');
+
+      let row = res.rows[0];
+      if (row.created_by) {
+        const u = await pool.query('SELECT name FROM users WHERE user_id = $1', [row.created_by]);
+        row = { ...row, created_by_name: u.rows[0]?.name || null };
+      }
+
+      const payload = this.#toPayload(row);
+      this.#safeEmit(io, 'ipt_kits:updated', payload);
+      return payload;
+    } catch (err) {
+      if (err.code === '23505') {
+        const field = COMPONENT_FIELDS.find((f) => err.constraint?.includes(f));
+        if (field) {
+          throw Object.assign(
+            new Error(`${field.replace('_serial', '')} serial "${normalized[field]}" is already used in another kit`),
+            { field }
+          );
+        }
+        throw Object.assign(new Error('Duplicate serial detected'), { field: null });
+      }
+      throw err;
+    }
+  }
+
+  // ==================== DELETE ====================
+  static async delete(id, io) {
+    const res = await pool.query('DELETE FROM ipt_kits WHERE kit_id = $1 RETURNING kit_id', [id]);
+    if (res.rows.length === 0) throw new Error('Kit not found');
+    const payload = { kit_id: res.rows[0].kit_id };
+    this.#safeEmit(io, 'ipt_kits:deleted', payload);
+    return payload;
+  }
+
   // ==================== GET ALL ====================
   static async getAll({ limit = 20, cursor = null, search = '' } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 20, 1), 100);
