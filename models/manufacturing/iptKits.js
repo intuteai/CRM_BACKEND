@@ -105,10 +105,8 @@ class IPTKits {
     }
 
     const searchTerm = search?.trim() ? `%${search.trim().toUpperCase()}%` : null;
-    const searchClause = COMPONENT_FIELDS
-      .map((f) => `k.${f} ILIKE $4`)
-      .concat(['k.kit_serial ILIKE $4'])
-      .join(' OR ');
+    const buildSearchClause = (idx) =>
+      COMPONENT_FIELDS.map((f) => `k.${f} ILIKE $${idx}`).concat([`k.kit_serial ILIKE $${idx}`]).join(' OR ');
 
     const query = `
       SELECT k.*, u.name AS created_by_name,
@@ -120,24 +118,28 @@ class IPTKits {
         OR to_char(k.created_at, 'YYYY-MM-DD HH24:MI:SS.US') < $1::text
         OR (to_char(k.created_at, 'YYYY-MM-DD HH24:MI:SS.US') = $1::text AND k.kit_id < $2)
       )
-      AND ($4::text IS NULL OR ${searchClause})
+      AND ($4::text IS NULL OR ${buildSearchClause(4)})
       ORDER BY k.created_at DESC, k.kit_id DESC
       LIMIT $3
     `;
 
     const countQuery = `
       SELECT COUNT(*)::int FROM ipt_kits k
-      WHERE ($1::text IS NULL OR ${searchClause.replace(/\$4/g, '$1')})
+      WHERE ($1::text IS NULL OR ${buildSearchClause(1)})
     `;
 
+    // Fetch one extra row beyond the page size so we can tell whether a next page
+    // actually exists, instead of assuming a full page always means there's more.
     const [result, totalRes] = await Promise.all([
-      pool.query(query, [cursorCreatedAt, cursorId, _limit, searchTerm]),
+      pool.query(query, [cursorCreatedAt, cursorId, _limit + 1, searchTerm]),
       pool.query(countQuery, [searchTerm]),
     ]);
 
-    const data = result.rows.map((row) => this.#toPayload(row));
-    const nextCursor = data.length === _limit && data.length > 0
-      ? `${result.rows[data.length - 1].kit_id}:${result.rows[data.length - 1].created_at_cursor}`
+    const hasMore = result.rows.length > _limit;
+    const rows = hasMore ? result.rows.slice(0, _limit) : result.rows;
+    const data = rows.map((row) => this.#toPayload(row));
+    const nextCursor = hasMore
+      ? `${rows[rows.length - 1].kit_id}:${rows[rows.length - 1].created_at_cursor}`
       : null;
 
     return { data, total: totalRes.rows[0].count, cursor: nextCursor };

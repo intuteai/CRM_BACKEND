@@ -114,4 +114,52 @@ describe('IPT Kit Assembly API', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.kit_serial).toBe(created.body.kit_serial);
   });
+
+  it('paginates across multiple pages using the returned cursor without gaps or overlap', async () => {
+    // Shared "CLPG901" token in cluster_serial lets us isolate exactly these 3 kits via search,
+    // so pagination assertions are deterministic regardless of what other tests created.
+    const specs = [
+      { motor_serial: 'M9012', controller_serial: 'C9012', gearbox_serial: 'G9012', harness_serial: 'H9012', cluster_serial: 'CLPG9012', vcu_serial: 'VCLPG9012', dcdc_serial: 'D9012' },
+      { motor_serial: 'M9013', controller_serial: 'C9013', gearbox_serial: 'G9013', harness_serial: 'H9013', cluster_serial: 'CLPG9013', vcu_serial: 'VCLPG9013', dcdc_serial: 'D9013' },
+      { motor_serial: 'M9014', controller_serial: 'C9014', gearbox_serial: 'G9014', harness_serial: 'H9014', cluster_serial: 'CLPG9014', vcu_serial: 'VCLPG9014', dcdc_serial: 'D9014' },
+    ];
+
+    const createdIds = [];
+    for (const spec of specs) {
+      const created = await request(app)
+        .post('/api/ipt-kits')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send(spec);
+      createdKitIds.push(created.body.kit_id);
+      createdIds.push(created.body.kit_id);
+      expect(created.statusCode).toBe(201);
+    }
+
+    const seenIds = [];
+    let cursor = null;
+    let pages = 0;
+
+    for (let i = 0; i < 3; i += 1) {
+      const qs = cursor
+        ? `search=CLPG901&limit=1&cursor=${encodeURIComponent(cursor)}`
+        : 'search=CLPG901&limit=1';
+      const page = await request(app)
+        .get(`/api/ipt-kits?${qs}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+      expect(page.statusCode).toBe(200);
+      expect(page.body.data).toHaveLength(1);
+
+      const pageId = page.body.data[0].kit_id;
+      expect(seenIds).not.toContain(pageId);
+      seenIds.push(pageId);
+
+      cursor = page.body.cursor;
+      pages += 1;
+      if (!cursor) break;
+    }
+
+    expect(pages).toBe(3);
+    expect(cursor).toBeNull();
+    expect(seenIds.sort()).toEqual([...createdIds].sort());
+  });
 });
