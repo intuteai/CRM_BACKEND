@@ -209,4 +209,27 @@ describe('IPT Kit Assembly API', () => {
     expect(reused.statusCode).toBe(201);
     createdKitIds.push(reused.body.kit_id);
   });
+
+  it('previews the next kit_serial without consuming it', async () => {
+    const preview1 = await request(app)
+      .get('/api/ipt-kits/next-serial')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(preview1.statusCode).toBe(200);
+    expect(preview1.body.kit_serial).toMatch(/^IPT\d+$/);
+
+    const preview2 = await request(app)
+      .get('/api/ipt-kits/next-serial')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(preview2.body.kit_serial).toBe(preview1.body.kit_serial);
+
+    const created = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9040', controller_serial: 'C9040', gearbox_serial: 'G9040',
+        harness_serial: 'H9040', cluster_serial: 'CL9040', vcu_serial: 'VCL9040', dcdc_serial: 'D9040',
+      });
+    createdKitIds.push(created.body.kit_id);
+    expect(created.body.kit_serial).toBe(preview1.body.kit_serial);
+  });
 });

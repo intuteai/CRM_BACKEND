@@ -92,6 +92,14 @@ class IPTKits {
     }
   }
 
+  // ==================== PREVIEW NEXT SERIAL ====================
+  static async previewNextSerial() {
+    const res = await pool.query(`SELECT last_value, is_called FROM ipt_kit_serial_seq`);
+    const { last_value, is_called } = res.rows[0];
+    const next = is_called ? Number(last_value) + 1 : Number(last_value);
+    return `IPT${String(next).padStart(3, '0')}`;
+  }
+
   // ==================== UPDATE ====================
   static async update(id, data, io) {
     this.#validate(data);

@@ -23,6 +23,16 @@ exports.getAll = async (req, res) => {
   }
 };
 
+exports.nextSerial = async (req, res) => {
+  try {
+    const kit_serial = await IPTKits.previewNextSerial();
+    return res.json({ kit_serial });
+  } catch (err) {
+    logger.error(`GET ipt-kits/next-serial error: ${err.message}`);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
 exports.getOne = async (req, res) => {
   try {
     const kit = await IPTKits.getById(req.params.id);
