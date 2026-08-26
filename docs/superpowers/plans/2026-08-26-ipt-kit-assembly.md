@@ -173,7 +173,7 @@ describe('IPT Kit Assembly API', () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: FAIL — `Cannot find module '../../models/manufacturing/iptKits'` (or a 404/500 on `POST /api/ipt-kits`, since the route doesn't exist yet).
@@ -347,7 +347,7 @@ app.use('/api/ipt-kits',          iptKitsRoutes);
 Stop any running dev server first (this repo's `server.js` binds a real port as a side effect of being required — running the dev server and jest at the same time causes `EADDRINUSE`):
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: both tests PASS.
@@ -419,7 +419,7 @@ Add to `tests/iptKits.test.js`, inside the existing `describe` block, after the 
 - [ ] **Step 2: Run the tests to verify they fail**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: FAIL — `GET /api/ipt-kits` and `GET /api/ipt-kits/:id` return 404 (routes don't exist yet).
@@ -534,7 +534,7 @@ router.post('/', checkPermission('ipt_kits', 'can_write'), controller.create);
 - [ ] **Step 6: Run the tests to verify they pass**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: all 4 tests PASS.
@@ -612,7 +612,7 @@ Add to `tests/iptKits.test.js`:
 - [ ] **Step 2: Run the tests to verify they fail**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: FAIL — `PUT`/`DELETE /api/ipt-kits/:id` return 404.
@@ -717,7 +717,7 @@ router.delete('/:id', checkPermission('ipt_kits', 'can_delete'), controller.dele
 - [ ] **Step 6: Run the full test file to verify everything passes**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: all 6 tests PASS.
@@ -773,7 +773,7 @@ Add to `tests/iptKits.test.js`:
 - [ ] **Step 2: Run the test to verify it fails**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: FAIL — `GET /api/ipt-kits/next-serial` returns 404.
@@ -819,7 +819,7 @@ router.get('/next-serial', checkPermission('ipt_kits', 'can_read'), controller.n
 - [ ] **Step 6: Run the full test file to verify everything passes**
 
 ```bash
-npx jest tests/iptKits.test.js -v
+npx jest tests/iptKits.test.js -v --forceExit
 ```
 
 Expected: all 7 tests PASS.
