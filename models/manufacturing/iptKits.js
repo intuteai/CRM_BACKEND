@@ -41,6 +41,18 @@ class IPTKits {
     return out;
   }
 
+  static #mapDuplicateSerialError(err, normalized) {
+    if (err.code !== '23505') return err;
+    const field = COMPONENT_FIELDS.find((f) => err.constraint?.includes(f));
+    if (field) {
+      return Object.assign(
+        new Error(`${field.replace('_serial', '')} serial "${normalized[field]}" is already used in another kit`),
+        { field }
+      );
+    }
+    return Object.assign(new Error('Duplicate serial detected'), { field: null });
+  }
+
   // ==================== CREATE ====================
   static async create(data, io) {
     this.#validate(data);
@@ -76,17 +88,7 @@ class IPTKits {
       this.#safeEmit(io, 'ipt_kits:created', payload);
       return payload;
     } catch (err) {
-      if (err.code === '23505') {
-        const field = COMPONENT_FIELDS.find((f) => err.constraint?.includes(f));
-        if (field) {
-          throw Object.assign(
-            new Error(`${field.replace('_serial', '')} serial "${normalized[field]}" is already used in another kit`),
-            { field }
-          );
-        }
-        throw Object.assign(new Error('Duplicate serial detected'), { field: null });
-      }
-      throw err;
+      throw this.#mapDuplicateSerialError(err, normalized);
     }
   }
 
@@ -122,21 +124,13 @@ class IPTKits {
       this.#safeEmit(io, 'ipt_kits:updated', payload);
       return payload;
     } catch (err) {
-      if (err.code === '23505') {
-        const field = COMPONENT_FIELDS.find((f) => err.constraint?.includes(f));
-        if (field) {
-          throw Object.assign(
-            new Error(`${field.replace('_serial', '')} serial "${normalized[field]}" is already used in another kit`),
-            { field }
-          );
-        }
-        throw Object.assign(new Error('Duplicate serial detected'), { field: null });
-      }
-      throw err;
+      throw this.#mapDuplicateSerialError(err, normalized);
     }
   }
 
   // ==================== DELETE ====================
+  // Single-statement delete with no child rows to cascade, so no transaction is needed
+  // (unlike iaOrders.delete(), which removes a parent order plus its line items).
   static async delete(id, io) {
     const res = await pool.query('DELETE FROM ipt_kits WHERE kit_id = $1 RETURNING kit_id', [id]);
     if (res.rows.length === 0) throw new Error('Kit not found');
