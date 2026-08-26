@@ -65,3 +65,5 @@ drive-sa.json
 google-credentials.json
 service-account-key.json
 .gstack/
+
+.superpowers/
