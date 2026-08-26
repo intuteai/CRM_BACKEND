@@ -73,4 +73,45 @@ describe('IPT Kit Assembly API', () => {
     expect(dup.body.field).toBe('controller_serial');
     expect(dup.body.error).toMatch(/C9002/);
   });
+
+  it('lists kits and finds a kit by searching any component serial (reverse lookup)', async () => {
+    const created = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9010', controller_serial: 'C9010', gearbox_serial: 'G9010',
+        harness_serial: 'H9010', cluster_serial: 'CL9010', vcu_serial: 'VCL9010', dcdc_serial: 'D9010',
+      });
+    createdKitIds.push(created.body.kit_id);
+
+    const list = await request(app)
+      .get('/api/ipt-kits?limit=50')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(list.statusCode).toBe(200);
+    expect(list.body.data.some((k) => k.kit_id === created.body.kit_id)).toBe(true);
+
+    const search = await request(app)
+      .get('/api/ipt-kits?search=G9010')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(search.statusCode).toBe(200);
+    expect(search.body.data).toHaveLength(1);
+    expect(search.body.data[0].kit_id).toBe(created.body.kit_id);
+  });
+
+  it('gets a single kit by id', async () => {
+    const created = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9011', controller_serial: 'C9011', gearbox_serial: 'G9011',
+        harness_serial: 'H9011', cluster_serial: 'CL9011', vcu_serial: 'VCL9011', dcdc_serial: 'D9011',
+      });
+    createdKitIds.push(created.body.kit_id);
+
+    const res = await request(app)
+      .get(`/api/ipt-kits/${created.body.kit_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.kit_serial).toBe(created.body.kit_serial);
+  });
 });

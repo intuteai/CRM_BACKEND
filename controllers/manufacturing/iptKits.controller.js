@@ -11,3 +11,23 @@ exports.create = async (req, res) => {
     return res.status(400).json({ error: err.message, field: err.field ?? null });
   }
 };
+
+exports.getAll = async (req, res) => {
+  try {
+    const { limit, cursor, search } = req.query;
+    const result = await IPTKits.getAll({ limit, cursor, search });
+    return res.json(result);
+  } catch (err) {
+    logger.error(`GET ipt-kits error: ${err.message}`);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+exports.getOne = async (req, res) => {
+  try {
+    const kit = await IPTKits.getById(req.params.id);
+    return res.json(kit);
+  } catch (err) {
+    return res.status(err.message === 'Kit not found' ? 404 : 500).json({ error: err.message });
+  }
+};

@@ -89,6 +89,71 @@ class IPTKits {
       throw err;
     }
   }
+
+  // ==================== GET ALL ====================
+  static async getAll({ limit = 20, cursor = null, search = '' } = {}) {
+    const _limit = Math.min(Math.max(Number(limit) || 20, 1), 100);
+
+    let cursorId = null;
+    let cursorCreatedAt = null;
+    if (cursor) {
+      const sepIdx = cursor.indexOf(':');
+      if (sepIdx > 0) {
+        cursorId = parseInt(cursor.slice(0, sepIdx), 10);
+        cursorCreatedAt = cursor.slice(sepIdx + 1);
+      }
+    }
+
+    const searchTerm = search?.trim() ? `%${search.trim().toUpperCase()}%` : null;
+    const searchClause = COMPONENT_FIELDS
+      .map((f) => `k.${f} ILIKE $4`)
+      .concat(['k.kit_serial ILIKE $4'])
+      .join(' OR ');
+
+    const query = `
+      SELECT k.*, u.name AS created_by_name,
+        to_char(k.created_at, 'YYYY-MM-DD HH24:MI:SS.US') AS created_at_cursor
+      FROM ipt_kits k
+      LEFT JOIN users u ON k.created_by = u.user_id
+      WHERE (
+        $1::text IS NULL
+        OR to_char(k.created_at, 'YYYY-MM-DD HH24:MI:SS.US') < $1::text
+        OR (to_char(k.created_at, 'YYYY-MM-DD HH24:MI:SS.US') = $1::text AND k.kit_id < $2)
+      )
+      AND ($4::text IS NULL OR ${searchClause})
+      ORDER BY k.created_at DESC, k.kit_id DESC
+      LIMIT $3
+    `;
+
+    const countQuery = `
+      SELECT COUNT(*)::int FROM ipt_kits k
+      WHERE ($1::text IS NULL OR ${searchClause.replace(/\$4/g, '$1')})
+    `;
+
+    const [result, totalRes] = await Promise.all([
+      pool.query(query, [cursorCreatedAt, cursorId, _limit, searchTerm]),
+      pool.query(countQuery, [searchTerm]),
+    ]);
+
+    const data = result.rows.map((row) => this.#toPayload(row));
+    const nextCursor = data.length === _limit && data.length > 0
+      ? `${result.rows[data.length - 1].kit_id}:${result.rows[data.length - 1].created_at_cursor}`
+      : null;
+
+    return { data, total: totalRes.rows[0].count, cursor: nextCursor };
+  }
+
+  // ==================== GET BY ID ====================
+  static async getById(id) {
+    const res = await pool.query(`
+      SELECT k.*, u.name AS created_by_name
+      FROM ipt_kits k
+      LEFT JOIN users u ON k.created_by = u.user_id
+      WHERE k.kit_id = $1
+    `, [id]);
+    if (res.rows.length === 0) throw new Error('Kit not found');
+    return this.#toPayload(res.rows[0]);
+  }
 }
 
 module.exports = IPTKits;

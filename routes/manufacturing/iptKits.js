@@ -9,6 +9,8 @@ router.use(authenticateToken, (req, res, next) => {
   next();
 });
 
+router.get('/', checkPermission('ipt_kits', 'can_read'), controller.getAll);
+router.get('/:id', checkPermission('ipt_kits', 'can_read'), controller.getOne);
 router.post('/', checkPermission('ipt_kits', 'can_write'), controller.create);
 
 module.exports = router;
