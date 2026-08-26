@@ -47,7 +47,7 @@ New files, mirroring the existing manufacturing-module convention: `models/manuf
 
 - `GET /api/ipt-kits?limit=&cursor=&search=` — cursor-paginated list (`created_at`/`kit_id` composite cursor, matching `ia_orders`/`invoice_records`). `search` matches `kit_serial` OR any of the 7 component columns (case-insensitive).
 - `GET /api/ipt-kits/next-serial` — preview only, returns the `kit_serial` the next `POST` would generate, for the create form to display before submission.
-- `POST /api/ipt-kits` — generates `kit_serial` from `ipt_kit_serial_seq`, normalizes (trim+uppercase) and validates all 7 component serials as non-empty and unique within a transaction (pre-check + DB constraint as backstop against races), inserts.
+- `POST /api/ipt-kits` — generates `kit_serial` from `ipt_kit_serial_seq`, normalizes (trim+uppercase) and validates all 7 component serials as non-empty, inserts, and catches a Postgres `23505` unique-violation (rather than a separate racy pre-check `SELECT`) to map the failing constraint back to the specific field.
 - `PUT /api/ipt-kits/:id` — edits component serials; re-validates uniqueness excluding the row's own current values. `kit_serial` itself is immutable after creation.
 - `DELETE /api/ipt-kits/:id` — hard delete.
 
