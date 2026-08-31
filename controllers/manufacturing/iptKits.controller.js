@@ -33,6 +33,17 @@ exports.nextSerial = async (req, res) => {
   }
 };
 
+exports.setNextSerial = async (req, res) => {
+  try {
+    const kit_serial = await IPTKits.setNextSerial(req.body.next);
+    logger.info(`ipt_kits next serial set to ${kit_serial} by user ${req.user.user_id}`);
+    return res.json({ kit_serial });
+  } catch (err) {
+    logger.error(`PUT ipt-kits/next-serial error: ${err.message}`);
+    return res.status(400).json({ error: err.message, field: err.field ?? null });
+  }
+};
+
 exports.getOne = async (req, res) => {
   try {
     const kit = await IPTKits.getById(req.params.id);

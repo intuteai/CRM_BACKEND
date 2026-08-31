@@ -100,6 +100,30 @@ class IPTKits {
     return `IPT${String(next).padStart(3, '0')}`;
   }
 
+  // ==================== SET NEXT SERIAL ====================
+  // Lets an admin re-point the sequence (e.g. reset to 1, or resume after
+  // importing historical kits). Only blocks when the requested number's
+  // kit_serial is already used by a CURRENTLY-EXISTING kit -- a number that
+  // was used and later deleted is fair game again, same as normal reuse.
+  static async setNextSerial(next) {
+    const n = Number(next);
+    if (!Number.isInteger(n) || n < 1) {
+      throw Object.assign(new Error('Next serial number must be a positive integer'), { field: 'next' });
+    }
+
+    const candidate = `IPT${String(n).padStart(3, '0')}`;
+    const existing = await pool.query('SELECT kit_id FROM ipt_kits WHERE kit_serial = $1', [candidate]);
+    if (existing.rows.length > 0) {
+      throw Object.assign(
+        new Error(`${candidate} is already used by an existing kit`),
+        { field: 'next' }
+      );
+    }
+
+    await pool.query(`SELECT setval('ipt_kit_serial_seq', $1, false)`, [n]);
+    return candidate;
+  }
+
   // ==================== UPDATE ====================
   static async update(id, data, io) {
     this.#validate(data);

@@ -232,4 +232,43 @@ describe('IPT Kit Assembly API', () => {
     createdKitIds.push(created.body.kit_id);
     expect(created.body.kit_serial).toBe(preview1.body.kit_serial);
   });
+
+  it('lets an admin set the next kit_serial, and rejects a number already taken by an existing kit', async () => {
+    const setRes = await request(app)
+      .put('/api/ipt-kits/next-serial')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ next: 500 });
+    expect(setRes.statusCode).toBe(200);
+    expect(setRes.body.kit_serial).toBe('IPT500');
+
+    const preview = await request(app)
+      .get('/api/ipt-kits/next-serial')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(preview.body.kit_serial).toBe('IPT500');
+
+    const created = await request(app)
+      .post('/api/ipt-kits')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        motor_serial: 'M9050', controller_serial: 'C9050', gearbox_serial: 'G9050',
+        harness_serial: 'H9050', cluster_serial: 'CL9050', vcu_serial: 'VCL9050', dcdc_serial: 'D9050',
+      });
+    createdKitIds.push(created.body.kit_id);
+    expect(created.body.kit_serial).toBe('IPT500');
+
+    const collision = await request(app)
+      .put('/api/ipt-kits/next-serial')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ next: 500 });
+    expect(collision.statusCode).toBe(400);
+    expect(collision.body.field).toBe('next');
+    expect(collision.body.error).toMatch(/IPT500/);
+
+    const invalid = await request(app)
+      .put('/api/ipt-kits/next-serial')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ next: 0 });
+    expect(invalid.statusCode).toBe(400);
+    expect(invalid.body.field).toBe('next');
+  });
 });
