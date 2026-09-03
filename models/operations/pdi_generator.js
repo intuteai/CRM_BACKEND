@@ -3,6 +3,7 @@
 const PDFDocument = require('pdfkit');
 const fs          = require('fs');
 const path        = require('path');
+const zlib        = require('zlib');
 const logger      = require('../../utils/logger');
 
 /* ─── Font / asset paths ─────────────────────────────────────── */
@@ -12,14 +13,26 @@ const ASSET_DIR = path.join(__dirname, '../../assets');
 let F  = 'Helvetica';       // regular
 let FB = 'Helvetica-Bold';  // bold
 
+// Disk presence only needs checking once per process — font files don't
+// change between requests. registerFonts() still calls doc.registerFont()
+// per document (PDFKit's font table is per-instance), but skips the
+// repeated fs.existsSync() stats. Relies on generate() staying fully
+// synchronous (no await between doc creation and doc.end()), since F/FB
+// are shared module state.
+const ROBOTO_REGULAR_PATH = path.join(FONT_DIR, 'Roboto-Regular.ttf');
+const ROBOTO_BOLD_PATH    = path.join(FONT_DIR, 'Roboto-Bold.ttf');
+const HAS_ROBOTO_REGULAR  = fs.existsSync(ROBOTO_REGULAR_PATH);
+const HAS_ROBOTO_BOLD     = fs.existsSync(ROBOTO_BOLD_PATH);
+
 function registerFonts(doc) {
-  const reg = (name, file) => {
-    const p = path.join(FONT_DIR, file);
-    if (!fs.existsSync(p)) return false;
-    try { doc.registerFont(name, p); return true; } catch { return false; }
-  };
-  if (reg('Roboto',      'Roboto-Regular.ttf')) F  = 'Roboto';
-  if (reg('Roboto-Bold', 'Roboto-Bold.ttf'))    FB = 'Roboto-Bold';
+  F  = 'Helvetica';
+  FB = 'Helvetica-Bold';
+  if (HAS_ROBOTO_REGULAR) {
+    try { doc.registerFont('Roboto', ROBOTO_REGULAR_PATH); F = 'Roboto'; } catch { /* keep Helvetica */ }
+  }
+  if (HAS_ROBOTO_BOLD) {
+    try { doc.registerFont('Roboto-Bold', ROBOTO_BOLD_PATH); FB = 'Roboto-Bold'; } catch { /* keep Helvetica-Bold */ }
+  }
   doc.font(F);
 }
 
@@ -28,11 +41,79 @@ function assetPath(name) {
   return fs.existsSync(p) ? p : null;
 }
 
+const PNG_SIGNATURE = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+
+/** PDFKit's PNG support (via the bundled png-js) decompresses pixel data
+ *  with the *async* zlib.inflate callback API, and throws inside that
+ *  callback on bad data — that throw happens outside any call stack we
+ *  control (deferred until the page is flushed), so it cannot be caught by
+ *  wrapping doc.image() in try/catch and would crash the whole process.
+ *  JPEG embedding, by contrast, never decompresses pixels (it's passed
+ *  through to the PDF via DCTDecode) and only throws synchronously.
+ *  So: for PNGs, replay the same decompression here with the *synchronous*
+ *  zlib API first — a real throw is now on our stack and catchable — and
+ *  refuse to hand PDFKit anything that fails it. */
+function isDecodablePng(buf) {
+  if (buf.length < 8 || !buf.subarray(0, 8).equals(PNG_SIGNATURE)) return false;
+  const idatParts = [];
+  let pos = 8;
+  while (pos + 8 <= buf.length) {
+    const len = buf.readUInt32BE(pos);
+    const type = buf.toString('ascii', pos + 4, pos + 8);
+    const dataStart = pos + 8;
+    const dataEnd = dataStart + len;
+    if (len < 0 || dataEnd + 4 > buf.length) return false; // truncated chunk
+    if (type === 'IDAT') idatParts.push(buf.subarray(dataStart, dataEnd));
+    if (type === 'IEND') break;
+    pos = dataEnd + 4; // skip the 4-byte CRC
+  }
+  if (idatParts.length === 0) return false;
+  try {
+    zlib.inflateSync(Buffer.concat(idatParts));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Decode a `data:image/png;base64,...` / `data:image/jpeg;base64,...` URI
+ *  into a Buffer PDFKit can embed. Returns null for anything else (missing
+ *  field, non-image data URI, unsupported type, malformed base64, or a PNG
+ *  that fails the isDecodablePng() pre-check) so callers can fall back to
+ *  their placeholder without a try/catch of their own. */
+function decodeImageDataUri(dataUri) {
+  if (!dataUri || typeof dataUri !== 'string') return null;
+  const match = dataUri.match(/^data:image\/(png|jpe?g);base64,([a-z0-9+/=]+)$/i);
+  if (!match) return null;
+  let buf;
+  try {
+    buf = Buffer.from(match[2], 'base64');
+  } catch {
+    return null;
+  }
+  if (/^png$/i.test(match[1]) && !isDecodablePng(buf)) return null;
+  return buf;
+}
+
+/** Draw an image buffer centered/contained within a box, falling back to
+ *  nothing (caller's existing placeholder stays visible) if the buffer is
+ *  missing or PDFKit can't decode it (e.g. corrupt data). */
+function drawImageInBox(doc, buf, x, y, w, h, pad = 2) {
+  if (!buf) return false;
+  try {
+    doc.image(buf, x + pad, y + pad, { fit: [w - pad * 2, h - pad * 2], align: 'center', valign: 'center' });
+    return true;
+  } catch (e) {
+    logger.warn('PDI image draw failed: ' + e.message);
+    return false;
+  }
+}
+
 /* ─── Date helper (UTC to avoid off-by-one) ──────────────────── */
 function fmtDate(d) {
   if (!d) return '';
   const dt = d instanceof Date ? d : new Date(d);
-  if (isNaN(dt)) return String(d);
+  if (isNaN(dt)) return '';
   return `${String(dt.getUTCDate()).padStart(2,'0')}/${String(dt.getUTCMonth()+1).padStart(2,'0')}/${dt.getUTCFullYear()}`;
 }
 
@@ -329,12 +410,37 @@ function drawSig(doc, prepBy, appBy, y) {
   return y + SIG_H;
 }
 
-/* ── Page number — drawn WITHIN the bottom margin so PDFKit
-      never auto-adds a blank page ── */
+/* ── Page number, drawn inside the bottom margin area. Safe only because
+      margins.bottom is 0 (see the PDFDocument construction below) — PDFKit
+      would otherwise auto-insert a blank page after text drawn this low. ── */
 function drawPageNum(doc, n, total) {
   // Place it just above the physical bottom edge, inside BOT_M area
   const y = PAGE_H - BOT_M + 6;
-  t(doc, `Pg 0${n} of 0${total}`, M, y, CW, { font: F, size: 8, align: 'center', color: '#555' });
+  const pad = String(total).length;
+  const label = `Pg ${String(n).padStart(pad, '0')} of ${String(total).padStart(pad, '0')}`;
+  t(doc, label, M, y, CW, { font: F, size: 8, align: 'center', color: '#555' });
+}
+
+/* ── Draw a row list that overflows onto continuation pages ──
+   Starts a new page (redrawing the table header via `redrawHeader`)
+   whenever the next row wouldn't fit, and — on the row that would be
+   last — also reserves `footerHeight` so the general-checks/remarks/
+   signature block that follows never gets pushed off the page it
+   was reserved on. */
+function drawPaginatedRows(doc, { rows, drawRow, rowHeight, y, footerHeight, redrawHeader }) {
+  rows.forEach((row, idx) => {
+    const reserve = idx === rows.length - 1 ? footerHeight : 0;
+    if (y + rowHeight + reserve > PAGE_H - BOT_M) {
+      doc.addPage();
+      y = redrawHeader(10);
+    }
+    y = drawRow(doc, row, y);
+  });
+  if (rows.length === 0 && y + footerHeight > PAGE_H - BOT_M) {
+    doc.addPage();
+    y = redrawHeader(10);
+  }
+  return y;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -355,10 +461,19 @@ class PDIGenerator {
 
     const doc = new PDFDocument({
       size: 'A4',
-      // top:10 gives us full control of the header region;
-      // PDFKit's auto-break threshold = PAGE_H - BOT_M = 805.89
-      margins: { top: 10, bottom: BOT_M, left: M, right: M },
+      // bottom:0 — every draw call in this file uses explicit x/y and our
+      // own PAGE_H/BOT_M-based overflow checks (drawPaginatedRows), never
+      // PDFKit's flowing layout. Any non-zero bottom margin makes PDFKit's
+      // own maxY() = height - margins.bottom trigger *its* auto page-break
+      // on any text() call (they all pass `width`, see t()) positioned
+      // past that line — which drawPageNum's footer text always is by
+      // design — silently inserting a blank page after every page.
+      margins: { top: 10, bottom: 0, left: M, right: M },
       autoFirstPage: false,
+      // Total page count isn't known until every row/section is laid out
+      // (row overflow can add continuation pages), so page numbers are
+      // filled in afterward via switchToPage() rather than inline.
+      bufferPages: true,
     });
     registerFonts(doc);
 
@@ -369,9 +484,11 @@ class PDIGenerator {
       { key: 'phase_resistance', label: 'All Motors Phase Resistance Check' },
       { key: 'hall_sensor',      label: 'All Motors Hall Sensor Connector Check' },
     ];
+    const powerCableLength  = data.power_cable_length  || '1250±50mm';
+    const sensorCableLength = data.sensor_cable_length || '1250±50mm';
     const MECH_CHECKS = [
-      { key: 'power_cable',      label: 'All Motor Power Cable Length 1250±50mm' },
-      { key: 'sensor_cable',     label: 'All Motor Sensor Cable Length 1250±50mm' },
+      { key: 'power_cable',      label: `All Motor Power Cable Length ${powerCableLength}` },
+      { key: 'sensor_cable',     label: `All Motor Sensor Cable Length ${sensorCableLength}` },
       { key: 'bolt_tightening',  label: 'All Motor Bolt Tightening Check' },
       { key: 'paint_check',      label: 'All Motor Paint Check (If Applicable)' },
     ];
@@ -387,14 +504,22 @@ class PDIGenerator {
     y = drawInfo(doc, data, y);
     y += 6;
     y = drawElecHeader(doc, y);
-    activeRows.forEach(row => { y = drawElecRow(doc, row, y); });
+
+    const elecFooterH = GCH * (1 + ELEC_CHECKS.length) + 6 + REM_H + 6 + SIG_H + 8;
+    y = drawPaginatedRows(doc, {
+      rows: activeRows,
+      drawRow: drawElecRow,
+      rowHeight: RH,
+      y,
+      footerHeight: elecFooterH,
+      redrawHeader: (py) => drawElecHeader(doc, py),
+    });
     y += 6;
     y = drawGeneralChecks(doc, ELEC_CHECKS, gElec, y);
     y += 6;
     y = drawRemarks(doc, data.electrical_remarks || 'ALL MOTORS OK, PASSED.', y);
     y += 8;
     drawSig(doc, data.prepared_by, data.approved_by, y);
-    drawPageNum(doc, 1, 3);
 
     /* ═══════════════════════════════
        PAGE 2 — Mechanical Check
@@ -406,28 +531,42 @@ class PDIGenerator {
     t(doc, 'Mechanical Dimensional Check sheet', M, y, CW, { font: FB, size: 13, align: 'center' });
     y += 20;
 
-    // Technical drawing placeholder
+    // Technical drawing — real image when supplied, else placeholder + spec annotations
     const diagH = 100;
     box(doc, M, y, CW, diagH, { stroke: '#000', sw: 0.6 });
-    t(doc, `[Motor Technical Drawing — Dwg No: ${data.drawing_no || '____'}]`,
-      M + 8, y + diagH / 2 - 5, CW - 16, { font: F, size: 8, color: '#aaa', align: 'center' });
-    // Spec annotations inside diagram box
-    t(doc, 'PCD ø152.74 ±0.10',                                  M + 6,             y + 6,  120,      { font: F, size: 6.5, color: '#555' });
-    t(doc, 'Temp. & Hall Sensor Cable 1250±50 mm · 8Pin Connector', M + CW * 0.35,  y + 6,  CW * 0.4, { font: F, size: 6.5, color: '#555', align: 'center' });
-    t(doc, 'Motor Power Cable 1250±50 mm',                        M + CW * 0.35,    y + 16, CW * 0.4, { font: F, size: 6.5, color: '#555', align: 'center' });
+    const drawingBuf = decodeImageDataUri(data.drawing_image);
+    if (drawingBuf && drawImageInBox(doc, drawingBuf, M, y, CW, diagH)) {
+      // Image fills the box; skip the placeholder text/spec overlay so it isn't drawn on top.
+    } else {
+      t(doc, `[Motor Technical Drawing — Dwg No: ${data.drawing_no || '____'}]`,
+        M + 8, y + diagH / 2 - 5, CW - 16, { font: F, size: 8, color: '#aaa', align: 'center' });
+      // Spec annotations inside diagram box
+      t(doc, 'PCD ø152.74 ±0.10',                                  M + 6,             y + 6,  120,      { font: F, size: 6.5, color: '#555' });
+      t(doc, 'Temp. & Hall Sensor Cable 1250±50 mm · 8Pin Connector', M + CW * 0.35,  y + 6,  CW * 0.4, { font: F, size: 6.5, color: '#555', align: 'center' });
+      t(doc, 'Motor Power Cable 1250±50 mm',                        M + CW * 0.35,    y + 16, CW * 0.4, { font: F, size: 6.5, color: '#555', align: 'center' });
+    }
     y += diagH + 8;
 
     // Mechanical table: header → spec row → data rows
     y = drawMechHeader(doc, y);
     y = drawMechSpecRow(doc, y);
-    activeRows.forEach(row => { y = drawMechRow(doc, row, y); });
+
+    const mechFooterH = GCH * (1 + MECH_CHECKS.length) + 6 + REM_H + 6 + SIG_H + 8;
+    y = drawPaginatedRows(doc, {
+      rows: activeRows,
+      drawRow: drawMechRow,
+      rowHeight: RH,
+      y,
+      footerHeight: mechFooterH,
+      // Continuation pages repeat only the column header, not the spec row
+      redrawHeader: (py) => drawMechHeader(doc, py),
+    });
     y += 6;
     y = drawGeneralChecks(doc, MECH_CHECKS, gMech, y);
     y += 6;
     y = drawRemarks(doc, data.mechanical_remarks || 'ALL MOTORS OK, PASSED.', y);
     y += 8;
     drawSig(doc, data.prepared_by, data.approved_by, y);
-    drawPageNum(doc, 2, 3);
 
     /* ═══════════════════════════════
        PAGE 3 — Photos
@@ -444,18 +583,29 @@ class PDIGenerator {
     const available = PAGE_H - BOT_M - y - photoLblH * 2 - 10;
     const photoH    = Math.max(100, Math.floor(available / 2));
 
+    const overallMotorBuf = decodeImageDataUri(data.photo_overall_motor);
+    const namePlateBuf    = decodeImageDataUri(data.photo_name_plate);
+
     box(doc, M, y, CW, photoLblH, { stroke: '#000', sw: 0.5 });
     t(doc, '1. Overall Motor:', M + 4, y + 4, CW - 8, { font: FB, size: 9 });
     y += photoLblH;
     box(doc, M, y, CW, photoH, { stroke: '#000', sw: 0.5 });
+    drawImageInBox(doc, overallMotorBuf, M, y, CW, photoH);
     y += photoH;
 
     box(doc, M, y, CW, photoLblH, { stroke: '#000', sw: 0.5 });
     t(doc, '2. Name Plate', M + 4, y + 4, CW - 8, { font: FB, size: 9 });
     y += photoLblH;
     box(doc, M, y, CW, photoH, { stroke: '#000', sw: 0.5 });
+    drawImageInBox(doc, namePlateBuf, M, y, CW, photoH);
 
-    drawPageNum(doc, 3, 3);
+    // Number every physical page (including any continuation pages
+    // created by drawPaginatedRows) now that the true total is known.
+    const range = doc.bufferedPageRange();
+    for (let i = 0; i < range.count; i++) {
+      doc.switchToPage(range.start + i);
+      drawPageNum(doc, i + 1, range.count);
+    }
 
     doc.end();
     return doc;

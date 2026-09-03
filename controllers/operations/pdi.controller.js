@@ -43,12 +43,13 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   const { limit = 10, cursor, force_refresh = 'false' } = req.query;
-  const cacheKey = cursor ? `pdi_list_${limit}_${cursor}` : `pdi_list_${limit}`;
+  const safeLimit = Math.min(Math.max(parseInt(limit, 10) || 10, 1), 100);
+  const cacheKey = cursor ? `pdi_list_${safeLimit}_${cursor}` : `pdi_list_${safeLimit}`;
   try {
     if (force_refresh === 'true') await redis.del(cacheKey);
     const cached = await redis.get(cacheKey);
     if (cached && force_refresh !== 'true') { logger.info(`Cache hit for ${cacheKey}`); return res.json(JSON.parse(cached)); }
-    const pdi = await Pdi.getAll({ limit: parseInt(limit), cursor });
+    const pdi = await Pdi.getAll({ limit: safeLimit, cursor });
     await redis.setEx(cacheKey, 300, JSON.stringify(pdi));
     res.json(pdi);
   } catch (error) {
