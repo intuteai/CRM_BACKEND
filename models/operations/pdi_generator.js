@@ -130,12 +130,21 @@ function box(doc, x, y, w, h, { fill, stroke = '#000', sw = 0.5 } = {}) {
   doc.restore();
 }
 
-/** Text with always-explicit x, y — never relies on cursor */
+/** Text with always-explicit x, y — never relies on cursor.
+ *  PDFKit's `lineBreak: false` is a no-op whenever `width` is passed (as
+ *  every call here does) — text that doesn't fit still wraps onto extra
+ *  lines and spills past the row it was drawn in (e.g. a narrow "S. No"
+ *  cell with "Specification" in it). No caller in this file ever wants
+ *  that, so single-line + `ellipsis: true` truncation is forced here,
+ *  clipped to one line's height via currentLineHeight(). */
 function t(doc, text, x, y, w, { font, size = 8, align = 'left', color = '#000', lb = false } = {}) {
-  doc.save()
-     .font(font || F).fontSize(size).fillColor(color)
-     .text(String(text ?? ''), x, y, { width: w, align, lineBreak: lb })
-     .restore();
+  doc.save().font(font || F).fontSize(size).fillColor(color);
+  const opts = { width: w, align, lineBreak: lb };
+  if (!lb) {
+    opts.height = doc.currentLineHeight(true);
+    opts.ellipsis = true;
+  }
+  doc.text(String(text ?? ''), x, y, opts).restore();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -287,13 +296,28 @@ const MCOLS_DEF = [
 
 const MCOLS = resolveCols(MCOLS_DEF);
 
-// Spec values shown in the "Specification" row
-const SPEC_VALS = {
+// Defaults for the "Specification" row — overridden per-report by
+// buildSpecVals() below from data.spec_* fields (all six are manual-entry
+// values that vary by product, e.g. PCD/MTG differ between motor models).
+const DEFAULT_SPEC_VALS = {
+  motor_length:        '',
+  shaft_length:        '',
   mounting_pcd:        '153',
   _mtg:                '1.M6 / 2.Ø8.0',
   key_dim_result:      'Go/NG',
   locating_dia_result: '50.0 mm',
 };
+
+function buildSpecVals(data) {
+  return {
+    motor_length:        data.spec_motor_length || DEFAULT_SPEC_VALS.motor_length,
+    shaft_length:        data.spec_shaft_length || DEFAULT_SPEC_VALS.shaft_length,
+    mounting_pcd:        data.spec_mounting_pcd || DEFAULT_SPEC_VALS.mounting_pcd,
+    _mtg:                data.spec_mtg          || DEFAULT_SPEC_VALS._mtg,
+    key_dim_result:      data.spec_key_dim      || DEFAULT_SPEC_VALS.key_dim_result,
+    locating_dia_result: data.spec_locating_dia || DEFAULT_SPEC_VALS.locating_dia_result,
+  };
+}
 
 function drawMechHeader(doc, y) {
   const h1 = 18, h2 = 18;  // top / bottom sub-header heights
@@ -335,10 +359,10 @@ function drawMechHeader(doc, y) {
   return y + h1 + h2;
 }
 
-function drawMechSpecRow(doc, y) {
+function drawMechSpecRow(doc, specVals, y) {
   let x = M;
   MCOLS.forEach((c, i) => {
-    const val = i === 0 ? 'Specification' : (SPEC_VALS[c.key] || '');
+    const val = i === 0 ? 'Specification' : (specVals[c.key] || '');
     box(doc, x, y, c.w, RH, { fill: '#fffde7', stroke: '#000', sw: 0.3 });
     t(doc, val, x + 2, y + 3, c.w - 4, {
       font:  i === 0 ? FB : F,
@@ -549,7 +573,7 @@ class PDIGenerator {
 
     // Mechanical table: header → spec row → data rows
     y = drawMechHeader(doc, y);
-    y = drawMechSpecRow(doc, y);
+    y = drawMechSpecRow(doc, buildSpecVals(data), y);
 
     const mechFooterH = GCH * (1 + MECH_CHECKS.length) + 6 + REM_H + 6 + SIG_H + 8;
     y = drawPaginatedRows(doc, {
