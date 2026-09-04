@@ -144,7 +144,7 @@ describe('PDI Reports API', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — `Cannot find module '../models/operations/pdiReports'` (or a 404, once routes resolve but the module doesn't exist yet) — either way, not the expected 201.
 
 - [ ] **Step 3: Write the model**
@@ -273,7 +273,7 @@ Order matters here: Express tries mounts in registration order. If `/api/pdi` we
 
 - [ ] **Step 7: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 8: Commit**
@@ -324,7 +324,7 @@ Add inside the `describe` block, after the existing `it`:
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — no `GET /:id` route exists yet, so both requests 404 for the wrong reason (route not found rather than "report not found"), but the second test happens to pass by accident while the first fails on `fetched.body.report_id` being `undefined`. Confirm the first new test fails.
 
 - [ ] **Step 3: Add `getById` to the model**
@@ -368,7 +368,7 @@ router.get('/:id', authenticateToken, controller.getReport);
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
@@ -412,7 +412,7 @@ git commit -m "feat: add GET /api/pdi/reports/:id to fetch a report"
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — no `PATCH /:id` route exists yet (404).
 
 - [ ] **Step 3: Add `patchReport` to the model**
@@ -484,7 +484,7 @@ router.patch('/:id', authenticateToken, controller.patchReport);
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
@@ -530,7 +530,7 @@ git commit -m "feat: add PATCH /api/pdi/reports/:id to save progress on a draft"
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — no `GET /` route exists yet on the reports router (falls through to legacy `GET /` list, whose rows won't have the new report's status filtered the same way — either a 404-shaped mismatch or a body without the expected fields).
 
 - [ ] **Step 3: Add `listReports` to the model**
@@ -630,7 +630,7 @@ router.get('/', authenticateToken, controller.listReports);
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
@@ -690,7 +690,7 @@ git commit -m "feat: add GET /api/pdi/reports with cursor pagination and status 
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — no `POST /:id/finalize` route exists yet (404).
 
 - [ ] **Step 3: Add `finalizeReport` to the model**
@@ -782,7 +782,7 @@ router.post('/:id/finalize', authenticateToken, controller.finalizeReport);
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
@@ -824,7 +824,7 @@ git commit -m "feat: add POST /api/pdi/reports/:id/finalize to generate the PDF 
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — no `GET /:id/pdf` route exists yet (404).
 
 - [ ] **Step 3: Add `getPdfBuffer` to the model**
@@ -871,7 +871,7 @@ router.get('/:id/pdf', authenticateToken, controller.downloadPdf);
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
@@ -916,7 +916,7 @@ Note this test does not push into `createdReportIds` — the row is expected to 
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — no `DELETE /:id` route exists yet (404 on the delete call itself, or an unexpected status).
 
 - [ ] **Step 3: Add `deleteReport` to the model**
@@ -980,7 +980,7 @@ router.delete('/:id', authenticateToken, controller.deleteReport);
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS
 
 - [ ] **Step 7: Commit**
@@ -1015,7 +1015,7 @@ This one lives on the **legacy** router (`routes/operations/pdi.js`, mounted at 
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: FAIL — `GET /api/pdi/templates` currently falls through to the legacy `GET /:id` route (treating `"templates"` as an id), which will error trying to query `pre_dispatch_inspection_reports` with a non-numeric id.
 
 - [ ] **Step 3: Add `getTemplates` to the legacy controller**
@@ -1057,7 +1057,7 @@ Express matches routes within a router in registration order, so `GET /templates
 
 - [ ] **Step 5: Run test to verify it passes**
 
-Run: `npx jest tests/pdiReports.test.js -v`
+Run: `npx jest tests/pdiReports.test.js --verbose --forceExit`
 Expected: PASS — all tests in the file green.
 
 - [ ] **Step 6: Commit**
