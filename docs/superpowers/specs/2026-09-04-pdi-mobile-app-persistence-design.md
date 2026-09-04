@@ -59,7 +59,7 @@ All under the existing `/api/pdi` router.
 | `GET /api/pdi/reports/:id` | Fetch a report's current full data — used to resume a draft (app or web) and to power a "view details" screen. |
 | `GET /api/pdi/reports` | List with the existing cursor pagination, extended with a `status` filter — powers both the PDI Records dashboard and the app's "My Drafts / In Progress" list. |
 | `POST /api/pdi/reports/:id/finalize` | Marks complete: generates the PDF from stored data, does the best-effort Drive backup (failure doesn't block finalizing — same as invoices), sets `status = 'Completed'`, streams the PDF back in the same response (no separate round-trip needed to download after finalizing). |
-| `GET /api/pdi/reports/:id/pdf` | Regenerates the PDF on the fly from stored data for view/download — works even on an unfinished draft, since `PDIGenerator.generate()` already tolerates missing/partial data gracefully. This is what `report_link` points at. |
+| `GET /api/pdi/reports/:id/pdf` | Regenerates the PDF on the fly from stored data for view/download — works on drafts as sparse as just a `pdi_no`, so it isn't gated behind `finalize`. It still 400s if `pdi_no` itself is missing, since `PDIGenerator.generate()` requires it to name the document; every other field tolerates being blank. This is what `report_link` points at. |
 | `DELETE /api/pdi/reports/:id` | Unchanged from today; additionally trashes the Drive backup if one exists (mirroring `InvoiceRecords.delete`). |
 | `GET /api/pdi/templates` | Returns `[{ id: 'general', name: 'General', version: 1 }]`. Not consumed by the app yet — exists so Option 2 doesn't need a new endpoint, just new entries in this list. |
 
