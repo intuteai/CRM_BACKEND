@@ -93,6 +93,9 @@ class PdiReports {
   static async listReports({ limit = 10, cursor = null, status = null } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
 
+    // Cursor encodes "<report_id>:<sort_key>" — see models/operations/pdi.js's
+    // getAll() for why: inspection_date is nullable and rows can tie, so a
+    // plain single-column cursor either stalls on NULLs or drops tied rows.
     let cursorReportId = null;
     let cursorSortKey = null;
     if (cursor) {
@@ -149,7 +152,7 @@ class PdiReports {
         inspection_date: row.inspection_date,
         report_link: `/api/pdi/reports/${row.report_id}/pdf`,
       })),
-      total: totalResult.rows[0].count,
+      total: parseInt(totalResult.rows[0].count, 10),
       cursor: nextCursor,
     };
   }
