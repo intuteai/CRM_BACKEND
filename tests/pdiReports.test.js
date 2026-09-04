@@ -149,4 +149,21 @@ describe('PDI Reports API', () => {
     expect(pdf.headers['content-type']).toBe('application/pdf');
     expect(pdf.body.slice(0, 5).toString('ascii')).toBe('%PDF-');
   });
+
+  it('deletes a report', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'Delete Test Co.', pdi_no: 'PDI-TEST-DEL-1' } });
+
+    const del = await request(app)
+      .delete(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(del.statusCode).toBe(200);
+
+    const fetched = await request(app)
+      .get(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(fetched.statusCode).toBe(404);
+  });
 });

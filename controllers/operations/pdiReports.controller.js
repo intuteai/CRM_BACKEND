@@ -104,3 +104,15 @@ exports.downloadPdf = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.deleteReport = async (req, res) => {
+  try {
+    const result = await PdiReports.deleteReport(req.params.id, req.io);
+    await invalidateCache();
+    res.json(result);
+  } catch (error) {
+    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    logger.error(`Error deleting PDI report ${req.params.id}: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

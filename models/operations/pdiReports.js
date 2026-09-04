@@ -1,7 +1,7 @@
 const pool = require('../../config/db');
 const logger = require('../../utils/logger');
 const PDIGenerator = require('./pdi_generator');
-const { uploadBufferToDrivePrivate } = require('../../services/googleDrive');
+const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/googleDrive');
 
 // Collects a PDFKit document's output into a single Buffer.
 function bufferPdf(doc) {
@@ -201,6 +201,25 @@ class PdiReports {
   static async getPdfBuffer(reportId) {
     const report = await this.getById(reportId);
     return bufferPdf(PDIGenerator.generate(report.data || {}));
+  }
+
+  static async deleteReport(reportId, io) {
+    const _id = Number(reportId);
+    if (!Number.isFinite(_id)) throw new Error('Report not found');
+    const result = await pool.query(
+      'DELETE FROM pre_dispatch_inspection_reports WHERE report_id = $1 RETURNING report_id, drive_file_id',
+      [_id]
+    );
+    if (result.rows.length === 0) throw new Error('Report not found');
+
+    const driveFileId = result.rows[0].drive_file_id;
+    if (driveFileId) {
+      try { await deleteDriveFile(driveFileId); }
+      catch (e) { logger.warn(`Drive cleanup failed for PDI report ${_id} (file ${driveFileId}): ${e.message}`); }
+    }
+
+    if (io?.emit) io.emit('pdiReportUpdate', { report_id: _id, status: 'Deleted' });
+    return { report_id: _id };
   }
 }
 
