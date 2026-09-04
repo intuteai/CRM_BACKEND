@@ -8,5 +8,6 @@ router.get('/', authenticateToken, controller.listReports);
 router.get('/:id', authenticateToken, controller.getReport);
 router.patch('/:id', authenticateToken, controller.patchReport);
 router.post('/:id/finalize', authenticateToken, controller.finalizeReport);
+router.get('/:id/pdf', authenticateToken, controller.downloadPdf);
 
 module.exports = router;

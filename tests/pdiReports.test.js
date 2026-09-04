@@ -133,4 +133,20 @@ describe('PDI Reports API', () => {
       .set('Authorization', `Bearer ${adminToken}`);
     expect(finalized.statusCode).toBe(400);
   });
+
+  it('regenerates a PDF on demand for an unfinished draft', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'Draft PDF Co.', pdi_no: 'PDI-TEST-PDF-1' } });
+    createdReportIds.push(created.body.report_id);
+
+    const pdf = await request(app)
+      .get(`/api/pdi/reports/${created.body.report_id}/pdf`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(pdf.statusCode).toBe(200);
+    expect(pdf.headers['content-type']).toBe('application/pdf');
+    expect(pdf.body.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
 });

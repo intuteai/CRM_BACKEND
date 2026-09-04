@@ -87,3 +87,20 @@ exports.listReports = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.downloadPdf = async (req, res) => {
+  try {
+    const report = await PdiReports.getById(req.params.id);
+    if (!report.data?.pdi_no) return res.status(400).json({ error: 'pdi_no required to generate a PDF' });
+
+    const pdfBuffer = await PdiReports.getPdfBuffer(req.params.id);
+    const safeName = String(report.data.pdi_no).replace(/[^a-zA-Z0-9_-]/g, '_');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="PDI_${safeName}.pdf"`);
+    res.send(pdfBuffer);
+  } catch (error) {
+    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    logger.error(`Error generating PDI PDF ${req.params.id}: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

@@ -197,6 +197,11 @@ class PdiReports {
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
     return { payload, pdfBuffer };
   }
+
+  static async getPdfBuffer(reportId) {
+    const report = await this.getById(reportId);
+    return bufferPdf(PDIGenerator.generate(report.data || {}));
+  }
 }
 
 module.exports = PdiReports;
