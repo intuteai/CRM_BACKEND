@@ -53,6 +53,7 @@ const queriesRoutes          = require('./routes/operations/queries');
 const activitiesRoutes       = require('./routes/operations/activities');
 const problemsRoutes         = require('./routes/operations/problems');
 const pdiRoutes              = require('./routes/operations/pdi');
+const pdiReportsRoutes       = require('./routes/operations/pdiReports');
 
 // ── Service & Repair routes ───────────────────────────────────
 const serviceRepairRoutes    = require('./routes/service/serviceRepair');
@@ -174,6 +175,7 @@ app.use('/api/invoice-records',  invoiceRecordsRoutes);
 app.use('/api/queries',     queriesRoutes);
 app.use('/api/activities',  activitiesRoutes);
 app.use('/api/problems',    problemsRoutes);
+app.use('/api/pdi/reports', pdiReportsRoutes);
 app.use('/api/pdi',         pdiRoutes);
 
 // Service & Repair
