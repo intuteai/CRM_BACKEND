@@ -57,6 +57,26 @@ exports.patchReport = async (req, res) => {
   }
 };
 
+exports.finalizeReport = async (req, res) => {
+  try {
+    const existing = await PdiReports.getById(req.params.id);
+    if (!existing.data?.pdi_no) return res.status(400).json({ error: 'pdi_no required before finalizing' });
+
+    const { payload, pdfBuffer } = await PdiReports.finalizeReport(req.params.id, req.io);
+    await invalidateCache();
+
+    const safeName = String(payload.data?.pdi_no || payload.report_id).replace(/[^a-zA-Z0-9_-]/g, '_');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="PDI_${safeName}.pdf"`);
+    logger.info(`PDI report finalized: ${payload.report_id} by ${req.user.user_id}`);
+    res.send(pdfBuffer);
+  } catch (error) {
+    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    logger.error(`Error finalizing PDI report ${req.params.id}: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 exports.listReports = async (req, res) => {
   try {
     const { limit = 10, cursor, status } = req.query;

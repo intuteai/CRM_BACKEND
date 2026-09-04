@@ -99,4 +99,38 @@ describe('PDI Reports API', () => {
     expect(list.body.data.some((r) => r.report_id === created.body.report_id)).toBe(true);
     expect(list.body.data.every((r) => r.status === 'Failed')).toBe(true);
   });
+
+  it('finalizes a report: generates a real PDF and marks it Completed', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'Finalize Test Co.', pdi_no: 'PDI-TEST-FINAL-1' } });
+    createdReportIds.push(created.body.report_id);
+
+    const finalized = await request(app)
+      .post(`/api/pdi/reports/${created.body.report_id}/finalize`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(finalized.statusCode).toBe(200);
+    expect(finalized.headers['content-type']).toBe('application/pdf');
+    expect(finalized.body.slice(0, 5).toString('ascii')).toBe('%PDF-');
+
+    const fetched = await request(app)
+      .get(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(fetched.body.status).toBe('Completed');
+  });
+
+  it('rejects finalizing a report with no pdi_no', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'No PDI No Co.' } });
+    createdReportIds.push(created.body.report_id);
+
+    const finalized = await request(app)
+      .post(`/api/pdi/reports/${created.body.report_id}/finalize`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(finalized.statusCode).toBe(400);
+  });
 });
