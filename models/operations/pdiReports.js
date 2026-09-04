@@ -103,34 +103,6 @@ class PdiReports {
     return payload;
   }
 
-  static async finalizeReport(reportId, io) {
-    const report = await this.getById(reportId);
-    const pdfBuffer = await bufferPdf(PDIGenerator.generate(report.data || {}));
-
-    // Best-effort Drive backup — same reasoning as InvoiceRecords.create: a
-    // "generated" report can always be regenerated from its stored data, so a
-    // Drive outage shouldn't block finalizing.
-    let driveFileId = report.drive_file_id || null;
-    try {
-      const safeNo = String(report.data?.pdi_no || report.report_id).replace(/[^a-zA-Z0-9_-]/g, '_');
-      const uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
-      driveFileId = uploaded.id;
-    } catch (e) {
-      logger.warn(`Drive backup failed for PDI report ${reportId}: ${e.message}`);
-    }
-
-    const result = await pool.query(`
-      UPDATE pre_dispatch_inspection_reports
-      SET status = 'Completed', drive_file_id = COALESCE($1, drive_file_id)
-      WHERE report_id = $2
-      RETURNING ${reportColumns()}
-    `, [driveFileId, Number(reportId)]);
-
-    const payload = this.#toPayload(result.rows[0]);
-    if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
-    return { payload, pdfBuffer };
-  }
-
   static async listReports({ limit = 10, cursor = null, status = null } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
 
@@ -196,6 +168,34 @@ class PdiReports {
       total: parseInt(totalResult.rows[0].count, 10),
       cursor: nextCursor,
     };
+  }
+
+  static async finalizeReport(reportId, io) {
+    const report = await this.getById(reportId);
+    const pdfBuffer = await bufferPdf(PDIGenerator.generate(report.data || {}));
+
+    // Best-effort Drive backup — same reasoning as InvoiceRecords.create: a
+    // "generated" report can always be regenerated from its stored data, so a
+    // Drive outage shouldn't block finalizing.
+    let driveFileId = report.drive_file_id || null;
+    try {
+      const safeNo = String(report.data?.pdi_no || report.report_id).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
+      driveFileId = uploaded.id;
+    } catch (e) {
+      logger.warn(`Drive backup failed for PDI report ${reportId}: ${e.message}`);
+    }
+
+    const result = await pool.query(`
+      UPDATE pre_dispatch_inspection_reports
+      SET status = 'Completed', drive_file_id = COALESCE($1, drive_file_id)
+      WHERE report_id = $2
+      RETURNING ${reportColumns()}
+    `, [driveFileId, Number(reportId)]);
+
+    const payload = this.#toPayload(result.rows[0]);
+    if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
+    return { payload, pdfBuffer };
   }
 }
 
