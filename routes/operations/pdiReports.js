@@ -5,5 +5,6 @@ const controller = require('../../controllers/operations/pdiReports.controller')
 
 router.post('/', authenticateToken, controller.createReport);
 router.get('/:id', authenticateToken, controller.getReport);
+router.patch('/:id', authenticateToken, controller.patchReport);
 
 module.exports = router;

@@ -54,6 +54,41 @@ class PdiReports {
     if (result.rows.length === 0) throw new Error('Report not found');
     return this.#toPayload(result.rows[0]);
   }
+
+  static async patchReport(reportId, fields, io) {
+    const _id = Number(reportId);
+    if (!Number.isFinite(_id)) throw new Error('Report not found');
+
+    const sets = [];
+    const values = [];
+    let i = 1;
+
+    if (fields.status !== undefined) { sets.push(`status = $${i++}`); values.push(fields.status); }
+    if (fields.inspected_by !== undefined) { sets.push(`inspected_by = $${i++}`); values.push(fields.inspected_by || null); }
+    if (fields.inspection_date !== undefined) {
+      sets.push(`inspection_date = $${i++}`);
+      values.push(fields.inspection_date ? new Date(fields.inspection_date).toISOString() : null);
+    }
+    if (fields.customer_id !== undefined) { sets.push(`customer_id = $${i++}`); values.push(fields.customer_id || null); }
+    if (fields.order_id !== undefined) { sets.push(`order_id = $${i++}`); values.push(fields.order_id || null); }
+    if (fields.data !== undefined) { sets.push(`data = $${i++}`); values.push(JSON.stringify(fields.data)); }
+    if (fields.photos !== undefined) { sets.push(`photos = $${i++}`); values.push(JSON.stringify(fields.photos)); }
+
+    if (sets.length === 0) return this.getById(_id);
+
+    values.push(_id);
+    const result = await pool.query(`
+      UPDATE pre_dispatch_inspection_reports
+      SET ${sets.join(', ')}
+      WHERE report_id = $${i}
+      RETURNING ${reportColumns()}
+    `, values);
+    if (result.rows.length === 0) throw new Error('Report not found');
+
+    const payload = this.#toPayload(result.rows[0]);
+    if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
+    return payload;
+  }
 }
 
 module.exports = PdiReports;

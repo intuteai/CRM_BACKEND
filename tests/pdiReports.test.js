@@ -61,4 +61,22 @@ describe('PDI Reports API', () => {
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.statusCode).toBe(404);
   });
+
+  it('saves progress on a draft via PATCH without requiring every field', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'Voltrix Motors', pdi_no: 'PDI-TEST-002' } });
+    createdReportIds.push(created.body.report_id);
+
+    const patched = await request(app)
+      .patch(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'In Progress', data: { ...created.body.data, product_id: '125-M' } });
+
+    expect(patched.statusCode).toBe(200);
+    expect(patched.body.status).toBe('In Progress');
+    expect(patched.body.data.product_id).toBe('125-M');
+    expect(patched.body.data.customer_name).toBe('Voltrix Motors');
+  });
 });
