@@ -56,3 +56,14 @@ exports.patchReport = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.listReports = async (req, res) => {
+  try {
+    const { limit = 10, cursor, status } = req.query;
+    const result = await PdiReports.listReports({ limit, cursor, status });
+    res.json(result);
+  } catch (error) {
+    logger.error(`Error listing PDI reports: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

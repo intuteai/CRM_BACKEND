@@ -79,4 +79,24 @@ describe('PDI Reports API', () => {
     expect(patched.body.data.product_id).toBe('125-M');
     expect(patched.body.data.customer_name).toBe('Voltrix Motors');
   });
+
+  it('lists reports filtered by status', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'R.K. Traders', pdi_no: 'PDI-TEST-LIST-1' } });
+    createdReportIds.push(created.body.report_id);
+    await request(app)
+      .patch(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'Failed' });
+
+    const list = await request(app)
+      .get('/api/pdi/reports?status=Failed&limit=50')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(list.statusCode).toBe(200);
+    expect(list.body.data.some((r) => r.report_id === created.body.report_id)).toBe(true);
+    expect(list.body.data.every((r) => r.status === 'Failed')).toBe(true);
+  });
 });

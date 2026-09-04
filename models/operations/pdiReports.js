@@ -89,6 +89,70 @@ class PdiReports {
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
     return payload;
   }
+
+  static async listReports({ limit = 10, cursor = null, status = null } = {}) {
+    const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+
+    let cursorReportId = null;
+    let cursorSortKey = null;
+    if (cursor) {
+      const sepIdx = String(cursor).indexOf(':');
+      if (sepIdx > 0) {
+        const parsedId = parseInt(String(cursor).slice(0, sepIdx), 10);
+        if (!isNaN(parsedId)) {
+          cursorReportId = parsedId;
+          cursorSortKey = String(cursor).slice(sepIdx + 1);
+        }
+      }
+    }
+
+    const query = `
+      SELECT
+        pdi.report_id, pdi.sr_no, pdi.customer_id, pdi.order_id, pdi.status,
+        pdi.inspected_by, pdi.inspection_date, pdi.template_id,
+        u.name AS customer_name,
+        COALESCE(pdi.inspection_date, 'infinity'::timestamp)::text AS sort_key
+      FROM pre_dispatch_inspection_reports pdi
+      LEFT JOIN customers c ON pdi.customer_id = c.customer_id
+      LEFT JOIN users u ON c.user_id = u.user_id
+      WHERE (
+        $1::text IS NULL
+        OR COALESCE(pdi.inspection_date, 'infinity'::timestamp) < $1::timestamp
+        OR (COALESCE(pdi.inspection_date, 'infinity'::timestamp) = $1::timestamp AND pdi.report_id < $2)
+      )
+      AND ($4::text IS NULL OR pdi.status = $4)
+      ORDER BY COALESCE(pdi.inspection_date, 'infinity'::timestamp) DESC, pdi.report_id DESC
+      LIMIT $3
+    `;
+    const values = [cursorSortKey, cursorReportId, _limit + 1, status || null];
+    const countQuery = `SELECT COUNT(*)::int AS count FROM pre_dispatch_inspection_reports WHERE ($1::text IS NULL OR status = $1)`;
+
+    const [result, totalResult] = await Promise.all([
+      pool.query(query, values),
+      pool.query(countQuery, [status || null]),
+    ]);
+
+    const hasMore = result.rows.length > _limit;
+    const rows = hasMore ? result.rows.slice(0, _limit) : result.rows;
+    const nextCursor = hasMore ? `${rows[rows.length - 1].report_id}:${rows[rows.length - 1].sort_key}` : null;
+
+    return {
+      data: rows.map((row) => ({
+        report_id: row.report_id,
+        sr_no: row.sr_no,
+        status: row.status,
+        template_id: row.template_id,
+        customer_id: row.customer_id,
+        order_id: row.order_id,
+        customer_name: row.customer_name,
+        inspected_by: row.inspected_by,
+        inspection_date: row.inspection_date,
+        report_link: `/api/pdi/reports/${row.report_id}/pdf`,
+      })),
+      total: totalResult.rows[0].count,
+      cursor: nextCursor,
+    };
+  }
 }
 
 module.exports = PdiReports;
