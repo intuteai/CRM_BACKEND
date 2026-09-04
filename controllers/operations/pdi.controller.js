@@ -100,3 +100,7 @@ exports.delete = async (req, res) => {
     res.status(error.message === 'Report not found' ? 404 : 500).json({ error: error.message });
   }
 };
+
+exports.getTemplates = async (req, res) => {
+  res.json([{ id: 'general', name: 'General', version: 1 }]);
+};

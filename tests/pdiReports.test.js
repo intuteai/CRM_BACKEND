@@ -166,4 +166,12 @@ describe('PDI Reports API', () => {
       .set('Authorization', `Bearer ${adminToken}`);
     expect(fetched.statusCode).toBe(404);
   });
+
+  it('lists the general template', async () => {
+    const res = await request(app)
+      .get('/api/pdi/templates')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual([{ id: 'general', name: 'General', version: 1 }]);
+  });
 });
