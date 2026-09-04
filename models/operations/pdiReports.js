@@ -46,6 +46,14 @@ class PdiReports {
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
     return payload;
   }
+
+  static async getById(reportId) {
+    const _id = Number(reportId);
+    if (!Number.isFinite(_id)) throw new Error('Report not found');
+    const result = await pool.query(`SELECT ${reportColumns()} FROM pre_dispatch_inspection_reports WHERE report_id = $1`, [_id]);
+    if (result.rows.length === 0) throw new Error('Report not found');
+    return this.#toPayload(result.rows[0]);
+  }
 }
 
 module.exports = PdiReports;

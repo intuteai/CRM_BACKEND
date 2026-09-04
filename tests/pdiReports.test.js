@@ -38,4 +38,27 @@ describe('PDI Reports API', () => {
     expect(res.body.photos).toEqual([]);
     createdReportIds.push(res.body.report_id);
   });
+
+  it('fetches a report by id, resuming its full saved state', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'Kesari Auto', pdi_no: 'PDI-TEST-003' } });
+    createdReportIds.push(created.body.report_id);
+
+    const fetched = await request(app)
+      .get(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(fetched.statusCode).toBe(200);
+    expect(fetched.body.report_id).toBe(created.body.report_id);
+    expect(fetched.body.data.customer_name).toBe('Kesari Auto');
+  });
+
+  it('returns 404 for a report id that does not exist', async () => {
+    const res = await request(app)
+      .get('/api/pdi/reports/999999999')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.statusCode).toBe(404);
+  });
 });

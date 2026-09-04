@@ -33,3 +33,14 @@ exports.createReport = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.getReport = async (req, res) => {
+  try {
+    const report = await PdiReports.getById(req.params.id);
+    res.json(report);
+  } catch (error) {
+    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    logger.error(`Error fetching PDI report ${req.params.id}: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
