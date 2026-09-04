@@ -467,6 +467,46 @@ function drawPaginatedRows(doc, { rows, drawRow, rowHeight, y, footerHeight, red
   return y;
 }
 
+/* ── Photos — 2-column grid, auto-paginating onto extra pages when a
+      row of 2 wouldn't fit the current page. Mirrors drawPaginatedRows'
+      overflow logic, adapted for a 2-up image grid instead of 1 row. ── */
+const PHOTO_GAP  = 8;
+const PHOTO_LBL_H = 16;
+const PHOTO_IMG_H = 150;
+const PHOTO_ROW_H = PHOTO_LBL_H + PHOTO_IMG_H + 8;
+const PHOTO_CELL_W = (CW - PHOTO_GAP) / 2;
+
+function drawPhotosHeader(doc, y) {
+  box(doc, M, y, CW, 18, { stroke: '#000', sw: 0.5 });
+  t(doc, 'PHOTOS:', M + 4, y + 5, CW - 8, { font: FB, size: 9 });
+  return y + 18 + 6;
+}
+
+function drawPhotoCell(doc, photo, index, x, y) {
+  const label = (photo.label || '').trim() || `Photo ${index + 1}`;
+  box(doc, x, y, PHOTO_CELL_W, PHOTO_LBL_H, { stroke: '#000', sw: 0.5 });
+  t(doc, `${index + 1}. ${label}`, x + 4, y + 4, PHOTO_CELL_W - 8, { font: FB, size: 8.5 });
+  const imgY = y + PHOTO_LBL_H;
+  box(doc, x, imgY, PHOTO_CELL_W, PHOTO_IMG_H, { stroke: '#000', sw: 0.5 });
+  drawImageInBox(doc, decodeImageDataUri(photo.image), x, imgY, PHOTO_CELL_W, PHOTO_IMG_H);
+}
+
+function drawPhotoGrid(doc, photos, y) {
+  y = drawPhotosHeader(doc, y);
+  for (let i = 0; i < photos.length; i += 2) {
+    if (y + PHOTO_ROW_H > PAGE_H - BOT_M) {
+      doc.addPage();
+      y = drawPhotosHeader(doc, 10);
+    }
+    drawPhotoCell(doc, photos[i], i, M, y);
+    if (photos[i + 1]) {
+      drawPhotoCell(doc, photos[i + 1], i + 1, M + PHOTO_CELL_W + PHOTO_GAP, y);
+    }
+    y += PHOTO_ROW_H;
+  }
+  return y;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    Main generator
    ═══════════════════════════════════════════════════════════════ */
@@ -598,30 +638,10 @@ class PDIGenerator {
     doc.addPage();
     y = 10;
 
-    box(doc, M, y, CW, 18, { stroke: '#000', sw: 0.5 });
-    t(doc, 'PHOTOS:', M + 4, y + 5, CW - 8, { font: FB, size: 9 });
-    y += 18;
-
-    const photoLblH = 16;
-    // Split remaining printable space (above bottom margin) evenly between two photo boxes
-    const available = PAGE_H - BOT_M - y - photoLblH * 2 - 10;
-    const photoH    = Math.max(100, Math.floor(available / 2));
-
-    const overallMotorBuf = decodeImageDataUri(data.photo_overall_motor);
-    const namePlateBuf    = decodeImageDataUri(data.photo_name_plate);
-
-    box(doc, M, y, CW, photoLblH, { stroke: '#000', sw: 0.5 });
-    t(doc, '1. Overall Motor:', M + 4, y + 4, CW - 8, { font: FB, size: 9 });
-    y += photoLblH;
-    box(doc, M, y, CW, photoH, { stroke: '#000', sw: 0.5 });
-    drawImageInBox(doc, overallMotorBuf, M, y, CW, photoH);
-    y += photoH;
-
-    box(doc, M, y, CW, photoLblH, { stroke: '#000', sw: 0.5 });
-    t(doc, '2. Name Plate', M + 4, y + 4, CW - 8, { font: FB, size: 9 });
-    y += photoLblH;
-    box(doc, M, y, CW, photoH, { stroke: '#000', sw: 0.5 });
-    drawImageInBox(doc, namePlateBuf, M, y, CW, photoH);
+    const photosList = Array.isArray(data.photos)
+      ? data.photos.filter((p) => p && ((p.label && p.label.trim()) || p.image))
+      : [];
+    drawPhotoGrid(doc, photosList, y);
 
     // Number every physical page (including any continuation pages
     // created by drawPaginatedRows) now that the true total is known.

@@ -105,10 +105,12 @@ app.use(cors({
   credentials: true,
 }));
 app.use(cookieParser());
-// Default 100kb is too small for the PDI generator, which embeds up to three
-// base64-encoded photos in its JSON body; 10mb matches the fileSize cap the
-// codebase's other upload endpoints already use via multer (see routes/hr/invoiceRecords.js).
-app.use(express.json({ limit: '10mb' }));
+// Default 100kb is too small for the PDI generator, which embeds a variable
+// number of base64-encoded, client-compressed photos (soft-capped at 12) in
+// its JSON body. Photos are resized/re-encoded client-side before upload, so
+// each is typically a few hundred KB — 25mb comfortably covers a full set
+// plus the technical drawing with headroom.
+app.use(express.json({ limit: '25mb' }));
 app.use(limiter);
 
 app.use((req, res, next) => {
