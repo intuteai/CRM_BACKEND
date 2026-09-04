@@ -9,8 +9,12 @@ const logger = require('../../utils/logger');
 // hang the request forever) and never let a cache failure fail report creation.
 async function invalidateCache() {
   if (!redis.isReady) return;
-  const keys = await redis.keys('pdi_*');
-  if (keys.length > 0) await redis.del(keys);
+  try {
+    const keys = await redis.keys('pdi_*');
+    if (keys.length > 0) await redis.del(keys);
+  } catch (err) {
+    logger.warn(`PDI report cache invalidation failed: ${err.message}`);
+  }
 }
 
 exports.createReport = async (req, res) => {
@@ -20,11 +24,7 @@ exports.createReport = async (req, res) => {
       customer_id, order_id, inspected_by: inspected_by || req.user.name, inspection_date, data, photos,
     }, req.io);
 
-    try {
-      await invalidateCache();
-    } catch (cacheError) {
-      logger.warn(`PDI report cache invalidation failed: ${cacheError.message}`);
-    }
+    await invalidateCache();
 
     logger.info(`PDI report draft created: ${report.report_id} by ${req.user.user_id}`);
     res.status(201).json(report);

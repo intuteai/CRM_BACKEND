@@ -175,6 +175,8 @@ app.use('/api/invoice-records',  invoiceRecordsRoutes);
 app.use('/api/queries',     queriesRoutes);
 app.use('/api/activities',  activitiesRoutes);
 app.use('/api/problems',    problemsRoutes);
+// Order matters: /api/pdi/reports must be mounted before /api/pdi, or Express
+// would hand "reports" off to the legacy router's GET /:id handler instead.
 app.use('/api/pdi/reports', pdiReportsRoutes);
 app.use('/api/pdi',         pdiRoutes);
 
