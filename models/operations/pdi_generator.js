@@ -236,14 +236,22 @@ function drawInfo(doc, data, y) {
 /* ═══════════════════════════════════════════════════════════════
    Electrical table columns
    ═══════════════════════════════════════════════════════════════ */
+// A motor is tested running in one rotation direction at a time — Forward
+// (F) or Reverse (R), never both at once — so each row carries a single
+// "direction" selector rather than separate F/R columns per measurement.
+// Measurement column widths are sized to the widest header line ("RPM\nSPECIFIED"
+// ≈ 34px at 7pt Roboto-Bold) plus the t() helper's 4px padding, with a small
+// safety margin — otherwise the header text ellipsis-truncates (verified via
+// doc.widthOfString()).
 const ECOLS_DEF = [
-  { key: 'sno',               label: 'S. No',              w: 28,  align: 'center' },
-  { key: 'motor_sr_no',       label: 'Motor Sr. No',       w: 60,  align: 'center' },
-  { key: 'voltage',           label: 'Voltage',            w: 38,  align: 'center' },
-  { key: 'current_standard',  label: 'Current\nStandard F',w: 44,  align: 'center' },
-  { key: 'current_measured',  label: 'Current\nMeasured F',w: 44,  align: 'center' },
-  { key: 'rpm_specified',     label: 'RPM\nSPECIFIED F',  w: 44,  align: 'center' },
-  { key: 'rpm_measured',      label: 'RPM\nMEASURED F',   w: 44,  align: 'center' },
+  { key: 'sno',               label: 'S. No',              w: 22,  align: 'center' },
+  { key: 'motor_sr_no',       label: 'Motor Sr. No',       w: 56,  align: 'center' },
+  { key: 'voltage',           label: 'Voltage',            w: 32,  align: 'center' },
+  { key: 'direction',         label: 'F / R',              w: 26,  align: 'center' },
+  { key: 'current_standard',  label: 'Current\nStandard',  w: 40,  align: 'center' },
+  { key: 'current_measured',  label: 'Current\nMeasured',  w: 40,  align: 'center' },
+  { key: 'rpm_specified',     label: 'RPM\nSPECIFIED',    w: 42,  align: 'center' },
+  { key: 'rpm_measured',      label: 'RPM\nMEASURED',     w: 42,  align: 'center' },
   { key: 'electrical_remarks',label: 'Remarks',            w: 0,   align: 'left'  },
 ];
 
@@ -288,7 +296,7 @@ const MCOLS_DEF = [
   { key: 'motor_length',        label: 'Motor\nLength',  w: 44,  align: 'center', group: null },
   { key: 'shaft_length',        label: 'Shaft O/P\nD/Length', w: 50, align: 'center', group: null },
   { key: 'mounting_pcd',        label: 'PCD',            w: 40,  align: 'center', group: 'Mounting\nHoles' },
-  { key: '_mtg',                label: 'MTG\n1.M6/2.Ø8.0', w: 50, align: 'center', group: 'Mounting\nHoles' },
+  { key: 'mtg',                 label: 'MTG',            w: 50,  align: 'center', group: 'Mounting\nHoles' },
   { key: 'key_dim_result',      label: 'Key\nDim.',      w: 34,  align: 'center', group: null },
   { key: 'locating_dia_result', label: 'Locating\nDia.', w: 38,  align: 'center', group: null },
   { key: 'mechanical_remarks',  label: 'Remarks',        w: 0,   align: 'left',   group: null },
@@ -303,7 +311,7 @@ const DEFAULT_SPEC_VALS = {
   motor_length:        '',
   shaft_length:        '',
   mounting_pcd:        '153',
-  _mtg:                '1.M6 / 2.Ø8.0',
+  mtg:                 '1.M6 / 2.Ø8.0',
   key_dim_result:      'Go/NG',
   locating_dia_result: '50.0 mm',
 };
@@ -313,7 +321,7 @@ function buildSpecVals(data) {
     motor_length:        data.spec_motor_length || DEFAULT_SPEC_VALS.motor_length,
     shaft_length:        data.spec_shaft_length || DEFAULT_SPEC_VALS.shaft_length,
     mounting_pcd:        data.spec_mounting_pcd || DEFAULT_SPEC_VALS.mounting_pcd,
-    _mtg:                data.spec_mtg          || DEFAULT_SPEC_VALS._mtg,
+    mtg:                 data.spec_mtg          || DEFAULT_SPEC_VALS.mtg,
     key_dim_result:      data.spec_key_dim      || DEFAULT_SPEC_VALS.key_dim_result,
     locating_dia_result: data.spec_locating_dia || DEFAULT_SPEC_VALS.locating_dia_result,
   };
@@ -377,7 +385,7 @@ function drawMechSpecRow(doc, specVals, y) {
 function drawMechRow(doc, row, y) {
   let x = M;
   MCOLS.forEach(c => {
-    const val = c.key === '_mtg' ? '' : (row[c.key] ?? '');
+    const val = row[c.key] ?? '';
     box(doc, x, y, c.w, RH, { stroke: '#000', sw: 0.3 });
     t(doc, val, x + 2, y + 3, c.w - 4, { font: F, size: 7.5, align: c.align });
     x += c.w;
