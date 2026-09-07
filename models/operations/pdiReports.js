@@ -178,7 +178,9 @@ class PdiReports {
 
   static async finalizeReport(reportId, io) {
     const report = await this.getById(reportId);
-    const pdfBuffer = await bufferPdf(PDIGenerator.generate(report.data || {}));
+    // photos live in their own column, not report.data — the generator reads
+    // data.photos, so it has to be merged in here or PDFs render with none.
+    const pdfBuffer = await bufferPdf(PDIGenerator.generate({ ...(report.data || {}), photos: report.photos || [] }));
 
     // Best-effort Drive backup — same reasoning as InvoiceRecords.create: a
     // "generated" report can always be regenerated from its stored data, so a
@@ -206,7 +208,7 @@ class PdiReports {
 
   static async getPdfBuffer(reportId) {
     const report = await this.getById(reportId);
-    return bufferPdf(PDIGenerator.generate(report.data || {}));
+    return bufferPdf(PDIGenerator.generate({ ...(report.data || {}), photos: report.photos || [] }));
   }
 
   static async deleteReport(reportId, io) {

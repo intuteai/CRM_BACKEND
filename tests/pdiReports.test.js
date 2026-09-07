@@ -124,6 +124,36 @@ describe('PDI Reports API', () => {
     expect(fetched.body.status).toBe('Completed');
   });
 
+  it('embeds saved photos in the finalized PDF (regression: photos live in their own column, not data)', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'Photo Test Co.', pdi_no: 'PDI-TEST-PHOTO-1' } });
+    createdReportIds.push(created.body.report_id);
+
+    const tinyPng = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+    await request(app)
+      .patch(`/api/pdi/reports/${created.body.report_id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ photos: [{ label: 'Overall Motor', image: tinyPng }] });
+
+    const withoutPhotos = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ data: { customer_name: 'No Photo Co.', pdi_no: 'PDI-TEST-PHOTO-2' } });
+    createdReportIds.push(withoutPhotos.body.report_id);
+
+    const [finalized, finalizedBare] = await Promise.all([
+      request(app).post(`/api/pdi/reports/${created.body.report_id}/finalize`).set('Authorization', `Bearer ${adminToken}`),
+      request(app).post(`/api/pdi/reports/${withoutPhotos.body.report_id}/finalize`).set('Authorization', `Bearer ${adminToken}`),
+    ]);
+
+    expect(finalized.statusCode).toBe(200);
+    // A PDF with an embedded raster image is meaningfully larger than one
+    // whose photo section only drew the empty "PHOTOS:" header box.
+    expect(finalized.body.length).toBeGreaterThan(finalizedBare.body.length + 500);
+  });
+
   it('rejects finalizing a report with no pdi_no', async () => {
     const created = await request(app)
       .post('/api/pdi/reports')
