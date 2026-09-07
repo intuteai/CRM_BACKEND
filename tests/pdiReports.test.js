@@ -177,4 +177,17 @@ describe('PDI Reports API', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toEqual([{ id: 'general', name: 'General', version: 1 }]);
   });
+
+  it('the legacy /api/pdi generate/CRUD endpoints are gone', async () => {
+    const generate = await request(app)
+      .post('/api/pdi/generate')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ pdi_no: 'PDI-LEGACY-CHECK' });
+    expect(generate.statusCode).toBe(404);
+
+    const list = await request(app)
+      .get('/api/pdi')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(list.statusCode).toBe(404);
+  });
 });
