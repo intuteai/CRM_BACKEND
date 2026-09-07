@@ -15,14 +15,6 @@ function bufferPdf(doc) {
   });
 }
 
-function requireAdmin(req, res) {
-  if (req.user.role_id !== 1) {
-    res.status(403).json({ error: 'Admin only' });
-    return false;
-  }
-  return true;
-}
-
 // Postgres unique_violation on (id, version) — the narrow race window in
 // AuthoredTemplates.saveNewVersion's read-then-insert (two concurrent saves
 // for the same id both compute the same next version number). Low-probability
@@ -34,7 +26,6 @@ function isUniqueViolation(error) {
 }
 
 exports.listTemplates = async (req, res) => {
-  if (!requireAdmin(req, res)) return;
   try {
     const rows = await AuthoredTemplates.listAll();
     res.json(rows);
@@ -45,7 +36,6 @@ exports.listTemplates = async (req, res) => {
 };
 
 exports.getTemplate = async (req, res) => {
-  if (!requireAdmin(req, res)) return;
   try {
     const row = await AuthoredTemplates.getLatest(req.params.id);
     if (!row) return res.status(404).json({ error: 'Template not found' });
@@ -57,7 +47,6 @@ exports.getTemplate = async (req, res) => {
 };
 
 exports.createTemplate = async (req, res) => {
-  if (!requireAdmin(req, res)) return;
   try {
     const { id, name, definition } = req.body || {};
     if (!id || !name || !definition) {
@@ -82,7 +71,6 @@ exports.createTemplate = async (req, res) => {
 };
 
 async function saveWithStatus(req, res, statusOverride) {
-  if (!requireAdmin(req, res)) return;
   try {
     const { name, definition } = req.body || {};
     const row = await AuthoredTemplates.saveNewVersion(req.params.id, {
@@ -104,7 +92,6 @@ exports.publishTemplate = (req, res) => saveWithStatus(req, res, 'active');
 exports.archiveTemplate = (req, res) => saveWithStatus(req, res, 'archived');
 
 exports.previewTemplate = async (req, res) => {
-  if (!requireAdmin(req, res)) return;
   try {
     const { definition } = req.body || {};
     if (!definition) return res.status(400).json({ error: 'definition is required' });

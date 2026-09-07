@@ -51,6 +51,42 @@ describe('PDI Admin Templates API', () => {
     expect(res.statusCode).toBe(403);
   });
 
+  it('rejects a non-admin from every admin endpoint, not just create', async () => {
+    const id = 'admin-test-403-check-' + Date.now();
+    // Create as admin first so GET/PUT/publish/archive/preview have a real id to target.
+    await request(app).post('/api/pdi/admin/templates').set('Authorization', `Bearer ${adminToken}`)
+      .send({ id, name: '403 Check', definition: SAMPLE_DEFINITION });
+    createdIds.push(id);
+
+    const asNonAdmin = (method, path) => request(app)[method](path).set('Authorization', `Bearer ${nonAdminToken}`);
+    const checks = await Promise.all([
+      asNonAdmin('get', '/api/pdi/admin/templates'),
+      asNonAdmin('get', `/api/pdi/admin/templates/${id}`),
+      asNonAdmin('put', `/api/pdi/admin/templates/${id}`).send({ name: 'x', definition: SAMPLE_DEFINITION }),
+      asNonAdmin('post', `/api/pdi/admin/templates/${id}/publish`),
+      asNonAdmin('post', `/api/pdi/admin/templates/${id}/archive`),
+      asNonAdmin('post', `/api/pdi/admin/templates/${id}/preview`).send({ definition: SAMPLE_DEFINITION }),
+    ]);
+    checks.forEach((res) => expect(res.statusCode).toBe(403));
+  });
+
+  it('returns 404 for getTemplate on a nonexistent id', async () => {
+    const res = await request(app)
+      .get('/api/pdi/admin/templates/definitely-does-not-exist')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.statusCode).toBe(404);
+  });
+
+  it('returns 404 for save/publish/archive on a nonexistent id', async () => {
+    const results = await Promise.all([
+      request(app).put('/api/pdi/admin/templates/definitely-does-not-exist').set('Authorization', `Bearer ${adminToken}`)
+        .send({ name: 'x', definition: SAMPLE_DEFINITION }),
+      request(app).post('/api/pdi/admin/templates/definitely-does-not-exist/publish').set('Authorization', `Bearer ${adminToken}`),
+      request(app).post('/api/pdi/admin/templates/definitely-does-not-exist/archive').set('Authorization', `Bearer ${adminToken}`),
+    ]);
+    results.forEach((res) => expect(res.statusCode).toBe(404));
+  });
+
   it('creates a template as version 1, status draft', async () => {
     const id = 'admin-test-' + Date.now();
     const res = await request(app)
