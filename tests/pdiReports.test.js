@@ -200,12 +200,15 @@ describe('PDI Reports API', () => {
     expect(fetched.statusCode).toBe(404);
   });
 
-  it('lists the general template', async () => {
+  it('lists the registered templates', async () => {
     const res = await request(app)
       .get('/api/pdi/templates')
       .set('Authorization', `Bearer ${adminToken}`);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual([{ id: 'general', name: 'General', version: 1 }]);
+    expect(res.body).toEqual([
+      { id: 'general', name: 'General', version: 1 },
+      { id: 'autonxt', name: 'AutoNXT Motor PDI', version: 1 },
+    ]);
   });
 
   it('the legacy /api/pdi generate/CRUD endpoints are gone', async () => {

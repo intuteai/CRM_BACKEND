@@ -41,6 +41,13 @@ function drawHeaderSection(doc, section, data, y) {
   t(doc, `Rev. No:${section.revNo ?? ''}`,       fx + 4, y + 22, FMT_W - 8, { font: FB, size: 7 });
   t(doc, `Eff. Dt:${section.effDate ?? ''}`,     fx + 4, y + 36, FMT_W - 8, { font: FB, size: 7 });
 
+  // Optional extra lines below the fixed 3 (e.g. a "Rev Dt:" line some
+  // formats have) — smaller font/spacing so a 4th line still fits inside
+  // the fixed HDR_H box. Templates that don't set this are unaffected.
+  (section.extraFormatLines || []).forEach((line, i) => {
+    t(doc, line, fx + 4, y + 36 + (i + 1) * 12, FMT_W - 8, { font: FB, size: 6.5 });
+  });
+
   const cny = y + HDR_H;
   box(doc, M, cny, CW, CN_H, { stroke: '#000', sw: 0.5 });
   t(doc, section.companyName, M + 4, cny + 3, CW - 8, { font: F, size: 8 });
@@ -157,6 +164,11 @@ function drawTableRow(doc, cols, row, sectionData, data, rowHeight, y) {
 function drawTableSection(doc, section, data, y) {
   if (section.mode !== 'fixed' && section.mode !== 'repeatable') {
     throw new Error(`PDI table section has invalid mode: ${section.mode} (expected 'fixed' or 'repeatable')`);
+  }
+  if (section.title) {
+    const { FB } = getFonts();
+    t(doc, section.title, M, y, CW, { font: FB, size: 10, align: 'left' });
+    y += 16;
   }
   const cols = resolveCols(section.columns, CW);
   const rowHeight = section.rowHeight || 14;

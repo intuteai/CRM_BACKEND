@@ -202,4 +202,66 @@ describe('PDI template renderer', () => {
     expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
     expect(buf.toString('latin1').includes('undefined')).toBe(false);
   });
+
+  it('renders a header section with extraFormatLines without throwing', async () => {
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'header',
+          companyName: 'Test Co.', formatNo: 'F/1', revNo: '00', effDate: '01/01/2026',
+          extraFormatLines: ['REV DT: 11/10/2024'],
+          infoFields: [['Customer:', () => 'Acme', 'Date:', () => '']],
+        }],
+      }],
+    };
+    const doc = new PDFDocument({
+      size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 },
+      autoFirstPage: false, bufferPages: true,
+    });
+    registerFonts(doc);
+    expect(() => renderTemplate(doc, template, {})).not.toThrow();
+    doc.end();
+    const buf = await bufferPdf(doc);
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
+
+  it('renders a table section title/caption and actually draws it (not just accepts and ignores it)', async () => {
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'table',
+          title: 'A. Test Title',
+          mode: 'fixed', dataKey: 'checks',
+          fixedRows: () => [{ key: 'x', label: 'Check X' }],
+          columns: [
+            { label: 'Check', w: 200, align: 'left', value: (row) => row.label },
+            { label: 'Result', align: 'center', value: () => 'GO' },
+          ],
+          headerHeight: 14, rowHeight: 14,
+        }],
+      }],
+    };
+    const doc = new PDFDocument({
+      size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 },
+      autoFirstPage: false, bufferPages: true,
+    });
+    registerFonts(doc);
+
+    // This repo always embeds Roboto TTF fonts (assets/fonts/*.ttf exist),
+    // so drawn text is encoded in the content stream as CID glyph-index hex
+    // strings (e.g. `<0001000200030004> TJ`), not literal ASCII bytes —
+    // even with stream compression disabled. So a raw-buffer substring
+    // search can't verify the title was drawn; spy on doc.text() (which
+    // primitives.t() calls under the hood) to capture what was actually
+    // handed to PDFKit for drawing instead.
+    const drawnTexts = [];
+    const originalText = doc.text.bind(doc);
+    doc.text = (str, ...rest) => { drawnTexts.push(str); return originalText(str, ...rest); };
+
+    expect(() => renderTemplate(doc, template, {})).not.toThrow();
+    doc.end();
+    const buf = await bufferPdf(doc);
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+    expect(drawnTexts).toContain('A. Test Title');
+  });
 });

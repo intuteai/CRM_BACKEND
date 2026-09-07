@@ -32,4 +32,18 @@ describe('PDIGenerator (template dispatch)', () => {
       expect(template.id).toBe(key);
     });
   });
+
+  it('generates a valid PDF for the autonxt template with representative fixture data', async () => {
+    const buf = await bufferPdf(PDIGenerator.generate('autonxt', {
+      pdi_no: 'CASPL-QA-PDI-001', customer_name: 'Autonxt', product_id: 'MOTOR-AN-1',
+      drawing_no: 'CASPL-220/007-00', motor_sr_no: 'SN12345', controller_type: 'CT-1',
+      performance_test: { rpm_500: { bemf_measured: '79.5', current_measured: '5.9' } },
+      general_check: { shield_plate: { measured: 'GO' } },
+      physical_parameters: { motor_total_length: { measured: 'GO' } },
+      page1_remarks: 'ALL OK, PASSED.', page2_remarks: 'ALL OK, PASSED.',
+      prepared_by_electrical: 'Tanisha', prepared_by_mechanical: 'Jitendra', approved_by: 'Aditya',
+      photos: { overall_motor: '' },
+    }));
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
 });
