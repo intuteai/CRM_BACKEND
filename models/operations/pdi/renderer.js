@@ -37,9 +37,9 @@ function drawHeaderSection(doc, section, data, y) {
   doc.save().strokeColor('#000').lineWidth(0.6)
      .moveTo(fx, y).lineTo(fx, y + HDR_H).stroke().restore();
 
-  t(doc, `Format No: ${section.formatNo}`, fx + 4, y + 8,  FMT_W - 8, { font: FB, size: 7 });
-  t(doc, `Rev. No:${section.revNo}`,       fx + 4, y + 22, FMT_W - 8, { font: FB, size: 7 });
-  t(doc, `Eff. Dt:${section.effDate}`,     fx + 4, y + 36, FMT_W - 8, { font: FB, size: 7 });
+  t(doc, `Format No: ${section.formatNo ?? ''}`, fx + 4, y + 8,  FMT_W - 8, { font: FB, size: 7 });
+  t(doc, `Rev. No:${section.revNo ?? ''}`,       fx + 4, y + 22, FMT_W - 8, { font: FB, size: 7 });
+  t(doc, `Eff. Dt:${section.effDate ?? ''}`,     fx + 4, y + 36, FMT_W - 8, { font: FB, size: 7 });
 
   const cny = y + HDR_H;
   box(doc, M, cny, CW, CN_H, { stroke: '#000', sw: 0.5 });
@@ -67,6 +67,11 @@ function resolveCellValue(col, row, sectionData, data) {
   return row[col.key] ?? '';
 }
 
+// Columns sharing the same `group` label must be contiguous in the
+// `columns` array passed to a table section — the grouped-header box
+// positions are computed from the running x-offset up to the first column
+// of each group, so interleaving grouped/ungrouped or two different
+// groups' columns will silently misalign the header boxes rather than error.
 function drawTableHeader(doc, cols, y, headerHeight) {
   const { FB } = getFonts();
   const grouped = cols.some(c => c.group);
@@ -150,6 +155,9 @@ function drawTableRow(doc, cols, row, sectionData, data, rowHeight, y) {
 }
 
 function drawTableSection(doc, section, data, y) {
+  if (section.mode !== 'fixed' && section.mode !== 'repeatable') {
+    throw new Error(`PDI table section has invalid mode: ${section.mode} (expected 'fixed' or 'repeatable')`);
+  }
   const cols = resolveCols(section.columns, CW);
   const rowHeight = section.rowHeight || 14;
   const sectionData = section.dataKey ? (data[section.dataKey] || {}) : {};
@@ -208,6 +216,9 @@ function drawPhotoCell(doc, label, image, index, x, y) {
 }
 
 function drawPhotoSection(doc, section, data, y) {
+  if (section.mode !== 'freeform' && section.mode !== 'fixed-slots') {
+    throw new Error(`PDI photo section has invalid mode: ${section.mode} (expected 'freeform' or 'fixed-slots')`);
+  }
   let items;
   if (section.mode === 'fixed-slots') {
     const slotData = data[section.dataKey] || {};

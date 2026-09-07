@@ -125,4 +125,81 @@ describe('PDI template renderer', () => {
     const badTemplate = { pages: [{ sections: [{ type: 'nope' }] }] };
     expect(() => renderTemplate(doc, badTemplate, {})).toThrow(/Unknown PDI template section type/);
   });
+
+  it('throws a clear error for a table section with an invalid/missing mode', () => {
+    const doc = new PDFDocument({ autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    const badTemplate = {
+      pages: [{
+        sections: [{
+          type: 'table', dataKey: 'rows',
+          columns: [{ key: 'id', label: 'ID', w: 60, align: 'center' }],
+          headerHeight: 14, rowHeight: 14,
+        }],
+      }],
+    };
+    expect(() => renderTemplate(doc, badTemplate, {})).toThrow(/invalid mode/);
+  });
+
+  it('throws a clear error for a photo section with an invalid/missing mode', () => {
+    const doc = new PDFDocument({ autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    const badTemplate = {
+      pages: [{ sections: [{ type: 'photo', dataKey: 'photos' }] }],
+    };
+    expect(() => renderTemplate(doc, badTemplate, {})).toThrow(/invalid mode/);
+  });
+
+  it('renders a repeatable table section with zero matching rows without throwing', async () => {
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'table',
+          mode: 'repeatable', dataKey: 'rows',
+          columns: [{ key: 'id', label: 'ID', w: 60, align: 'center' }],
+          headerHeight: 14, rowHeight: 14,
+        }],
+      }],
+    };
+    const doc = new PDFDocument({ autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    expect(() => renderTemplate(doc, template, { rows: [] })).not.toThrow();
+    doc.end();
+    const buf = await bufferPdf(doc);
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
+
+  it('renders a signature section with an empty roles array without throwing', async () => {
+    const template = {
+      pages: [{ sections: [{ type: 'signature', roles: [] }] }],
+    };
+    const doc = new PDFDocument({ autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    expect(() => renderTemplate(doc, template, {})).not.toThrow();
+    doc.end();
+    const buf = await bufferPdf(doc);
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
+
+  it('renders a header section with formatNo/revNo/effDate omitted, with no literal "undefined" text in the PDF', async () => {
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'header',
+          companyName: 'Test Co.',
+          infoFields: [['Customer:', () => 'Acme', 'Date:', () => '']],
+        }],
+      }],
+    };
+    const doc = new PDFDocument({
+      size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 },
+      autoFirstPage: false, bufferPages: true,
+    });
+    registerFonts(doc);
+    expect(() => renderTemplate(doc, template, {})).not.toThrow();
+    doc.end();
+    const buf = await bufferPdf(doc);
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+    expect(buf.toString('latin1').includes('undefined')).toBe(false);
+  });
 });
