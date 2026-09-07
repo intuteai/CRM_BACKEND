@@ -34,6 +34,13 @@ class PDIGenerator {
   static async generate(templateId, templateVersion, data = {}) {
     if (!data.pdi_no) throw new Error('pdi_no required');
 
+    // Code-registered templates always win here if a DB-authored template's id
+    // ever collided with one (general, autonxt, ...) — but that collision can't
+    // actually happen: the admin API rejects creating a DB template whose id
+    // matches a code-registered one (see controllers/operations/pdi.admin.controller.js's
+    // createTemplate, 409 on collision). This check is the fast path for the
+    // overwhelmingly common case (a code template, no DB round-trip needed), not
+    // a tiebreaker for an ambiguity that's prevented from existing in the first place.
     const codeTemplate = templates[templateId];
     if (codeTemplate) return renderPdfDoc(codeTemplate, data);
 

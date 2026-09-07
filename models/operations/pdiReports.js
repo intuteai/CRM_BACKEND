@@ -2,6 +2,8 @@ const pool = require('../../config/db');
 const logger = require('../../utils/logger');
 const PDIGenerator = require('./pdi_generator');
 const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/googleDrive');
+const templates = require('./pdi/templates');
+const AuthoredTemplates = require('./pdi/authoredTemplates');
 
 // Collects a PDFKit document's output into a single Buffer.
 function bufferPdf(doc) {
@@ -41,7 +43,23 @@ class PdiReports {
     };
   }
 
-  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id, template_version }, io) {
+  // Resolves a caller-supplied template_id into the exact (template_id, template_version)
+  // pair to store on a new report. Code-registered templates (general, autonxt, ...)
+  // aren't versioned at the DB level, so template_version stays null for them; a
+  // DB-authored template pins to whichever version is currently 'active'. This lives
+  // here (not just in the controller) so ANY future caller of createReport gets this
+  // validation enforced automatically, rather than needing to duplicate the check
+  // before calling in — see the code review on commit 878869e for why this matters.
+  static async resolveTemplateVersion(templateId) {
+    const id = templateId || 'general';
+    if (templates[id]) return { templateId: id, templateVersion: null };
+    const active = await AuthoredTemplates.getActive(id);
+    if (!active) throw new Error(`Unknown PDI template: ${id}`);
+    return { templateId: id, templateVersion: active.version };
+  }
+
+  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id }, io) {
+    const { templateId, templateVersion } = await this.resolveTemplateVersion(template_id);
     const result = await pool.query(`
       INSERT INTO pre_dispatch_inspection_reports
         (customer_id, order_id, status, inspected_by, inspection_date, template_id, template_version, data, photos)
@@ -52,8 +70,8 @@ class PdiReports {
       order_id || null,
       inspected_by || null,
       inspection_date ? new Date(inspection_date).toISOString() : null,
-      template_id || 'general',
-      template_version ?? null,
+      templateId,
+      templateVersion,
       JSON.stringify(data || {}),
       JSON.stringify(photos || []),
     ]);
