@@ -114,7 +114,7 @@ describe('PDI template renderer', () => {
 
     const buf = await bufferPdf(doc);
     expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
-    // 30 rows at headerHeight 36 + 14/row easily overflows page 1 onto a
+    // 80 rows at headerHeight 36 + 14/row easily overflows page 1 onto a
     // continuation page, so the real page count must exceed the 4 declared pages.
     expect(pageCount).toBeGreaterThan(4);
   });
