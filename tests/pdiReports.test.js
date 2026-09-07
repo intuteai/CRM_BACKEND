@@ -39,6 +39,26 @@ describe('PDI Reports API', () => {
     createdReportIds.push(res.body.report_id);
   });
 
+  it('creates a report against a non-default template when template_id is given', async () => {
+    const res = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ template_id: 'autonxt', data: { customer_name: 'Autonxt', pdi_no: 'PDI-TEST-AUTONXT-1' } });
+
+    expect(res.statusCode).toBe(201);
+    expect(res.body.template_id).toBe('autonxt');
+    createdReportIds.push(res.body.report_id);
+  });
+
+  it('rejects creating a report with an unknown template_id', async () => {
+    const res = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ template_id: 'does-not-exist', data: { customer_name: 'X', pdi_no: 'Y' } });
+
+    expect(res.statusCode).toBe(400);
+  });
+
   it('fetches a report by id, resuming its full saved state', async () => {
     const created = await request(app)
       .post('/api/pdi/reports')

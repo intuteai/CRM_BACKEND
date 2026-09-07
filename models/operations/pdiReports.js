@@ -40,17 +40,18 @@ class PdiReports {
     };
   }
 
-  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos }, io) {
+  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id }, io) {
     const result = await pool.query(`
       INSERT INTO pre_dispatch_inspection_reports
         (customer_id, order_id, status, inspected_by, inspection_date, template_id, data, photos)
-      VALUES ($1, $2, 'Pending', $3, $4, 'general', $5, $6)
+      VALUES ($1, $2, 'Pending', $3, $4, $5, $6, $7)
       RETURNING ${reportColumns()}
     `, [
       customer_id || null,
       order_id || null,
       inspected_by || null,
       inspection_date ? new Date(inspection_date).toISOString() : null,
+      template_id || 'general',
       JSON.stringify(data || {}),
       JSON.stringify(photos || []),
     ]);
