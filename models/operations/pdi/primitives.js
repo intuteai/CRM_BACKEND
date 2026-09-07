@@ -9,6 +9,10 @@ const logger = require('../../../utils/logger');
 const FONT_DIR  = path.join(__dirname, '../../../assets/fonts');
 const ASSET_DIR = path.join(__dirname, '../../../assets');
 
+// F and FB are shared, mutable module state. Callers that generate PDFs
+// concurrently (e.g., two requests in a server) must ensure no await occurs
+// between calling registerFonts(doc) and finishing all drawing for that document,
+// or one render's font state can leak into another's.
 let F  = 'Helvetica';       // regular
 let FB = 'Helvetica-Bold';  // bold
 
