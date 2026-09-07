@@ -17,7 +17,7 @@ function reportColumns(prefix = '') {
   const p = prefix ? `${prefix}.` : '';
   return `
     ${p}report_id, ${p}sr_no, ${p}customer_id, ${p}order_id, ${p}status,
-    ${p}inspected_by, ${p}inspection_date, ${p}template_id, ${p}drive_file_id,
+    ${p}inspected_by, ${p}inspection_date, ${p}template_id, ${p}template_version, ${p}drive_file_id,
     ${p}data, ${p}photos
   `;
 }
@@ -29,6 +29,7 @@ class PdiReports {
       sr_no: row.sr_no,
       status: row.status,
       template_id: row.template_id,
+      template_version: row.template_version,
       customer_id: row.customer_id,
       order_id: row.order_id,
       inspected_by: row.inspected_by,
@@ -40,11 +41,11 @@ class PdiReports {
     };
   }
 
-  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id }, io) {
+  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id, template_version }, io) {
     const result = await pool.query(`
       INSERT INTO pre_dispatch_inspection_reports
-        (customer_id, order_id, status, inspected_by, inspection_date, template_id, data, photos)
-      VALUES ($1, $2, 'Pending', $3, $4, $5, $6, $7)
+        (customer_id, order_id, status, inspected_by, inspection_date, template_id, template_version, data, photos)
+      VALUES ($1, $2, 'Pending', $3, $4, $5, $6, $7, $8)
       RETURNING ${reportColumns()}
     `, [
       customer_id || null,
@@ -52,6 +53,7 @@ class PdiReports {
       inspected_by || null,
       inspection_date ? new Date(inspection_date).toISOString() : null,
       template_id || 'general',
+      template_version ?? null,
       JSON.stringify(data || {}),
       JSON.stringify(photos || []),
     ]);
@@ -181,7 +183,7 @@ class PdiReports {
     const report = await this.getById(reportId);
     // photos live in their own column, not report.data — the generator reads
     // data.photos, so it has to be merged in here or PDFs render with none.
-    const pdfBuffer = await bufferPdf(PDIGenerator.generate(report.template_id, { ...(report.data || {}), photos: report.photos || [] }));
+    const pdfBuffer = await bufferPdf(await PDIGenerator.generate(report.template_id, report.template_version, { ...(report.data || {}), photos: report.photos || [] }));
 
     // Best-effort Drive backup — same reasoning as InvoiceRecords.create: a
     // "generated" report can always be regenerated from its stored data, so a
@@ -209,7 +211,7 @@ class PdiReports {
 
   static async getPdfBuffer(reportId) {
     const report = await this.getById(reportId);
-    return bufferPdf(PDIGenerator.generate(report.template_id, { ...(report.data || {}), photos: report.photos || [] }));
+    return bufferPdf(await PDIGenerator.generate(report.template_id, report.template_version, { ...(report.data || {}), photos: report.photos || [] }));
   }
 
   static async deleteReport(reportId, io) {

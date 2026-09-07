@@ -1,5 +1,6 @@
 const PdiReports = require('../../models/operations/pdiReports');
 const templates = require('../../models/operations/pdi/templates');
+const AuthoredTemplates = require('../../models/operations/pdi/authoredTemplates');
 const redis = require('../../config/redis');
 const logger = require('../../utils/logger');
 
@@ -21,12 +22,16 @@ async function invalidateCache() {
 exports.createReport = async (req, res) => {
   try {
     const { customer_id, order_id, inspected_by, inspection_date, data, photos, template_id } = req.body || {};
-    if (template_id !== undefined && !templates[template_id]) {
-      return res.status(400).json({ error: `Unknown PDI template: ${template_id}` });
+    const resolvedTemplateId = template_id || 'general';
+    let templateVersion = null;
+    if (!templates[resolvedTemplateId]) {
+      const active = await AuthoredTemplates.getActive(resolvedTemplateId);
+      if (!active) return res.status(400).json({ error: `Unknown PDI template: ${resolvedTemplateId}` });
+      templateVersion = active.version;
     }
     const report = await PdiReports.createReport({
       customer_id, order_id, inspected_by: inspected_by || req.user.name, inspection_date, data, photos,
-      template_id: template_id || 'general',
+      template_id: resolvedTemplateId, template_version: templateVersion,
     }, req.io);
 
     await invalidateCache();
