@@ -1,7 +1,10 @@
 'use strict';
 
-const TEXT_H = 40;   // matches renderer.js's own TEXT_H — see note below
-const SIG_H = 36;    // matches renderer.js's own SIG_H
+// Duplicates renderer.js's own private TEXT_H/SIG_H constants (36/40) —
+// renderer.js doesn't export them, so there's no shared source of truth to
+// import from. If those change there, this must be updated by hand to match.
+const TEXT_H = 40;
+const SIG_H = 36;
 const FALLBACK_BUFFER = 150; // heuristic reserve when a section's height can't be known in advance
 
 /** Turn one declarative column's `cell` spec into the `value(row, sectionData)`
@@ -23,6 +26,9 @@ function hydrateCell(cell) {
 }
 
 function hydrateColumns(columns) {
+  if (!Array.isArray(columns)) {
+    throw new Error('Table section is missing its columns array');
+  }
   return columns.map((c) => ({
     key: c.key, label: c.label, w: c.w, align: c.align, group: c.group,
     value: hydrateCell(c.cell),
@@ -102,6 +108,9 @@ function hydrateImageSection(section) {
 }
 
 function hydrateHeaderSection(section) {
+  if (!Array.isArray(section.infoFields)) {
+    throw new Error('Header section is missing its infoFields array');
+  }
   return {
     type: 'header',
     companyName: section.companyName,
@@ -161,6 +170,11 @@ function hydrateTemplate(definition) {
 function buildSampleData(definition) {
   const data = { pdi_no: 'PREVIEW-0000' };
   definition.pages.forEach((page) => {
+    // NOTE: every section.type case `hydrateSection` (above) knows about
+    // must have a matching branch here too — this loop has no `default`/
+    // throw, so a new section type forgotten here just silently produces
+    // no sample data for it (a missing preview field), not an error. Keep
+    // the two in sync by hand when adding a new section type.
     page.sections.forEach((section) => {
       if (section.type === 'header') {
         section.infoFields.forEach((f) => {

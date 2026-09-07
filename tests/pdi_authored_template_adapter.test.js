@@ -142,4 +142,36 @@ describe('authored template adapter', () => {
     const buf = await bufferPdf(doc);
     expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
   });
+
+  it('hydrates an image section, converting placeholder.text from a string to a function, and renders both the real-image and placeholder-fallback paths', async () => {
+    const definitionWithImage = {
+      pages: [{
+        sections: [
+          {
+            type: 'image', dataKey: 'drawing_image', height: 80, title: 'Drawing',
+            placeholder: {
+              text: 'No drawing supplied',
+              annotations: [{ text: 'Note', x: 4, y: 4, w: 100 }],
+            },
+          },
+        ],
+      }],
+    };
+    const hydrated = hydrateTemplate(definitionWithImage);
+    const imageSection = hydrated.pages[0].sections[0];
+    expect(typeof imageSection.placeholder.text).toBe('function');
+    expect(imageSection.placeholder.text()).toBe('No drawing supplied');
+    expect(imageSection.placeholder.annotations).toEqual([{ text: 'Note', x: 4, y: 4, w: 100 }]);
+
+    // Placeholder-fallback path: no drawing_image supplied.
+    const docNoImage = renderDefinition(definitionWithImage, {});
+    const bufNoImage = await bufferPdf(docNoImage);
+    expect(bufNoImage.slice(0, 5).toString('ascii')).toBe('%PDF-');
+
+    // Real-image path: a valid data URI supplied.
+    const TINY_PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+    const docWithImage = renderDefinition(definitionWithImage, { drawing_image: TINY_PNG });
+    const bufWithImage = await bufferPdf(docWithImage);
+    expect(bufWithImage.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
 });
