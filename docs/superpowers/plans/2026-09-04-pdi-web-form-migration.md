@@ -595,10 +595,12 @@ git commit -m "feat: add unified PdiReportsTable component for the reports dashb
 import React from 'react';
 import PdiReportsTable from '../shared/PdiReportsTable';
 
-export default function PdiPage({ socket }) {
-  return <PdiReportsTable socket={socket} title="PDI Reports" />;
+export default function PdiPage({ socket, userRole }) {
+  return <PdiReportsTable socket={socket} userRole={userRole} title="PDI Reports" />;
 }
 ```
+
+Note: Task 2's code review found that `PdiReportsTable` reading the role from `localStorage` at module-load time was a real staleness bug (a role switch via this app's SPA login/logout flow, with no full page reload, wouldn't update which actions a user sees). The fix landed in Task 2: `PdiReportsTable` now accepts an optional `userRole` prop, falling back to `localStorage.getItem('role')` only if none is passed. This wrapper forwards whatever `userRole` it receives from the router (see `routeConfig.jsx`'s `renderRoute(route, userRole, socket)`, which already threads a live role value to route components today).
 
 - [ ] **Step 2: Verify it builds**
 
@@ -626,12 +628,12 @@ git commit -m "refactor: PdiPage becomes a thin wrapper around the shared PdiRep
 import React from 'react';
 import PdiReportsTable from '../shared/PdiReportsTable';
 
-export default function ProductionPDIPage({ socket }) {
-  return <PdiReportsTable socket={socket} title="Production PDI Reports" />;
+export default function ProductionPDIPage({ socket, userRole }) {
+  return <PdiReportsTable socket={socket} userRole={userRole} title="Production PDI Reports" />;
 }
 ```
 
-Note: the original had an unused `userRole` prop (never read in its body) — it's dropped here since `PdiReportsTable` reads the role itself from `localStorage`, matching the established pattern already used in `ProductionBOMPage.jsx`.
+Note: the original had a `userRole` prop that was destructured but never read in its body — it's now forwarded instead of dropped. See Task 3's note: `PdiReportsTable` accepts an optional `userRole` prop (added during Task 2's code review, to fix a real staleness bug in the old module-scope `localStorage` read), falling back to reading `localStorage` itself only if no prop is passed.
 
 - [ ] **Step 2: Verify it builds**
 
