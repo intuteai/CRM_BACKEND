@@ -25,4 +25,11 @@ describe('PDIGenerator (template dispatch)', () => {
   it('still requires pdi_no', () => {
     expect(() => PDIGenerator.generate('general', {})).toThrow(/pdi_no required/);
   });
+
+  it('every registered template is keyed by its own id (registry/id can\'t silently drift apart)', () => {
+    const templates = require('../models/operations/pdi/templates');
+    Object.entries(templates).forEach(([key, template]) => {
+      expect(template.id).toBe(key);
+    });
+  });
 });

@@ -2,4 +2,6 @@
 
 const general = require('./general');
 
-module.exports = { general };
+const TEMPLATES = [general];
+
+module.exports = Object.fromEntries(TEMPLATES.map((t) => [t.id, t]));
