@@ -126,7 +126,9 @@ class PdiReports {
       SELECT
         pdi.report_id, pdi.sr_no, pdi.customer_id, pdi.order_id, pdi.status,
         pdi.inspected_by, pdi.inspection_date, pdi.template_id,
-        u.name AS customer_name,
+        pdi.data->>'pdi_no' AS pdi_no,
+        pdi.data->>'customer_name' AS form_customer_name,
+        u.name AS linked_customer_name,
         COALESCE(pdi.inspection_date, 'infinity'::timestamp)::text AS sort_key
       FROM pre_dispatch_inspection_reports pdi
       LEFT JOIN customers c ON pdi.customer_id = c.customer_id
@@ -160,7 +162,11 @@ class PdiReports {
         template_id: row.template_id,
         customer_id: row.customer_id,
         order_id: row.order_id,
-        customer_name: row.customer_name,
+        pdi_no: row.pdi_no || null,
+        // Prefer the name typed on the report itself (the common, free-form case)
+        // over a linked CRM customer record (rare in this flow, but still honored
+        // if one's actually attached).
+        customer_name: row.form_customer_name || row.linked_customer_name || null,
         inspected_by: row.inspected_by,
         inspection_date: row.inspection_date,
         report_link: `/api/pdi/reports/${row.report_id}/pdf`,

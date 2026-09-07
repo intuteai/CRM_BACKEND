@@ -98,6 +98,9 @@ describe('PDI Reports API', () => {
     expect(list.statusCode).toBe(200);
     expect(list.body.data.some((r) => r.report_id === created.body.report_id)).toBe(true);
     expect(list.body.data.every((r) => r.status === 'Failed')).toBe(true);
+    const listedReport = list.body.data.find((r) => r.report_id === created.body.report_id);
+    expect(listedReport.pdi_no).toBe('PDI-TEST-LIST-1');
+    expect(listedReport.customer_name).toBe('R.K. Traders');
   });
 
   it('finalizes a report: generates a real PDF and marks it Completed', async () => {
