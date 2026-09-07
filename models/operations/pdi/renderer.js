@@ -55,13 +55,14 @@ function drawHeaderSection(doc, section, data, y) {
 
   const half = CW / 2;
   const mx   = M + half;
+  const rLabelW = section.rLabelW || 55;
   section.infoFields.forEach(([lL, vL, lR, vR]) => {
     box(doc, M,  y, half, INFO_H, { stroke: '#000', sw: 0.4 });
     box(doc, mx, y, half, INFO_H, { stroke: '#000', sw: 0.4 });
     t(doc, lL, M  + 3,   y + 4, 108,        { font: FB, size: 8 });
     t(doc, vL(data), M  + 114, y + 4, half - 118, { font: F,  size: 8 });
-    t(doc, lR, mx + 3,   y + 4, 55,         { font: FB, size: 8 });
-    t(doc, vR(data), mx + 60,  y + 4, half - 64,  { font: F,  size: 8 });
+    t(doc, lR, mx + 3,   y + 4, rLabelW,              { font: FB, size: 8 });
+    t(doc, vR(data), mx + rLabelW + 5, y + 4, half - rLabelW - 9, { font: F,  size: 8 });
     y += INFO_H;
   });
 

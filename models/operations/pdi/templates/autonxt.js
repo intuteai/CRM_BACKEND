@@ -109,6 +109,7 @@ const autonxtTemplate = {
           formatNo: 'CASPL/QA/F/23', revNo: '00', effDate: '30/03/2024',
           extraFormatLines: ['REV DT: 11/10/2024'],
           logoAsset: 'compage_header_left.png',
+          rLabelW: 80,
           infoFields: [
             ['Customer Name:', (d) => d.customer_name || '', 'Dt:', (d) => d.date ? fmtDate(new Date(d.date)) : ''],
             ['Product ID:', (d) => d.product_id || '', 'Dwg. No:', (d) => d.drawing_no || ''],
