@@ -243,4 +243,54 @@ describe('PDI Reports API', () => {
       .set('Authorization', `Bearer ${adminToken}`);
     expect(list.statusCode).toBe(404);
   });
+
+  it('GET /templates/:id/definition: 404 for a draft template, 200 with the definition once active', async () => {
+    const AuthoredTemplates = require('../models/operations/pdi/authoredTemplates');
+    const id = 'test-definition-endpoint-' + Date.now();
+    await AuthoredTemplates.create({ id, name: 'Definition Endpoint Test', definition: { pages: [{ sections: [] }] } });
+
+    const draftRes = await request(app)
+      .get(`/api/pdi/templates/${id}/definition`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(draftRes.statusCode).toBe(404);
+
+    await AuthoredTemplates.saveNewVersion(id, { status: 'active' });
+    const activeRes = await request(app)
+      .get(`/api/pdi/templates/${id}/definition`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(activeRes.statusCode).toBe(200);
+    expect(activeRes.body.definition).toEqual({ pages: [{ sections: [] }] });
+
+    await pool.query('DELETE FROM pdi_templates WHERE id = $1', [id]);
+  });
+
+  it('GET /templates/:id/definition: 404 for a code-registered template id (it has its own hand-coded form instead)', async () => {
+    const res = await request(app)
+      .get('/api/pdi/templates/general/definition')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(res.statusCode).toBe(404);
+  });
+
+  it('GET /templates/:id/definition: works for a non-admin user (no admin gate on this route)', async () => {
+    const AuthoredTemplates = require('../models/operations/pdi/authoredTemplates');
+    const jwt = require('jsonwebtoken');
+    const id = 'test-definition-nonadmin-' + Date.now();
+    await AuthoredTemplates.create({ id, name: 'Definition Endpoint NonAdmin Test', definition: { pages: [{ sections: [] }] } });
+    await AuthoredTemplates.saveNewVersion(id, { status: 'active' });
+
+    const nonAdmin = await pool.query(
+      `INSERT INTO users (name, email, password_hash, role_id) VALUES ($1, $2, 'x', 2) RETURNING user_id`,
+      ['Definition Endpoint NonAdmin', `def-endpoint-nonadmin-${Date.now()}@example.com`]
+    );
+    const nonAdminToken = jwt.sign({ user_id: nonAdmin.rows[0].user_id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    const res = await request(app)
+      .get(`/api/pdi/templates/${id}/definition`)
+      .set('Authorization', `Bearer ${nonAdminToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.definition).toEqual({ pages: [{ sections: [] }] });
+
+    await pool.query('DELETE FROM pdi_templates WHERE id = $1', [id]);
+    await pool.query('DELETE FROM users WHERE user_id = $1', [nonAdmin.rows[0].user_id]);
+  });
 });
