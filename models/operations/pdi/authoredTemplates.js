@@ -29,12 +29,23 @@ class AuthoredTemplates {
     return result.rows[0] || null;
   }
 
+  // "Active" means the *latest* version is currently active — not merely that
+  // some past version once was. A naive `WHERE status='active' ORDER BY
+  // version DESC LIMIT 1` finds the highest-versioned row that happens to be
+  // active, which is wrong the moment a template is archived: the archive
+  // itself inserts a newer row (status='archived'), but that query would
+  // still ignore it and keep returning the older active version underneath —
+  // silently un-archiving it for every caller (this exact bug already existed
+  // in listActive() and was fixed there; getActive() had the same bug and
+  // went unnoticed because nothing had exercised archive-then-fetch until a
+  // dedicated regression test did). Every caller relies on this being correct:
+  // the public definition endpoint must 404 once archived, and report
+  // creation (resolveTemplateVersion) must stop accepting the template once
+  // archived — both silently kept working against the stale version without
+  // this fix.
   static async getActive(id) {
-    const result = await pool.query(
-      `SELECT * FROM pdi_templates WHERE id = $1 AND status = 'active' ORDER BY version DESC LIMIT 1`,
-      [id]
-    );
-    return result.rows[0] || null;
+    const latest = await this.getLatest(id);
+    return latest && latest.status === 'active' ? latest : null;
   }
 
   // One row per id, its latest version IF it's ACTIVE — for the public template picker.

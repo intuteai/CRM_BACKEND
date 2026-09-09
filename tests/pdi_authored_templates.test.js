@@ -54,6 +54,18 @@ describe('AuthoredTemplates', () => {
     expect(stillThere.status).toBe('active'); // the exact historical row, unaffected by the later archive
   });
 
+  // Regression: getActive() used to do `WHERE status='active' ORDER BY version
+  // DESC LIMIT 1`, which finds the highest-versioned row that HAPPENS to be
+  // active — not necessarily the current (latest) version. Once archived,
+  // version 3 is still 'active' underneath the newer archived version 4, so
+  // the old query kept resolving to it, silently un-archiving the template
+  // for both the public definition endpoint and report creation. The test
+  // above only ever checked listActive() and getByVersion() post-archive,
+  // never getActive() itself — which is exactly how this went unnoticed.
+  it('getActive returns null once the latest version is archived (not the stale older-active row underneath)', async () => {
+    expect(await AuthoredTemplates.getActive(TEST_ID)).toBeNull();
+  });
+
   it('listAll shows the latest version regardless of status', async () => {
     const all = await AuthoredTemplates.listAll();
     const mine = all.find((t) => t.id === TEST_ID);
