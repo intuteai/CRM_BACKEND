@@ -173,9 +173,17 @@ function drawTableSection(doc, section, data, y) {
   }
   const cols = resolveCols(section.columns, CW);
   const rowHeight = section.rowHeight || 14;
+  // Same fallback as rowHeight above — the admin editor always sets 20 when a
+  // table section is created, but nothing enforces that at this layer. An
+  // authored template missing headerHeight (e.g. hand-built via the API, or a
+  // future editor bug) used to reach here as `undefined`, which drawTableHeader
+  // silently turns into NaN for grouped columns (`headerHeight / 2`) and
+  // PDFKit then throws "unsupported number: NaN" — a 500 with no useful
+  // client-facing message. Defend it here, same as rowHeight.
+  const headerHeight = section.headerHeight || 20;
   const sectionData = section.dataKey ? (data[section.dataKey] || {}) : {};
 
-  y = drawTableHeader(doc, cols, y, section.headerHeight);
+  y = drawTableHeader(doc, cols, y, headerHeight);
 
   if (section.specRow) {
     y = drawSpecRow(doc, section.specRow, cols, rowHeight, data, y);
@@ -201,7 +209,7 @@ function drawTableSection(doc, section, data, y) {
     rowHeight,
     y,
     footerHeight: section.footerHeight ? section.footerHeight(data) : 0,
-    redrawHeader: (py) => drawTableHeader(doc, cols, py, section.headerHeight),
+    redrawHeader: (py) => drawTableHeader(doc, cols, py, headerHeight),
   });
 }
 
