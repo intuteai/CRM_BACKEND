@@ -193,32 +193,43 @@ app.use('/api',             chatbotInventoryRoutes);
 app.use('/api',             chatbotRawMaterialRoutes);
 app.use('/api',             chatbotBOMRoutes);
 
-// ==================== CRON JOBS ====================
-require('./jobs/daily-due-reminders');
-require('./jobs/daily-task-summaries');
-require('./jobs/attendanceSummary');
-
 // ==================== GLOBAL ERROR HANDLER ====================
 app.use(errorHandler);
 
 // ==================== START SERVER ====================
-const PORT = process.env.PORT || 8000;
+// Everything below has real side effects (binding a socket, scheduling
+// recurring cron timers, registering a process-wide SIGTERM handler) that
+// only make sense when this file is actually run as the server. Tests
+// `require('../server')` purely to get `app` for supertest, which needs no
+// real listener — without this guard, every test file that requires this
+// module re-triggers a fresh `.listen()` on the same PORT (Jest gives each
+// test file its own module registry), colliding with whichever earlier
+// test file's server never got closed, and each also leaves its cron jobs'
+// timers running in the background.
+if (require.main === module) {
+  // ==================== CRON JOBS ====================
+  require('./jobs/daily-due-reminders');
+  require('./jobs/daily-task-summaries');
+  require('./jobs/attendanceSummary');
 
-initializeServer()
-  .then(() => {
-    server.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
-  })
-  .catch((err) => {
-    logger.error('Server startup failed:', err.stack);
-    process.exit(1);
-  });
+  const PORT = process.env.PORT || 8000;
 
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    logger.info('Server closed.');
-    process.exit(0);
+  initializeServer()
+    .then(() => {
+      server.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
+    })
+    .catch((err) => {
+      logger.error('Server startup failed:', err.stack);
+      process.exit(1);
+    });
+
+  process.on('SIGTERM', () => {
+    logger.info('SIGTERM received. Shutting down gracefully...');
+    server.close(() => {
+      logger.info('Server closed.');
+      process.exit(0);
+    });
   });
-});
+}
 
 module.exports = app;
