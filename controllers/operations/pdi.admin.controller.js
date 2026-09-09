@@ -4,6 +4,7 @@
 const AuthoredTemplates = require('../../models/operations/pdi/authoredTemplates');
 const templates = require('../../models/operations/pdi/templates');
 const PDIGenerator = require('../../models/operations/pdi_generator');
+const PdiReports = require('../../models/operations/pdiReports');
 const logger = require('../../utils/logger');
 
 function bufferPdf(doc) {
@@ -90,6 +91,27 @@ async function saveWithStatus(req, res, statusOverride) {
 exports.saveTemplate = (req, res) => saveWithStatus(req, res, undefined);
 exports.publishTemplate = (req, res) => saveWithStatus(req, res, 'active');
 exports.archiveTemplate = (req, res) => saveWithStatus(req, res, 'archived');
+
+exports.deleteTemplate = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!(await AuthoredTemplates.idExists(id))) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+    const reportCount = await PdiReports.countByTemplateId(id);
+    if (reportCount > 0) {
+      return res.status(409).json({
+        error: `Cannot delete — ${reportCount} report${reportCount === 1 ? '' : 's'} were generated from this template. Archive it instead to hide it from the picker while keeping those reports renderable.`,
+      });
+    }
+    await AuthoredTemplates.deleteAll(id);
+    logger.info(`Authored PDI template deleted: ${id} by ${req.user.user_id}`);
+    res.status(204).send();
+  } catch (error) {
+    logger.error(`Error deleting authored PDI template ${req.params.id}: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 exports.previewTemplate = async (req, res) => {
   try {

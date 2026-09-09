@@ -81,4 +81,12 @@ describe('AuthoredTemplates', () => {
   it('saveNewVersion throws a clear error for an unknown id', async () => {
     await expect(AuthoredTemplates.saveNewVersion('no-such-template-id')).rejects.toThrow('Template not found');
   });
+
+  it('deleteAll removes every version row for the id', async () => {
+    expect(await AuthoredTemplates.idExists(TEST_ID)).toBe(true);
+    await AuthoredTemplates.deleteAll(TEST_ID);
+    expect(await AuthoredTemplates.idExists(TEST_ID)).toBe(false);
+    expect(await AuthoredTemplates.getLatest(TEST_ID)).toBeNull();
+    expect(await AuthoredTemplates.getByVersion(TEST_ID, 1)).toBeNull();
+  });
 });

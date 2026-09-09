@@ -15,5 +15,6 @@ router.put('/:id', controller.saveTemplate);
 router.post('/:id/publish', controller.publishTemplate);
 router.post('/:id/archive', controller.archiveTemplate);
 router.post('/:id/preview', controller.previewTemplate);
+router.delete('/:id', controller.deleteTemplate);
 
 module.exports = router;

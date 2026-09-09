@@ -77,6 +77,16 @@ class AuthoredTemplates {
     return result.rows.length > 0;
   }
 
+  // Hard-deletes every version row for this id. Only safe when no report was
+  // ever generated from it (the controller checks this first) — a report
+  // pins to a specific (template_id, template_version) and re-fetches that
+  // row on every PDF render/regeneration, so deleting out from under one
+  // would break it. Archiving remains the only removal path once a template
+  // has report history.
+  static async deleteAll(id) {
+    await pool.query(`DELETE FROM pdi_templates WHERE id = $1`, [id]);
+  }
+
   // Append-only save: always inserts a new version row. `name`/`definition`/`status`
   // default to the latest version's values when omitted, so callers can bump just
   // one field (e.g. publish only changes status) without resending everything.

@@ -66,6 +66,7 @@ describe('PDI Admin Templates API', () => {
       asNonAdmin('post', `/api/pdi/admin/templates/${id}/publish`),
       asNonAdmin('post', `/api/pdi/admin/templates/${id}/archive`),
       asNonAdmin('post', `/api/pdi/admin/templates/${id}/preview`).send({ definition: SAMPLE_DEFINITION }),
+      asNonAdmin('delete', `/api/pdi/admin/templates/${id}`),
     ]);
     checks.forEach((res) => expect(res.statusCode).toBe(403));
   });
@@ -77,12 +78,13 @@ describe('PDI Admin Templates API', () => {
     expect(res.statusCode).toBe(404);
   });
 
-  it('returns 404 for save/publish/archive on a nonexistent id', async () => {
+  it('returns 404 for save/publish/archive/delete on a nonexistent id', async () => {
     const results = await Promise.all([
       request(app).put('/api/pdi/admin/templates/definitely-does-not-exist').set('Authorization', `Bearer ${adminToken}`)
         .send({ name: 'x', definition: SAMPLE_DEFINITION }),
       request(app).post('/api/pdi/admin/templates/definitely-does-not-exist/publish').set('Authorization', `Bearer ${adminToken}`),
       request(app).post('/api/pdi/admin/templates/definitely-does-not-exist/archive').set('Authorization', `Bearer ${adminToken}`),
+      request(app).delete('/api/pdi/admin/templates/definitely-does-not-exist').set('Authorization', `Bearer ${adminToken}`),
     ]);
     results.forEach((res) => expect(res.statusCode).toBe(404));
   });
@@ -243,5 +245,55 @@ describe('PDI Admin Templates API', () => {
       .get(`/api/pdi/reports/${created.body.report_id}`)
       .set('Authorization', `Bearer ${adminToken}`);
     expect(refetched.body.template_version).toBe(pinnedVersion);
+  });
+
+  it('deletes a template with no report history, removing every version', async () => {
+    const id = 'admin-test-delete-' + Date.now();
+    await request(app).post('/api/pdi/admin/templates').set('Authorization', `Bearer ${adminToken}`)
+      .send({ id, name: 'Delete Me', definition: SAMPLE_DEFINITION });
+    await request(app).put(`/api/pdi/admin/templates/${id}`).set('Authorization', `Bearer ${adminToken}`)
+      .send({ name: 'Delete Me v2', definition: SAMPLE_DEFINITION }); // now has 2 versions
+
+    const deleteRes = await request(app)
+      .delete(`/api/pdi/admin/templates/${id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(deleteRes.statusCode).toBe(204);
+
+    const getRes = await request(app)
+      .get(`/api/pdi/admin/templates/${id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(getRes.statusCode).toBe(404); // gone entirely, not just archived
+
+    const listRes = await request(app)
+      .get('/api/pdi/admin/templates')
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(listRes.body.some((t) => t.id === id)).toBe(false);
+    // Not added to createdIds/createdReportIds — deletion is the assertion under test.
+  });
+
+  it('refuses to delete a template that has report history, and leaves it intact', async () => {
+    const id = 'admin-test-delete-blocked-' + Date.now();
+    await request(app).post('/api/pdi/admin/templates').set('Authorization', `Bearer ${adminToken}`)
+      .send({ id, name: 'Has Reports', definition: SAMPLE_DEFINITION });
+    createdIds.push(id);
+    await request(app).post(`/api/pdi/admin/templates/${id}/publish`).set('Authorization', `Bearer ${adminToken}`);
+
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ template_id: id, data: { pdi_no: 'DEL-BLOCK-1', customer_name: 'Blocker Co.', remarks: 'x' } });
+    expect(created.statusCode).toBe(201);
+    createdReportIds.push(created.body.report_id);
+
+    const deleteRes = await request(app)
+      .delete(`/api/pdi/admin/templates/${id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(deleteRes.statusCode).toBe(409);
+    expect(deleteRes.body.error).toMatch(/report/i);
+
+    const getRes = await request(app)
+      .get(`/api/pdi/admin/templates/${id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    expect(getRes.statusCode).toBe(200); // untouched
   });
 });

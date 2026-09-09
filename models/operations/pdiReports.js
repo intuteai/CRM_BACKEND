@@ -250,6 +250,16 @@ class PdiReports {
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: _id, status: 'Deleted' });
     return { report_id: _id };
   }
+
+  // Used to guard authored-template deletion: a template with report history
+  // can't be hard-deleted (its rows are still needed to re-render those reports).
+  static async countByTemplateId(templateId) {
+    const result = await pool.query(
+      `SELECT COUNT(*)::int AS count FROM pre_dispatch_inspection_reports WHERE template_id = $1`,
+      [templateId]
+    );
+    return result.rows[0].count;
+  }
 }
 
 module.exports = PdiReports;
