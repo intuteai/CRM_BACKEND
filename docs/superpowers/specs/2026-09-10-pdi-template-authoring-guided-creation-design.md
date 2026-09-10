@@ -19,6 +19,7 @@ A fourth, separate gap surfaced by inspecting the "General" template (one of two
 2. Visual previews + concrete examples in the section-type picker.
 3. A plain-language rewrite of every remaining unclear label, and moving the technical "key" concept out of the default view.
 4. A flexible column system for both Checklist and Fill-in list tables: add/remove/name/reorder columns of four types (fixed value, per-row text, per-row number, per-row dropdown).
+5. A one-line orientation strip, a soft nudge toward typical section structure, and per-section completeness indicators on the collapsed cards.
 
 **Out of scope, deliberately:**
 - **Column grouping/spanning headers** (e.g. General's "Mounting Holes" header spanning two sub-columns) and the **"spec row"** concept (an extra highlighted row above the data rows with computed values). Both exist in exactly two legacy, hand-coded templates and nowhere else. Building general-purpose UI for them would add real complexity to serve a case that isn't recurring; those two templates stay code-only.
@@ -53,7 +54,7 @@ Rewrite every currently-flagged label:
 | "Rev No." | "Revision Number" (placeholder: *e.g. 1*) |
 | "Eff. Date" | "Effective Date" (placeholder: *e.g. 09-Sep-2026*) |
 | "Skip empty rows in this column" | "Only print this row once it has a value" |
-| "Always show this value" | (reword to something equally concrete — exact copy decided during implementation, principle is: describe the effect, not the mechanism) |
+| "Always show this value" | "Print the same text on every row" |
 | "Checklist" / "Fill-in list" (as bare labels) | Keep the names, but the picker's new example captions (see §2) carry the disambiguating weight — no separate copy change needed here beyond what §2 already does |
 
 **The "Advanced" + "key" toggle disappears from the default view entirely.** Today, every `LabeledKeyField` has its own per-field "Advanced" link that reveals a raw key text box — that's the single biggest piece of remaining technical surface, and it's repeated dozens of times across a template. Replace all of those per-field toggles with **one template-level "Show technical keys" toggle**, placed once in the `TemplateEditor` header. Off (default): no key inputs, no "Advanced" links anywhere. On: every field's key becomes visible/editable inline, using the same revealed-state UI that exists today per-field — just controlled by one switch instead of many. This preserves the rare, genuinely-needed case (e.g., an admin matching keys to an existing external PDF layout) without cluttering the default path.
@@ -76,6 +77,28 @@ Both `ChecklistSectionEditor` and `FillInListSectionEditor` gain the same column
 **PDF renderer:** no changes needed. `renderer.js` already prints whatever string value sits at a cell's data key, regardless of what fill-out-form widget produced it — a Number or Dropdown column's value renders exactly like any other column's value does today.
 
 **`filterKey` ("only print this row once it has a value") continues to work unchanged** — it's keyed off the column's `key`, which is independent of the column's new `type`.
+
+## 5. Orientation and completeness cues
+
+Three small, additive pieces of scaffolding, none of which touch `GenericPdiSections.jsx` or any already-hardened code:
+
+**Orientation strip.** A single persistent line at the top of `TemplateEditor`, below the name field: *"Add sections to match your paper form. Changes save automatically and the preview updates on the right."* Always shown, no dismiss mechanism — one line is cheap enough that it doesn't need one. Gives a first-time admin (or a returning one who forgot) the two things they most need to know before doing anything: sections mirror their paper form, and the pane on the right is live, not a separate "preview" step.
+
+**Typical-structure nudge.** A soft, non-blocking one-line note near `AddSectionPicker`, shown only when the template is missing sections a typical PDI report has: no `header`-type section anywhere, no `table`-type section with `mode: 'fixed'` (a Checklist) anywhere, or no `signature`-type section anywhere. E.g. *"Most PDI templates include a Header, at least one Checklist, and Signatures."* Purely informational — never blocks Save or Publish — and disappears on its own once the condition it's flagging is no longer true (no explicit dismiss state to track).
+
+**Section completeness indicators.** A small dot on each collapsed `SectionCard`'s header (alongside the existing type badge and title) showing whether that section looks filled in as *authored* — not to be confused with the fill-out form's existing `isSectionFilled` check, which asks whether an *inspector* has entered data; this is a new, separate, authoring-side check with its own per-type definition of "has real content":
+
+| Section type | "Filled in" means |
+|---|---|
+| Header | Has a company name, or at least one detail row |
+| Checklist | Has a title and at least one item |
+| Fill-in list | Has a title and at least one column |
+| Photos | Has a name (freeform mode), or at least one slot (fixed-slots mode) |
+| Image | Has a name |
+| Signatures | Has at least one signer |
+| Notes | Has a name |
+
+A grey dot means "still empty, worth a look"; a filled dot means "has content." This gives an admin a scannable sense of which sections still need attention on a template with many sections, without opening each card individually.
 
 ## Testing
 
