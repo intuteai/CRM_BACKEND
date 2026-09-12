@@ -81,6 +81,44 @@ class PdiReports {
     return payload;
   }
 
+  // "Duplicate as New PDI" — starts a new report from a completed/in-progress
+  // one for a similar customer/product. Resets everything that's specific to
+  // the physical unit(s) actually tested (pdi_no, inspection_date, photos,
+  // every table/checklist/fill-in-list row, signatures); carries forward
+  // everything else in `data` unchanged (Customer Name, Product ID, Drawing
+  // No, Product Specifications, and — for General specifically — the
+  // tolerance/spec-row fields, since those describe the whole batch, not one
+  // motor). customer_id/order_id carry forward too (same customer/order);
+  // inspected_by/status/created_at are freshly assigned via createReport,
+  // same as any brand-new report.
+  static async duplicateReport(reportId, inspectedBy, io) {
+    const source = await this.getById(reportId);
+    const sourceData = source.data || {};
+
+    // Reset: pdi_no, date, every table's rows, every signature field, general
+    // check results. Keep everything else (Header-level identity/spec fields).
+    const resetKeys = new Set([
+      'pdi_no', 'date',
+      'rows', // General's electrical/mechanical motor rows
+      'prepared_by', 'approved_by', // General's signatures
+      'general_electrical', 'general_mechanical', // General's fixed GO/NG checks
+      'electrical_remarks', 'mechanical_remarks', // per-run remarks, not batch spec
+    ]);
+    const newData = {};
+    for (const [key, value] of Object.entries(sourceData)) {
+      if (!resetKeys.has(key)) newData[key] = value;
+    }
+
+    return this.createReport({
+      customer_id: source.customer_id,
+      order_id: source.order_id,
+      inspected_by: inspectedBy,
+      data: newData,
+      photos: [],
+      template_id: source.template_id,
+    }, io);
+  }
+
   static async getById(reportId) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');

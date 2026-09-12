@@ -7,6 +7,7 @@ router.post('/', authenticateToken, controller.createReport);
 router.get('/', authenticateToken, controller.listReports);
 router.get('/:id', authenticateToken, controller.getReport);
 router.patch('/:id', authenticateToken, controller.patchReport);
+router.post('/:id/duplicate', authenticateToken, controller.duplicateReport);
 router.post('/:id/finalize', authenticateToken, controller.finalizeReport);
 router.get('/:id/pdf', authenticateToken, controller.downloadPdf);
 router.delete('/:id', authenticateToken, controller.deleteReport);

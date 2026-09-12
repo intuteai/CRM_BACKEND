@@ -151,12 +151,17 @@ function drawSpecRow(doc, specRow, cols, rowHeight, data, y) {
 }
 
 function drawTableRow(doc, cols, row, sectionData, data, rowHeight, y) {
-  const { F } = getFonts();
+  const { F, FB } = getFonts();
   let x = M;
   cols.forEach(c => {
-    box(doc, x, y, c.w, rowHeight, { stroke: '#000', sw: 0.3 });
     const val = resolveCellValue(c, row, sectionData, data);
-    t(doc, val, x + 2, y + 3, c.w - 4, { font: F, size: 7.5, align: c.align });
+    const flagged = c.isOutOfTolerance ? c.isOutOfTolerance(row, data) : false;
+    // Bold text is the flag's print-safe cue — the light-red fill and dark-red
+    // text are the primary on-screen/color-print signal, but a light fill can
+    // wash out on a black-and-white printer or a photocopy of one; bold still
+    // reads as "different" once color is gone.
+    box(doc, x, y, c.w, rowHeight, { stroke: '#000', sw: 0.3, fill: flagged ? '#fee2e2' : undefined });
+    t(doc, val, x + 2, y + 3, c.w - 4, { font: flagged ? FB : F, size: 7.5, align: c.align, color: flagged ? '#b91c1c' : '#000' });
     x += c.w;
   });
   return y + rowHeight;
@@ -240,16 +245,39 @@ function drawPhotoSection(doc, section, data, y) {
   if (section.mode !== 'freeform' && section.mode !== 'fixed-slots') {
     throw new Error(`PDI photo section has invalid mode: ${section.mode} (expected 'freeform' or 'fixed-slots')`);
   }
-  let items;
+  let groups; // [{ label, images: [...] }]
   if (section.mode === 'fixed-slots') {
     const slotData = data[section.dataKey] || {};
-    items = section.slots.map(slot => ({ label: slot.label, image: slotData[slot.key] }));
+    groups = section.slots.map(slot => ({ label: slot.label, images: slotData[slot.key] || [] }));
   } else {
     const list = Array.isArray(data[section.dataKey]) ? data[section.dataKey] : [];
-    items = list
-      .filter(p => p && ((p.label && p.label.trim()) || p.image))
-      .map(p => ({ label: (p.label || '').trim(), image: p.image }));
+    groups = list
+      .filter(p => p && ((p.label && p.label.trim()) || (p.images && p.images.length)))
+      .map(p => ({ label: (p.label || '').trim(), images: p.images || [] }));
   }
+
+  // Flatten each group's photos into individual PDF cells — a group with N
+  // photos produces N labeled cells ("Damage Photos (1)", "(2)", ...) instead
+  // of being limited to one. A group with zero images still gets one empty
+  // cell (preserves today's "empty slot still shows in the PDF" behavior for
+  // fixed-slots mode, so an unfilled slot isn't just silently missing).
+  const items = [];
+  groups.forEach((g) => {
+    if (g.images.length === 0) {
+      items.push({ label: g.label, image: null });
+    } else if (g.images.length === 1) {
+      items.push({ label: g.label, image: g.images[0] });
+    } else {
+      // Apply the same "Photo N" fallback the draw loop below applies to a
+      // falsy label — done here, not left to the loop, because appending
+      // " (1)"/" (2)" to an empty label produces a non-empty (so non-falsy)
+      // string that would otherwise silently bypass that fallback, for
+      // exactly the entries most likely to need it (images added, no label
+      // typed yet).
+      const baseLabel = g.label || `Photo ${items.length + 1}`;
+      g.images.forEach((img, i) => items.push({ label: `${baseLabel} (${i + 1})`, image: img }));
+    }
+  });
 
   y = drawPhotosHeader(doc, y);
   for (let i = 0; i < items.length; i += 2) {

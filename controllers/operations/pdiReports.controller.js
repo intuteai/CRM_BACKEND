@@ -35,6 +35,19 @@ exports.createReport = async (req, res) => {
   }
 };
 
+exports.duplicateReport = async (req, res) => {
+  try {
+    const report = await PdiReports.duplicateReport(req.params.id, req.user.name, req.io);
+    await invalidateCache();
+    logger.info(`PDI report duplicated: ${req.params.id} -> ${report.report_id} by ${req.user.user_id}`);
+    res.status(201).json(report);
+  } catch (error) {
+    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    logger.error(`Error duplicating PDI report ${req.params.id}: ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 exports.getReport = async (req, res) => {
   try {
     const report = await PdiReports.getById(req.params.id);

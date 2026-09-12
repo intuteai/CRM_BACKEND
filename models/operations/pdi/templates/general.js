@@ -1,32 +1,44 @@
 'use strict';
 
 const { CW, fmtDate } = require('../primitives');
+const { checkTolerance, parseForwardReverse } = require('../tolerance');
 
 const GCH   = 14;
 const REM_H = 40;
 const SIG_H = 36;
 
 const ECOLS = [
-  { key: 'sno',                label: 'S. No',              w: 22, align: 'center' },
-  { key: 'motor_sr_no',        label: 'Motor Sr. No',       w: 56, align: 'center' },
-  { key: 'voltage',            label: 'Voltage',            w: 32, align: 'center' },
-  { key: 'direction',          label: 'F / R',              w: 26, align: 'center' },
-  { key: 'current_standard',   label: 'Current\nStandard',  w: 40, align: 'center' },
-  { key: 'current_measured',   label: 'Current\nMeasured',  w: 40, align: 'center' },
-  { key: 'rpm_specified',      label: 'RPM\nSPECIFIED',     w: 42, align: 'center' },
-  { key: 'rpm_measured',       label: 'RPM\nMEASURED',      w: 42, align: 'center' },
-  { key: 'electrical_remarks', label: 'Remarks',            align: 'left' },
+  { key: 'sno',                label: 'S. No',                    w: 22, align: 'center' },
+  { key: 'motor_sr_no',        label: 'Motor Sr. No',             w: 56, align: 'center' },
+  { key: 'voltage',            label: 'Voltage',                  w: 32, align: 'center' },
+  { key: 'current_measured',   label: 'Current\nMeasured F/R',    w: 50, align: 'center',
+    isOutOfTolerance: (row, data) => {
+      const { forward, reverse } = parseForwardReverse(row.current_measured);
+      return checkTolerance(forward, data.spec_current_standard, data.spec_current_tol_mode, data.spec_current_tol).outOfRange
+          || checkTolerance(reverse, data.spec_current_standard, data.spec_current_tol_mode, data.spec_current_tol).outOfRange;
+    } },
+  { key: 'rpm_measured',       label: 'RPM\nMeasured F/R',        w: 50, align: 'center',
+    isOutOfTolerance: (row, data) => {
+      const { forward, reverse } = parseForwardReverse(row.rpm_measured);
+      return checkTolerance(forward, data.spec_rpm_specified, data.spec_rpm_tol_mode, data.spec_rpm_tol).outOfRange
+          || checkTolerance(reverse, data.spec_rpm_specified, data.spec_rpm_tol_mode, data.spec_rpm_tol).outOfRange;
+    } },
+  { key: 'electrical_remarks', label: 'Remarks',                  align: 'left' },
 ];
 
 const MCOLS = [
   { key: 'sno',                 label: 'S. No',               w: 26, align: 'center' },
   { key: 'motor_sr_no',         label: 'Motor\nSr. No',       w: 52, align: 'center' },
-  { key: 'motor_length',        label: 'Motor\nLength',       w: 44, align: 'center' },
-  { key: 'shaft_length',        label: 'Shaft O/P\nD/Length', w: 50, align: 'center' },
-  { key: 'mounting_pcd',        label: 'PCD',                 w: 40, align: 'center', group: 'Mounting Holes' },
+  { key: 'motor_length',        label: 'Motor\nLength',       w: 44, align: 'center',
+    isOutOfTolerance: (row, data) => checkTolerance(row.motor_length, data.spec_motor_length, data.spec_motor_length_tol_mode, data.spec_motor_length_tol).outOfRange },
+  { key: 'shaft_length',        label: 'Shaft O/P\nD/Length', w: 50, align: 'center',
+    isOutOfTolerance: (row, data) => checkTolerance(row.shaft_length, data.spec_shaft_length, data.spec_shaft_length_tol_mode, data.spec_shaft_length_tol).outOfRange },
+  { key: 'mounting_pcd',        label: 'PCD',                 w: 40, align: 'center', group: 'Mounting Holes',
+    isOutOfTolerance: (row, data) => checkTolerance(row.mounting_pcd, data.spec_mounting_pcd, data.spec_mounting_pcd_tol_mode, data.spec_mounting_pcd_tol).outOfRange },
   { key: 'mtg',                 label: 'MTG',                 w: 50, align: 'center', group: 'Mounting Holes' },
   { key: 'key_dim_result',      label: 'Key\nDim.',           w: 34, align: 'center' },
-  { key: 'locating_dia_result', label: 'Locating\nDia.',      w: 38, align: 'center' },
+  { key: 'locating_dia_result', label: 'Locating\nDia.',      w: 38, align: 'center',
+    isOutOfTolerance: (row, data) => checkTolerance(row.locating_dia_result, data.spec_locating_dia, data.spec_locating_dia_tol_mode, data.spec_locating_dia_tol).outOfRange },
   { key: 'mechanical_remarks',  label: 'Remarks',             align: 'left' },
 ];
 
@@ -58,19 +70,32 @@ function mechChecks(data) {
   ];
 }
 
-const DEFAULT_SPEC_VALS = {
-  motor_length: '', shaft_length: '', mounting_pcd: '153',
-  mtg: '1.M6 / 2.Ø8.0', key_dim_result: 'Go/NG', locating_dia_result: '50.0 mm',
-};
-
+// No hardcoded fallbacks for the four numeric fields (motor_length,
+// shaft_length, mounting_pcd, locating_dia_result) — a template reused across
+// many product lines was never correctly served by one silently-reused
+// default, so these are required per-PDI entries now. MTG and Key Dim. keep
+// their informational/GO-NG defaults since they're not numeric specs.
 function buildSpecVals(data) {
   return {
-    motor_length:        data.spec_motor_length || DEFAULT_SPEC_VALS.motor_length,
-    shaft_length:        data.spec_shaft_length || DEFAULT_SPEC_VALS.shaft_length,
-    mounting_pcd:        data.spec_mounting_pcd || DEFAULT_SPEC_VALS.mounting_pcd,
-    mtg:                 data.spec_mtg          || DEFAULT_SPEC_VALS.mtg,
-    key_dim_result:      data.spec_key_dim      || DEFAULT_SPEC_VALS.key_dim_result,
-    locating_dia_result: data.spec_locating_dia || DEFAULT_SPEC_VALS.locating_dia_result,
+    motor_length:        data.spec_motor_length || '',
+    shaft_length:        data.spec_shaft_length || '',
+    mounting_pcd:        data.spec_mounting_pcd || '',
+    mtg:                 data.spec_mtg          || '1.M6 / 2.Ø8.0',
+    key_dim_result:      data.spec_key_dim      || 'Go/NG',
+    locating_dia_result: data.spec_locating_dia || '',
+  };
+}
+
+// Electrical table's spec row — one Current Standard + RPM Specified nominal
+// shared by every motor row in this PDI, mirroring the Mechanical table's own
+// spec-row pattern (buildSpecVals above). No hardcoded fallback — these are
+// required per-PDI entries, same reasoning as the mechanical spec fields.
+// Keyed by the *column* each value renders under (current_measured,
+// rpm_measured), not by field semantics — same convention buildSpecVals uses.
+function buildElecSpecVals(data) {
+  return {
+    current_measured: data.spec_current_standard || '',
+    rpm_measured:      data.spec_rpm_specified    || '',
   };
 }
 
@@ -104,6 +129,7 @@ const generalTemplate = {
           type: 'table', gap: 6,
           mode: 'repeatable', dataKey: 'rows', filterRow: activeRowsFilter,
           columns: ECOLS, headerHeight: 28, rowHeight: 14,
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', build: buildElecSpecVals },
           footerHeight: () => GCH * (1 + ELEC_CHECKS.length) + 6 + REM_H + 6 + SIG_H + 8,
         },
         {
