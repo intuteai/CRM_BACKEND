@@ -248,7 +248,15 @@ function drawPhotoSection(doc, section, data, y) {
   let groups; // [{ label, images: [...] }]
   if (section.mode === 'fixed-slots') {
     const slotData = data[section.dataKey] || {};
-    groups = section.slots.map(slot => ({ label: slot.label, images: slotData[slot.key] || [] }));
+    // A slot's stored value is an array for admin-authored templates (Task 8's
+    // multi-photo format) but a single data-URI string (or null) for AutoNXT,
+    // which predates that format and was never migrated — normalize both
+    // shapes here rather than assuming every fixed-slots template is new.
+    groups = section.slots.map((slot) => {
+      const raw = slotData[slot.key];
+      const images = Array.isArray(raw) ? raw : (raw ? [raw] : []);
+      return { label: slot.label, images };
+    });
   } else {
     const list = Array.isArray(data[section.dataKey]) ? data[section.dataKey] : [];
     groups = list

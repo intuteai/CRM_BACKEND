@@ -97,13 +97,27 @@ class PdiReports {
 
     // Reset: pdi_no, date, every table's rows, every signature field, general
     // check results. Keep everything else (Header-level identity/spec fields).
-    const resetKeys = new Set([
-      'pdi_no', 'date',
-      'rows', // General's electrical/mechanical motor rows
-      'prepared_by', 'approved_by', // General's signatures
-      'general_electrical', 'general_mechanical', // General's fixed GO/NG checks
-      'electrical_remarks', 'mechanical_remarks', // per-run remarks, not batch spec
-    ]);
+    // Field names differ per hard-coded template, so the reset set is keyed by
+    // template_id — General and AutoNXT each define their own per-run fields.
+    const RESET_KEYS_BY_TEMPLATE = {
+      general: [
+        'pdi_no', 'date',
+        'rows', // General's electrical/mechanical motor rows
+        'prepared_by', 'approved_by', // General's signatures
+        'general_electrical', 'general_mechanical', // General's fixed GO/NG checks
+        'electrical_remarks', 'mechanical_remarks', // per-run remarks, not batch spec
+      ],
+      autonxt: [
+        'pdi_no', 'date', 'motor_sr_no',
+        'performance_test', 'general_check', 'physical_parameters', // AutoNXT's measured checklists
+        'page1_remarks', 'page2_remarks', // per-run remarks, not batch spec
+        'prepared_by_electrical', 'prepared_by_mechanical', 'approved_by', // AutoNXT's signatures
+      ],
+    };
+    // Admin-authored templates aren't in this map yet — their per-run fields
+    // are admin-defined (arbitrary dataKeys per section), so only pdi_no/date
+    // reset for those; everything else still carries forward unchanged.
+    const resetKeys = new Set(RESET_KEYS_BY_TEMPLATE[source.template_id] || ['pdi_no', 'date']);
     const newData = {};
     for (const [key, value] of Object.entries(sourceData)) {
       if (!resetKeys.has(key)) newData[key] = value;
