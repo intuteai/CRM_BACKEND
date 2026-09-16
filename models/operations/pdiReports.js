@@ -211,46 +211,116 @@ class PdiReports {
     return payload;
   }
 
-  static async listReports({ limit = 10, cursor = null, status = null } = {}) {
+  // Allowlist mapping a client-supplied sortBy key to the exact SQL expression
+  // to ORDER BY -- never interpolate a client-supplied column name directly,
+  // and only these 7 keys (matching the table's 7 sortable headers) are ever
+  // accepted. pdi_no/customer_name stay as JSONB expressions (not denormalized
+  // columns) since they were already trivial `->>'key'` extractions -- only
+  // prepared_by/approved_by needed denormalizing, because those required
+  // extractSignerNames()'s regex logic, which has no simple SQL equivalent.
+  static SORTABLE_COLUMNS = {
+    sr_no: 'pdi.sr_no',
+    pdi_no: "pdi.data->>'pdi_no'",
+    customer_name: "COALESCE(pdi.data->>'customer_name', u.name)",
+    status: 'pdi.status',
+    prepared_by: 'pdi.prepared_by',
+    approved_by: 'pdi.approved_by',
+    inspection_date: 'pdi.inspection_date',
+  };
+
+  static async listReports({ limit = 10, cursor = null, offset = 0, status = null, template_id = null, search = null, sortBy = null, sortDir = 'desc' } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+    const _offset = Math.max(Number(offset) || 0, 0);
+    const dir = sortDir === 'asc' ? 'ASC' : 'DESC';
+    const sortColumn = sortBy && this.SORTABLE_COLUMNS[sortBy] ? this.SORTABLE_COLUMNS[sortBy] : null;
 
-    // Ordered by report_id (creation order), not inspection_date. inspection_date
-    // is a business field the inspector types in by hand -- it's routinely
-    // backdated, entered late, or left blank on an abandoned draft, none of
-    // which has anything to do with when the report was actually created. Sorting
-    // by it made the Sr. No column (which IS creation order, and reads to anyone
-    // looking at the table as "the order") jump around unpredictably relative to
-    // the rows above and below it. report_id is monotonic and never null, so the
-    // cursor is a single plain value -- no compound sort_key, no NULL handling.
-    const cursorReportId = cursor ? parseInt(String(cursor), 10) : null;
+    const whereParts = [
+      '($1::text IS NULL OR pdi.status = $1)',
+      '($2::text IS NULL OR pdi.template_id = $2)',
+      `($3::text IS NULL OR (
+        pdi.data->>'pdi_no' ILIKE '%' || $3 || '%' OR
+        COALESCE(pdi.data->>'customer_name', u.name) ILIKE '%' || $3 || '%' OR
+        pdi.status ILIKE '%' || $3 || '%' OR
+        pdi.prepared_by ILIKE '%' || $3 || '%' OR
+        pdi.approved_by ILIKE '%' || $3 || '%'
+      ))`,
+    ];
+    const baseValues = [status || null, template_id || null, search || null];
 
-    const query = `
-      SELECT
-        pdi.report_id, pdi.sr_no, pdi.customer_id, pdi.order_id, pdi.status,
-        pdi.inspected_by, pdi.inspection_date, pdi.template_id,
-        pdi.prepared_by, pdi.approved_by,
-        pdi.data->>'pdi_no' AS pdi_no,
-        pdi.data->>'customer_name' AS form_customer_name,
-        u.name AS linked_customer_name
+    const joins = `
+      LEFT JOIN customers c ON pdi.customer_id = c.customer_id
+      LEFT JOIN users u ON c.user_id = u.user_id
+      LEFT JOIN pdi_templates pt ON pt.id = pdi.template_id AND pt.version = pdi.template_version
+    `;
+    const selectCols = `
+      pdi.report_id, pdi.sr_no, pdi.customer_id, pdi.order_id, pdi.status,
+      pdi.inspected_by, pdi.inspection_date, pdi.template_id,
+      pdi.prepared_by, pdi.approved_by,
+      pdi.data->>'pdi_no' AS pdi_no,
+      pdi.data->>'customer_name' AS form_customer_name,
+      u.name AS linked_customer_name,
+      pt.name AS custom_template_name
+    `;
+
+    let query, values, useOffset;
+
+    if (sortColumn) {
+      // Explicit sort: plain offset pagination across the whole filtered
+      // dataset. NULLS LAST keeps unset values (e.g. an abandoned draft with
+      // no inspection_date) at the bottom regardless of direction -- same
+      // reasoning as the report_id default's earlier NULLS fix, generalized
+      // to any column. report_id is a secondary ORDER BY key purely to keep
+      // ties (e.g. many "Pending" rows) in a stable order across page loads.
+      // Offset (not keyset/cursor) is deliberate here: a compound cursor with
+      // generic NULLS-LAST handling across arbitrary column types is real
+      // complexity this table's size (dozens of rows) doesn't need yet --
+      // the unsorted default keeps its proven cursor pagination below,
+      // untouched.
+      useOffset = true;
+      query = `
+        SELECT ${selectCols}
+        FROM pre_dispatch_inspection_reports pdi
+        ${joins}
+        WHERE ${whereParts.join(' AND ')}
+        ORDER BY ${sortColumn} ${dir} NULLS LAST, pdi.report_id ${dir}
+        LIMIT $4 OFFSET $5
+      `;
+      values = [...baseValues, _limit + 1, _offset];
+    } else {
+      // Default order: keyset/cursor pagination by report_id (creation
+      // order), unchanged from before this change.
+      const cursorReportId = cursor ? parseInt(String(cursor), 10) : null;
+      whereParts.push('($4::int IS NULL OR pdi.report_id < $4)');
+      useOffset = false;
+      query = `
+        SELECT ${selectCols}
+        FROM pre_dispatch_inspection_reports pdi
+        ${joins}
+        WHERE ${whereParts.join(' AND ')}
+        ORDER BY pdi.report_id DESC
+        LIMIT $5
+      `;
+      values = [...baseValues, Number.isNaN(cursorReportId) ? null : cursorReportId, _limit + 1];
+    }
+
+    const countQuery = `
+      SELECT COUNT(*)::int AS count
       FROM pre_dispatch_inspection_reports pdi
       LEFT JOIN customers c ON pdi.customer_id = c.customer_id
       LEFT JOIN users u ON c.user_id = u.user_id
-      WHERE ($1::int IS NULL OR pdi.report_id < $1)
-      AND ($3::text IS NULL OR pdi.status = $3)
-      ORDER BY pdi.report_id DESC
-      LIMIT $2
+      WHERE ${whereParts.slice(0, 3).join(' AND ')}
     `;
-    const values = [Number.isNaN(cursorReportId) ? null : cursorReportId, _limit + 1, status || null];
-    const countQuery = `SELECT COUNT(*)::int AS count FROM pre_dispatch_inspection_reports WHERE ($1::text IS NULL OR status = $1)`;
 
     const [result, totalResult] = await Promise.all([
       pool.query(query, values),
-      pool.query(countQuery, [status || null]),
+      pool.query(countQuery, baseValues),
     ]);
 
     const hasMore = result.rows.length > _limit;
     const rows = hasMore ? result.rows.slice(0, _limit) : result.rows;
-    const nextCursor = hasMore ? String(rows[rows.length - 1].report_id) : null;
+
+    const nextCursor = !useOffset && hasMore ? String(rows[rows.length - 1].report_id) : null;
+    const nextOffset = useOffset && hasMore ? _offset + _limit : null;
 
     return {
       data: rows.map((row) => ({
@@ -258,12 +328,10 @@ class PdiReports {
         sr_no: row.sr_no,
         status: row.status,
         template_id: row.template_id,
+        template_name: templates[row.template_id]?.name || row.custom_template_name || row.template_id,
         customer_id: row.customer_id,
         order_id: row.order_id,
         pdi_no: row.pdi_no || null,
-        // Prefer the name typed on the report itself (the common, free-form case)
-        // over a linked CRM customer record (rare in this flow, but still honored
-        // if one's actually attached).
         customer_name: row.form_customer_name || row.linked_customer_name || null,
         inspected_by: row.inspected_by,
         prepared_by: row.prepared_by,
@@ -273,6 +341,7 @@ class PdiReports {
       })),
       total: parseInt(totalResult.rows[0].count, 10),
       cursor: nextCursor,
+      offset: nextOffset,
     };
   }
 

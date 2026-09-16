@@ -93,8 +93,8 @@ exports.finalizeReport = async (req, res) => {
 
 exports.listReports = async (req, res) => {
   try {
-    const { limit = 10, cursor, status } = req.query;
-    const result = await PdiReports.listReports({ limit, cursor, status });
+    const { limit = 10, cursor, offset, status, template_id, search, sortBy, sortDir } = req.query;
+    const result = await PdiReports.listReports({ limit, cursor, offset, status, template_id, search, sortBy, sortDir });
     res.json(result);
   } catch (error) {
     logger.error(`Error listing PDI reports: ${error.message}`, error.stack);
