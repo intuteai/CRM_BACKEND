@@ -1,7 +1,7 @@
 'use strict';
 
 const { CW, fmtDate } = require('../primitives');
-const { checkTolerance, parseForwardReverse } = require('../tolerance');
+const { checkTolerance, parseForwardReverse, parseDiaLength } = require('../tolerance');
 
 const GCH   = 14;
 const REM_H = 40;
@@ -32,7 +32,16 @@ const MCOLS = [
   { key: 'motor_length',        label: 'Motor\nLength',       w: 44, align: 'center',
     isOutOfTolerance: (row, data) => checkTolerance(row.motor_length, data.spec_motor_length, data.spec_motor_length_tol_mode, data.spec_motor_length_tol).outOfRange },
   { key: 'shaft_length',        label: 'Shaft O/P\nD/Length', w: 50, align: 'center',
-    isOutOfTolerance: (row, data) => checkTolerance(row.shaft_length, data.spec_shaft_length, data.spec_shaft_length_tol_mode, data.spec_shaft_length_tol).outOfRange },
+    // Combined "diameter/length" cell (e.g. "12/45") -- same convention as
+    // ECOLS' current_measured/rpm_measured forward/reverse split below, but
+    // diameter and length each validate against their OWN spec (unlike
+    // forward/reverse, which share one spec) since they're different
+    // physical measurements.
+    isOutOfTolerance: (row, data) => {
+      const { diameter, length } = parseDiaLength(row.shaft_length);
+      return checkTolerance(diameter, data.spec_shaft_diameter, data.spec_shaft_diameter_tol_mode, data.spec_shaft_diameter_tol, data.spec_shaft_diameter_tol_minus).outOfRange
+          || checkTolerance(length, data.spec_shaft_length, data.spec_shaft_length_tol_mode, data.spec_shaft_length_tol, data.spec_shaft_length_tol_minus).outOfRange;
+    } },
   { key: 'mounting_pcd',        label: 'PCD',                 w: 40, align: 'center', group: 'Mounting Holes',
     isOutOfTolerance: (row, data) => checkTolerance(row.mounting_pcd, data.spec_mounting_pcd, data.spec_mounting_pcd_tol_mode, data.spec_mounting_pcd_tol).outOfRange },
   { key: 'mtg',                 label: 'MTG',                 w: 50, align: 'center', group: 'Mounting Holes' },
@@ -79,6 +88,7 @@ function buildSpecVals(data) {
   return {
     motor_length:        data.spec_motor_length || '',
     shaft_length:        data.spec_shaft_length || '',
+    shaft_diameter:      data.spec_shaft_diameter || '',
     mounting_pcd:        data.spec_mounting_pcd || '',
     mtg:                 data.spec_mtg          || '1.M6 / 2.Ø8.0',
     key_dim_result:      data.spec_key_dim      || 'Go/NG',
