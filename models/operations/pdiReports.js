@@ -179,28 +179,15 @@ class PdiReports {
   static async listReports({ limit = 10, cursor = null, status = null } = {}) {
     const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
 
-    // Cursor encodes "<report_id>:<sort_key>" — see models/operations/pdi.js's
-    // getAll() for why: inspection_date is nullable and rows can tie, so a
-    // plain single-column cursor either stalls on NULLs or drops tied rows.
-    //
-    // NULLs sort to '-infinity', not '+infinity': a report has no inspection_date
-    // until an inspector actually enters one, which includes every freshly
-    // auto-created draft that was opened and abandoned. Sorting those as the
-    // "newest" date buried every real, dated report underneath an ever-growing
-    // pile of blank Pending rows. '-infinity' makes them sort last instead,
-    // like an unset date should.
-    let cursorReportId = null;
-    let cursorSortKey = null;
-    if (cursor) {
-      const sepIdx = String(cursor).indexOf(':');
-      if (sepIdx > 0) {
-        const parsedId = parseInt(String(cursor).slice(0, sepIdx), 10);
-        if (!isNaN(parsedId)) {
-          cursorReportId = parsedId;
-          cursorSortKey = String(cursor).slice(sepIdx + 1);
-        }
-      }
-    }
+    // Ordered by report_id (creation order), not inspection_date. inspection_date
+    // is a business field the inspector types in by hand -- it's routinely
+    // backdated, entered late, or left blank on an abandoned draft, none of
+    // which has anything to do with when the report was actually created. Sorting
+    // by it made the Sr. No column (which IS creation order, and reads to anyone
+    // looking at the table as "the order") jump around unpredictably relative to
+    // the rows above and below it. report_id is monotonic and never null, so the
+    // cursor is a single plain value -- no compound sort_key, no NULL handling.
+    const cursorReportId = cursor ? parseInt(String(cursor), 10) : null;
 
     const query = `
       SELECT
@@ -208,21 +195,16 @@ class PdiReports {
         pdi.inspected_by, pdi.inspection_date, pdi.template_id,
         pdi.data->>'pdi_no' AS pdi_no,
         pdi.data->>'customer_name' AS form_customer_name,
-        u.name AS linked_customer_name,
-        COALESCE(pdi.inspection_date, '-infinity'::timestamp)::text AS sort_key
+        u.name AS linked_customer_name
       FROM pre_dispatch_inspection_reports pdi
       LEFT JOIN customers c ON pdi.customer_id = c.customer_id
       LEFT JOIN users u ON c.user_id = u.user_id
-      WHERE (
-        $1::text IS NULL
-        OR COALESCE(pdi.inspection_date, '-infinity'::timestamp) < $1::timestamp
-        OR (COALESCE(pdi.inspection_date, '-infinity'::timestamp) = $1::timestamp AND pdi.report_id < $2)
-      )
-      AND ($4::text IS NULL OR pdi.status = $4)
-      ORDER BY COALESCE(pdi.inspection_date, '-infinity'::timestamp) DESC, pdi.report_id DESC
-      LIMIT $3
+      WHERE ($1::int IS NULL OR pdi.report_id < $1)
+      AND ($3::text IS NULL OR pdi.status = $3)
+      ORDER BY pdi.report_id DESC
+      LIMIT $2
     `;
-    const values = [cursorSortKey, cursorReportId, _limit + 1, status || null];
+    const values = [Number.isNaN(cursorReportId) ? null : cursorReportId, _limit + 1, status || null];
     const countQuery = `SELECT COUNT(*)::int AS count FROM pre_dispatch_inspection_reports WHERE ($1::text IS NULL OR status = $1)`;
 
     const [result, totalResult] = await Promise.all([
@@ -232,7 +214,7 @@ class PdiReports {
 
     const hasMore = result.rows.length > _limit;
     const rows = hasMore ? result.rows.slice(0, _limit) : result.rows;
-    const nextCursor = hasMore ? `${rows[rows.length - 1].report_id}:${rows[rows.length - 1].sort_key}` : null;
+    const nextCursor = hasMore ? String(rows[rows.length - 1].report_id) : null;
 
     return {
       data: rows.map((row) => ({
