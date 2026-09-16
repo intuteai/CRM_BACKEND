@@ -5,6 +5,29 @@ const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 
+// Every template's signature roles follow the same naming convention this
+// whole dialect already uses everywhere (General's prepared_by/approved_by,
+// AutoNXT's prepared_by_electrical/prepared_by_mechanical/approved_by, and
+// any admin-authored template — its role keys are auto-slugified from labels
+// like "Prepared By" via CRM/src/utils/pdiTemplateSlug.js, landing on the
+// same pattern). So rather than hardcode per-template field lists, this scans
+// whatever keys the report's own data actually has. AutoNXT's two preparer
+// roles both match "prepared" and get joined, since there's no single name
+// to prefer between them.
+function extractSignerNames(data) {
+  if (!data || typeof data !== 'object') return { prepared_by: null, approved_by: null };
+  const pick = (pattern) =>
+    Object.entries(data)
+      .filter(([key, value]) => pattern.test(key) && typeof value === 'string' && value.trim())
+      .map(([, value]) => value.trim());
+  const prepared = pick(/prepared/i);
+  const approved = pick(/approved/i);
+  return {
+    prepared_by: prepared.length ? prepared.join(' / ') : null,
+    approved_by: approved.length ? approved.join(' / ') : null,
+  };
+}
+
 // Collects a PDFKit document's output into a single Buffer.
 function bufferPdf(doc) {
   return new Promise((resolve, reject) => {
@@ -195,7 +218,8 @@ class PdiReports {
         pdi.inspected_by, pdi.inspection_date, pdi.template_id,
         pdi.data->>'pdi_no' AS pdi_no,
         pdi.data->>'customer_name' AS form_customer_name,
-        u.name AS linked_customer_name
+        u.name AS linked_customer_name,
+        pdi.data AS data
       FROM pre_dispatch_inspection_reports pdi
       LEFT JOIN customers c ON pdi.customer_id = c.customer_id
       LEFT JOIN users u ON c.user_id = u.user_id
@@ -217,22 +241,27 @@ class PdiReports {
     const nextCursor = hasMore ? String(rows[rows.length - 1].report_id) : null;
 
     return {
-      data: rows.map((row) => ({
-        report_id: row.report_id,
-        sr_no: row.sr_no,
-        status: row.status,
-        template_id: row.template_id,
-        customer_id: row.customer_id,
-        order_id: row.order_id,
-        pdi_no: row.pdi_no || null,
-        // Prefer the name typed on the report itself (the common, free-form case)
-        // over a linked CRM customer record (rare in this flow, but still honored
-        // if one's actually attached).
-        customer_name: row.form_customer_name || row.linked_customer_name || null,
-        inspected_by: row.inspected_by,
-        inspection_date: row.inspection_date,
-        report_link: `/api/pdi/reports/${row.report_id}/pdf`,
-      })),
+      data: rows.map((row) => {
+        const { prepared_by, approved_by } = extractSignerNames(row.data);
+        return {
+          report_id: row.report_id,
+          sr_no: row.sr_no,
+          status: row.status,
+          template_id: row.template_id,
+          customer_id: row.customer_id,
+          order_id: row.order_id,
+          pdi_no: row.pdi_no || null,
+          // Prefer the name typed on the report itself (the common, free-form case)
+          // over a linked CRM customer record (rare in this flow, but still honored
+          // if one's actually attached).
+          customer_name: row.form_customer_name || row.linked_customer_name || null,
+          inspected_by: row.inspected_by,
+          prepared_by,
+          approved_by,
+          inspection_date: row.inspection_date,
+          report_link: `/api/pdi/reports/${row.report_id}/pdf`,
+        };
+      }),
       total: parseInt(totalResult.rows[0].count, 10),
       cursor: nextCursor,
     };
