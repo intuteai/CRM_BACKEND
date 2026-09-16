@@ -232,7 +232,9 @@ class PdiReports {
     const _limit = Math.min(Math.max(Number(limit) || 10, 1), 100);
     const _offset = Math.max(Number(offset) || 0, 0);
     const dir = sortDir === 'asc' ? 'ASC' : 'DESC';
-    const sortColumn = sortBy && this.SORTABLE_COLUMNS[sortBy] ? this.SORTABLE_COLUMNS[sortBy] : null;
+    const sortColumn = sortBy && Object.prototype.hasOwnProperty.call(this.SORTABLE_COLUMNS, sortBy)
+      ? this.SORTABLE_COLUMNS[sortBy]
+      : null;
 
     const whereParts = [
       '($1::text IS NULL OR pdi.status = $1)',
