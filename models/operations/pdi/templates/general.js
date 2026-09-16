@@ -14,14 +14,14 @@ const ECOLS = [
   { key: 'current_measured',   label: 'Current\nMeasured F/R',    w: 50, align: 'center',
     isOutOfTolerance: (row, data) => {
       const { forward, reverse } = parseForwardReverse(row.current_measured);
-      return checkTolerance(forward, data.spec_current_standard, data.spec_current_tol_mode, data.spec_current_tol).outOfRange
-          || checkTolerance(reverse, data.spec_current_standard, data.spec_current_tol_mode, data.spec_current_tol).outOfRange;
+      return checkTolerance(forward, data.spec_current_standard, data.spec_current_tol_mode, data.spec_current_tol, data.spec_current_tol_minus).outOfRange
+          || checkTolerance(reverse, data.spec_current_standard, data.spec_current_tol_mode, data.spec_current_tol, data.spec_current_tol_minus).outOfRange;
     } },
   { key: 'rpm_measured',       label: 'RPM\nMeasured F/R',        w: 50, align: 'center',
     isOutOfTolerance: (row, data) => {
       const { forward, reverse } = parseForwardReverse(row.rpm_measured);
-      return checkTolerance(forward, data.spec_rpm_specified, data.spec_rpm_tol_mode, data.spec_rpm_tol).outOfRange
-          || checkTolerance(reverse, data.spec_rpm_specified, data.spec_rpm_tol_mode, data.spec_rpm_tol).outOfRange;
+      return checkTolerance(forward, data.spec_rpm_specified, data.spec_rpm_tol_mode, data.spec_rpm_tol, data.spec_rpm_tol_minus).outOfRange
+          || checkTolerance(reverse, data.spec_rpm_specified, data.spec_rpm_tol_mode, data.spec_rpm_tol, data.spec_rpm_tol_minus).outOfRange;
     } },
   { key: 'electrical_remarks', label: 'Remarks',                  align: 'left' },
 ];
@@ -30,7 +30,7 @@ const MCOLS = [
   { key: 'sno',                 label: 'S. No',               w: 26, align: 'center' },
   { key: 'motor_sr_no',         label: 'Motor\nSr. No',       w: 52, align: 'center' },
   { key: 'motor_length',        label: 'Motor\nLength',       w: 44, align: 'center',
-    isOutOfTolerance: (row, data) => checkTolerance(row.motor_length, data.spec_motor_length, data.spec_motor_length_tol_mode, data.spec_motor_length_tol).outOfRange },
+    isOutOfTolerance: (row, data) => checkTolerance(row.motor_length, data.spec_motor_length, data.spec_motor_length_tol_mode, data.spec_motor_length_tol, data.spec_motor_length_tol_minus).outOfRange },
   { key: 'shaft_length',        label: 'Shaft O/P\nD/Length', w: 50, align: 'center',
     // Combined "diameter/length" cell (e.g. "12/45") -- same convention as
     // ECOLS' current_measured/rpm_measured forward/reverse split below, but
@@ -43,11 +43,11 @@ const MCOLS = [
           || checkTolerance(length, data.spec_shaft_length, data.spec_shaft_length_tol_mode, data.spec_shaft_length_tol, data.spec_shaft_length_tol_minus).outOfRange;
     } },
   { key: 'mounting_pcd',        label: 'PCD',                 w: 40, align: 'center', group: 'Mounting Holes',
-    isOutOfTolerance: (row, data) => checkTolerance(row.mounting_pcd, data.spec_mounting_pcd, data.spec_mounting_pcd_tol_mode, data.spec_mounting_pcd_tol).outOfRange },
+    isOutOfTolerance: (row, data) => checkTolerance(row.mounting_pcd, data.spec_mounting_pcd, data.spec_mounting_pcd_tol_mode, data.spec_mounting_pcd_tol, data.spec_mounting_pcd_tol_minus).outOfRange },
   { key: 'mtg',                 label: 'MTG',                 w: 50, align: 'center', group: 'Mounting Holes' },
   { key: 'key_dim_result',      label: 'Key\nDim.',           w: 34, align: 'center' },
   { key: 'locating_dia_result', label: 'Locating\nDia.',      w: 38, align: 'center',
-    isOutOfTolerance: (row, data) => checkTolerance(row.locating_dia_result, data.spec_locating_dia, data.spec_locating_dia_tol_mode, data.spec_locating_dia_tol).outOfRange },
+    isOutOfTolerance: (row, data) => checkTolerance(row.locating_dia_result, data.spec_locating_dia, data.spec_locating_dia_tol_mode, data.spec_locating_dia_tol, data.spec_locating_dia_tol_minus).outOfRange },
   { key: 'mechanical_remarks',  label: 'Remarks',             align: 'left' },
 ];
 
