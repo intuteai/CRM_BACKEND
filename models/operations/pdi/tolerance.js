@@ -23,6 +23,16 @@ function checkTolerance(measuredStr, nominalStr, toleranceMode, toleranceAmountS
     return { outOfRange: false };
   }
 
+  // Note: any toleranceMode value that isn't exactly the literal string
+  // 'bilateral' falls through to the symmetric/percentage branch below,
+  // which reads only toleranceAmountStr and silently ignores
+  // toleranceAmount2Str. This is intentional -- consistent with this
+  // function's existing philosophy of gracefully skipping validation on
+  // malformed input rather than throwing -- not an oversight. The mode
+  // string is driven by a fixed <select> in both UI clients, not free
+  // text, so a real-world typo reaching this function is unlikely, but
+  // this comment exists so a future reader doesn't mistake the fallthrough
+  // for a bug.
   if (toleranceMode === 'bilateral') {
     const plus = parseFloat(toleranceAmountStr);
     const minus = parseFloat(toleranceAmount2Str);
