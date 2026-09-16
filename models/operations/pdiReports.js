@@ -83,10 +83,11 @@ class PdiReports {
 
   static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id }, io) {
     const { templateId, templateVersion } = await this.resolveTemplateVersion(template_id);
+    const { prepared_by, approved_by } = extractSignerNames(data);
     const result = await pool.query(`
       INSERT INTO pre_dispatch_inspection_reports
-        (customer_id, order_id, status, inspected_by, inspection_date, template_id, template_version, data, photos)
-      VALUES ($1, $2, 'Pending', $3, $4, $5, $6, $7, $8)
+        (customer_id, order_id, status, inspected_by, inspection_date, template_id, template_version, data, photos, prepared_by, approved_by)
+      VALUES ($1, $2, 'Pending', $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING ${reportColumns()}
     `, [
       customer_id || null,
@@ -97,6 +98,8 @@ class PdiReports {
       templateVersion,
       JSON.stringify(data || {}),
       JSON.stringify(photos || []),
+      prepared_by,
+      approved_by,
     ]);
 
     const payload = this.#toPayload(result.rows[0]);
@@ -180,7 +183,16 @@ class PdiReports {
     }
     if (fields.customer_id !== undefined) { sets.push(`customer_id = $${i++}`); values.push(fields.customer_id || null); }
     if (fields.order_id !== undefined) { sets.push(`order_id = $${i++}`); values.push(fields.order_id || null); }
-    if (fields.data !== undefined) { sets.push(`data = $${i++}`); values.push(JSON.stringify(fields.data)); }
+    if (fields.data !== undefined) {
+      sets.push(`data = $${i++}`);
+      values.push(JSON.stringify(fields.data));
+      // Keep the denormalized signer columns in sync with data on every write
+      // that touches it -- these two columns can never legitimately drift
+      // from what data actually contains.
+      const { prepared_by, approved_by } = extractSignerNames(fields.data);
+      sets.push(`prepared_by = $${i++}`); values.push(prepared_by);
+      sets.push(`approved_by = $${i++}`); values.push(approved_by);
+    }
     if (fields.photos !== undefined) { sets.push(`photos = $${i++}`); values.push(JSON.stringify(fields.photos)); }
 
     if (sets.length === 0) return this.getById(_id);
@@ -216,10 +228,10 @@ class PdiReports {
       SELECT
         pdi.report_id, pdi.sr_no, pdi.customer_id, pdi.order_id, pdi.status,
         pdi.inspected_by, pdi.inspection_date, pdi.template_id,
+        pdi.prepared_by, pdi.approved_by,
         pdi.data->>'pdi_no' AS pdi_no,
         pdi.data->>'customer_name' AS form_customer_name,
-        u.name AS linked_customer_name,
-        pdi.data AS data
+        u.name AS linked_customer_name
       FROM pre_dispatch_inspection_reports pdi
       LEFT JOIN customers c ON pdi.customer_id = c.customer_id
       LEFT JOIN users u ON c.user_id = u.user_id
@@ -241,27 +253,24 @@ class PdiReports {
     const nextCursor = hasMore ? String(rows[rows.length - 1].report_id) : null;
 
     return {
-      data: rows.map((row) => {
-        const { prepared_by, approved_by } = extractSignerNames(row.data);
-        return {
-          report_id: row.report_id,
-          sr_no: row.sr_no,
-          status: row.status,
-          template_id: row.template_id,
-          customer_id: row.customer_id,
-          order_id: row.order_id,
-          pdi_no: row.pdi_no || null,
-          // Prefer the name typed on the report itself (the common, free-form case)
-          // over a linked CRM customer record (rare in this flow, but still honored
-          // if one's actually attached).
-          customer_name: row.form_customer_name || row.linked_customer_name || null,
-          inspected_by: row.inspected_by,
-          prepared_by,
-          approved_by,
-          inspection_date: row.inspection_date,
-          report_link: `/api/pdi/reports/${row.report_id}/pdf`,
-        };
-      }),
+      data: rows.map((row) => ({
+        report_id: row.report_id,
+        sr_no: row.sr_no,
+        status: row.status,
+        template_id: row.template_id,
+        customer_id: row.customer_id,
+        order_id: row.order_id,
+        pdi_no: row.pdi_no || null,
+        // Prefer the name typed on the report itself (the common, free-form case)
+        // over a linked CRM customer record (rare in this flow, but still honored
+        // if one's actually attached).
+        customer_name: row.form_customer_name || row.linked_customer_name || null,
+        inspected_by: row.inspected_by,
+        prepared_by: row.prepared_by,
+        approved_by: row.approved_by,
+        inspection_date: row.inspection_date,
+        report_link: `/api/pdi/reports/${row.report_id}/pdf`,
+      })),
       total: parseInt(totalResult.rows[0].count, 10),
       cursor: nextCursor,
     };
