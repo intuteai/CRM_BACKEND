@@ -108,11 +108,14 @@ app.use(cors({
 }));
 app.use(cookieParser());
 // Default 100kb is too small for the PDI generator, which embeds a variable
-// number of base64-encoded, client-compressed photos (soft-capped at 12) in
-// its JSON body. Photos are resized/re-encoded client-side before upload, so
-// each is typically a few hundred KB — 25mb comfortably covers a full set
-// plus the technical drawing with headroom.
-app.use(express.json({ limit: '25mb' }));
+// number of base64-encoded photos in its JSON body. The real cap is
+// MAX_TOTAL_PHOTOS (CRM/PDIGeneratorForm.jsx) x each photo's compressed size
+// (client-resized to ~1600px/JPEG q0.85, typically a few hundred KB) — 40mb
+// gives headroom over that combined worst case, not just a per-photo guess.
+// Un-compressed uploads (e.g. a mobile client without client-side resizing)
+// can still exceed this and should fix compression at the source rather than
+// leaning on a larger limit here.
+app.use(express.json({ limit: '40mb' }));
 app.use(limiter);
 
 app.use((req, res, next) => {
