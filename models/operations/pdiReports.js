@@ -198,13 +198,31 @@ class PdiReports {
     if (sets.length === 0) return this.getById(_id);
 
     values.push(_id);
+    // AND status <> 'Completed' -- a finalized report is locked against
+    // further writes. Without this, a stale save-draft request from a
+    // second device/tab that hasn't caught up with another device's
+    // finalize (exactly the kind of delayed/retried write the client-side
+    // timeout and retry work elsewhere is meant to tolerate) can silently
+    // overwrite a Completed report's data/photos with older content and
+    // even revert its status -- reproduced directly against this endpoint
+    // during the investigation that led to this guard. No error, no trace,
+    // just a "disappeared" finalized report. If a finalized report genuinely
+    // needs correcting, Duplicate it into a new report instead of editing
+    // the finalized one in place.
     const result = await pool.query(`
       UPDATE pre_dispatch_inspection_reports
       SET ${sets.join(', ')}
-      WHERE report_id = $${i}
+      WHERE report_id = $${i} AND status <> 'Completed'
       RETURNING ${reportColumns()}
     `, values);
-    if (result.rows.length === 0) throw new Error('Report not found');
+
+    if (result.rows.length === 0) {
+      const existing = await this.getById(_id).catch(() => null);
+      if (!existing) throw new Error('Report not found');
+      const lockedError = new Error('This report is already finalized and can no longer be edited. Duplicate it to make changes.');
+      lockedError.code = 'REPORT_LOCKED';
+      throw lockedError;
+    }
 
     const payload = this.#toPayload(result.rows[0]);
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
@@ -349,6 +367,16 @@ class PdiReports {
 
   static async finalizeReport(reportId, io) {
     const report = await this.getById(reportId);
+    // Same lock as patchReport -- a second/stale device re-finalizing an
+    // already-Completed report would waste a PDF regeneration and Drive
+    // upload, and re-finalizing isn't how you recover a lost PDF anyway
+    // (that's getPdfBuffer / GET .../pdf, which is read-only). If a report
+    // needs correcting after finalize, Duplicate it instead.
+    if (report.status === 'Completed') {
+      const lockedError = new Error('This report is already finalized.');
+      lockedError.code = 'REPORT_LOCKED';
+      throw lockedError;
+    }
     // photos live in their own column, not report.data — the generator reads
     // data.photos, so it has to be merged in here or PDFs render with none.
     const pdfBuffer = await bufferPdf(await PDIGenerator.generate(report.template_id, report.template_version, { ...(report.data || {}), photos: report.photos || [] }));

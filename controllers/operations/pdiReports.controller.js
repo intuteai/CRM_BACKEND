@@ -66,6 +66,7 @@ exports.patchReport = async (req, res) => {
     res.json(report);
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
     logger.error(`Error updating PDI report ${req.params.id}: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -86,6 +87,7 @@ exports.finalizeReport = async (req, res) => {
     res.send(pdfBuffer);
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
     logger.error(`Error finalizing PDI report ${req.params.id}: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
