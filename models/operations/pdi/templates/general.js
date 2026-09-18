@@ -1,7 +1,7 @@
 'use strict';
 
 const { CW, fmtDate } = require('../primitives');
-const { checkTolerance, parseForwardReverse, parseDiaLength } = require('../tolerance');
+const { checkTolerance, parseForwardReverse } = require('../tolerance');
 
 const GCH   = 14;
 const REM_H = 40;
@@ -31,17 +31,10 @@ const MCOLS = [
   { key: 'motor_sr_no',         label: 'Motor\nSr. No',       w: 52, align: 'center' },
   { key: 'motor_length',        label: 'Motor\nLength',       w: 44, align: 'center',
     isOutOfTolerance: (row, data) => checkTolerance(row.motor_length, data.spec_motor_length, data.spec_motor_length_tol_mode, data.spec_motor_length_tol, data.spec_motor_length_tol_minus).outOfRange },
-  { key: 'shaft_length',        label: 'Shaft O/P\nD/Length', w: 50, align: 'center',
-    // Combined "diameter/length" cell (e.g. "12/45") -- same convention as
-    // ECOLS' current_measured/rpm_measured forward/reverse split below, but
-    // diameter and length each validate against their OWN spec (unlike
-    // forward/reverse, which share one spec) since they're different
-    // physical measurements.
-    isOutOfTolerance: (row, data) => {
-      const { diameter, length } = parseDiaLength(row.shaft_length);
-      return checkTolerance(diameter, data.spec_shaft_diameter, data.spec_shaft_diameter_tol_mode, data.spec_shaft_diameter_tol, data.spec_shaft_diameter_tol_minus).outOfRange
-          || checkTolerance(length, data.spec_shaft_length, data.spec_shaft_length_tol_mode, data.spec_shaft_length_tol, data.spec_shaft_length_tol_minus).outOfRange;
-    } },
+  { key: 'shaft_length',         label: 'Shaft\nLength',       w: 40, align: 'center',
+    isOutOfTolerance: (row, data) => checkTolerance(row.shaft_length, data.spec_shaft_length, data.spec_shaft_length_tol_mode, data.spec_shaft_length_tol, data.spec_shaft_length_tol_minus).outOfRange },
+  { key: 'shaft_diameter',       label: 'Shaft\nDiameter',     w: 40, align: 'center',
+    isOutOfTolerance: (row, data) => checkTolerance(row.shaft_diameter, data.spec_shaft_diameter, data.spec_shaft_diameter_tol_mode, data.spec_shaft_diameter_tol, data.spec_shaft_diameter_tol_minus).outOfRange },
   { key: 'mounting_pcd',        label: 'PCD',                 w: 40, align: 'center', group: 'Mounting Holes',
     isOutOfTolerance: (row, data) => checkTolerance(row.mounting_pcd, data.spec_mounting_pcd, data.spec_mounting_pcd_tol_mode, data.spec_mounting_pcd_tol, data.spec_mounting_pcd_tol_minus).outOfRange },
   { key: 'mtg',                 label: 'MTG',                 w: 50, align: 'center', group: 'Mounting Holes' },
@@ -79,36 +72,22 @@ function mechChecks(data) {
   ];
 }
 
-// No hardcoded fallbacks for the numeric fields (motor_length, the
-// shaft diameter/length label, mounting_pcd, locating_dia_result) — a
-// template reused across many product lines was never correctly served
-// by one silently-reused default, so these are required per-PDI entries
-// now. MTG and Key Dim. keep their informational/GO-NG defaults since
-// they're not numeric specs.
+// No hardcoded fallbacks for the numeric fields (motor_length, shaft_length,
+// shaft_diameter, mounting_pcd, locating_dia_result) — a template reused
+// across many product lines was never correctly served by one
+// silently-reused default, so these are required per-PDI entries now. MTG
+// and Key Dim. keep their informational/GO-NG defaults since they're not
+// numeric specs.
 function buildSpecVals(data) {
   return {
-    motor_length:        data.spec_motor_length || '',
-    shaft_length:        buildShaftSpecLabel(data),
-    mounting_pcd:        data.spec_mounting_pcd || '',
-    mtg:                 data.spec_mtg          || '1.M6 / 2.Ø8.0',
-    key_dim_result:      data.spec_key_dim      || 'Go/NG',
-    locating_dia_result: data.spec_locating_dia || '',
+    motor_length:        data.spec_motor_length   || '',
+    shaft_length:        data.spec_shaft_length   || '',
+    shaft_diameter:      data.spec_shaft_diameter || '',
+    mounting_pcd:        data.spec_mounting_pcd   || '',
+    mtg:                 data.spec_mtg            || '1.M6 / 2.Ø8.0',
+    key_dim_result:      data.spec_key_dim        || 'Go/NG',
+    locating_dia_result: data.spec_locating_dia   || '',
   };
-}
-
-// The shaft column's spec-row cell has to carry TWO independent nominal
-// values (diameter and length) in the space every other column's spec
-// cell uses for one plain nominal -- drawSpecRow (renderer.js) prints one
-// line per cell at a fixed height shared with the data rows below, so a
-// stacked two-line layout isn't a drop-in fit here. A short diameter
-// symbol prefix keeps both values on that one line and unambiguous,
-// without adding a table column purely for a spec-row value (the row
-// below stays one combined "diameter/length" measured cell, unchanged).
-function buildShaftSpecLabel(data) {
-  const diameter = data.spec_shaft_diameter || '';
-  const length = data.spec_shaft_length || '';
-  if (!diameter && !length) return '';
-  return `⌀${diameter || '—'} / L${length || '—'}`;
 }
 
 // Electrical table's spec row — one Current Standard + RPM Specified nominal

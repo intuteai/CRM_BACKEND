@@ -67,19 +67,4 @@ function parseForwardReverse(raw) {
   return { forward: trimmed, reverse: '' };
 }
 
-// Parses a Shaft Diameter/Length cell's raw text into { diameter, length }.
-// "12/45" -> diameter=12, length=45. Same split-on-"/" mechanics as
-// parseForwardReverse above, distinctly named since "forward/reverse"
-// semantics don't apply here — diameter and length are validated against
-// two entirely independent specs, not a shared one.
-function parseDiaLength(raw) {
-  const trimmed = (raw || '').trim();
-  if (!trimmed) return { diameter: '', length: '' };
-  if (trimmed.includes('/')) {
-    const [d, l] = trimmed.split('/');
-    return { diameter: (d || '').trim(), length: (l || '').trim() };
-  }
-  return { diameter: trimmed, length: '' };
-}
-
-module.exports = { checkTolerance, parseForwardReverse, parseDiaLength };
+module.exports = { checkTolerance, parseForwardReverse };
