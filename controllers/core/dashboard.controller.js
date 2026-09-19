@@ -31,6 +31,35 @@ exports.storesDashboard     = makeRoleDashboard(6, 'stores-dashboard');
 exports.dispatchDashboard   = makeRoleDashboard(7, 'dispatch-dashboard');
 exports.accountsDashboard   = makeRoleDashboard(8, 'accounts-dashboard');
 
+exports.adminStats = async (req, res) => {
+  try {
+    if (req.user.role_id !== 1) {
+      logger.warn(`Unauthorized access to admin-stats: role_id=${req.user.role_id}`);
+      return res.status(403).json({ error: 'Access denied', code: 'PERM_DENIED' });
+    }
+
+    // NULL status/stock rows are counted the way the UI treats them (missing order status
+    // = Pending, missing query status = Open, missing stock = 0) instead of being skipped
+    // by `!=` / `NOT IN` / `<`. "Today" is IST, not the DB server's timezone.
+    const [openOrders, pendingQueries, lowStock, dispatchesToday] = await Promise.all([
+      pool.query("SELECT COUNT(*) FROM orders WHERE COALESCE(status, 'Pending') NOT IN ('Delivered', 'Cancelled')"),
+      pool.query("SELECT COUNT(*) FROM queries WHERE COALESCE(query_status, 'Open') <> 'Closed'"),
+      pool.query('SELECT COUNT(*) FROM inventory WHERE COALESCE(stock_quantity, 0) < 10'),
+      pool.query("SELECT COUNT(*) FROM dispatch_tracking_details WHERE dispatch_date::date = (NOW() AT TIME ZONE 'Asia/Kolkata')::date"),
+    ]);
+
+    res.json({
+      openOrders: parseInt(openOrders.rows[0].count, 10),
+      pendingQueries: parseInt(pendingQueries.rows[0].count, 10),
+      lowStockItems: parseInt(lowStock.rows[0].count, 10),
+      dispatchesToday: parseInt(dispatchesToday.rows[0].count, 10),
+    });
+  } catch (error) {
+    logger.error(`Admin stats error: ${error.message}`, error.stack);
+    res.status(500).json({ error: `Server error: ${error.message}`, code: 'SERVER_ERROR' });
+  }
+};
+
 exports.main = async (req, res) => {
   const { role_id } = req.user;
   try {

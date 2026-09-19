@@ -11,6 +11,7 @@ router.get('/production-dashboard', authenticateToken, checkPermission('dashboar
 router.get('/stores-dashboard', authenticateToken, checkPermission('dashboard', 'can_read'), controller.storesDashboard);
 router.get('/dispatch-dashboard', authenticateToken, checkPermission('dashboard', 'can_read'), controller.dispatchDashboard);
 router.get('/accounts-dashboard', authenticateToken, checkPermission('dashboard', 'can_read'), controller.accountsDashboard);
+router.get('/admin-stats', authenticateToken, checkPermission('dashboard', 'can_read'), controller.adminStats);
 router.get('/', authenticateToken, controller.main);
 
 module.exports = router;
