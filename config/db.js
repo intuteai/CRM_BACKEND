@@ -11,7 +11,9 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  // 2s was too tight for a fresh TLS connection to RDS under load; a slow
+  // connect surfaced as "timeout exceeded when trying to connect" -> HTTP 500.
+  connectionTimeoutMillis: 10000,
 });
 
 pool.on('connect', () => logger.info('Connected to PostgreSQL'));

@@ -193,7 +193,18 @@ class PdiReports {
       sets.push(`prepared_by = $${i++}`); values.push(prepared_by);
       sets.push(`approved_by = $${i++}`); values.push(approved_by);
     }
-    if (fields.photos !== undefined) { sets.push(`photos = $${i++}`); values.push(JSON.stringify(fields.photos)); }
+    if (fields.photos !== undefined) {
+      // Clients (notably the mobile app) re-send the whole photo set on every
+      // save, even when only electrical/mechanical data changed. Writing a
+      // multi-MB jsonb value costs seconds of TOAST/WAL work each time, and a
+      // retried save queues behind the previous one on the same row. When the
+      // incoming photos equal what's stored, keep the existing value: `photos`
+      // in the THEN branch is the stored datum itself, so Postgres reuses its
+      // TOAST pointer instead of rewriting it.
+      sets.push(`photos = CASE WHEN photos = $${i}::jsonb THEN photos ELSE $${i}::jsonb END`);
+      values.push(JSON.stringify(fields.photos));
+      i++;
+    }
 
     if (sets.length === 0) return this.getById(_id);
 

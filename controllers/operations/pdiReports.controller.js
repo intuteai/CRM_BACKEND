@@ -60,14 +60,20 @@ exports.getReport = async (req, res) => {
 };
 
 exports.patchReport = async (req, res) => {
+  // Saves carry the whole report including base64 photos, so size and duration
+  // are the first things needed to diagnose a failed or slow save.
+  const started = Date.now();
+  const bytes = req.headers['content-length'] || 'unknown';
   try {
     const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io);
     await invalidateCache();
+    const ms = Date.now() - started;
+    if (ms > 5000) logger.warn(`Slow PDI report save: report ${req.params.id}, ${ms}ms, ${bytes} bytes`);
     res.json(report);
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
     if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
-    logger.error(`Error updating PDI report ${req.params.id}: ${error.message}`, error.stack);
+    logger.error(`Error updating PDI report ${req.params.id} (${Date.now() - started}ms, ${bytes} bytes): ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
