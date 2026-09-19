@@ -75,6 +75,11 @@ const logger        = require('./utils/logger');
 require('dotenv').config();
 
 const app = express();
+// Production sits behind one nginx reverse proxy that forwards the real client
+// address in X-Forwarded-For. Without this, req.ip is nginx's own address for
+// every request, so the IP-keyed rate limiter (unauthenticated traffic such as
+// logins) put all clients into one shared bucket. `1` trusts exactly one hop.
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 
 const io = new Server(server, {
