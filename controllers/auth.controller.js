@@ -11,6 +11,14 @@ const ROLE_MAP = {
   13: 'service_repair',
 };
 
+// The PDI mobile app is used for long on-site inspections and restores its login
+// from secure storage, so a 1h token expires mid-inspection. It identifies itself
+// with the X-App-Version header it sends on every request (the web CRM does not),
+// and gets a longer-lived token. The header is self-declared, so this only widens
+// the expiry window for someone who already has valid credentials.
+const DEFAULT_TOKEN_TTL = '1h';
+const MOBILE_APP_TOKEN_TTL = '12h';
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -37,7 +45,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { user_id: user.user_id, role_id: user.role_id, name: user.name },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: req.get('X-App-Version') ? MOBILE_APP_TOKEN_TTL : DEFAULT_TOKEN_TTL }
     );
     const role = ROLE_MAP[user.role_id] || 'unknown';
     logger.info(`User logged in: ${email}, user_id: ${user.user_id}, role: ${role}`);
