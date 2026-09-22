@@ -14,6 +14,27 @@ const AuthoredTemplates = require('./pdi/authoredTemplates');
 // whatever keys the report's own data actually has. AutoNXT's two preparer
 // roles both match "prepared" and get joined, since there's no single name
 // to prefer between them.
+// The mobile app's inspection-date field is free text (placeholder
+// "YYYY-MM-DD", nothing stops other input) -- a value like "22-09-2026",
+// typed day-first as is natural for an Indian user, produces an Invalid
+// Date. `new Date(...).toISOString()` on that throws RangeError, and
+// previously that was never caught here specifically: it fell into the
+// generic try/catch and came back as an opaque 500 "Internal Server Error"
+// with no way for the client to know the date field was the problem.
+// Reproduced live against report #1059 -- every save from the moment the
+// date field held that value failed identically, 4ms in, never touching
+// the database.
+function toIsoDateOrNull(value) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    const error = new Error(`Invalid inspection date: "${value}". Use YYYY-MM-DD.`);
+    error.code = 'INVALID_INSPECTION_DATE';
+    throw error;
+  }
+  return parsed.toISOString();
+}
+
 function extractSignerNames(data) {
   if (!data || typeof data !== 'object') return { prepared_by: null, approved_by: null };
   const pick = (pattern) =>
@@ -93,7 +114,7 @@ class PdiReports {
       customer_id || null,
       order_id || null,
       inspected_by || null,
-      inspection_date ? new Date(inspection_date).toISOString() : null,
+      toIsoDateOrNull(inspection_date),
       templateId,
       templateVersion,
       JSON.stringify(data || {}),
@@ -179,7 +200,7 @@ class PdiReports {
     if (fields.inspected_by !== undefined) { sets.push(`inspected_by = $${i++}`); values.push(fields.inspected_by || null); }
     if (fields.inspection_date !== undefined) {
       sets.push(`inspection_date = $${i++}`);
-      values.push(fields.inspection_date ? new Date(fields.inspection_date).toISOString() : null);
+      values.push(toIsoDateOrNull(fields.inspection_date));
     }
     if (fields.customer_id !== undefined) { sets.push(`customer_id = $${i++}`); values.push(fields.customer_id || null); }
     if (fields.order_id !== undefined) { sets.push(`order_id = $${i++}`); values.push(fields.order_id || null); }

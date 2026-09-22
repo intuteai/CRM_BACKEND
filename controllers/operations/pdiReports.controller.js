@@ -30,6 +30,7 @@ exports.createReport = async (req, res) => {
     res.status(201).json(report);
   } catch (error) {
     if (error.message.startsWith('Unknown PDI template')) return res.status(400).json({ error: error.message });
+    if (error.code === 'INVALID_INSPECTION_DATE') return res.status(400).json({ error: error.message, code: error.code });
     logger.error(`Error creating PDI report: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
@@ -73,6 +74,7 @@ exports.patchReport = async (req, res) => {
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
     if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
+    if (error.code === 'INVALID_INSPECTION_DATE') return res.status(400).json({ error: error.message, code: error.code });
     logger.error(`Error updating PDI report ${req.params.id} (${Date.now() - started}ms, ${bytes} bytes): ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
