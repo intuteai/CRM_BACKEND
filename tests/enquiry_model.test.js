@@ -115,3 +115,43 @@ describe('Enquiry.appendPhoto / removePhoto', () => {
     await expect(Enquiry.removePhoto('MISSING', 'url', null)).rejects.toThrow('Enquiry not found');
   });
 });
+
+describe('Enquiry mutation ownership checks (assertMutationAllowed)', () => {
+  beforeEach(() => mockQuery.mockReset());
+
+  it('rejects a representative updating an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] }); // ownership check: no match
+
+    await expect(
+      Enquiry.update('ENQ1', { city: 'Pune' }, null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+
+    expect(mockQuery).toHaveBeenCalledTimes(1); // only the ownership check ran, not the UPDATE
+  });
+
+  it('allows a representative to update an enquiry assigned to them', async () => {
+    mockQuery
+      .mockResolvedValueOnce({ rows: [{ x: 1 }] }) // ownership check: match
+      .mockResolvedValueOnce({ rows: [{ enquiry_id: 'ENQ1', lead: 'hotlead', created_by: null }] }); // UPDATE
+
+    await Enquiry.update('ENQ1', { city: 'Pune' }, null, { role_name: 'representative', user_id: 42 });
+
+    expect(mockQuery).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not run an ownership check for unrestricted roles', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [{ enquiry_id: 'ENQ1', lead: 'hotlead', created_by: null }] });
+
+    await Enquiry.update('ENQ1', { city: 'Pune' }, null, { role_name: 'sales', user_id: 3 });
+
+    expect(mockQuery).toHaveBeenCalledTimes(1); // straight to the UPDATE, no ownership check
+  });
+
+  it('rejects a representative appending a photo to an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+
+    await expect(
+      Enquiry.appendPhoto('ENQ1', 'https://drive/x', null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+  });
+});

@@ -86,6 +86,7 @@ describe('enquiry.controller.uploadPhoto / deletePhoto', () => {
     const req = {
       params: { id: 'ENQ1' },
       file: { buffer: Buffer.from('x'), mimetype: 'image/jpeg' },
+      user: { user_id: 1, role_name: 'admin' },
       io: null,
     };
     const res = makeRes();
@@ -93,7 +94,7 @@ describe('enquiry.controller.uploadPhoto / deletePhoto', () => {
     await controller.uploadPhoto(req, res);
 
     expect(uploadBufferToDrive).toHaveBeenCalledTimes(1);
-    expect(Enquiry.appendPhoto).toHaveBeenCalledWith('ENQ1', 'https://drive.google.com/uc?export=view&id=fake', null);
+    expect(Enquiry.appendPhoto).toHaveBeenCalledWith('ENQ1', 'https://drive.google.com/uc?export=view&id=fake', null, { user_id: 1, role_name: 'admin' });
     expect(res.statusCode).toBe(200);
     expect(res.body.record.photos).toEqual(['https://drive.google.com/uc?export=view&id=fake']);
   });
@@ -102,6 +103,7 @@ describe('enquiry.controller.uploadPhoto / deletePhoto', () => {
     const req = {
       params: { id: 'ENQ1' },
       file: { buffer: Buffer.from('x'), mimetype: 'application/pdf' },
+      user: { user_id: 1, role_name: 'admin' },
       io: null,
     };
     const res = makeRes();
@@ -114,12 +116,30 @@ describe('enquiry.controller.uploadPhoto / deletePhoto', () => {
 
   it('removes a photo url', async () => {
     Enquiry.removePhoto.mockResolvedValue({ enquiry_id: 'ENQ1', photos: [] });
-    const req = { params: { id: 'ENQ1' }, body: { url: 'https://drive/x' }, io: null };
+    const req = { params: { id: 'ENQ1' }, body: { url: 'https://drive/x' }, user: { user_id: 1, role_name: 'admin' }, io: null };
     const res = makeRes();
 
     await controller.deletePhoto(req, res);
 
-    expect(Enquiry.removePhoto).toHaveBeenCalledWith('ENQ1', 'https://drive/x', null);
+    expect(Enquiry.removePhoto).toHaveBeenCalledWith('ENQ1', 'https://drive/x', null, { user_id: 1, role_name: 'admin' });
     expect(res.statusCode).toBe(200);
+  });
+});
+
+describe('enquiry.controller.uploadPhoto — ownership enforcement', () => {
+  it('returns 403 when the model rejects the mutation as Forbidden', async () => {
+    Enquiry.appendPhoto.mockReset();
+    Enquiry.appendPhoto.mockRejectedValue(new Error('Forbidden'));
+    const req = {
+      params: { id: 'ENQ1' },
+      file: { buffer: Buffer.from('x'), mimetype: 'image/jpeg' },
+      user: { user_id: 42, role_name: 'representative' },
+      io: null,
+    };
+    const res = makeRes();
+
+    await controller.uploadPhoto(req, res);
+
+    expect(res.statusCode).toBe(403);
   });
 });

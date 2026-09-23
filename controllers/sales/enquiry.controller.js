@@ -92,13 +92,14 @@ exports.getOne = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date, city } = req.body;
-    const enquiry = await Enquiry.update(req.params.id, { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date, city }, req.io);
+    const enquiry = await Enquiry.update(req.params.id, { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date, city }, req.io, req.user);
     await deleteByPattern(`enquiry_*_${req.params.id}`);
     await deleteByPattern('enquiry_list_*');
     logger.info(`Enquiry updated: ${enquiry.enquiry_id} by ${req.user.user_id}`);
     res.json(enquiry);
   } catch (error) {
     logger.error(`Error updating enquiry ${req.params.id}: ${error.message}`, error.stack);
+    if (error.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     const status = error.message === 'Enquiry not found' ? 404 : 500;
     res.status(status).json({ error: error.message, code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
@@ -106,13 +107,14 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const enquiry = await Enquiry.delete(req.params.id, req.io);
+    const enquiry = await Enquiry.delete(req.params.id, req.io, req.user);
     await deleteByPattern(`enquiry_*_${req.params.id}`);
     await deleteByPattern('enquiry_list_*');
     logger.info(`Enquiry deleted: ${enquiry.enquiry_id} by ${req.user.user_id}`);
     res.json({ message: 'Enquiry deleted successfully', enquiry });
   } catch (error) {
     logger.error(`Error deleting enquiry ${req.params.id}: ${error.message}`, error.stack);
+    if (error.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     const status = error.message === 'Enquiry not found' ? 404 : 500;
     res.status(status).json({ error: error.message, code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
@@ -128,6 +130,7 @@ exports.assign = async (req, res) => {
     res.json(enquiry);
   } catch (err) {
     logger.error('Assign enquiry error:', err);
+    if (err.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     res.status(err.message.includes('not found') ? 404 : 400).json({ error: err.message });
   }
 };
@@ -162,6 +165,7 @@ exports.addComment = async (req, res) => {
     res.json(activity);
   } catch (err) {
     logger.error('Add comment error:', err);
+    if (err.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     res.status(400).json({ error: err.message });
   }
 };
@@ -177,6 +181,7 @@ exports.changeStage = async (req, res) => {
     res.json(enquiry);
   } catch (err) {
     logger.error('Change stage error:', err);
+    if (err.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     res.status(400).json({ error: err.message });
   }
 };
@@ -221,13 +226,14 @@ exports.uploadPhoto = async (req, res) => {
     const ext = PHOTO_MIME_EXT[req.file.mimetype] || 'bin';
     const filename = `enquiry_${id}_${Date.now()}.${ext}`;
     const { directUrl } = await uploadBufferToDrive(req.file.buffer, req.file.mimetype, filename);
-    const record = await Enquiry.appendPhoto(id, directUrl, req.io);
+    const record = await Enquiry.appendPhoto(id, directUrl, req.io, req.user);
     await deleteByPattern(`enquiry_*_${id}`);
     await deleteByPattern('enquiry_list_*');
     logger.info(`Enquiry photo uploaded for ${id}`);
     res.json({ url: directUrl, record });
   } catch (err) {
     logger.error('Enquiry uploadPhoto error:', err);
+    if (err.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     const status = err.message === 'Enquiry not found' ? 404 : 500;
     res.status(status).json({ error: err.message || 'Failed to upload photo', code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
@@ -237,13 +243,14 @@ exports.deletePhoto = async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'url is required', code: 'VALIDATION_ERROR' });
   try {
-    const record = await Enquiry.removePhoto(req.params.id, url, req.io);
+    const record = await Enquiry.removePhoto(req.params.id, url, req.io, req.user);
     await deleteByPattern(`enquiry_*_${req.params.id}`);
     await deleteByPattern('enquiry_list_*');
     logger.info(`Enquiry photo removed for ${req.params.id}`);
     res.json(record);
   } catch (err) {
     logger.error('Enquiry deletePhoto error:', err);
+    if (err.message === 'Forbidden') return res.status(403).json({ error: 'You do not have access to this enquiry', code: 'FORBIDDEN' });
     const status = err.message === 'Enquiry not found' ? 404 : 500;
     res.status(status).json({ error: err.message || 'Failed to remove photo', code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }

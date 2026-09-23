@@ -27,6 +27,24 @@ async function fetchUserName(userId) {
   }
 }
 
+async function assertMutationAllowed(enquiryId, user) {
+  const roleName = String(user?.role_name || '').toLowerCase();
+  const isRestrictedRole = roleName.includes('design') || roleName.includes('representative');
+  if (!isRestrictedRole) return;
+
+  const userId = Number(user?.user_id);
+  if (!userId || Number.isNaN(userId)) {
+    throw new Error('Forbidden');
+  }
+  const check = await pool.query(
+    `SELECT 1 FROM enquiries WHERE enquiry_id = $1 AND assigned_to = $2::int`,
+    [enquiryId, userId]
+  );
+  if (check.rows.length === 0) {
+    throw new Error('Forbidden');
+  }
+}
+
 class Enquiry {
   // =================================================================
   // CREATE NEW ENQUIRY
@@ -463,8 +481,10 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
       due_date,
       city,
     },
-    io
+    io,
+    user
   ) {
+    await assertMutationAllowed(enquiryId, user);
     let safeStatus = null;
     if (typeof status !== 'undefined' && status !== null && status !== '') {
       safeStatus = normalizeStatus(status, { assigned: false });
@@ -538,6 +558,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   // ASSIGN
   // =================================================================
   static async assign(enquiryId, { assigned_to, due_date, message }, io, user) {
+    await assertMutationAllowed(enquiryId, user);
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -685,6 +706,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
     io,
     user
   ) {
+    await assertMutationAllowed(enquiryId, user);
     const res = await pool.query(
       `
       INSERT INTO enquiry_activities
@@ -723,6 +745,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   // changeStage, checkOverdue, delete
   // =================================================================
   static async changeStage(enquiryId, { stage, note }, io, user) {
+    await assertMutationAllowed(enquiryId, user);
     const validStages = [
       'closed_won',
       'closed_lost',
@@ -816,7 +839,8 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
     }
   }
 
-  static async delete(enquiryId, io) {
+  static async delete(enquiryId, io, user) {
+    await assertMutationAllowed(enquiryId, user);
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
@@ -861,7 +885,8 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   // =================================================================
   // PHOTOS (append/remove — same array-column pattern as ServiceRepair)
   // =================================================================
-  static async appendPhoto(enquiryId, url, io) {
+  static async appendPhoto(enquiryId, url, io, user) {
+    await assertMutationAllowed(enquiryId, user);
     const { rows } = await pool.query(
       `UPDATE enquiries
        SET photos = array_append(COALESCE(photos, '{}'), $1), updated_at = CURRENT_TIMESTAMP
@@ -882,7 +907,8 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
     return enquiry;
   }
 
-  static async removePhoto(enquiryId, url, io) {
+  static async removePhoto(enquiryId, url, io, user) {
+    await assertMutationAllowed(enquiryId, user);
     const { rows } = await pool.query(
       `UPDATE enquiries
        SET photos = array_remove(photos, $1), updated_at = CURRENT_TIMESTAMP
