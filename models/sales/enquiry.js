@@ -27,6 +27,8 @@ async function fetchUserName(userId) {
   }
 }
 
+// Ownership gate for mutating methods. Mirrors getById's inline check below —
+// if the ownership rule ever changes, update both.
 async function assertMutationAllowed(enquiryId, user) {
   const roleName = String(user?.role_name || '').toLowerCase();
   const isRestrictedRole = roleName.includes('design') || roleName.includes('representative');
@@ -402,6 +404,8 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
     const isRestrictedRole = roleName.includes('design') || roleName.includes('representative');
     const userId = Number(user?.user_id);
 
+    // Mirrors the assertMutationAllowed() helper above — if the ownership rule
+    // ever changes, update both.
     if (isRestrictedRole) {
       if (!userId || Number.isNaN(userId)) {
         logger.warn('Restricted-view user with invalid id attempted getById', { enquiryId, user });

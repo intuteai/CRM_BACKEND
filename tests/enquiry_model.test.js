@@ -154,4 +154,39 @@ describe('Enquiry mutation ownership checks (assertMutationAllowed)', () => {
       Enquiry.appendPhoto('ENQ1', 'https://drive/x', null, { role_name: 'representative', user_id: 42 })
     ).rejects.toThrow('Forbidden');
   });
+
+  it('rejects a representative deleting an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(
+      Enquiry.delete('ENQ1', null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+  });
+
+  it('rejects a representative assigning an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(
+      Enquiry.assign('ENQ1', { assigned_to: 7 }, null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+  });
+
+  it('rejects a representative commenting on an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(
+      Enquiry.addComment('ENQ1', { message: 'hi' }, null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+  });
+
+  it('rejects a representative changing the stage of an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(
+      Enquiry.changeStage('ENQ1', { stage: 'in_discussion' }, null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+  });
+
+  it('rejects a representative removing a photo from an enquiry not assigned to them', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(
+      Enquiry.removePhoto('ENQ1', 'https://drive/x', null, { role_name: 'representative', user_id: 42 })
+    ).rejects.toThrow('Forbidden');
+  });
 });
