@@ -1,7 +1,10 @@
 const express = require('express');
+const multer = require('multer');
 const router = express.Router({ mergeParams: true });
 const { authenticateToken, checkPermission } = require('../../middleware/auth');
 const controller = require('../../controllers/sales/enquiry.controller');
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 router.get('/templates', authenticateToken, checkPermission('Enquiries', 'can_read'), controller.getTemplates);
 router.post('/refresh', authenticateToken, checkPermission('Enquiries', 'can_read'), controller.refreshCache);
@@ -17,5 +20,7 @@ router.patch('/:id/stage', authenticateToken, checkPermission('Enquiries', 'can_
 router.post('/:id/follow', authenticateToken, checkPermission('Enquiries', 'can_read'), controller.follow);
 router.delete('/:id/follow', authenticateToken, checkPermission('Enquiries', 'can_read'), controller.unfollow);
 router.post('/:enquiryId/activity/:activityId/read', authenticateToken, checkPermission('Enquiries', 'can_read'), controller.markActivityRead);
+router.post('/:id/photo', authenticateToken, checkPermission('Enquiries', 'can_write'), upload.single('photo'), controller.uploadPhoto);
+router.delete('/:id/photo', authenticateToken, checkPermission('Enquiries', 'can_write'), controller.deletePhoto);
 
 module.exports = router;
