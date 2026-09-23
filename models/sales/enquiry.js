@@ -873,6 +873,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
 
     const enquiry = rows[0];
     enquiry.priority = enquiry.lead;
+    enquiry.created_by_name = enquiry.created_by ? await fetchUserName(enquiry.created_by) : null;
 
     if (io) {
       io.emit('enquiryUpdate', { ...enquiry, type: 'updated' });
@@ -893,6 +894,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
 
     const enquiry = rows[0];
     enquiry.priority = enquiry.lead;
+    enquiry.created_by_name = enquiry.created_by ? await fetchUserName(enquiry.created_by) : null;
 
     if (io) {
       io.emit('enquiryUpdate', { ...enquiry, type: 'updated' });

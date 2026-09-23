@@ -109,4 +109,9 @@ describe('Enquiry.appendPhoto / removePhoto', () => {
     expect(values).toEqual(['https://drive/x', 'ENQ1']);
     expect(result.photos).toEqual([]);
   });
+
+  it('throws "Enquiry not found" when removing from a missing enquiry', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(Enquiry.removePhoto('MISSING', 'url', null)).rejects.toThrow('Enquiry not found');
+  });
 });
