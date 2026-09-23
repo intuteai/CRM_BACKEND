@@ -246,12 +246,13 @@ class Enquiry {
 // GET ALL ENQUIRIES (Design sees only currently assigned to them)
 // =================================================================
 static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
-  const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
+  const roleName = String(user?.role_name || '').toLowerCase();
+  const isRestrictedRole = roleName.includes('design') || roleName.includes('representative');
   const userId = Number(user?.user_id);
 
-  if (isDesign && (!userId || Number.isNaN(userId))) {
+  if (isRestrictedRole && (!userId || Number.isNaN(userId))) {
     logger.warn(
-      'Design user with no numeric user_id attempted getAll, returning empty list'
+      'Restricted-view user with no numeric user_id attempted getAll, returning empty list'
     );
     return { data: [], total: 0, cursor: null };
   }
@@ -277,7 +278,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   const dataWhere = [];
   const dataValues = [];
 
-  if (isDesign) {
+  if (isRestrictedRole) {
     dataWhere.push(`e.assigned_to = $${dataValues.length + 1}::int`);
     dataValues.push(userId);
   }
@@ -316,7 +317,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   dataValues.push(limit);
   dataValues.push(offset);
 
-  logger.debug('getAll data query values', { isDesign, dataValues });
+  logger.debug('getAll data query values', { isRestrictedRole, dataValues });
 
   const result = await pool.query(dataQuery, dataValues);
 
@@ -335,7 +336,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   const countWhere = [];
   const countValues = [];
 
-  if (isDesign) {
+  if (isRestrictedRole) {
     countWhere.push(`e.assigned_to = $${countValues.length + 1}::int`);
     countValues.push(userId);
   }
@@ -375,12 +376,13 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
   // GET SINGLE ENQUIRY + ACTIVITIES (Design must be current assignee)
   // =================================================================
   static async getById(enquiryId, user) {
-    const isDesign = String(user?.role_name || '').toLowerCase().includes('design');
+    const roleName = String(user?.role_name || '').toLowerCase();
+    const isRestrictedRole = roleName.includes('design') || roleName.includes('representative');
     const userId = Number(user?.user_id);
 
-    if (isDesign) {
+    if (isRestrictedRole) {
       if (!userId || Number.isNaN(userId)) {
-        logger.warn('Design user with invalid id attempted getById', { enquiryId, user });
+        logger.warn('Restricted-view user with invalid id attempted getById', { enquiryId, user });
         throw new Error('Forbidden');
       }
       const check = await pool.query(
@@ -388,7 +390,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
         [enquiryId, userId]
       );
       if (check.rows.length === 0) {
-        logger.warn(`Design user ${userId} attempted to access unassigned enquiry ${enquiryId}`);
+        logger.warn(`Restricted-view user ${userId} attempted to access unassigned enquiry ${enquiryId}`);
         throw new Error('Forbidden');
       }
     }
