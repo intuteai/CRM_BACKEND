@@ -225,6 +225,133 @@ describe('PDI template renderer', () => {
     expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
   });
 
+  it('spec row labelSpan merges leading columns\' width for the label cell (backend-changes-v1.0.8.md item 2)', async () => {
+    // Mirrors general.js's ECOLS/MCOLS shape: a spec row's first two columns
+    // (S.No, Motor Sr.No) are always blank in that row, so the label can
+    // safely use both widths. Before labelSpan existed, the label was
+    // confined to the first column's own width (22) regardless of what
+    // string it held, which is what forced "Specification" to render as
+    // "Spe…" -- ellipsis-truncated by PDFKit at draw time, not because the
+    // stored label text was ever actually "Spe…".
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'table',
+          mode: 'fixed', dataKey: 'rows',
+          fixedRows: () => [],
+          columns: [
+            { key: 'sno', label: 'S.No', w: 22, align: 'center' },
+            { key: 'sr',  label: 'Sr',   w: 56, align: 'center' },
+            { key: 'val', label: 'Val',  w: 60, align: 'center' },
+          ],
+          headerHeight: 14, rowHeight: 14,
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, build: () => ({ val: '10' }) },
+        }],
+      }],
+    };
+    const doc = new PDFDocument({
+      size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 },
+      autoFirstPage: false, bufferPages: true,
+    });
+    registerFonts(doc);
+
+    const rectWidths = [];
+    const originalRect = doc.rect.bind(doc);
+    doc.rect = (x, y, w, h) => { rectWidths.push(w); return originalRect(x, y, w, h); };
+
+    renderTemplate(doc, template, {});
+    doc.end();
+    await bufferPdf(doc);
+
+    // 22 + 56 = 78 -- the merged label cell's width. Nothing else in this
+    // template is 78pt wide, so its presence is unambiguous.
+    expect(rectWidths).toContain(78);
+    // The label cell's own 22pt width must not appear a second time on its
+    // own (that would mean it was drawn narrow, not merged) -- the header
+    // row's S.No column (also 22) is the only other legitimate source of a
+    // bare 22, so this only proves the merge, not that 22 never appears at all.
+  });
+
+  it('spec row without labelSpan keeps the old behavior: the label cell is exactly the first column\'s own width', async () => {
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'table',
+          mode: 'fixed', dataKey: 'rows',
+          fixedRows: () => [],
+          columns: [
+            { key: 'sno', label: 'S.No', w: 22, align: 'center' },
+            { key: 'sr',  label: 'Sr',   w: 56, align: 'center' },
+          ],
+          headerHeight: 14, rowHeight: 14,
+          specRow: { fill: '#fffde7', firstColLabel: 'Spec', build: () => ({}) },
+        }],
+      }],
+    };
+    const doc = new PDFDocument({
+      size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 },
+      autoFirstPage: false, bufferPages: true,
+    });
+    registerFonts(doc);
+
+    const rectWidths = [];
+    const originalRect = doc.rect.bind(doc);
+    doc.rect = (x, y, w, h) => { rectWidths.push(w); return originalRect(x, y, w, h); };
+
+    renderTemplate(doc, template, {});
+    doc.end();
+    await bufferPdf(doc);
+
+    expect(rectWidths).not.toContain(78);
+  });
+
+  it('a signature role\'s value(data) is used instead of a plain data[role.key] lookup when provided', async () => {
+    // Mirrors general.js's MECH_SIG_ROLES: the Mechanical page's signature
+    // falls back to the Electrical one for a report saved before it had its
+    // own (backend-changes-v1.0.8.md item 3), using ?? so a deliberately
+    // blank value is respected rather than papered over.
+    const template = {
+      pages: [{
+        sections: [{
+          type: 'signature',
+          roles: [
+            { key: 'prepared_by_mechanical', label: 'Prepared By',
+              value: (d) => d.prepared_by_mechanical ?? d.prepared_by ?? '' },
+          ],
+        }],
+      }],
+    };
+    const doc = new PDFDocument({
+      size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 },
+      autoFirstPage: false, bufferPages: true,
+    });
+    registerFonts(doc);
+
+    const drawnTexts = [];
+    const originalText = doc.text.bind(doc);
+    doc.text = (str, ...rest) => { drawnTexts.push(str); return originalText(str, ...rest); };
+
+    // Old-shaped report: no prepared_by_mechanical at all -- falls back.
+    renderTemplate(doc, template, { prepared_by: 'S. Choudhary' });
+    expect(drawnTexts).toContain('S. Choudhary');
+
+    // New-shaped report with its own mechanical name -- does not fall back.
+    drawnTexts.length = 0;
+    renderTemplate(doc, template, { prepared_by: 'S. Choudhary', prepared_by_mechanical: 'R. Kumar' });
+    expect(drawnTexts).toContain('R. Kumar');
+    expect(drawnTexts).not.toContain('S. Choudhary');
+
+    // Deliberately left blank on a new-shaped report -- '' is respected,
+    // never falls back to the Electrical name (?? not ||).
+    drawnTexts.length = 0;
+    renderTemplate(doc, template, { prepared_by: 'S. Choudhary', prepared_by_mechanical: '' });
+    expect(drawnTexts).toContain('');
+    expect(drawnTexts).not.toContain('S. Choudhary');
+
+    doc.end();
+    await bufferPdf(doc);
+  });
+
   it('renders a table section title/caption and actually draws it (not just accepts and ignores it)', async () => {
     const template = {
       pages: [{

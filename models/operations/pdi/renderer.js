@@ -136,18 +136,39 @@ function drawTableHeader(doc, cols, y, headerHeight) {
 function drawSpecRow(doc, specRow, cols, rowHeight, data, y) {
   const { F, FB } = getFonts();
   const vals = specRow.build(data);
+  // labelSpan lets the first cell's box/text claim more than one column's
+  // width -- e.g. merging in a column that a spec row never fills (like
+  // Motor Sr. No) so "Specification" has room to fit instead of being
+  // forced into just the S.No column's width and ellipsis-truncated to
+  // "Spe…" regardless of how the label itself is worded.
+  const labelSpan = Math.max(1, specRow.labelSpan || 1);
+  // A value cell here can hold a full "nominal ±tol (min – max)" string
+  // (backend-changes-v1.0.8.md item 2) — up to ~35 characters into a column
+  // as narrow as 38-56pt, far more than fits on one line even at a small
+  // font. specRow.rowHeight (falls back to the data rows' own height, same
+  // as before) gives this row the extra vertical room; `t(..., { lb: true })`
+  // switches it from forced single-line ellipsis to PDFKit's normal wrap.
+  const h = specRow.rowHeight || rowHeight;
   let x = M;
   cols.forEach((c, i) => {
+    if (i > 0 && i < labelSpan) {
+      // Merged into the label cell drawn at i === 0 -- no box/text of its
+      // own, but x must still advance past it so later columns line up.
+      x += c.w;
+      return;
+    }
+    const w = i === 0 ? cols.slice(0, labelSpan).reduce((sum, col) => sum + col.w, 0) : c.w;
     const val = i === 0 ? specRow.firstColLabel : (vals[c.key] || '');
-    box(doc, x, y, c.w, rowHeight, { fill: specRow.fill, stroke: '#000', sw: 0.3 });
-    t(doc, val, x + 2, y + 3, c.w - 4, {
+    box(doc, x, y, w, h, { fill: specRow.fill, stroke: '#000', sw: 0.3 });
+    t(doc, val, x + 2, y + 3, w - 4, {
       font:  i === 0 ? FB : F,
-      size:  i === 0 ? 6.5 : 7.5,
+      size:  6.5,
       align: i === 0 ? 'left' : 'center',
+      lb:    i !== 0,
     });
     x += c.w;
   });
-  return y + rowHeight;
+  return y + h;
 }
 
 function drawTableRow(doc, cols, row, sectionData, data, rowHeight, y) {
@@ -337,9 +358,14 @@ function drawSignatureSection(doc, section, data, y) {
   const w = CW / n;
   section.roles.forEach((role, i) => {
     const x = M + w * i;
+    // Same value/key convention as a table column (resolveCellValue): a role
+    // with its own `value(data)` (e.g. the Mechanical page's roles, which
+    // fall back to the Electrical signature on a report saved before that
+    // page had its own) is resolved through it instead of a plain lookup.
+    const value = role.value ? role.value(data) : (data[role.key] || '');
     box(doc, x, y, w, SIG_H, { stroke: '#000', sw: 0.4 });
     t(doc, role.label, x + 4, y + 6,  w - 8, { font: FB, size: 8 });
-    t(doc, data[role.key] || '', x + 4, y + 20, w - 8, { font: F,  size: 8 });
+    t(doc, value, x + 4, y + 20, w - 8, { font: F,  size: 8 });
   });
   return y + SIG_H;
 }

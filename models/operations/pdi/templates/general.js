@@ -78,28 +78,33 @@ function mechChecks(data) {
 // silently-reused default, so these are required per-PDI entries now. MTG
 // and Key Dim. keep their informational/GO-NG defaults since they're not
 // numeric specs.
+//
+// The app (1.0.8+) sends a pre-formatted "nominal ±tol (min – max)" string
+// per field (spec_X_display) alongside the plain nominal (spec_X) it always
+// sent. Prefer the display string; a report saved by 1.0.7 or earlier has
+// only the plain nominal.
 function buildSpecVals(data) {
   return {
-    motor_length:        data.spec_motor_length   || '',
-    shaft_length:        data.spec_shaft_length   || '',
-    shaft_diameter:      data.spec_shaft_diameter || '',
-    mounting_pcd:        data.spec_mounting_pcd   || '',
+    motor_length:        data.spec_motor_length_display   || data.spec_motor_length   || '',
+    shaft_length:        data.spec_shaft_length_display    || data.spec_shaft_length   || '',
+    shaft_diameter:      data.spec_shaft_diameter_display  || data.spec_shaft_diameter || '',
+    mounting_pcd:        data.spec_mounting_pcd_display    || data.spec_mounting_pcd   || '',
     mtg:                 data.spec_mtg            || '1.M6 / 2.Ø8.0',
     key_dim_result:      data.spec_key_dim        || 'Go/NG',
-    locating_dia_result: data.spec_locating_dia   || '',
+    locating_dia_result: data.spec_locating_dia_display || data.spec_locating_dia   || '',
   };
 }
 
 // Electrical table's spec row — one Current Standard + RPM Specified nominal
 // shared by every motor row in this PDI, mirroring the Mechanical table's own
-// spec-row pattern (buildSpecVals above). No hardcoded fallback — these are
-// required per-PDI entries, same reasoning as the mechanical spec fields.
-// Keyed by the *column* each value renders under (current_measured,
-// rpm_measured), not by field semantics — same convention buildSpecVals uses.
+// spec-row pattern (buildSpecVals above). Same display/nominal fallback as
+// buildSpecVals. Keyed by the *column* each value renders under
+// (current_measured, rpm_measured), not by field semantics — same convention
+// buildSpecVals uses.
 function buildElecSpecVals(data) {
   return {
-    current_measured: data.spec_current_standard || '',
-    rpm_measured:      data.spec_rpm_specified    || '',
+    current_measured: data.spec_current_display || data.spec_current_standard || '',
+    rpm_measured:      data.spec_rpm_display      || data.spec_rpm_specified    || '',
   };
 }
 
@@ -108,6 +113,18 @@ const activeRowsFilter = (r) => r && String(r.motor_sr_no || '').trim();
 const SIG_ROLES = [
   { key: 'prepared_by', label: 'Prepared By' },
   { key: 'approved_by', label: 'Approved By' },
+];
+
+// Mechanical page's own signatures (app 1.0.8+). A report saved before that
+// has only the one shared prepared_by/approved_by — fall back to it so an
+// old report still prints the same name on both pages, as before. `??` (not
+// `||`): an empty string on a 1.0.8+ report means the user left it blank on
+// purpose, and must not fall back to the Electrical name.
+const MECH_SIG_ROLES = [
+  { key: 'prepared_by_mechanical', label: 'Prepared By',
+    value: (d) => d.prepared_by_mechanical ?? d.prepared_by ?? '' },
+  { key: 'approved_by_mechanical', label: 'Approved By',
+    value: (d) => d.approved_by_mechanical ?? d.approved_by ?? '' },
 ];
 
 const generalTemplate = {
@@ -133,7 +150,16 @@ const generalTemplate = {
           type: 'table', gap: 6,
           mode: 'repeatable', dataKey: 'rows', filterRow: activeRowsFilter,
           columns: ECOLS, headerHeight: 28, rowHeight: 14,
-          specRow: { fill: '#fffde7', firstColLabel: 'Specification', build: buildElecSpecVals },
+          // labelSpan: 2 -- the S.No and Motor Sr.No columns are always blank
+          // in a spec row (buildElecSpecVals has no value for either), so the
+          // "Specification" label can use both without displacing anything.
+          // At just the S.No column's own width it was forced into a single
+          // line and ellipsis-truncated to "Spe…" regardless of the label
+          // text -- widening the text wouldn't have fixed that on its own.
+          // rowHeight: 1.0.8's spec_X_display strings ("10 ±0.5 (9.5 – 10.5)")
+          // wrap onto more than one line at this column width — see general.js's
+          // own comment on the Mechanical spec row below for the sizing.
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, rowHeight: 24, build: buildElecSpecVals },
           footerHeight: () => GCH * (1 + ELEC_CHECKS.length) + 6 + REM_H + 6 + SIG_H + 8,
         },
         {
@@ -165,7 +191,12 @@ const generalTemplate = {
           type: 'table', gap: 6,
           mode: 'repeatable', dataKey: 'rows', filterRow: activeRowsFilter,
           columns: MCOLS, headerHeight: 36, rowHeight: 14,
-          specRow: { fill: '#fffde7', firstColLabel: 'Specification', build: buildSpecVals },
+          // rowHeight taller than the 14pt data rows: a bilateral display
+          // string ("50.0 (+0.1 / -0.2) (49.8 – 50.1)", the worst case, in
+          // Locating Dia.'s 38pt-wide column) needs about 3 wrapped lines at
+          // the 6.5pt spec-row font. Tuned against a rendered sample, not
+          // guessed — see backend-changes-v1.0.8.md item 2.
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, rowHeight: 40, build: buildSpecVals },
           footerHeight: (data) => GCH * (1 + mechChecks(data).length) + 6 + REM_H + 6 + SIG_H + 8,
         },
         {
@@ -174,7 +205,7 @@ const generalTemplate = {
           fixedRows: mechChecks, columns: checksColumns(), headerHeight: 14, rowHeight: 14,
         },
         { type: 'text', gap: 8, label: 'Remarks:', dataKey: 'mechanical_remarks', default: 'ALL MOTORS OK, PASSED.' },
-        { type: 'signature', roles: SIG_ROLES },
+        { type: 'signature', roles: MECH_SIG_ROLES },
       ],
     },
     {
