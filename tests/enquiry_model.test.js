@@ -59,3 +59,54 @@ describe('Enquiry.getById role scoping', () => {
     ).rejects.toThrow('Forbidden');
   });
 });
+
+describe('Enquiry.update includes city', () => {
+  beforeEach(() => mockQuery.mockReset());
+
+  it('passes city through to the UPDATE statement', async () => {
+    mockQuery.mockResolvedValueOnce({
+      rows: [{ enquiry_id: 'ENQ1', lead: 'hotlead', created_by: null }],
+    });
+
+    await Enquiry.update('ENQ1', { city: 'Pune' }, null);
+
+    const [sql, values] = mockQuery.mock.calls[0];
+    expect(sql).toMatch(/city\s*=\s*COALESCE\(\$14, city\)/);
+    expect(values).toContain('Pune');
+  });
+});
+
+describe('Enquiry.appendPhoto / removePhoto', () => {
+  beforeEach(() => mockQuery.mockReset());
+
+  it('appends a photo URL to the photos array', async () => {
+    mockQuery.mockResolvedValueOnce({
+      rows: [{ enquiry_id: 'ENQ1', lead: 'hotlead', photos: ['https://drive/x'] }],
+    });
+
+    const result = await Enquiry.appendPhoto('ENQ1', 'https://drive/x', null);
+
+    const [sql, values] = mockQuery.mock.calls[0];
+    expect(sql).toMatch(/array_append/);
+    expect(values).toEqual(['https://drive/x', 'ENQ1']);
+    expect(result.photos).toEqual(['https://drive/x']);
+  });
+
+  it('throws "Enquiry not found" when appending to a missing enquiry', async () => {
+    mockQuery.mockResolvedValueOnce({ rows: [] });
+    await expect(Enquiry.appendPhoto('MISSING', 'url', null)).rejects.toThrow('Enquiry not found');
+  });
+
+  it('removes a photo URL from the photos array', async () => {
+    mockQuery.mockResolvedValueOnce({
+      rows: [{ enquiry_id: 'ENQ1', lead: 'hotlead', photos: [] }],
+    });
+
+    const result = await Enquiry.removePhoto('ENQ1', 'https://drive/x', null);
+
+    const [sql, values] = mockQuery.mock.calls[0];
+    expect(sql).toMatch(/array_remove/);
+    expect(values).toEqual(['https://drive/x', 'ENQ1']);
+    expect(result.photos).toEqual([]);
+  });
+});

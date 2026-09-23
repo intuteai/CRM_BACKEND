@@ -49,6 +49,7 @@ class Enquiry {
       status = 'Pending',
       last_discussion = null,
       next_interaction = null,
+      city = null,
     } = data;
 
     if (!company_name?.trim()) throw new Error('Company name is required');
@@ -95,12 +96,14 @@ class Enquiry {
           status,
           last_discussion,
           next_interaction,
-          created_by
+          created_by,
+          city
         ) VALUES (
           $1, $2, $3, $4, $5,
           $6, $7, $8, $9, $10,
           $11, $12, $13, $14,
-          $15, $16, $17, $18, $19
+          $15, $16, $17, $18, $19,
+          $20
         )
         RETURNING *`,
         [
@@ -123,6 +126,7 @@ class Enquiry {
           last_discussion ? new Date(last_discussion) : null,
           next_interaction ? new Date(next_interaction) : null,
           user?.user_id || null, // created_by (NEW)
+          city?.trim() || null,
         ]
       );
 
@@ -457,6 +461,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
       application,
       tags,
       due_date,
+      city,
     },
     io
   ) {
@@ -487,8 +492,9 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
         source          = COALESCE($11, source),
         tags            = COALESCE($12, tags),
         due_date        = $13,
+        city            = COALESCE($14, city),
         updated_at      = CURRENT_TIMESTAMP
-      WHERE enquiry_id  = $14
+      WHERE enquiry_id  = $15
       RETURNING *
     `,
       [
@@ -505,6 +511,7 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
         source || null,
         Array.isArray(tags) ? tags : null,
         due_date ? new Date(due_date) : null,
+        city || null,
         enquiryId,
       ]
     );
@@ -849,6 +856,49 @@ static async getAll({ limit = 15, offset = 0, cursor, user, search }) {
     } finally {
       client.release();
     }
+  }
+
+  // =================================================================
+  // PHOTOS (append/remove — same array-column pattern as ServiceRepair)
+  // =================================================================
+  static async appendPhoto(enquiryId, url, io) {
+    const { rows } = await pool.query(
+      `UPDATE enquiries
+       SET photos = array_append(COALESCE(photos, '{}'), $1), updated_at = CURRENT_TIMESTAMP
+       WHERE enquiry_id = $2
+       RETURNING *`,
+      [url, enquiryId]
+    );
+    if (rows.length === 0) throw new Error('Enquiry not found');
+
+    const enquiry = rows[0];
+    enquiry.priority = enquiry.lead;
+
+    if (io) {
+      io.emit('enquiryUpdate', { ...enquiry, type: 'updated' });
+    }
+
+    return enquiry;
+  }
+
+  static async removePhoto(enquiryId, url, io) {
+    const { rows } = await pool.query(
+      `UPDATE enquiries
+       SET photos = array_remove(photos, $1), updated_at = CURRENT_TIMESTAMP
+       WHERE enquiry_id = $2
+       RETURNING *`,
+      [url, enquiryId]
+    );
+    if (rows.length === 0) throw new Error('Enquiry not found');
+
+    const enquiry = rows[0];
+    enquiry.priority = enquiry.lead;
+
+    if (io) {
+      io.emit('enquiryUpdate', { ...enquiry, type: 'updated' });
+    }
+
+    return enquiry;
   }
 }
 
