@@ -21,6 +21,13 @@ async function migrate() {
     roleId = roleRes.rows[0].role_id;
     console.log('representative role already exists, role_id =', roleId);
   } else {
+    // Some existing roles were inserted with explicit ids that never advanced
+    // roles_role_id_seq, so a bare INSERT can collide on the primary key
+    // (hit in production: role_id 13 was already taken). Mirror the same
+    // guard User.create() already uses for the users table.
+    await pool.query(
+      `SELECT setval('roles_role_id_seq', GREATEST((SELECT MAX(role_id) FROM roles) + 1, nextval('roles_role_id_seq')))`
+    );
     const inserted = await pool.query(
       `INSERT INTO roles (role_name) VALUES ('representative') RETURNING role_id`
     );
