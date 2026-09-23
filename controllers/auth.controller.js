@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
     );
     const role = ROLE_MAP[user.role_id] || 'unknown';
     logger.info(`User logged in: ${email}, user_id: ${user.user_id}, role: ${role}`);
-    res.json({ role, token, name: user.name });
+    res.json({ role, token, name: user.name, user_id: user.user_id });
   } catch (err) {
     logger.error(`Login error: ${err.message}`, { stack: err.stack });
     res.status(500).json({ error: 'Server error', code: 'SERVER_ERROR' });
