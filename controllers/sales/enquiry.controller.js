@@ -2,6 +2,10 @@ const Enquiry = require('../../models/sales/enquiry');
 const redis = require('../../config/redis');
 const pool = require('../../config/db');
 const logger = require('../../utils/logger');
+const { uploadBufferToDrive } = require('../../services/googleDrive');
+
+const ALLOWED_PHOTO_MIME = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const PHOTO_MIME_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
 
 async function deleteByPattern(pattern) {
   const keys = await redis.keys(pattern);
@@ -32,9 +36,13 @@ exports.refreshCache = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { enquiry_id, company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, source = 'Website', application = null, lead, priority, tags = [], assigned_to, due_date } = req.body;
+    const { enquiry_id, company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, source = 'Website', application = null, lead, priority, tags = [], assigned_to, due_date, city } = req.body;
     if (!company_name?.trim()) return res.status(400).json({ error: 'Company name is required', code: 'INVALID_INPUT' });
-    const enquiry = await Enquiry.create({ enquiry_id, company_name: company_name.trim(), contact_person: contact_person?.trim() || null, mail_id: mail_id?.trim() || null, phone_no: phone_no?.trim() || null, items_required: items_required?.trim() || null, status, last_discussion, next_interaction, source, application, lead, priority, tags, assigned_to: assigned_to || null, due_date: due_date || null }, req.io, req.user);
+    // A representative capturing a lead in the field has no one to hand it to yet —
+    // default it to themselves so it shows up in their own restricted view.
+    const isRepresentative = String(req.user.role_name || '').toLowerCase().includes('representative');
+    const finalAssignedTo = assigned_to || (isRepresentative ? req.user.user_id : null);
+    const enquiry = await Enquiry.create({ enquiry_id, company_name: company_name.trim(), contact_person: contact_person?.trim() || null, mail_id: mail_id?.trim() || null, phone_no: phone_no?.trim() || null, items_required: items_required?.trim() || null, status, last_discussion, next_interaction, source, application, lead, priority, tags, assigned_to: finalAssignedTo, due_date: due_date || null, city: city?.trim() || null }, req.io, req.user);
     await deleteByPattern('enquiry_list_*');
     logger.info(`Enquiry created: ${enquiry.enquiry_id} by ${req.user.user_id}`);
     res.status(201).json(enquiry);
@@ -83,8 +91,8 @@ exports.getOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date } = req.body;
-    const enquiry = await Enquiry.update(req.params.id, { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date }, req.io);
+    const { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date, city } = req.body;
+    const enquiry = await Enquiry.update(req.params.id, { company_name, contact_person, mail_id, phone_no, items_required, status, last_discussion, next_interaction, lead, priority, source, application, tags, due_date, city }, req.io);
     await deleteByPattern(`enquiry_*_${req.params.id}`);
     await deleteByPattern('enquiry_list_*');
     logger.info(`Enquiry updated: ${enquiry.enquiry_id} by ${req.user.user_id}`);
@@ -200,5 +208,43 @@ exports.markActivityRead = async (req, res) => {
   } catch (err) {
     logger.error('Mark activity read error:', err);
     res.status(500).json({ error: 'Failed' });
+  }
+};
+
+exports.uploadPhoto = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file provided', code: 'VALIDATION_ERROR' });
+    if (!ALLOWED_PHOTO_MIME.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF', code: 'VALIDATION_ERROR' });
+    }
+    const { id } = req.params;
+    const ext = PHOTO_MIME_EXT[req.file.mimetype] || 'bin';
+    const filename = `enquiry_${id}_${Date.now()}.${ext}`;
+    const { directUrl } = await uploadBufferToDrive(req.file.buffer, req.file.mimetype, filename);
+    const record = await Enquiry.appendPhoto(id, directUrl, req.io);
+    await deleteByPattern(`enquiry_*_${id}`);
+    await deleteByPattern('enquiry_list_*');
+    logger.info(`Enquiry photo uploaded for ${id}`);
+    res.json({ url: directUrl, record });
+  } catch (err) {
+    logger.error('Enquiry uploadPhoto error:', err);
+    const status = err.message === 'Enquiry not found' ? 404 : 500;
+    res.status(status).json({ error: err.message || 'Failed to upload photo', code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR' });
+  }
+};
+
+exports.deletePhoto = async (req, res) => {
+  const { url } = req.body;
+  if (!url) return res.status(400).json({ error: 'url is required', code: 'VALIDATION_ERROR' });
+  try {
+    const record = await Enquiry.removePhoto(req.params.id, url, req.io);
+    await deleteByPattern(`enquiry_*_${req.params.id}`);
+    await deleteByPattern('enquiry_list_*');
+    logger.info(`Enquiry photo removed for ${req.params.id}`);
+    res.json(record);
+  } catch (err) {
+    logger.error('Enquiry deletePhoto error:', err);
+    const status = err.message === 'Enquiry not found' ? 404 : 500;
+    res.status(status).json({ error: err.message || 'Failed to remove photo', code: status === 404 ? 'NOT_FOUND' : 'SERVER_ERROR' });
   }
 };
