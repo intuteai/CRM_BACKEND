@@ -305,6 +305,54 @@ describe('PDI template renderer', () => {
     expect(rectWidths).not.toContain(78);
   });
 
+  describe('spec row sizes itself to its text', () => {
+    // 22 + 56 label span, then a 40pt value column -- as narrow as General's
+    // Shaft Length / Mounting PCD columns.
+    const specTemplate = (specText) => ({
+      pages: [{
+        sections: [{
+          type: 'table',
+          mode: 'fixed', dataKey: 'rows',
+          fixedRows: () => [],
+          columns: [
+            { key: 'sno', label: 'S.No', w: 22, align: 'center' },
+            { key: 'sr',  label: 'Sr',   w: 56, align: 'center' },
+            { key: 'val', label: 'Val',  w: 40, align: 'center' },
+          ],
+          headerHeight: 14, rowHeight: 14,
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, build: () => ({ val: specText }) },
+        }],
+      }],
+    });
+    async function rectHeights(specText) {
+      const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+      registerFonts(doc);
+      const heights = [];
+      const originalRect = doc.rect.bind(doc);
+      doc.rect = (x, y, w, h) => { heights.push(h); return originalRect(x, y, w, h); };
+      renderTemplate(doc, specTemplate(specText), {});
+      doc.end();
+      await bufferPdf(doc);
+      return heights;
+    }
+
+    it('keeps a short value on a normal row (same height as a data row), so it looks as it always did', async () => {
+      expect(Math.max(...(await rectHeights('40 ±0.5')))).toBe(14);
+    });
+
+    it('grows for a value too wide for one line, so it wraps instead of being clipped', async () => {
+      expect(Math.max(...(await rectHeights('152.74 +0.15/-0.10')))).toBeGreaterThan(14);
+    });
+
+    it('is no taller than its text needs (two wrapped lines, not a fixed tall row)', async () => {
+      expect(Math.max(...(await rectHeights('19.0 +0/-0.02')))).toBeLessThanOrEqual(26);
+    });
+
+    it('an empty spec row is still a normal row', async () => {
+      expect(Math.max(...(await rectHeights('')))).toBe(14);
+    });
+  });
+
   it('a signature role\'s value(data) is used instead of a plain data[role.key] lookup when provided', async () => {
     // Mirrors general.js's MECH_SIG_ROLES: the Mechanical page's signature
     // falls back to the Electrical one for a report saved before it had its

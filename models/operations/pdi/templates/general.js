@@ -79,10 +79,12 @@ function mechChecks(data) {
 // and Key Dim. keep their informational/GO-NG defaults since they're not
 // numeric specs.
 //
-// The app (1.0.8+) sends a pre-formatted "nominal ±tol (min – max)" string
-// per field (spec_X_display) alongside the plain nominal (spec_X) it always
-// sent. Prefer the display string; a report saved by 1.0.7 or earlier has
-// only the plain nominal.
+// The app (1.0.8+) sends the specification pre-formatted -- "50 ±0.5",
+// "3000 ±5%", "50.0 +0.1/-0.2" -- per field (spec_X_display) alongside the
+// plain nominal (spec_X) it always sent. It is printed EXACTLY as sent: the
+// accepted range ("(49.5 – 50.5)") is deliberately not part of it (product
+// owner's request), and nothing here builds text from the tolerance fields.
+// A report saved by 1.0.7 or earlier has only the plain nominal.
 function buildSpecVals(data) {
   return {
     motor_length:        data.spec_motor_length_display   || data.spec_motor_length   || '',
@@ -156,10 +158,9 @@ const generalTemplate = {
           // At just the S.No column's own width it was forced into a single
           // line and ellipsis-truncated to "Spe…" regardless of the label
           // text -- widening the text wouldn't have fixed that on its own.
-          // rowHeight: 1.0.8's spec_X_display strings ("10 ±0.5 (9.5 – 10.5)")
-          // wrap onto more than one line at this column width — see general.js's
-          // own comment on the Mechanical spec row below for the sizing.
-          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, rowHeight: 24, build: buildElecSpecVals },
+          // No fixed height: the row sizes itself to its text (see drawSpecRow),
+          // so a short "10 ±0.5" stays a normal one-line row.
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, build: buildElecSpecVals },
           footerHeight: () => GCH * (1 + ELEC_CHECKS.length) + 6 + REM_H + 6 + SIG_H + 8,
         },
         {
@@ -191,12 +192,10 @@ const generalTemplate = {
           type: 'table', gap: 6,
           mode: 'repeatable', dataKey: 'rows', filterRow: activeRowsFilter,
           columns: MCOLS, headerHeight: 36, rowHeight: 14,
-          // rowHeight taller than the 14pt data rows: a bilateral display
-          // string ("50.0 (+0.1 / -0.2) (49.8 – 50.1)", the worst case, in
-          // Locating Dia.'s 38pt-wide column) needs about 3 wrapped lines at
-          // the 6.5pt spec-row font. Tuned against a rendered sample, not
-          // guessed — see backend-changes-v1.0.8.md item 2.
-          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, rowHeight: 40, build: buildSpecVals },
+          // No fixed height: a bilateral "50.0 +0.1/-0.2" in Locating Dia.'s
+          // 38pt-wide column wraps, a "250 ±1" doesn't, and the row is as tall
+          // as its tallest cell (see drawSpecRow).
+          specRow: { fill: '#fffde7', firstColLabel: 'Specification', labelSpan: 2, build: buildSpecVals },
           footerHeight: (data) => GCH * (1 + mechChecks(data).length) + 6 + REM_H + 6 + SIG_H + 8,
         },
         {

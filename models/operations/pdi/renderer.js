@@ -142,13 +142,25 @@ function drawSpecRow(doc, specRow, cols, rowHeight, data, y) {
   // forced into just the S.No column's width and ellipsis-truncated to
   // "Spe…" regardless of how the label itself is worded.
   const labelSpan = Math.max(1, specRow.labelSpan || 1);
-  // A value cell here can hold a full "nominal ±tol (min – max)" string
-  // (backend-changes-v1.0.8.md item 2) — up to ~35 characters into a column
-  // as narrow as 38-56pt, far more than fits on one line even at a small
-  // font. specRow.rowHeight (falls back to the data rows' own height, same
-  // as before) gives this row the extra vertical room; `t(..., { lb: true })`
-  // switches it from forced single-line ellipsis to PDFKit's normal wrap.
-  const h = specRow.rowHeight || rowHeight;
+  // A value cell here holds the app's printed specification -- "50 ±0.5",
+  // "3000 ±5%", "50.0 +0.1/-0.2" -- in a column as narrow as 38-56pt. Short ones
+  // fit on one line at the data rows' own 7.5pt, but a bilateral one, or a long
+  // nominal, does not. Rather than tune a fixed row height to today's text
+  // (which is exactly what went stale when the app dropped the bracketed
+  // range), each cell is measured: 7.5pt if it fits on one line, else 6.5pt
+  // wrapped (`lb: true` swaps forced single-line ellipsis for PDFKit's normal
+  // wrap), and the row is as tall as its tallest cell -- never shorter than the
+  // data rows, so a row of short values looks just like it did before.
+  const layouts = [];
+  cols.forEach((c, i) => {
+    if (i === 0 || i < labelSpan) return;
+    layouts[i] = specCellLayout(doc, vals[c.key] || '', c.w - 4, F);
+  });
+  const contentH = Math.max(0, ...layouts.filter(Boolean).map((l) => l.height));
+  // Text starts 3pt down; +5 (not more) so one 7.5pt line still fits a plain
+  // 14pt row exactly.
+  const h = Math.max(specRow.rowHeight || 0, rowHeight, contentH + 5);
+
   let x = M;
   cols.forEach((c, i) => {
     if (i > 0 && i < labelSpan) {
@@ -162,13 +174,28 @@ function drawSpecRow(doc, specRow, cols, rowHeight, data, y) {
     box(doc, x, y, w, h, { fill: specRow.fill, stroke: '#000', sw: 0.3 });
     t(doc, val, x + 2, y + 3, w - 4, {
       font:  i === 0 ? FB : F,
-      size:  6.5,
+      size:  i === 0 ? 6.5 : layouts[i].size,
       align: i === 0 ? 'left' : 'center',
       lb:    i !== 0,
     });
     x += c.w;
   });
   return y + h;
+}
+
+// How a spec-row value cell is drawn: 7.5pt on one line when it fits `width`,
+// otherwise 6.5pt wrapped over as many lines as it needs. `height` is the text
+// block's height at that size (0 for an empty cell).
+function specCellLayout(doc, text, width, font) {
+  if (!text) return { size: 7.5, height: 0 };
+  doc.save().font(font);
+  doc.fontSize(7.5);
+  const oneLine = doc.widthOfString(text) <= width;
+  const size = oneLine ? 7.5 : 6.5;
+  doc.fontSize(size);
+  const height = oneLine ? doc.currentLineHeight(true) : doc.heightOfString(text, { width });
+  doc.restore();
+  return { size, height };
 }
 
 function drawTableRow(doc, cols, row, sectionData, data, rowHeight, y) {
