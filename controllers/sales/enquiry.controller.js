@@ -22,6 +22,22 @@ exports.getTemplates = async (req, res) => {
   }
 };
 
+exports.getRepresentatives = async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT u.user_id, u.name
+       FROM users u
+       JOIN roles r ON u.role_id = r.role_id
+       WHERE LOWER(r.role_name) = 'representative'
+       ORDER BY u.name`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    logger.error('Get representatives error:', err);
+    res.status(500).json({ error: 'Failed to fetch representatives', code: 'SERVER_ERROR' });
+  }
+};
+
 exports.refreshCache = async (req, res) => {
   try {
     await deleteByPattern('enquiry_*');

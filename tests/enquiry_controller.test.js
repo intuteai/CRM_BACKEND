@@ -143,3 +143,27 @@ describe('enquiry.controller.uploadPhoto — ownership enforcement', () => {
     expect(res.statusCode).toBe(403);
   });
 });
+
+describe('enquiry.controller.getRepresentatives', () => {
+  const pool = require('../config/db');
+
+  it('returns the representative users from the users table', async () => {
+    pool.query.mockResolvedValueOnce({ rows: [{ user_id: 496, name: 'Asha' }] });
+    const res = makeRes();
+
+    await controller.getRepresentatives({}, res);
+
+    const [sql] = pool.query.mock.calls[pool.query.mock.calls.length - 1];
+    expect(sql).toMatch(/LOWER\(r\.role_name\) = 'representative'/);
+    expect(res.body).toEqual([{ user_id: 496, name: 'Asha' }]);
+  });
+
+  it('returns a 500 when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('db down'));
+    const res = makeRes();
+
+    await controller.getRepresentatives({}, res);
+
+    expect(res.statusCode).toBe(500);
+  });
+});
