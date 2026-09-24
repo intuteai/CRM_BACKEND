@@ -29,6 +29,7 @@
     "pg": "^8.13.0",
     "redis": "^4.7.0",
     "sanitize-html": "^2.14.0",
+    "sharp": "^0.35.4",
     "socket.io": "^4.8.0",
     "svg-to-pdfkit": "^0.1.8",
     "uuid": "^11.1.0",

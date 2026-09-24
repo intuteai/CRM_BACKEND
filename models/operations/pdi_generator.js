@@ -7,6 +7,7 @@ const { renderTemplate } = require('./pdi/renderer');
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 const { hydrateTemplate, buildSampleData } = require('./pdi/authoredTemplate');
+const { optimizePhotoData } = require('./pdi/photoOptimizer');
 
 // The actual synchronous draw — same PDFDocument construction and comment as
 // before, just pulled out so both the DB-lookup path and the code-registry
@@ -28,10 +29,20 @@ function renderPdfDoc(template, data) {
   return doc;
 }
 
+// Same draw as renderPdfDoc, but the report's photos are first downscaled (see
+// photoOptimizer.js) so the PDF is a few times smaller. `options.timings`, if
+// given, receives { photos, bytesBefore, bytesAfter, ms } for the timing log.
+async function renderOptimizedPdfDoc(template, data, options = {}) {
+  const stats = {};
+  const optimized = await optimizePhotoData(template, data, stats);
+  if (options.timings) options.timings.optimize = stats;
+  return renderPdfDoc(template, optimized);
+}
+
 class PDIGenerator {
   // templateVersion is only meaningful for DB-backed templates — pass null
   // for a code-registered template id (general, autonxt, ...).
-  static async generate(templateId, templateVersion, data = {}) {
+  static async generate(templateId, templateVersion, data = {}, options = {}) {
     if (!data.pdi_no) throw new Error('pdi_no required');
 
     // Code-registered templates always win here if a DB-authored template's id
@@ -44,11 +55,11 @@ class PDIGenerator {
     // resolved tiebreaker — it's just the fast path for the common case today
     // (a code template, no DB round-trip needed).
     const codeTemplate = templates[templateId];
-    if (codeTemplate) return renderPdfDoc(codeTemplate, data);
+    if (codeTemplate) return renderOptimizedPdfDoc(codeTemplate, data, options);
 
     const row = await AuthoredTemplates.getByVersion(templateId, templateVersion);
     if (!row) throw new Error(`Unknown PDI template: ${templateId}`);
-    return renderPdfDoc(hydrateTemplate(row.definition), data);
+    return renderOptimizedPdfDoc(hydrateTemplate(row.definition), data, options);
   }
 
   // No DB lookup, no pdi_no requirement — used by the admin preview endpoint

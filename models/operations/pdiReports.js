@@ -4,16 +4,17 @@ const PDIGenerator = require('./pdi_generator');
 const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/googleDrive');
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
+const pdfCache = require('./pdi/pdfCache');
 
-// Every template's signature roles follow the same naming convention this
-// whole dialect already uses everywhere (General's prepared_by/approved_by,
-// AutoNXT's prepared_by_electrical/prepared_by_mechanical/approved_by, and
-// any admin-authored template — its role keys are auto-slugified from labels
-// like "Prepared By" via CRM/src/utils/pdiTemplateSlug.js, landing on the
-// same pattern). So rather than hardcode per-template field lists, this scans
-// whatever keys the report's own data actually has. AutoNXT's two preparer
-// roles both match "prepared" and get joined, since there's no single name
-// to prefer between them.
+// How many photos a report holds, for the finalize/PDF timing log: a freeform
+// list of { images: [...] } entries, or a fixed-slots map of slot -> uri | [uri].
+function countPhotos(photos) {
+  const countOf = (v) => (Array.isArray(v) ? v.length : (v ? 1 : 0));
+  if (Array.isArray(photos)) return photos.reduce((n, p) => n + (Array.isArray(p?.images) ? p.images.length : 0), 0);
+  if (photos && typeof photos === 'object') return Object.values(photos).reduce((n, v) => n + countOf(v), 0);
+  return 0;
+}
+
 // The mobile app's inspection-date field is free text (placeholder
 // "YYYY-MM-DD", nothing stops other input) -- a value like "22-09-2026",
 // typed day-first as is natural for an Indian user, produces an Invalid
@@ -35,6 +36,15 @@ function toIsoDateOrNull(value) {
   return parsed.toISOString();
 }
 
+// Every template's signature roles follow the same naming convention this
+// whole dialect already uses everywhere (General's prepared_by/approved_by,
+// AutoNXT's prepared_by_electrical/prepared_by_mechanical/approved_by, and
+// any admin-authored template — its role keys are auto-slugified from labels
+// like "Prepared By" via CRM/src/utils/pdiTemplateSlug.js, landing on the
+// same pattern). So rather than hardcode per-template field lists, this scans
+// whatever keys the report's own data actually has. AutoNXT's two preparer
+// roles both match "prepared" and get joined, since there's no single name
+// to prefer between them.
 function extractSignerNames(data) {
   if (!data || typeof data !== 'object') return { prepared_by: null, approved_by: null };
   const pick = (pattern) =>
@@ -59,12 +69,37 @@ function bufferPdf(doc) {
   });
 }
 
-function reportColumns(prefix = '') {
+// `photos` as [{ id, label, image_count }] with no image data, worked out inside
+// Postgres so the (often 20-40 MB) photo value is never sent to Node, parsed, or
+// sent on to the phone. Handles both stored shapes: a freeform list of
+// { id, label, images: [...] } and a fixed-slots map of slot -> uri | [uri] | null.
+function photosSummarySql(p) {
+  return `(
+    SELECT COALESCE(jsonb_agg(s.item ORDER BY s.ord), '[]'::jsonb) FROM (
+      SELECT t.ord AS ord, jsonb_build_object(
+        'id', COALESCE(t.e->>'id', ''),
+        'label', COALESCE(t.e->>'label', ''),
+        'image_count', CASE WHEN jsonb_typeof(t.e->'images') = 'array' THEN jsonb_array_length(t.e->'images') ELSE 0 END
+      ) AS item
+      FROM jsonb_array_elements(CASE WHEN jsonb_typeof(${p}photos) = 'array' THEN ${p}photos ELSE '[]'::jsonb END)
+        WITH ORDINALITY AS t(e, ord)
+      WHERE jsonb_typeof(t.e) = 'object'
+      UNION ALL
+      SELECT 1000000 + row_number() OVER (), jsonb_build_object(
+        'id', o.k, 'label', o.k,
+        'image_count', CASE jsonb_typeof(o.v) WHEN 'array' THEN jsonb_array_length(o.v) WHEN 'string' THEN 1 ELSE 0 END
+      )
+      FROM jsonb_each(CASE WHEN jsonb_typeof(${p}photos) = 'object' THEN ${p}photos ELSE '{}'::jsonb END) AS o(k, v)
+    ) s
+  ) AS photos`;
+}
+
+function reportColumns(prefix = '', { photosSummary = false } = {}) {
   const p = prefix ? `${prefix}.` : '';
   return `
     ${p}report_id, ${p}sr_no, ${p}customer_id, ${p}order_id, ${p}status,
     ${p}inspected_by, ${p}inspection_date, ${p}template_id, ${p}template_version, ${p}drive_file_id,
-    ${p}data, ${p}photos
+    ${p}data, ${photosSummary ? photosSummarySql(p) : `${p}photos`}
   `;
 }
 
@@ -180,15 +215,19 @@ class PdiReports {
     }, io);
   }
 
-  static async getById(reportId) {
+  // { photosSummary: true } returns `photos` as [{ id, label, image_count }]
+  // instead of the stored images -- see photosSummarySql.
+  static async getById(reportId, { photosSummary = false } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
-    const result = await pool.query(`SELECT ${reportColumns()} FROM pre_dispatch_inspection_reports WHERE report_id = $1`, [_id]);
+    const result = await pool.query(`SELECT ${reportColumns('', { photosSummary })} FROM pre_dispatch_inspection_reports WHERE report_id = $1`, [_id]);
     if (result.rows.length === 0) throw new Error('Report not found');
     return this.#toPayload(result.rows[0]);
   }
 
-  static async patchReport(reportId, fields, io) {
+  // `options.photosSummary`: answer with photo counts instead of the photos
+  // themselves (the save is unaffected -- `fields.photos` is still stored in full).
+  static async patchReport(reportId, fields, io, { photosSummary = false } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
@@ -227,7 +266,7 @@ class PdiReports {
       i++;
     }
 
-    if (sets.length === 0) return this.getById(_id);
+    if (sets.length === 0) return this.getById(_id, { photosSummary });
 
     values.push(_id);
     // AND status <> 'Completed' -- a finalized report is locked against
@@ -245,11 +284,12 @@ class PdiReports {
       UPDATE pre_dispatch_inspection_reports
       SET ${sets.join(', ')}
       WHERE report_id = $${i} AND status <> 'Completed'
-      RETURNING ${reportColumns()}
+      RETURNING ${reportColumns('', { photosSummary })}
     `, values);
 
     if (result.rows.length === 0) {
-      const existing = await this.getById(_id).catch(() => null);
+      // Only asking "does it exist?" -- never worth loading its photos for.
+      const existing = await this.getById(_id, { photosSummary: true }).catch(() => null);
       if (!existing) throw new Error('Report not found');
       const lockedError = new Error('This report is already finalized and can no longer be edited. Duplicate it to make changes.');
       lockedError.code = 'REPORT_LOCKED';
@@ -398,7 +438,20 @@ class PdiReports {
   }
 
   static async finalizeReport(reportId, io) {
+    const started = Date.now();
+    const timings = {};
+
+    let t = Date.now();
     const report = await this.getById(reportId);
+    timings.loadMs = Date.now() - t;
+    timings.photos = countPhotos(report.photos);
+
+    if (!report.data?.pdi_no) {
+      const missing = new Error('pdi_no required before finalizing');
+      missing.code = 'PDI_NO_REQUIRED';
+      throw missing;
+    }
+
     // Same lock as patchReport -- a second/stale device re-finalizing an
     // already-Completed report would waste a PDF regeneration and Drive
     // upload, and re-finalizing isn't how you recover a lost PDF anyway
@@ -409,37 +462,136 @@ class PdiReports {
       lockedError.code = 'REPORT_LOCKED';
       throw lockedError;
     }
+
     // photos live in their own column, not report.data — the generator reads
     // data.photos, so it has to be merged in here or PDFs render with none.
-    const pdfBuffer = await bufferPdf(await PDIGenerator.generate(report.template_id, report.template_version, { ...(report.data || {}), photos: report.photos || [] }));
+    t = Date.now();
+    const generateTimings = {};
+    const pdfBuffer = await bufferPdf(await PDIGenerator.generate(
+      report.template_id, report.template_version,
+      { ...(report.data || {}), photos: report.photos || [] },
+      { timings: generateTimings },
+    ));
+    timings.renderMs = Date.now() - t; // includes the photo downscale below
+    timings.optimize = generateTimings.optimize || null;
+    timings.pdfBytes = pdfBuffer.length;
 
-    // Best-effort Drive backup — same reasoning as InvoiceRecords.create: a
-    // "generated" report can always be regenerated from its stored data, so a
-    // Drive outage shouldn't block finalizing.
-    let driveFileId = report.drive_file_id || null;
+    // No `photos` in RETURNING: the UPDATE doesn't touch them, and reading a
+    // multi-MB column back just to hand it to a caller that only wants the id
+    // and status is pure waste. `report` (already loaded) supplies the rest.
+    // `AND status <> 'Completed'` closes the window where two finalizes that
+    // both passed the check above would each generate and upload a PDF.
+    t = Date.now();
+    const result = await pool.query(`
+      UPDATE pre_dispatch_inspection_reports
+      SET status = 'Completed'
+      WHERE report_id = $1 AND status <> 'Completed'
+      RETURNING report_id, status
+    `, [Number(reportId)]);
+    timings.updateMs = Date.now() - t;
+    if (result.rows.length === 0) {
+      const lockedError = new Error('This report is already finalized.');
+      lockedError.code = 'REPORT_LOCKED';
+      throw lockedError;
+    }
+
+    const payload = { ...report, status: result.rows[0].status };
+    if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
+
+    // The Drive backup and the on-disk copy for later downloads used to run
+    // before the response -- uploading a ~20 MB PDF to Google (about 6 s
+    // measured) while the phone waited for a PDF it already had. Both are
+    // best-effort and need nothing from the client, so they run after the
+    // response. `background` lets tests (and nothing else) wait for them.
+    const background = Promise.all([
+      this.#backupPdfToDrive(report, pdfBuffer),
+      pdfCache.write(report.report_id, pdfBuffer),
+    ]);
+
+    timings.totalMs = Date.now() - started;
+    return { payload, pdfBuffer, timings, background };
+  }
+
+  // Best-effort Drive backup — same reasoning as InvoiceRecords.create: a
+  // "generated" report can always be regenerated from its stored data, so a
+  // Drive outage shouldn't block finalizing. Never rejects.
+  static async #backupPdfToDrive(report, pdfBuffer) {
+    const reportId = report.report_id;
+    const startedAt = Date.now();
     try {
-      const safeNo = String(report.data?.pdi_no || report.report_id).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const safeNo = String(report.data?.pdi_no || reportId).replace(/[^a-zA-Z0-9_-]/g, '_');
       const uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
-      driveFileId = uploaded.id;
+      const res = await pool.query(
+        'UPDATE pre_dispatch_inspection_reports SET drive_file_id = $1 WHERE report_id = $2',
+        [uploaded.id, reportId]
+      );
+      if (res.rowCount === 0) {
+        // The report was deleted while this was uploading -- deleteReport had
+        // no drive_file_id to clean up yet, so the file would be orphaned.
+        await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for deleted PDI report ${reportId}: ${e.message}`));
+        return;
+      }
+      logger.info(`PDI Drive backup: report ${reportId}, ${Date.now() - startedAt}ms, ${pdfBuffer.length} bytes`);
     } catch (e) {
       logger.warn(`Drive backup failed for PDI report ${reportId}: ${e.message}`);
     }
-
-    const result = await pool.query(`
-      UPDATE pre_dispatch_inspection_reports
-      SET status = 'Completed', drive_file_id = COALESCE($1, drive_file_id)
-      WHERE report_id = $2
-      RETURNING ${reportColumns()}
-    `, [driveFileId, Number(reportId)]);
-
-    const payload = this.#toPayload(result.rows[0]);
-    if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
-    return { payload, pdfBuffer };
   }
 
   static async getPdfBuffer(reportId) {
     const report = await this.getById(reportId);
     return bufferPdf(await PDIGenerator.generate(report.template_id, report.template_version, { ...(report.data || {}), photos: report.photos || [] }));
+  }
+
+  // GET /pdf. A Completed report can't change, so its PDF is served from the
+  // copy stored at finalize time when there is one; otherwise it is rendered
+  // (and, if Completed, stored for next time). The report is loaded whole only
+  // when it has to be rendered -- checking status and pdi_no needs neither the
+  // photos nor the rest of `data`.
+  static async getPdfForDownload(reportId) {
+    const started = Date.now();
+    const _id = Number(reportId);
+    if (!Number.isFinite(_id)) throw new Error('Report not found');
+    const timings = {};
+
+    const meta = await pool.query(
+      `SELECT status, data->>'pdi_no' AS pdi_no FROM pre_dispatch_inspection_reports WHERE report_id = $1`,
+      [_id]
+    );
+    if (meta.rows.length === 0) throw new Error('Report not found');
+    const { status, pdi_no: pdiNo } = meta.rows[0];
+    if (!pdiNo) {
+      const missing = new Error('pdi_no required to generate a PDF');
+      missing.code = 'PDI_NO_REQUIRED';
+      throw missing;
+    }
+
+    if (status === 'Completed') {
+      const cached = await pdfCache.read(_id);
+      if (cached) {
+        timings.totalMs = Date.now() - started;
+        return { buffer: cached, pdiNo, source: 'cache', timings: { ...timings, pdfBytes: cached.length } };
+      }
+    }
+
+    let t = Date.now();
+    const report = await this.getById(_id);
+    timings.loadMs = Date.now() - t;
+    timings.photos = countPhotos(report.photos);
+
+    t = Date.now();
+    const generateTimings = {};
+    const buffer = await bufferPdf(await PDIGenerator.generate(
+      report.template_id, report.template_version,
+      { ...(report.data || {}), photos: report.photos || [] },
+      { timings: generateTimings },
+    ));
+    timings.renderMs = Date.now() - t;
+    timings.optimize = generateTimings.optimize || null;
+    timings.pdfBytes = buffer.length;
+
+    if (report.status === 'Completed') await pdfCache.write(_id, buffer);
+    timings.totalMs = Date.now() - started;
+    return { buffer, pdiNo, source: 'rendered', timings };
   }
 
   static async deleteReport(reportId, io) {
@@ -450,6 +602,8 @@ class PdiReports {
       [_id]
     );
     if (result.rows.length === 0) throw new Error('Report not found');
+
+    await pdfCache.remove(_id);
 
     const driveFileId = result.rows[0].drive_file_id;
     if (driveFileId) {

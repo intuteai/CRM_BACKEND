@@ -17,6 +17,25 @@ async function invalidateCache() {
   }
 }
 
+// One line per finalize / PDF request so a slow phone can be matched to what
+// the server actually spent: how long the report took to load, the photo
+// downscale, the whole render, and the size of the PDF that went out.
+// X-Request-ID is whatever the proxy forwarded (nginx sets one), when present.
+function logPdfTiming(kind, req, reportId, t = {}, totalMs) {
+  const mb = (bytes) => (bytes / 1048576).toFixed(1);
+  const optimize = t.optimize && t.optimize.photos
+    ? ` (downscale ${t.optimize.ms}ms: ${t.optimize.photos} photos, ${mb(t.optimize.bytesBefore)}MB -> ${mb(t.optimize.bytesAfter)}MB)`
+    : '';
+  const parts = [
+    t.photos !== undefined ? `photos ${t.photos}` : null,
+    t.loadMs !== undefined ? `loadMs ${t.loadMs}` : null,
+    t.renderMs !== undefined ? `renderMs ${t.renderMs}${optimize}` : null,
+    t.updateMs !== undefined ? `updateMs ${t.updateMs}` : null,
+    t.pdfBytes !== undefined ? `pdfBytes ${t.pdfBytes}` : null,
+  ].filter(Boolean).join(', ');
+  logger.info(`PDI ${kind} timing: report ${reportId}, ${parts ? `${parts}, ` : ''}totalMs ${totalMs}, requestId ${req.get('x-request-id') || '-'}`);
+}
+
 exports.createReport = async (req, res) => {
   try {
     const { customer_id, order_id, inspected_by, inspection_date, data, photos, template_id } = req.body || {};
@@ -49,9 +68,13 @@ exports.duplicateReport = async (req, res) => {
   }
 };
 
+// `?photos=summary` -- answer with [{ id, label, image_count }] instead of every
+// photo's Base64 (opt-in; app 1.0.8 and older still get the full report).
+const wantsPhotosSummary = (req) => req.query.photos === 'summary';
+
 exports.getReport = async (req, res) => {
   try {
-    const report = await PdiReports.getById(req.params.id);
+    const report = await PdiReports.getById(req.params.id, { photosSummary: wantsPhotosSummary(req) });
     res.json(report);
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
@@ -66,7 +89,7 @@ exports.patchReport = async (req, res) => {
   const started = Date.now();
   const bytes = req.headers['content-length'] || 'unknown';
   try {
-    const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io);
+    const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io, { photosSummary: wantsPhotosSummary(req) });
     await invalidateCache();
     const ms = Date.now() - started;
     if (ms > 5000) logger.warn(`Slow PDI report save: report ${req.params.id}, ${ms}ms, ${bytes} bytes`);
@@ -81,12 +104,14 @@ exports.patchReport = async (req, res) => {
 };
 
 exports.finalizeReport = async (req, res) => {
+  const started = Date.now();
   try {
-    const existing = await PdiReports.getById(req.params.id);
-    if (!existing.data?.pdi_no) return res.status(400).json({ error: 'pdi_no required before finalizing' });
-
-    const { payload, pdfBuffer } = await PdiReports.finalizeReport(req.params.id, req.io);
+    // The pdi_no check lives inside finalizeReport (which loads the report
+    // anyway). Checking it here first meant loading the whole report -- every
+    // photo -- twice per finalize.
+    const { payload, pdfBuffer, timings } = await PdiReports.finalizeReport(req.params.id, req.io);
     await invalidateCache();
+    logPdfTiming('finalize', req, payload.report_id, timings, Date.now() - started);
 
     const safeName = String(payload.data?.pdi_no || payload.report_id).replace(/[^a-zA-Z0-9_-]/g, '_');
     res.setHeader('Content-Type', 'application/pdf');
@@ -95,6 +120,7 @@ exports.finalizeReport = async (req, res) => {
     res.send(pdfBuffer);
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (error.code === 'PDI_NO_REQUIRED') return res.status(400).json({ error: error.message });
     if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
     logger.error(`Error finalizing PDI report ${req.params.id}: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -113,17 +139,18 @@ exports.listReports = async (req, res) => {
 };
 
 exports.downloadPdf = async (req, res) => {
+  const started = Date.now();
   try {
-    const report = await PdiReports.getById(req.params.id);
-    if (!report.data?.pdi_no) return res.status(400).json({ error: 'pdi_no required to generate a PDF' });
+    const { buffer, pdiNo, source, timings } = await PdiReports.getPdfForDownload(req.params.id);
+    logPdfTiming(`pdf (${source})`, req, req.params.id, timings, Date.now() - started);
 
-    const pdfBuffer = await PdiReports.getPdfBuffer(req.params.id);
-    const safeName = String(report.data.pdi_no).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const safeName = String(pdiNo).replace(/[^a-zA-Z0-9_-]/g, '_');
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="PDI_${safeName}.pdf"`);
-    res.send(pdfBuffer);
+    res.send(buffer);
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (error.code === 'PDI_NO_REQUIRED') return res.status(400).json({ error: error.message });
     logger.error(`Error generating PDI PDF ${req.params.id}: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
