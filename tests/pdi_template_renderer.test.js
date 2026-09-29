@@ -1,6 +1,6 @@
 const PDFDocument = require('pdfkit');
 const { registerFonts } = require('../models/operations/pdi/primitives');
-const { renderTemplate } = require('../models/operations/pdi/renderer');
+const { renderTemplate, numberBufferedPages } = require('../models/operations/pdi/renderer');
 
 function bufferPdf(doc) {
   return new Promise((resolve, reject) => {
@@ -495,6 +495,60 @@ describe('PDI template renderer', () => {
       doc.end();
       await bufferPdf(doc);
       expect(Math.max(...heights)).toBe(14);
+    });
+  });
+
+  describe('renderTemplate called more than once against the same document (batch combining)', () => {
+    const onePageTemplate = (label) => ({
+      pages: [{ sections: [{ type: 'text', label, dataKey: 'remarks', default: label }] }],
+    });
+
+    it('numberPages: false skips the page-numbering pass entirely', async () => {
+      const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+      registerFonts(doc);
+      const drawnTexts = [];
+      const originalText = doc.text.bind(doc);
+      doc.text = (str, ...rest) => { drawnTexts.push(String(str)); return originalText(str, ...rest); };
+
+      renderTemplate(doc, onePageTemplate('A'), {}, { numberPages: false });
+      doc.end();
+      await bufferPdf(doc);
+
+      expect(drawnTexts.some((t) => /^Pg \d+ of \d+$/.test(t))).toBe(false);
+    });
+
+    it('default behavior (no options) still numbers pages, unchanged', async () => {
+      const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+      registerFonts(doc);
+      const drawnTexts = [];
+      const originalText = doc.text.bind(doc);
+      doc.text = (str, ...rest) => { drawnTexts.push(String(str)); return originalText(str, ...rest); };
+
+      renderTemplate(doc, onePageTemplate('A'), {});
+      doc.end();
+      await bufferPdf(doc);
+
+      expect(drawnTexts).toContain('Pg 1 of 1');
+    });
+
+    it('numberBufferedPages, called once after two numberPages:false renders, numbers across the WHOLE combined document', async () => {
+      const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+      registerFonts(doc);
+      const drawnTexts = [];
+      const originalText = doc.text.bind(doc);
+      doc.text = (str, ...rest) => { drawnTexts.push(String(str)); return originalText(str, ...rest); };
+
+      renderTemplate(doc, onePageTemplate('A'), {}, { numberPages: false });
+      renderTemplate(doc, onePageTemplate('B'), {}, { numberPages: false });
+      numberBufferedPages(doc);
+      doc.end();
+      await bufferPdf(doc);
+
+      // Two 1-page reports combined -> continuous "Pg 1 of 2" / "Pg 2 of 2",
+      // not each restarting at "Pg 1 of 1".
+      expect(drawnTexts).toContain('Pg 1 of 2');
+      expect(drawnTexts).toContain('Pg 2 of 2');
+      expect(drawnTexts.filter((t) => /^Pg \d+ of \d+$/.test(t))).toHaveLength(2);
     });
   });
 });
