@@ -49,8 +49,9 @@ exports.finalizeBatch = async (req, res) => {
 exports.downloadBatchPdf = async (req, res) => {
   try {
     const { buffer } = await PdiReportBatches.getBatchPdfForDownload(req.params.batchId);
+    const safeName = String(req.params.batchId).replace(/[^a-zA-Z0-9_-]/g, '_');
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="PDI_BATCH_${req.params.batchId}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="PDI_BATCH_${safeName}.pdf"`);
     res.send(buffer);
   } catch (error) {
     if (error.message === 'Batch not found') return res.status(404).json({ error: error.message });
