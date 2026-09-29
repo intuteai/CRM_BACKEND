@@ -439,4 +439,62 @@ describe('PDI template renderer', () => {
     expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
     expect(drawnTexts).toContain('A. Test Title');
   });
+
+  describe('fixed-mode table row sizes itself to a `wrap: true` column\'s text', () => {
+    const wrapTemplate = (specText) => ({
+      pages: [{
+        sections: [{
+          type: 'table',
+          mode: 'fixed', dataKey: 'rows',
+          fixedRows: () => [{ spec: specText }],
+          columns: [
+            { label: 'Parameter', w: 60, align: 'left', value: () => 'Some Check' },
+            { label: 'Specification', w: 80, align: 'center', wrap: true, value: (row) => row.spec },
+          ],
+          headerHeight: 14, rowHeight: 14,
+        }],
+      }],
+    });
+    async function rectHeights(specText) {
+      const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+      registerFonts(doc);
+      const heights = [];
+      const originalRect = doc.rect.bind(doc);
+      doc.rect = (x, y, w, h) => { heights.push(h); return originalRect(x, y, w, h); };
+      renderTemplate(doc, wrapTemplate(specText), {});
+      doc.end();
+      await bufferPdf(doc);
+      return heights;
+    }
+
+    it('stays a normal row (14pt) when the text fits on one line', async () => {
+      expect(Math.max(...(await rectHeights('Go/NG')))).toBe(14);
+    });
+
+    it('grows when the text is too wide for one line, instead of being clipped', async () => {
+      expect(Math.max(...(await rectHeights('PCD Ø63.0, 06Nos M10, Depth 25.0, Go/NG')))).toBeGreaterThan(14);
+    });
+
+    it('a non-wrap column\'s row is completely unaffected (existing single-line-ellipsis behavior)', async () => {
+      const template = {
+        pages: [{
+          sections: [{
+            type: 'table', mode: 'fixed', dataKey: 'rows',
+            fixedRows: () => [{ spec: 'This is a very long line of text that would normally be ellipsis-truncated' }],
+            columns: [{ label: 'Specification', w: 80, align: 'center', value: (row) => row.spec }],
+            headerHeight: 14, rowHeight: 14,
+          }],
+        }],
+      };
+      const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+      registerFonts(doc);
+      const heights = [];
+      const originalRect = doc.rect.bind(doc);
+      doc.rect = (x, y, w, h) => { heights.push(h); return originalRect(x, y, w, h); };
+      renderTemplate(doc, template, {});
+      doc.end();
+      await bufferPdf(doc);
+      expect(Math.max(...heights)).toBe(14);
+    });
+  });
 });

@@ -200,19 +200,41 @@ function specCellLayout(doc, text, width, font) {
 
 function drawTableRow(doc, cols, row, sectionData, data, rowHeight, y) {
   const { F, FB } = getFonts();
+  // Columns marked `wrap: true` (AutoNXT's now-editable Specification/
+  // Specified text, which can run longer than the fixed literal it used to
+  // always be) size the WHOLE row to their own content -- the same two-pass
+  // measure-then-draw approach drawSpecRow already uses for General's spec
+  // row (see specCellLayout above). A row with no wrap column, or a wrap
+  // column whose text fits on one line, is unaffected: exactly `rowHeight`,
+  // same single-line-ellipsis text as before.
+  const layouts = [];
+  cols.forEach((c, i) => {
+    if (!c.wrap) return;
+    const val = resolveCellValue(c, row, sectionData, data);
+    layouts[i] = specCellLayout(doc, String(val ?? ''), c.w - 4, F);
+  });
+  const contentH = Math.max(0, ...layouts.filter(Boolean).map((l) => l.height));
+  const h = layouts.some(Boolean) ? Math.max(rowHeight, contentH + 5) : rowHeight;
+
   let x = M;
-  cols.forEach(c => {
+  cols.forEach((c, i) => {
     const val = resolveCellValue(c, row, sectionData, data);
     const flagged = c.isOutOfTolerance ? c.isOutOfTolerance(row, data) : false;
     // Bold text is the flag's print-safe cue — the light-red fill and dark-red
     // text are the primary on-screen/color-print signal, but a light fill can
     // wash out on a black-and-white printer or a photocopy of one; bold still
     // reads as "different" once color is gone.
-    box(doc, x, y, c.w, rowHeight, { stroke: '#000', sw: 0.3, fill: flagged ? '#fee2e2' : undefined });
-    t(doc, val, x + 2, y + 3, c.w - 4, { font: flagged ? FB : F, size: 7.5, align: c.align, color: flagged ? '#b91c1c' : '#000' });
+    box(doc, x, y, c.w, h, { stroke: '#000', sw: 0.3, fill: flagged ? '#fee2e2' : undefined });
+    t(doc, val, x + 2, y + 3, c.w - 4, {
+      font: flagged ? FB : F,
+      size: layouts[i] ? layouts[i].size : 7.5,
+      align: c.align,
+      color: flagged ? '#b91c1c' : '#000',
+      lb: !!c.wrap,
+    });
     x += c.w;
   });
-  return y + rowHeight;
+  return y + h;
 }
 
 function drawTableSection(doc, section, data, y) {
