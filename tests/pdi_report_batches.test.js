@@ -220,6 +220,26 @@ describe('finalizeBatch', () => {
     const updateCalls = mockClient.query.mock.calls.filter(([sql]) => /UPDATE pre_dispatch_inspection_reports/.test(sql));
     expect(updateCalls).toHaveLength(0);
   });
+
+  it('if rendering the combined PDF fails, no report and no batch status is touched (the whole point of rendering before writing)', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        // A report with an unknown template_id -- generateCombined will throw
+        // "Unknown PDI template" when it tries to resolve this report's template.
+        return { rows: [reportRow(1, { template_id: 'not-a-real-template' }), reportRow(2)] };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+
+    await expect(PdiReportBatches.finalizeBatch(101)).rejects.toThrow(/Unknown PDI template/);
+
+    // No connection was ever taken for a transaction, and no UPDATE was ever issued.
+    expect(mockConnect).not.toHaveBeenCalled();
+    expect(mockUpload).not.toHaveBeenCalled();
+  });
 });
 
 describe('getBatchPdfForDownload', () => {

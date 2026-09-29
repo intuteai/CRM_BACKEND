@@ -154,6 +154,7 @@ class PdiReportBatches {
     ));
 
     const client = await pool.connect();
+    let rolledBack = false;
     try {
       await client.query('BEGIN');
 
@@ -165,6 +166,7 @@ class PdiReportBatches {
         RETURNING report_id
       `, [_id]);
       if (updateReportsResult.rows.length !== reportIds.length) {
+        rolledBack = true;
         await client.query('ROLLBACK');
         const err = new Error(`Batch ${_id}: one or more linked reports were already finalized outside this batch (expected ${reportIds.length}, updated ${updateReportsResult.rows.length}).`);
         err.code = 'BATCH_REPORT_CONFLICT';
@@ -177,6 +179,7 @@ class PdiReportBatches {
         WHERE batch_id = $1 AND status <> 'Completed'
       `, [_id]);
       if (updateBatchResult.rowCount !== 1) {
+        rolledBack = true;
         await client.query('ROLLBACK');
         const err = new Error('This batch is already finalized.');
         err.code = 'BATCH_ALREADY_FINALIZED';
@@ -185,7 +188,9 @@ class PdiReportBatches {
 
       await client.query('COMMIT');
     } catch (error) {
-      if (!error.code) { try { await client.query('ROLLBACK'); } catch { /* connection may already be dead */ } }
+      if (!rolledBack) {
+        try { await client.query('ROLLBACK'); } catch { /* connection may already be dead */ }
+      }
       throw error;
     } finally {
       client.release();
