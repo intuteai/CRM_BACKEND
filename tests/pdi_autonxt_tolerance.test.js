@@ -145,3 +145,36 @@ describe('AutoNXT template — drawn PDF content', () => {
     expect(drawn).toContain('No Abnormal Noise');
   });
 });
+
+describe('AutoNXT fixed-slots photos — both the legacy single-image shape and the new multi-image shape render', () => {
+  const TINY_PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
+
+  it('renders a slot holding a bare data-URI string (today\'s shape) without throwing', async () => {
+    const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    expect(() => renderTemplate(doc, autonxtTemplate, {
+      customer_name: 'X', pdi_no: 'X',
+      photos: { overall_motor: TINY_PNG },
+    })).not.toThrow();
+    doc.end();
+    const buf = await bufferPdf(doc);
+    expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+  });
+
+  it('renders a slot holding an array of data-URIs (the new multi-photo shape) without throwing, one cell per photo', async () => {
+    const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    const drawn = [];
+    const originalText = doc.text.bind(doc);
+    doc.text = (str, ...rest) => { drawn.push(String(str)); return originalText(str, ...rest); };
+    renderTemplate(doc, autonxtTemplate, {
+      customer_name: 'X', pdi_no: 'X',
+      photos: { overall_motor: [TINY_PNG, TINY_PNG, TINY_PNG] },
+    });
+    doc.end();
+    await bufferPdf(doc);
+    expect(drawn.some((s) => s.includes('Overall Motor Photo (1)'))).toBe(true);
+    expect(drawn.some((s) => s.includes('Overall Motor Photo (2)'))).toBe(true);
+    expect(drawn.some((s) => s.includes('Overall Motor Photo (3)'))).toBe(true);
+  });
+});
