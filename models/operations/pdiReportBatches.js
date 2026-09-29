@@ -3,6 +3,7 @@
 const pool = require('../../config/db');
 const logger = require('../../utils/logger');
 const PDIGenerator = require('./pdi_generator');
+const PdiReports = require('./pdiReports');
 const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/googleDrive');
 const pdfCache = require('./pdi/pdfCache');
 
@@ -41,7 +42,7 @@ class PdiReportBatches {
       err.code = 'PDI_NO_REQUIRED';
       throw err;
     }
-    const templateId = template_id || 'autonxt';
+    const { templateId, templateVersion } = await PdiReports.resolveTemplateVersion(template_id || 'autonxt');
 
     const client = await pool.connect();
     try {
@@ -58,10 +59,10 @@ class PdiReportBatches {
       for (let lotIndex = 1; lotIndex <= qty; lotIndex++) {
         const reportResult = await client.query(`
           INSERT INTO pre_dispatch_inspection_reports
-            (status, template_id, data, photos, batch_id, lot_index)
-          VALUES ('Pending', $1, $2, '{}'::jsonb, $3, $4)
+            (status, template_id, template_version, data, photos, batch_id, lot_index)
+          VALUES ('Pending', $1, $2, $3, '{}'::jsonb, $4, $5)
           RETURNING report_id, lot_index
-        `, [templateId, JSON.stringify({ pdi_no }), batch.batch_id, lotIndex]);
+        `, [templateId, templateVersion, JSON.stringify({ pdi_no }), batch.batch_id, lotIndex]);
         reports.push({ report_id: reportResult.rows[0].report_id, lot_index: reportResult.rows[0].lot_index, lot_quantity: qty });
       }
 
@@ -98,9 +99,12 @@ class PdiReportBatches {
   // "Finalize flow" section for why this does NOT call the single-report
   // PdiReports.finalizeReport per linked report (that would render every
   // report twice -- once inside finalizeReport, once again to build the
-  // combined PDF). Instead: mark each report Completed with the same
-  // guarded UPDATE finalizeReport itself uses, render the combined PDF
-  // ONCE, cache/Drive-back-up only the combined PDF.
+  // combined PDF). Instead: validate everything, render the combined PDF
+  // ONCE, and only THEN mark every report + the batch Completed together in
+  // one transaction -- mirroring pdiReports.js's finalizeReport, which
+  // renders first and only marks Completed after a successful render, so a
+  // render failure (bad photo, unknown template, OOM on a big lot) never
+  // leaves reports locked in a bad state with no clean recovery.
   static async finalizeBatch(batchId) {
     const _id = Number(batchId);
     if (!Number.isFinite(_id)) throw new Error('Batch not found');
@@ -125,6 +129,12 @@ class PdiReportBatches {
     `, [_id]);
     const reports = reportsResult.rows;
 
+    if (reports.length === 0 || reports.length !== batch.lot_quantity) {
+      const err = new Error(`Batch ${_id} has ${reports.length} report(s) but expected ${batch.lot_quantity} -- one or more linked reports may have been deleted.`);
+      err.code = 'BATCH_INCOMPLETE';
+      throw err;
+    }
+
     for (const report of reports) {
       if (!report.data?.pdi_no) {
         const err = new Error(`Report ${report.report_id} (lot ${report.lot_index}) is missing pdi_no.`);
@@ -133,20 +143,8 @@ class PdiReportBatches {
       }
     }
 
-    for (const report of reports) {
-      const result = await pool.query(`
-        UPDATE pre_dispatch_inspection_reports
-        SET status = 'Completed'
-        WHERE report_id = $1 AND status <> 'Completed'
-        RETURNING report_id, status
-      `, [report.report_id]);
-      if (result.rows.length === 0) {
-        const err = new Error(`Report ${report.report_id} (lot ${report.lot_index}) was already finalized by a concurrent request.`);
-        err.code = 'BATCH_ALREADY_FINALIZED';
-        throw err;
-      }
-    }
-
+    // Render before any status change -- a render failure must leave every
+    // report and the batch exactly as they were, not locked Completed.
     const pdfBuffer = await bufferPdf(await PDIGenerator.generateCombined(
       reports.map((r) => ({
         templateId: r.template_id,
@@ -155,7 +153,43 @@ class PdiReportBatches {
       }))
     ));
 
-    await pool.query(`UPDATE pdi_report_batches SET status = 'Completed' WHERE batch_id = $1`, [_id]);
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const reportIds = reports.map((r) => r.report_id);
+      const updateReportsResult = await client.query(`
+        UPDATE pre_dispatch_inspection_reports
+        SET status = 'Completed'
+        WHERE batch_id = $1 AND status <> 'Completed'
+        RETURNING report_id
+      `, [_id]);
+      if (updateReportsResult.rows.length !== reportIds.length) {
+        await client.query('ROLLBACK');
+        const err = new Error(`Batch ${_id}: one or more linked reports were already finalized outside this batch (expected ${reportIds.length}, updated ${updateReportsResult.rows.length}).`);
+        err.code = 'BATCH_REPORT_CONFLICT';
+        throw err;
+      }
+
+      const updateBatchResult = await client.query(`
+        UPDATE pdi_report_batches
+        SET status = 'Completed'
+        WHERE batch_id = $1 AND status <> 'Completed'
+      `, [_id]);
+      if (updateBatchResult.rowCount !== 1) {
+        await client.query('ROLLBACK');
+        const err = new Error('This batch is already finalized.');
+        err.code = 'BATCH_ALREADY_FINALIZED';
+        throw err;
+      }
+
+      await client.query('COMMIT');
+    } catch (error) {
+      if (!error.code) { try { await client.query('ROLLBACK'); } catch { /* connection may already be dead */ } }
+      throw error;
+    } finally {
+      client.release();
+    }
 
     const payload = { ...batch, status: 'Completed', reports: reports.map((r) => ({ report_id: r.report_id, lot_index: r.lot_index })) };
 
