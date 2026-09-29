@@ -1,6 +1,7 @@
 'use strict';
 
 const { CW, fmtDate } = require('../primitives');
+const { checkTolerance } = require('../tolerance');
 
 /* ── Section A: Performance Test @ No Load — fixed 8-row table,
       2 grouped column-pairs (BEMF, Running Current), RPM/spec values are
@@ -16,6 +17,52 @@ const PERFORMANCE_ROWS = [
   { key: 'rpm_2500', rpm: 2500, sourceVoltage: '560V', bemfSpec: '-', currentSpec: '-', method: 'Test Report' },
   { key: 'rpm_3000', rpm: 3000, sourceVoltage: '560V', bemfSpec: '-', currentSpec: '-', method: 'Test Report' },
 ];
+
+// Every tolerance-eligible field across both tables (Performance Test's BEMF/
+// Current Specified columns, and 3 Physical Parameters rows) follows the
+// same shape: a freely-typed Specification-column string (spec_<id>_display,
+// what actually prints — decoupled from the tolerance check below, same
+// "printed exactly as typed, never rebuilt from the tolerance fields"
+// principle as general.js's buildSpecVals) plus a separate nominal+tolerance
+// (spec_<id>, spec_<id>_tol_mode, spec_<id>_tol, spec_<id>_tol_minus) used
+// only to flag the Measured cell. This table gives the default for both
+// halves -- today's fixed literal text, plus the equivalent nominal/mode/
+// tolerance -- so an unedited report (old or new) prints and validates
+// exactly as it always has.
+const SPEC_DEFAULTS = {
+  rpm_500_bemf:       { display: '79.0±3%',  nominal: 79.0,  tolMode: '%', tol: 3 },
+  rpm_500_current:    { display: '6.0±2.0A', nominal: 6.0,   tolMode: '±', tol: 2.0 },
+  rpm_1000_bemf:      { display: '155.0±3%', nominal: 155.0, tolMode: '%', tol: 3 },
+  rpm_1000_current:   { display: '6.0±2.0A', nominal: 6.0,   tolMode: '±', tol: 2.0 },
+  rpm_1500_bemf:      { display: '227.0±3%', nominal: 227.0, tolMode: '%', tol: 3 },
+  rpm_1500_current:   { display: '3.0±1.0A', nominal: 3.0,   tolMode: '±', tol: 1.0 },
+  rpm_1800_bemf:      { display: '270.0±3%', nominal: 270.0, tolMode: '%', tol: 3 },
+  rpm_1800_current:   { display: '3.0±1.0A', nominal: 3.0,   tolMode: '±', tol: 1.0 },
+  rpm_2000_bemf:      { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_2000_current:   { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_2200_bemf:      { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_2200_current:   { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_2500_bemf:      { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_2500_current:   { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_3000_bemf:      { display: '-', nominal: '', tolMode: '±', tol: '' },
+  rpm_3000_current:   { display: '-', nominal: '', tolMode: '±', tol: '' },
+  motor_total_length: { display: '467.5±1.0', nominal: 467.5, tolMode: '±', tol: 1.0 },
+  shaft_op_length:    { display: '10.0±0.5',  nominal: 10.0,  tolMode: '±', tol: 0.5 },
+  locating_dia:       { display: 'Ø180.0 (-0.01 TO -0.05)', nominal: 180.0, tolMode: 'bilateral', tol: -0.01, tolMinus: -0.05 },
+};
+
+function specDisplay(data, id) {
+  return data[`spec_${id}_display`] || SPEC_DEFAULTS[id].display;
+}
+
+function specOutOfTolerance(measured, data, id) {
+  const def = SPEC_DEFAULTS[id];
+  const nominal   = data[`spec_${id}`] ?? def.nominal;
+  const mode      = data[`spec_${id}_tol_mode`] ?? def.tolMode;
+  const tol       = data[`spec_${id}_tol`] ?? def.tol;
+  const tolMinus  = data[`spec_${id}_tol_minus`] ?? def.tolMinus;
+  return checkTolerance(measured, nominal, mode, tol, tolMinus).outOfRange;
+}
 
 function performanceColumns() {
   return [
@@ -176,3 +223,6 @@ const autonxtTemplate = {
 };
 
 module.exports = autonxtTemplate;
+module.exports.SPEC_DEFAULTS = SPEC_DEFAULTS;
+module.exports.specDisplay = specDisplay;
+module.exports.specOutOfTolerance = specOutOfTolerance;
