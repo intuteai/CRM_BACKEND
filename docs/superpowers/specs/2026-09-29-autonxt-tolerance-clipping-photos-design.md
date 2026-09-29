@@ -48,7 +48,7 @@ The 2000-3000 rows default to blank/"-" (today's fixed text). They're editable l
 
 Locating Dia.'s spec today is `Ø180.0 (-0.01 TO -0.05)` — both tolerance figures are negative (both below nominal), which is exactly the case the `bilateral` mode (already built for General) exists to handle; `±`/`%` can't express it.
 
-**Unchanged:** General Check's 7 rows (all Go/NG); Physical Parameters' remaining 22 rows (Go/NG checks, and compound specs like Shaft Flange Mtg., Mounting Details, the two Hyd. Mtg rows, Power/Temp Sensor Cable Length, Noise, Physical Damage).
+**Specification unchanged for:** General Check's 7 rows (all Go/NG); Physical Parameters' remaining 22 rows (Go/NG checks, and compound specs like Shaft Flange Mtg., Mounting Details, the two Hyd. Mtg rows, Power/Temp Sensor Cable Length, Noise, Physical Damage) — no editable spec, no tolerance math for these. Their **Measurement** input does change, though — see Change 2 below.
 
 ### Data model
 
@@ -65,10 +65,19 @@ All fields are additive and default to the values in the tables above when absen
 ### Web form (`CRM`, `AutoNXTGeneratorForm.jsx`)
 
 - Each of the 19 fields gets an inline nominal input + tolerance-mode select + tolerance-amount input(s), placed next to its existing Measured input in the same table row. A second amount input appears only when Bilateral is selected (same conditional-second-input pattern as General).
-- Motor Total Length, Shaft O/P Length, and Locating Dia.'s Measured cell changes from the current GO/NG/NA `<select>` to a free numeric `<input>` — these are real dimensions, not pass/fail checks (the same bug General's Locating Dia. field had before its own fix). Performance Test's `bemf_measured`/`current_measured` are already free-text inputs; unchanged.
-- Out-of-tolerance values get the same red border/background flag General uses, in both the form and the generated PDF.
+- Motor Total Length, Shaft O/P Length, and Locating Dia.'s Measured cell moves off the GO/NG/NA `<select>` to the same editable-combo input described in Change 2 below, so a real dimension can be typed. Performance Test's `bemf_measured`/`current_measured` are already free-text inputs; unchanged.
+- Out-of-tolerance values get the same red border/background flag General uses, in both the form and the generated PDF. A Measured value that isn't a number (e.g. still "GO", or any other note) simply isn't tolerance-checked, the same skip-if-not-finite convention used everywhere else.
 
-## Change 2: Multi-photo upload
+## Change 2: Physical Parameters Measurement — free text, not just GO/NG/NA
+
+Today, **every** row in the Physical Parameters table (all 25, including the 3 tolerance rows above) has its Measurement cell locked to a `<select>` offering only GO/NG/NA — even rows like Motor Total Length, where the inspector actually needs to record a number. This becomes an editable combo: GO, NG, and NA stay available as one-click options, but the inspector can also type any other value (a measured number, a note, anything).
+
+- Applies to all 25 Physical Parameters rows. General Check's 7 rows are unaffected — they stay the plain GO/NG/NA `<select>` they are today.
+- For the 3 tolerance rows, typing a number here is what feeds the tolerance check in Change 1; typing something non-numeric (or leaving the GO/NG/NA default) just means no tolerance flag is raised, consistent with the rest of this system.
+- Implementation: `AutoNXTGeneratorForm.jsx`'s `MEASURED_OPTIONS` (`['GO', 'NG', 'NA']`) becomes the option list for a `<datalist>`-backed text input rather than a `<select>`, so existing GO/NG/NA values in saved reports still show as one of the quick-picks.
+- PDF rendering is unaffected beyond what Change 1 already does — the Measurement column already prints whatever string is stored; it just stops being restricted to three fixed strings.
+
+## Change 3: Multi-photo upload
 
 AutoNXT's 6 fixed photo slots currently use `ImageUploadCard` with a single `value`/`onSelect`/`onClear` (one image per slot). This changes to the shared multi-image pattern already used elsewhere (`images` array, `onFilesSelected`, `onRemove` by index) — same component contract `GenericPdiSections.jsx`'s `FixedSlotPhotoSection` already uses. Each slot's stored value becomes `{ label, images: [...] }` instead of a bare data-URI string.
 
@@ -79,10 +88,11 @@ No backend change: `renderer.js`'s `drawPhotoSection` already normalizes both th
 No automated test suite covers `AutoNXTGeneratorForm.jsx` or the AutoNXT template's PDF output today (consistent with every prior PDI round — the only backend test coverage that exists in this area is General's own suite). Verification is:
 
 - **Backend:** extend `pdi_template_renderer.test.js`-style coverage for AutoNXT — the new tolerance fields for all three modes (including the Locating Dia. bilateral case), the fallback-to-default behavior for reports with none of the new fields, and the self-sizing row for a long spec string.
-- **Web form, live/manual:** for each of the 19 tolerance-eligible fields, enter an in-tolerance and an out-of-tolerance measured value and confirm the red flag appears in both the form and the generated PDF; confirm an old/unedited report still prints identically to today; confirm Locating Dia.'s Measured cell is now a number input; confirm multi-photo upload works across all 6 slots and each photo appears in the PDF.
+- **Web form, live/manual:** for each of the 19 tolerance-eligible fields, enter an in-tolerance and an out-of-tolerance measured value and confirm the red flag appears in both the form and the generated PDF; confirm an old/unedited report still prints identically to today; confirm all 25 Physical Parameters Measurement cells accept GO/NG/NA as quick-picks and free text; confirm multi-photo upload works across all 6 slots and each photo appears in the PDF.
 
 ## Explicitly out of scope
 
 - `pdi-erp-app` (mobile) — AutoNXT's generic-template-driven mobile screen is untouched this round; a follow-up spec if/when needed.
-- The 22 unchanged Physical Parameters rows and 7 General Check rows — no editable spec, no tolerance math, matching how General itself left similar non-numeric fields alone.
+- The 22 rows outside the 3 tolerance fields keep their fixed Specification text and get no tolerance math — only their Measurement input changes (Change 2), matching how General itself left similar non-numeric spec fields alone.
+- General Check's 7 rows — unaffected by any change in this spec.
 - No retroactive migration of existing AutoNXT reports — all new fields are additive/optional; old reports render unchanged unless edited going forward.
