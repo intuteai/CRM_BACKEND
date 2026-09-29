@@ -3,15 +3,12 @@
 
 const PDFDocument = require('pdfkit');
 const { registerFonts, M } = require('./pdi/primitives');
-const { renderTemplate } = require('./pdi/renderer');
+const { renderTemplate, numberBufferedPages } = require('./pdi/renderer');
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 const { hydrateTemplate, buildSampleData } = require('./pdi/authoredTemplate');
 const { optimizePhotoData } = require('./pdi/photoOptimizer');
 
-// The actual synchronous draw — same PDFDocument construction and comment as
-// before, just pulled out so both the DB-lookup path and the code-registry
-// path (and the no-DB preview path) share one place that builds the doc.
 function renderPdfDoc(template, data) {
   const doc = new PDFDocument({
     size: 'A4',
@@ -29,14 +26,23 @@ function renderPdfDoc(template, data) {
   return doc;
 }
 
-// Same draw as renderPdfDoc, but the report's photos are first downscaled (see
-// photoOptimizer.js) so the PDF is a few times smaller. `options.timings`, if
-// given, receives { photos, bytesBefore, bytesAfter, ms } for the timing log.
 async function renderOptimizedPdfDoc(template, data, options = {}) {
   const stats = {};
   const optimized = await optimizePhotoData(template, data, stats);
   if (options.timings) options.timings.optimize = stats;
   return renderPdfDoc(template, optimized);
+}
+
+// Resolves a (templateId, templateVersion) pair to a renderable template
+// object -- the same code-registry-then-DB lookup generate() already does,
+// pulled out so generateCombined can call it once per report without
+// duplicating the logic.
+async function resolveTemplate(templateId, templateVersion) {
+  const codeTemplate = templates[templateId];
+  if (codeTemplate) return codeTemplate;
+  const row = await AuthoredTemplates.getByVersion(templateId, templateVersion);
+  if (!row) throw new Error(`Unknown PDI template: ${templateId}`);
+  return hydrateTemplate(row.definition);
 }
 
 class PDIGenerator {
@@ -60,6 +66,40 @@ class PDIGenerator {
     const row = await AuthoredTemplates.getByVersion(templateId, templateVersion);
     if (!row) throw new Error(`Unknown PDI template: ${templateId}`);
     return renderOptimizedPdfDoc(hydrateTemplate(row.definition), data, options);
+  }
+
+  // Renders N reports into ONE shared PDF document, in the given order --
+  // used by AutoNXT batch finalize to produce one combined PDF instead of N
+  // separate ones (no PDF-merge library in this codebase, and PDFKit can't
+  // import pre-rendered PDF bytes anyway). `reportsData` is
+  // [{ templateId, templateVersion, data }, ...], already in the order the
+  // combined PDF should read in (lot_index order for a batch). Each report's
+  // photos are downscaled the same way a single-report PDF already is.
+  // Page numbering runs ONCE across the whole combined document at the end
+  // (continuous "Pg X of TOTAL"), not restarted per report -- see
+  // renderer.js's renderTemplate `numberPages` option for why a second
+  // in-place numbering pass would corrupt earlier reports' footers.
+  static async generateCombined(reportsData, options = {}) {
+    const doc = new PDFDocument({
+      size: 'A4',
+      margins: { top: 10, bottom: 0, left: M, right: M },
+      autoFirstPage: false,
+      bufferPages: true,
+    });
+    registerFonts(doc);
+
+    for (const { templateId, templateVersion, data } of reportsData) {
+      if (!data.pdi_no) throw new Error('pdi_no required');
+      const template = await resolveTemplate(templateId, templateVersion);
+      const stats = {};
+      const optimized = await optimizePhotoData(template, data, stats);
+      if (options.timings) options.timings.push(stats);
+      renderTemplate(doc, template, optimized, { numberPages: false });
+    }
+
+    numberBufferedPages(doc);
+    doc.end();
+    return doc;
   }
 
   // No DB lookup, no pdi_no requirement — used by the admin preview endpoint
