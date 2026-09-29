@@ -77,7 +77,15 @@ Runs inside a single DB transaction (`BEGIN`/`COMMIT`/`ROLLBACK`): insert one `p
 
 ## Finalize flow
 
-Batch finalize calls the existing, unmodified `PdiReports.finalizeReport` once per linked report in `lot_index` order — each gets its own `Completed` status, its own PDF cached and Drive-backed-up exactly as happens today for any single report. If any individual report can't finalize (missing required fields, same validation every report already has), the whole batch finalize fails before any report is marked `Completed` and the response identifies which report and why — no partial batch finalize. Once all N succeed, their N `PDFDocument` streams are combined into one PDF (Approach A: generate all N into a single shared `PDFDocument` in one pass, not merge N pre-rendered buffers — no new dependency, no re-parsing of already-rendered photo bytes) and the batch is marked `Completed`. A repeat finalize call on an already-`Completed` batch returns `409 BATCH_ALREADY_FINALIZED`.
+Traced through the actual mechanics before finalizing this design: `finalizeReport`'s per-report PDF is a *finished* PDFKit output (bytes) — it cannot be fed into a second shared document afterward (Approach A's shared-`PDFDocument` trick only works on a live, not-yet-`.end()`-ed document). Calling the existing `finalizeReport` once per report and *then* combining would mean rendering every report twice. Batch finalize therefore does **not** call the existing single-report `finalizeReport` — it has its own leaner flow:
+
+1. Validate every linked report has what finalize needs (same `pdi_no` check `finalizeReport` already does — trivially satisfied here since `pdi_no` is stamped onto every linked report at batch-creation time from the batch's own shared `pdi_no`). If any report fails, the whole batch finalize fails before anything is marked `Completed`, identifying which report and why.
+2. Mark each linked report `Completed` with the same guarded `UPDATE ... WHERE status <> 'Completed'` SQL `finalizeReport` already uses (reused as a SQL pattern, not by calling the function) — one report at a time, in `lot_index` order.
+3. Render all N reports into **one shared `PDFDocument`** in a single pass (Approach A) — each report's photos are downscaled the same way a single-report PDF already is, and page numbering runs once across the whole combined document at the end, not restarted per report.
+4. Cache and Drive-back-up **only the combined PDF**, mirroring the existing per-report pattern but at the batch level (`pdi_report_batches.drive_file_id`, cache key `batch-${batchId}`).
+5. Mark the batch `Completed`.
+
+This means each report is rendered exactly once, total. The tradeoff: a batch member's own individual PDF (`GET /api/pdi/reports/:id/pdf`) is not pre-cached the way a normally-finalized single report's is — it still works, but renders on demand on first request, same as any `Completed` report whose cache entry was never populated or was evicted. A repeat finalize call on an already-`Completed` batch returns `409 BATCH_ALREADY_FINALIZED`.
 
 ## Download & caching
 
