@@ -75,3 +75,73 @@ describe('AutoNXT template still renders without throwing (unchanged by this tas
     expect(buf.slice(0, 5).toString('ascii')).toBe('%PDF-');
   });
 });
+
+describe('AutoNXT template — drawn PDF content', () => {
+  function drawnTexts(data) {
+    const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+    registerFonts(doc);
+    const drawn = [];
+    const originalText = doc.text.bind(doc);
+    doc.text = (str, ...rest) => { drawn.push(String(str)); return originalText(str, ...rest); };
+    renderTemplate(doc, autonxtTemplate, data);
+    doc.end();
+    return drawn;
+  }
+
+  it('prints the default literal spec text for every tolerance-eligible field when data has no overrides', () => {
+    const drawn = drawnTexts({ customer_name: 'X', pdi_no: 'X' });
+    expect(drawn).toContain('79.0±3%');
+    expect(drawn).toContain('467.5±1.0');
+    expect(drawn).toContain('Ø180.0 (-0.01 TO -0.05)');
+  });
+
+  it('prints an edited spec_X_display verbatim, and never derives it from the tolerance fields', () => {
+    const drawn = drawnTexts({
+      customer_name: 'X', pdi_no: 'X',
+      spec_motor_total_length_display: '470.0 (special run)',
+      spec_motor_total_length: '470.0', spec_motor_total_length_tol_mode: '±', spec_motor_total_length_tol: '0.5',
+    });
+    expect(drawn).toContain('470.0 (special run)');
+    expect(drawn).not.toContain('467.5±1.0');
+  });
+
+  it('flags an out-of-tolerance Motor Total Length measurement in red, and leaves an in-range one alone', () => {
+    const outOfRange = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+    registerFonts(outOfRange);
+    const fillsOut = [];
+    const origFillOut = outOfRange.fillColor.bind(outOfRange);
+    outOfRange.fillColor = (c, ...rest) => { fillsOut.push(c); return origFillOut(c, ...rest); };
+    renderTemplate(outOfRange, autonxtTemplate, {
+      customer_name: 'X', pdi_no: 'X',
+      physical_parameters: { motor_total_length: { measured: '470.0' } },
+    });
+    outOfRange.end();
+    expect(fillsOut).toContain('#fee2e2');
+
+    const inRange = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+    registerFonts(inRange);
+    const fillsIn = [];
+    const origFillIn = inRange.fillColor.bind(inRange);
+    inRange.fillColor = (c, ...rest) => { fillsIn.push(c); return origFillIn(c, ...rest); };
+    renderTemplate(inRange, autonxtTemplate, {
+      customer_name: 'X', pdi_no: 'X',
+      physical_parameters: { motor_total_length: { measured: '467.8' } },
+    });
+    inRange.end();
+    expect(fillsIn).not.toContain('#fee2e2');
+  });
+
+  it('a non-numeric Measurement (e.g. still "GO") on a tolerance-eligible row is never flagged', () => {
+    const drawn = drawnTexts({
+      customer_name: 'X', pdi_no: 'X',
+      physical_parameters: { motor_total_length: { measured: 'GO' } },
+    });
+    expect(drawn).toContain('GO');
+  });
+
+  it('the 22 non-numeric Physical Parameters rows still print their fixed spec text unchanged', () => {
+    const drawn = drawnTexts({ customer_name: 'X', pdi_no: 'X' });
+    expect(drawn).toContain('PCD Ø63.0, 06Nos M10, Depth 25.0, Go/NG');
+    expect(drawn).toContain('No Abnormal Noise');
+  });
+});

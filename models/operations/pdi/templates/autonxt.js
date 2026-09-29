@@ -64,14 +64,41 @@ function specOutOfTolerance(measured, data, id) {
   return checkTolerance(measured, nominal, mode, tol, tolMinus).outOfRange;
 }
 
+// Folds each row's current Measured value and this field's display/
+// out-of-tolerance state into the row object once, so both performanceColumns'
+// `value` functions and their `isOutOfTolerance` functions can read plain
+// row.* fields -- the same shape General's MCOLS/ECOLS rows already have --
+// instead of every column re-deriving it from data/sectionData itself.
+function performanceRows(data) {
+  const sectionData = data.performance_test || {};
+  return PERFORMANCE_ROWS.map((r) => {
+    const measured = sectionData[r.key] || {};
+    return {
+      ...r,
+      bemf_measured:    measured.bemf_measured || '',
+      current_measured: measured.current_measured || '',
+      bemfDisplay:    specDisplay(data, `${r.key}_bemf`),
+      currentDisplay: specDisplay(data, `${r.key}_current`),
+      bemfOutOfTolerance:    specOutOfTolerance(measured.bemf_measured, data, `${r.key}_bemf`),
+      currentOutOfTolerance: specOutOfTolerance(measured.current_measured, data, `${r.key}_current`),
+    };
+  });
+}
+
 function performanceColumns() {
   return [
     { label: 'RPM', w: 40, align: 'center', value: (row) => row.rpm },
     { label: 'Source Voltage DC (V)', w: 70, align: 'center', value: (row) => row.sourceVoltage },
-    { label: 'Specified', w: 55, align: 'center', group: 'BEMF (V)', value: (row) => row.bemfSpec },
-    { label: 'Measured', w: 55, align: 'center', group: 'BEMF (V)', value: (row, sectionData) => (sectionData[row.key] || {}).bemf_measured || '' },
-    { label: 'Specified', w: 55, align: 'center', group: 'Running Current (A)', value: (row) => row.currentSpec },
-    { label: 'Measured', w: 55, align: 'center', group: 'Running Current (A)', value: (row, sectionData) => (sectionData[row.key] || {}).current_measured || '' },
+    { label: 'Specified', w: 55, align: 'center', group: 'BEMF (V)', wrap: true,
+      value: (row) => row.bemfDisplay },
+    { label: 'Measured', w: 55, align: 'center', group: 'BEMF (V)',
+      value: (row) => row.bemf_measured,
+      isOutOfTolerance: (row) => row.bemfOutOfTolerance },
+    { label: 'Specified', w: 55, align: 'center', group: 'Running Current (A)', wrap: true,
+      value: (row) => row.currentDisplay },
+    { label: 'Measured', w: 55, align: 'center', group: 'Running Current (A)',
+      value: (row) => row.current_measured,
+      isOutOfTolerance: (row) => row.currentOutOfTolerance },
     { label: 'Measurement Method', align: 'center', value: (row) => row.method },
   ];
 }
@@ -132,12 +159,33 @@ const PHYSICAL_PARAM_ROWS = [
   { key: 'physical_damage',    sno: 25, label: 'Physical Damage',                         spec: 'No Breaks, Cracks etc.,',                 method: 'VI' },
 ];
 
+// Same enrichment approach as performanceRows above. Only the 3 rows present
+// in SPEC_DEFAULTS get specDisplay/specOutOfTolerance computed; the other 22
+// rows' row.spec/row.method (their fixed literal text) pass through
+// untouched, and physicalParamColumns' Specification column falls back to
+// row.spec for them.
+function physicalParamRows(data) {
+  const sectionData = data.physical_parameters || {};
+  return PHYSICAL_PARAM_ROWS.map((r) => {
+    const measured = (sectionData[r.key] || {}).measured ?? 'GO';
+    const row = { ...r, measured };
+    if (SPEC_DEFAULTS[r.key]) {
+      row.specDisplay = specDisplay(data, r.key);
+      row.specOutOfTolerance = specOutOfTolerance(measured, data, r.key);
+    }
+    return row;
+  });
+}
+
 function physicalParamColumns() {
   return [
     { label: 'Sr.No', w: 30, align: 'center', value: (row) => row.sno },
     { label: 'Parameter', w: 150, align: 'left', value: (row) => row.label },
-    { label: 'Specification', w: 150, align: 'center', value: (row) => row.spec },
-    { label: 'Measurement', w: 80, align: 'center', value: (row, sectionData) => (sectionData[row.key] || {}).measured || 'GO' },
+    { label: 'Specification', w: 150, align: 'center', wrap: true,
+      value: (row) => (row.specDisplay !== undefined ? row.specDisplay : row.spec) },
+    { label: 'Measurement', w: 80, align: 'center',
+      value: (row) => row.measured,
+      isOutOfTolerance: (row) => !!row.specOutOfTolerance },
     { label: 'Measurement Method', align: 'center', value: (row) => row.method },
   ];
 }
@@ -168,7 +216,7 @@ const autonxtTemplate = {
           type: 'table', gap: 6,
           title: 'A. Performance Test @ No Load :',
           mode: 'fixed', dataKey: 'performance_test',
-          fixedRows: () => PERFORMANCE_ROWS, columns: performanceColumns(),
+          fixedRows: performanceRows, columns: performanceColumns(),
           headerHeight: 36, rowHeight: 14,
         },
         {
@@ -189,7 +237,7 @@ const autonxtTemplate = {
           type: 'table', gap: 6,
           title: 'C. Physical Parameters:',
           mode: 'fixed', dataKey: 'physical_parameters',
-          fixedRows: () => PHYSICAL_PARAM_ROWS, columns: physicalParamColumns(),
+          fixedRows: physicalParamRows, columns: physicalParamColumns(),
           headerHeight: 14, rowHeight: 14,
         },
         { type: 'text', gap: 8, label: 'Remarks:', dataKey: 'page2_remarks', default: 'ALL OK, PASSED.' },
