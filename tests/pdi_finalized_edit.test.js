@@ -14,8 +14,6 @@ const mockQuery = jest.fn(async (sql, params) => {
   mockState.queries.push({ sql, params });
   if (/SELECT can_write FROM permissions/.test(sql)) return { rows: mockState.permissionRows };
   if (/SELECT status, revision_no, data FROM/.test(sql)) return { rows: mockState.preReadRow ? [mockState.preReadRow] : [] };
-  if (/INSERT INTO pdi_report_revisions/.test(sql)) return { rows: [], rowCount: 1 };
-  if (/status = 'Completed' AND revision_no = /.test(sql)) return { rows: mockState.updateRows, rowCount: mockState.updateRows.length };
   if (/WHERE report_id = \$\d+ AND status <> 'Completed'/.test(sql)) return { rows: mockState.updateRows, rowCount: mockState.updateRows.length };
   if (/SET drive_file_id/.test(sql)) return { rows: [], rowCount: 1 };
   if (/SELECT 1 FROM pre_dispatch_inspection_reports WHERE report_id/.test(sql)) return { rows: mockState.reportExists ? [{ '?column?': 1 }] : [] };
@@ -25,9 +23,15 @@ const mockQuery = jest.fn(async (sql, params) => {
   }
   return { rows: [], rowCount: 0 };
 });
+// The guarded UPDATE + audit-snapshot INSERT for editing a Completed report
+// run inside one transaction (pool.connect()) -- see the design spec's
+// atomicity fix. BEGIN/COMMIT/ROLLBACK are no-ops here; the two real
+// statements share mockState with mockQuery's patterns above.
+const mockClient = { query: jest.fn(), release: jest.fn() };
+const mockConnect = jest.fn(async () => mockClient);
+jest.mock('../config/db', () => ({ query: (...a) => mockQuery(...a), connect: (...a) => mockConnect(...a) }));
 const mockUpload = jest.fn(async () => ({ id: 'drive-new' }));
 const mockDeleteDrive = jest.fn(async () => undefined);
-jest.mock('../config/db', () => ({ query: (...a) => mockQuery(...a) }));
 jest.mock('../services/googleDrive', () => ({
   uploadBufferToDrivePrivate: (...a) => mockUpload(...a),
   deleteDriveFile: (...a) => mockDeleteDrive(...a),
@@ -37,6 +41,15 @@ const PdiReports = require('../models/operations/pdiReports');
 
 beforeEach(() => {
   mockQuery.mockClear(); mockUpload.mockClear(); mockDeleteDrive.mockClear();
+  mockConnect.mockClear(); mockClient.release.mockClear();
+  mockClient.query.mockReset();
+  mockClient.query.mockImplementation(async (sql, params) => {
+    mockState.queries.push({ sql, params });
+    if (sql === 'BEGIN' || sql === 'COMMIT' || sql === 'ROLLBACK') return {};
+    if (/status = 'Completed' AND revision_no = /.test(sql)) return { rows: mockState.updateRows, rowCount: mockState.updateRows.length };
+    if (/INSERT INTO pdi_report_revisions/.test(sql)) return { rows: [], rowCount: 1 };
+    throw new Error(`Unexpected client query in test: ${sql}`);
+  });
   mockState.preReadRow = { status: 'Completed', revision_no: 3, data: { pdi_no: 'PDI-EDIT-1', customer_name: 'Old Name' } };
   mockState.permissionRows = [{ can_write: true }];
   mockState.updateRows = [{
@@ -108,12 +121,34 @@ describe('patchReport editing an already-Completed report', () => {
     expect(mockState.queries.some((q) => /INSERT INTO pdi_report_revisions/.test(q.sql))).toBe(false);
   });
 
-  it('rejects with REPORT_VERSION_CONFLICT when a concurrent edit wins the race (the guarded UPDATE matches no row)', async () => {
+  it('rejects with REPORT_VERSION_CONFLICT when a concurrent edit wins the race (the guarded UPDATE matches no row), and never writes a phantom audit snapshot for the rejected edit', async () => {
     mockState.updateRows = []; // permission + pre-check both passed, but the UPDATE itself found no matching row
     await expect(
-      PdiReports.patchReport(7, { data: { pdi_no: 'PDI-EDIT-1' } }, null, { role_id: 1, expected_revision: 3 })
+      PdiReports.patchReport(7, { data: { pdi_no: 'PDI-EDIT-1' } }, null, { role_id: 1, edited_by: 42, expected_revision: 3 })
     ).rejects.toMatchObject({ code: 'REPORT_VERSION_CONFLICT' });
     expect(mockUpload).not.toHaveBeenCalled();
+    // The UPDATE and the snapshot INSERT are one transaction specifically so
+    // a losing race never leaves behind a snapshot row attributing an edit
+    // that was actually rejected to the user who attempted it.
+    expect(mockState.queries.some((q) => /INSERT INTO pdi_report_revisions/.test(q.sql))).toBe(false);
+    expect(mockClient.query).toHaveBeenCalledWith('ROLLBACK');
+    expect(mockClient.query).not.toHaveBeenCalledWith('COMMIT');
+    expect(mockClient.release).toHaveBeenCalledTimes(1);
+  });
+
+  it('commits the UPDATE and the snapshot INSERT together, in that order, inside one transaction', async () => {
+    await PdiReports.patchReport(
+      7, { data: { pdi_no: 'PDI-EDIT-1' } }, null, { role_id: 1, edited_by: 42, expected_revision: 3 }
+    );
+    const clientCalls = mockClient.query.mock.calls.map(([sql]) => sql);
+    const updateIndex = clientCalls.findIndex((sql) => /status = 'Completed' AND revision_no = /.test(sql));
+    const insertIndex = clientCalls.findIndex((sql) => /INSERT INTO pdi_report_revisions/.test(sql));
+    expect(updateIndex).toBeGreaterThanOrEqual(0);
+    expect(insertIndex).toBeGreaterThan(updateIndex);
+    expect(mockClient.query).toHaveBeenCalledWith('BEGIN');
+    expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
+    expect(mockClient.query).not.toHaveBeenCalledWith('ROLLBACK');
+    expect(mockClient.release).toHaveBeenCalledTimes(1);
   });
 
   it('never lets `status` change through this path, even if the caller sends one', async () => {

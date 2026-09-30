@@ -345,30 +345,56 @@ class PdiReports {
       return this.getById(_id, { photosSummary });
     }
 
-    await pool.query(
-      `INSERT INTO pdi_report_revisions (report_id, revision_no, data, edited_by) VALUES ($1, $2, $3, $4)`,
-      // edited_by references users(user_id) -- a completely different id
-      // space from role_id (used above only for the permission check), so
-      // the actual editing user's id must be threaded through separately.
-      [_id, currentRevision, JSON.stringify(currentData || {}), edited_by || null]
-    );
-
+    // The guarded UPDATE and the audit snapshot must commit or fail together
+    // -- two concurrent permitted edits both reading revision_no=N would
+    // otherwise BOTH successfully insert a snapshot row before only one of
+    // their UPDATEs actually wins, permanently attributing a rejected edit
+    // to whichever caller lost the race. UPDATE runs first inside the
+    // transaction (still the same optimistic-concurrency guard); the
+    // snapshot is only inserted once that UPDATE has proven currentData/
+    // currentRevision (read before this transaction opened) were still
+    // accurate at commit time -- nothing else could have changed revision_no
+    // in between, or this UPDATE's WHERE clause would itself have matched 0 rows.
     finalizedSets.push('revision_no = revision_no + 1');
     values.push(_id, currentRevision);
-    const result = await pool.query(`
-      UPDATE pre_dispatch_inspection_reports
-      SET ${finalizedSets.join(', ')}
-      WHERE report_id = $${i} AND status = 'Completed' AND revision_no = $${i + 1}
-      RETURNING ${reportColumns('', { photosSummary })}
-    `, values);
 
-    if (result.rows.length === 0) {
-      // Another edit won the race between the read above and this UPDATE --
-      // the snapshot row just inserted still accurately describes what
-      // revision_no=`currentRevision` contained, so it's left in place.
-      const conflict = new Error('This report was edited by someone else first. Reload and try again.');
-      conflict.code = 'REPORT_VERSION_CONFLICT';
-      throw conflict;
+    const client = await pool.connect();
+    let rolledBack = false;
+    let result;
+    try {
+      await client.query('BEGIN');
+
+      result = await client.query(`
+        UPDATE pre_dispatch_inspection_reports
+        SET ${finalizedSets.join(', ')}
+        WHERE report_id = $${i} AND status = 'Completed' AND revision_no = $${i + 1}
+        RETURNING ${reportColumns('', { photosSummary })}
+      `, values);
+
+      if (result.rows.length === 0) {
+        rolledBack = true;
+        await client.query('ROLLBACK');
+        const conflict = new Error('This report was edited by someone else first. Reload and try again.');
+        conflict.code = 'REPORT_VERSION_CONFLICT';
+        throw conflict;
+      }
+
+      await client.query(
+        `INSERT INTO pdi_report_revisions (report_id, revision_no, data, edited_by) VALUES ($1, $2, $3, $4)`,
+        // edited_by references users(user_id) -- a completely different id
+        // space from role_id (used above only for the permission check), so
+        // the actual editing user's id must be threaded through separately.
+        [_id, currentRevision, JSON.stringify(currentData || {}), edited_by || null]
+      );
+
+      await client.query('COMMIT');
+    } catch (error) {
+      if (!rolledBack) {
+        try { await client.query('ROLLBACK'); } catch { /* connection may already be dead */ }
+      }
+      throw error;
+    } finally {
+      client.release();
     }
 
     const payload = this.#toPayload(result.rows[0]);
