@@ -54,6 +54,7 @@ const activitiesRoutes       = require('./routes/operations/activities');
 const problemsRoutes         = require('./routes/operations/problems');
 const pdiRoutes              = require('./routes/operations/pdi');
 const pdiReportsRoutes       = require('./routes/operations/pdiReports');
+const pdiReportBatchesRoutes = require('./routes/operations/pdiReportBatches');
 const pdiAdminRoutes         = require('./routes/operations/pdiAdmin');
 
 // ── Service & Repair routes ───────────────────────────────────
@@ -184,9 +185,11 @@ app.use('/api/invoice-records',  invoiceRecordsRoutes);
 app.use('/api/queries',     queriesRoutes);
 app.use('/api/activities',  activitiesRoutes);
 app.use('/api/problems',    problemsRoutes);
-// Order matters: /api/pdi/reports must be mounted before /api/pdi, or Express
-// would hand "reports" off to the legacy router's GET /:id handler instead.
+// Order matters: /api/pdi/reports and /api/pdi/report-batches must both be
+// mounted before /api/pdi, or Express would hand them off to the legacy
+// router's GET /:id handler instead.
 app.use('/api/pdi/reports', pdiReportsRoutes);
+app.use('/api/pdi/report-batches', pdiReportBatchesRoutes);
 app.use('/api/pdi/admin/templates', pdiAdminRoutes);
 app.use('/api/pdi',         pdiRoutes);
 
