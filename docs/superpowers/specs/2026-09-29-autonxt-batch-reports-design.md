@@ -36,7 +36,20 @@ CREATE TABLE pdi_report_batches (
   status TEXT NOT NULL DEFAULT 'In Progress',   -- 'In Progress' | 'Completed'
   drive_file_id TEXT,                            -- the COMBINED PDF's Drive id
   created_by INTEGER REFERENCES users(user_id),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  -- Optional, added after comparing this design against a real multi-motor
+  -- Compage QA document: these five fields repeat identically across every
+  -- motor in a real lot. Seeding them once here (alongside pdi_no) means a
+  -- technician doesn't retype them on every one of N reports, and they're
+  -- authoritative at render time exactly like pdi_no already is (a null
+  -- column here leaves whatever an individual report's own data holds
+  -- untouched, so this is fully backward-compatible with a batch created
+  -- before these columns existed).
+  customer_name TEXT,
+  product_id TEXT,
+  product_specifications TEXT,
+  drawing_no TEXT,
+  controller_type TEXT
 );
 
 ALTER TABLE pre_dispatch_inspection_reports
@@ -50,8 +63,10 @@ A batched report is an ordinary row in the existing table in every other respect
 
 ```
 POST /api/pdi/report-batches
-  body: { template_id: "autonxt", pdi_no: "PDI-2026-001", quantity: 5 }
+  body: { template_id: "autonxt", pdi_no: "PDI-2026-001", quantity: 5,
+          customer_name?, product_id?, product_specifications?, drawing_no?, controller_type? }
   → 201 { batch_id, template_id, pdi_no, lot_quantity, status: "In Progress",
+          customer_name, product_id, product_specifications, drawing_no, controller_type,
           reports: [ { report_id, lot_index, lot_quantity }, ... ] }   -- N entries
 
 GET /api/pdi/report-batches/:batchId
@@ -81,7 +96,7 @@ Traced through the actual mechanics before finalizing this design: `finalizeRepo
 
 1. Validate every linked report has what finalize needs (same `pdi_no` check `finalizeReport` already does — trivially satisfied here since `pdi_no` is stamped onto every linked report at batch-creation time from the batch's own shared `pdi_no`). If any report fails, the whole batch finalize fails before anything is marked `Completed`, identifying which report and why.
 2. Mark each linked report `Completed` with the same guarded `UPDATE ... WHERE status <> 'Completed'` SQL `finalizeReport` already uses (reused as a SQL pattern, not by calling the function) — one report at a time, in `lot_index` order.
-3. Render all N reports into **one shared `PDFDocument`** in a single pass (Approach A) — each report's photos are downscaled the same way a single-report PDF already is, and page numbering runs once across the whole combined document at the end, not restarted per report.
+3. Render all N reports into **one shared `PDFDocument`** in a single pass (Approach A) — each report's photos are downscaled the same way a single-report PDF already is. Page numbering restarts at "Pg 1 of N" for each report's own page count, matching a normal single-report PDF (confirmed against an actual multi-motor Compage QA lot document, which numbers every motor's pages independently rather than continuously across the whole lot). The batch's own `pdi_no` and any set shared field (customer_name, product_id, product_specifications, drawing_no, controller_type) are authoritative over whatever an individual report's own data holds, same reasoning for all of them.
 4. Cache and Drive-back-up **only the combined PDF**, mirroring the existing per-report pattern but at the batch level (`pdi_report_batches.drive_file_id`, cache key `batch-${batchId}`).
 5. Mark the batch `Completed`.
 

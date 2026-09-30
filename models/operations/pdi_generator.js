@@ -3,7 +3,7 @@
 
 const PDFDocument = require('pdfkit');
 const { registerFonts, M } = require('./pdi/primitives');
-const { renderTemplate, numberBufferedPages } = require('./pdi/renderer');
+const { renderTemplate, numberPageRange } = require('./pdi/renderer');
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 const { hydrateTemplate, buildSampleData } = require('./pdi/authoredTemplate');
@@ -75,10 +75,13 @@ class PDIGenerator {
   // [{ templateId, templateVersion, data }, ...], already in the order the
   // combined PDF should read in (lot_index order for a batch). Each report's
   // photos are downscaled the same way a single-report PDF already is.
-  // Page numbering runs ONCE across the whole combined document at the end
-  // (continuous "Pg X of TOTAL"), not restarted per report -- see
-  // renderer.js's renderTemplate `numberPages` option for why a second
-  // in-place numbering pass would corrupt earlier reports' footers.
+  // Each report's own pages are numbered independently, restarting at
+  // "Pg 1 of N" for that report's own page count -- matching both a normal
+  // single-report PDF and the real customer-facing PDI format (confirmed
+  // against an actual multi-motor lot document from Compage QA, which
+  // restarts per motor rather than numbering the whole lot continuously).
+  // See renderer.js's numberPageRange for why this is done per report
+  // immediately after rendering it, not once at the end.
   static async generateCombined(reportsData, options = {}) {
     const doc = new PDFDocument({
       size: 'A4',
@@ -94,10 +97,12 @@ class PDIGenerator {
       const stats = {};
       const optimized = await optimizePhotoData(template, data, stats);
       if (options.timings) options.timings.push(stats);
+      const startPage = doc.bufferedPageRange().count;
       renderTemplate(doc, template, optimized, { numberPages: false });
+      const pageCount = doc.bufferedPageRange().count - startPage;
+      numberPageRange(doc, startPage, pageCount);
     }
 
-    numberBufferedPages(doc);
     doc.end();
     return doc;
   }

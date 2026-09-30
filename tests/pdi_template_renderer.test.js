@@ -1,6 +1,6 @@
 const PDFDocument = require('pdfkit');
 const { registerFonts } = require('../models/operations/pdi/primitives');
-const { renderTemplate, numberBufferedPages } = require('../models/operations/pdi/renderer');
+const { renderTemplate, numberBufferedPages, numberPageRange } = require('../models/operations/pdi/renderer');
 
 function bufferPdf(doc) {
   return new Promise((resolve, reject) => {
@@ -531,7 +531,7 @@ describe('PDI template renderer', () => {
       expect(drawnTexts).toContain('Pg 1 of 1');
     });
 
-    it('numberBufferedPages, called once after two numberPages:false renders, numbers across the WHOLE combined document', async () => {
+    it('numberPageRange numbers only the given sub-range, restarting locally -- how batch combining numbers each report independently', async () => {
       const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
       registerFonts(doc);
       const drawnTexts = [];
@@ -539,16 +539,16 @@ describe('PDI template renderer', () => {
       doc.text = (str, ...rest) => { drawnTexts.push(String(str)); return originalText(str, ...rest); };
 
       renderTemplate(doc, onePageTemplate('A'), {}, { numberPages: false });
+      numberPageRange(doc, 0, 1);
       renderTemplate(doc, onePageTemplate('B'), {}, { numberPages: false });
-      numberBufferedPages(doc);
+      numberPageRange(doc, 1, 1);
       doc.end();
       await bufferPdf(doc);
 
-      // Two 1-page reports combined -> continuous "Pg 1 of 2" / "Pg 2 of 2",
-      // not each restarting at "Pg 1 of 1".
-      expect(drawnTexts).toContain('Pg 1 of 2');
-      expect(drawnTexts).toContain('Pg 2 of 2');
-      expect(drawnTexts.filter((t) => /^Pg \d+ of \d+$/.test(t))).toHaveLength(2);
+      // Two 1-page reports combined, each numbered independently right after
+      // being rendered -> both restart at "Pg 1 of 1", never "Pg 1 of 2"/"Pg 2 of 2".
+      const pageLabels = drawnTexts.filter((t) => /^Pg \d+ of \d+$/.test(t));
+      expect(pageLabels).toEqual(['Pg 1 of 1', 'Pg 1 of 1']);
     });
   });
 });

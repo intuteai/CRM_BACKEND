@@ -105,6 +105,61 @@ describe('createBatch', () => {
     }
   });
 
+  it('stamps optional shared fields (customer/product/dwg/controller) onto the batch row and every linked report, alongside pdi_no', async () => {
+    mockClient.query.mockImplementation(async (sql, params) => {
+      if (sql === 'BEGIN' || sql === 'COMMIT') return {};
+      if (/INSERT INTO pdi_report_batches/.test(sql)) {
+        return {
+          rows: [{
+            batch_id: 101, template_id: 'autonxt', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress',
+            customer_name: 'Autonxt', product_id: 'PMSM220_HV32384', product_specifications: '32.0kw, 384V, 2350',
+            drawing_no: 'CASPL-220/007-00', controller_type: 'CASHV38140',
+          }],
+        };
+      }
+      if (/INSERT INTO pre_dispatch_inspection_reports/.test(sql)) {
+        const lotIndex = params[params.length - 1];
+        return { rows: [{ report_id: 1000 + lotIndex, lot_index: lotIndex }] };
+      }
+      throw new Error(`Unexpected query in test: ${sql}`);
+    });
+
+    const result = await PdiReportBatches.createBatch({
+      template_id: 'autonxt', pdi_no: 'PDI-2026-001', quantity: 2,
+      customer_name: 'Autonxt', product_id: 'PMSM220_HV32384', product_specifications: '32.0kw, 384V, 2350',
+      drawing_no: 'CASPL-220/007-00', controller_type: 'CASHV38140',
+    });
+    expect(result.customer_name).toBe('Autonxt');
+
+    const reportInsertCalls = mockClient.query.mock.calls.filter(([sql]) => /INSERT INTO pre_dispatch_inspection_reports/.test(sql));
+    expect(reportInsertCalls).toHaveLength(2);
+    for (const [, params] of reportInsertCalls) {
+      const stampedData = JSON.parse(params[2]); // data is the 3rd bound param
+      expect(stampedData).toEqual({
+        pdi_no: 'PDI-2026-001', customer_name: 'Autonxt', product_id: 'PMSM220_HV32384',
+        product_specifications: '32.0kw, 384V, 2350', drawing_no: 'CASPL-220/007-00', controller_type: 'CASHV38140',
+      });
+    }
+  });
+
+  it('omits shared fields from every linked report\'s data when none are provided (only pdi_no is stamped)', async () => {
+    mockClient.query.mockImplementation(async (sql, params) => {
+      if (sql === 'BEGIN' || sql === 'COMMIT') return {};
+      if (/INSERT INTO pdi_report_batches/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt', pdi_no: 'P', lot_quantity: 1, status: 'In Progress' }] };
+      }
+      if (/INSERT INTO pre_dispatch_inspection_reports/.test(sql)) {
+        return { rows: [{ report_id: 1001, lot_index: params[params.length - 1] }] };
+      }
+      throw new Error(`Unexpected query in test: ${sql}`);
+    });
+
+    await PdiReportBatches.createBatch({ template_id: 'autonxt', pdi_no: 'P', quantity: 1 });
+
+    const [, params] = mockClient.query.mock.calls.find(([sql]) => /INSERT INTO pre_dispatch_inspection_reports/.test(sql));
+    expect(JSON.parse(params[2])).toEqual({ pdi_no: 'P' });
+  });
+
   it('rejects an unknown template_id with the same error PdiReports.resolveTemplateVersion throws, before opening a connection', async () => {
     await expect(PdiReportBatches.createBatch({ template_id: 'not-a-real-template', pdi_no: 'P-1', quantity: 2 }))
       .rejects.toThrow(/Unknown PDI template: not-a-real-template/);
@@ -305,12 +360,52 @@ describe('finalizeBatch', () => {
 
     generateCombinedSpy.mockRestore();
   });
+
+  it('overrides shared fields (customer/product/dwg/controller) from the batch row when set, but leaves a report\'s own data alone for any that are not set on the batch', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return {
+          rows: [{
+            batch_id: 101, template_id: 'autonxt', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress',
+            customer_name: 'Autonxt', product_id: 'PMSM220_HV32384',
+            // product_specifications/drawing_no/controller_type left unset (null) on the batch.
+            product_specifications: null, drawing_no: null, controller_type: null,
+          }],
+        };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return {
+          rows: [
+            reportRow(1, { data: { pdi_no: 'PDI-2026-001', customer_name: 'Drifted Co.', controller_type: 'CASHV38140' } }),
+            reportRow(2, { data: { pdi_no: 'PDI-2026-001', controller_type: 'CASHV38140' } }),
+          ],
+        };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    mockSuccessfulFinalizeTransaction();
+    mockUpload.mockResolvedValue({ id: 'drive-batch-1' });
+    const generateCombinedSpy = jest.spyOn(PDIGenerator, 'generateCombined');
+
+    await PdiReportBatches.finalizeBatch(101);
+
+    const reportsData = generateCombinedSpy.mock.calls[0][0];
+    for (const r of reportsData) {
+      // Set on the batch -> overrides whatever the report itself had.
+      expect(r.data.customer_name).toBe('Autonxt');
+      expect(r.data.product_id).toBe('PMSM220_HV32384');
+      // Not set on the batch -> the report's own value survives untouched.
+      expect(r.data.controller_type).toBe('CASHV38140');
+    }
+
+    generateCombinedSpy.mockRestore();
+  });
 });
 
 describe('getBatchPdfForDownload', () => {
   it('returns 409 BATCH_NOT_READY when the batch has not been finalized', async () => {
     mockState.poolQueryImpl = async (sql) => {
-      if (/SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'In Progress', pdi_no: 'PDI-2026-001' }] };
+      if (/SELECT status, pdi_no[\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'In Progress', pdi_no: 'PDI-2026-001' }] };
       return { rows: [], rowCount: 0 };
     };
     await expect(PdiReportBatches.getBatchPdfForDownload(101)).rejects.toMatchObject({ code: 'BATCH_NOT_READY' });
@@ -319,7 +414,7 @@ describe('getBatchPdfForDownload', () => {
   it('serves the cached combined PDF for a Completed batch', async () => {
     await pdfCache.write(101, Buffer.from('%PDF-1.4 combined'), 'batch');
     mockState.poolQueryImpl = async (sql) => {
-      if (/SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'Completed', pdi_no: 'PDI-2026-001' }] };
+      if (/SELECT status, pdi_no[\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'Completed', pdi_no: 'PDI-2026-001' }] };
       return { rows: [], rowCount: 0 };
     };
     const { buffer, source } = await PdiReportBatches.getBatchPdfForDownload(101);
@@ -327,10 +422,10 @@ describe('getBatchPdfForDownload', () => {
     expect(source).toBe('cache');
   });
 
-  it('re-renders the combined PDF on a cache miss for a Completed batch, forcing every report data.pdi_no to the batch pdi_no', async () => {
+  it('re-renders the combined PDF on a cache miss for a Completed batch, forcing every report data.pdi_no and any set shared field to the batch\'s own values', async () => {
     mockState.poolQueryImpl = async (sql) => {
-      if (/SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id/.test(sql)) {
-        return { rows: [{ status: 'Completed', pdi_no: 'PDI-2026-001' }] };
+      if (/SELECT status, pdi_no[\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ status: 'Completed', pdi_no: 'PDI-2026-001', customer_name: 'Autonxt', product_id: null }] };
       }
       if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
         return {
@@ -353,7 +448,11 @@ describe('getBatchPdfForDownload', () => {
     expect(reportsData).toHaveLength(2);
     for (const r of reportsData) {
       expect(r.data.pdi_no).toBe('PDI-2026-001');
+      // Set on the batch (customer_name) -> overrides; not set (product_id
+      // is null on the batch) -> report 2's own value is left untouched.
+      expect(r.data.customer_name).toBe('Autonxt');
     }
+    expect(reportsData[1].data.motor_sr_no).toBe('SR2');
 
     // cache-miss render also writes the disk cache, same as the finalize path.
     expect(await pdfCache.read(101, 'batch')).not.toBeNull();

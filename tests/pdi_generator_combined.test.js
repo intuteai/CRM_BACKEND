@@ -31,7 +31,7 @@ describe('PDIGenerator.generateCombined', () => {
     expect(combined.length).toBeGreaterThan(single.length * 1.3);
   });
 
-  it('numbers pages continuously across the whole combined document, not restarting per report', async () => {
+  it('numbers pages restarting at 1 for each report, not continuously across the combined document', async () => {
     const PDFDocument = require('pdfkit');
     const drawn = [];
     const originalText = PDFDocument.prototype.text;
@@ -48,12 +48,12 @@ describe('PDIGenerator.generateCombined', () => {
       PDFDocument.prototype.text = originalText;
     }
     const pageLabels = drawn.filter((t) => /^Pg \d+ of \d+$/.test(t));
-    // AutoNXT is a 3-page template -- 2 motors combined = 6 pages, numbered
-    // "Pg 1 of 6".."Pg 6 of 6", never restarting at "Pg 1 of 3" for motor 2.
-    expect(pageLabels).toHaveLength(6);
-    expect(pageLabels).toContain('Pg 1 of 6');
-    expect(pageLabels).toContain('Pg 6 of 6');
-    expect(pageLabels.some((t) => t === 'Pg 1 of 3')).toBe(false);
+    // AutoNXT is a 3-page template -- 2 motors combined = 6 pages, but each
+    // motor's own 3 pages restart at "Pg 1 of 3", matching the real
+    // customer-facing PDI format (confirmed against an actual 16-motor
+    // Compage lot document, where every motor's footer independently reads
+    // "Pg 01 of 03"), never continuous "Pg 1 of 6" across the whole lot.
+    expect(pageLabels).toEqual(['Pg 1 of 3', 'Pg 2 of 3', 'Pg 3 of 3', 'Pg 1 of 3', 'Pg 2 of 3', 'Pg 3 of 3']);
   });
 
   it('rejects a report missing pdi_no, the same requirement generate() already has', async () => {

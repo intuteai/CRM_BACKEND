@@ -20,8 +20,14 @@ async function invalidateCache() {
 
 exports.createBatch = async (req, res) => {
   try {
-    const { template_id, pdi_no, quantity } = req.body || {};
-    const batch = await PdiReportBatches.createBatch({ template_id, pdi_no, quantity, created_by: req.user.user_id });
+    const {
+      template_id, pdi_no, quantity,
+      customer_name, product_id, product_specifications, drawing_no, controller_type,
+    } = req.body || {};
+    const batch = await PdiReportBatches.createBatch({
+      template_id, pdi_no, quantity, created_by: req.user.user_id,
+      customer_name, product_id, product_specifications, drawing_no, controller_type,
+    });
     await invalidateCache();
     logger.info(`PDI report batch created: ${batch.batch_id} (${batch.lot_quantity} reports) by ${req.user.user_id}`);
     res.status(201).json(batch);

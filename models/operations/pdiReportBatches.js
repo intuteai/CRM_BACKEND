@@ -10,6 +10,22 @@ const pdfCache = require('./pdi/pdfCache');
 const MIN_LOT_QUANTITY = 1;
 const MAX_LOT_QUANTITY = 50; // a technical safety cap, not a real business limit
 
+// A real multi-motor AutoNXT lot repeats these five fields identically
+// across every linked report (confirmed against an actual 16-motor Compage
+// QA document) -- optionally seeded once at batch creation so a technician
+// doesn't retype them on every one of N reports, and (mirroring pdi_no's
+// existing authoritative-at-render behavior) kept consistent across the
+// whole lot at render time even if an individual report's own data drifts.
+const SHARED_FIELDS = ['customer_name', 'product_id', 'product_specifications', 'drawing_no', 'controller_type'];
+
+function pickSharedFields(source) {
+  const picked = {};
+  for (const f of SHARED_FIELDS) {
+    if (source[f]) picked[f] = source[f];
+  }
+  return picked;
+}
+
 function bufferPdf(doc) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -32,7 +48,10 @@ class PdiReportBatches {
   // finalize's per-report pdi_no check is trivially satisfied later) and
   // starts 'Pending', same shape createReport already produces for a
   // standalone report.
-  static async createBatch({ template_id, pdi_no, quantity, created_by }) {
+  static async createBatch({
+    template_id, pdi_no, quantity, created_by,
+    customer_name, product_id, product_specifications, drawing_no, controller_type,
+  }) {
     const qty = Number(quantity);
     if (!Number.isInteger(qty) || qty < MIN_LOT_QUANTITY || qty > MAX_LOT_QUANTITY) {
       throw invalidQuantityError();
@@ -43,16 +62,22 @@ class PdiReportBatches {
       throw err;
     }
     const { templateId, templateVersion } = await PdiReports.resolveTemplateVersion(template_id || 'autonxt');
+    const shared = pickSharedFields({ customer_name, product_id, product_specifications, drawing_no, controller_type });
 
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
 
       const batchResult = await client.query(`
-        INSERT INTO pdi_report_batches (template_id, pdi_no, lot_quantity, status, created_by)
-        VALUES ($1, $2, $3, 'In Progress', $4)
-        RETURNING batch_id, template_id, pdi_no, lot_quantity, status
-      `, [templateId, pdi_no, qty, created_by || null]);
+        INSERT INTO pdi_report_batches
+          (template_id, pdi_no, lot_quantity, status, created_by, customer_name, product_id, product_specifications, drawing_no, controller_type)
+        VALUES ($1, $2, $3, 'In Progress', $4, $5, $6, $7, $8, $9)
+        RETURNING batch_id, template_id, pdi_no, lot_quantity, status, customer_name, product_id, product_specifications, drawing_no, controller_type
+      `, [
+        templateId, pdi_no, qty, created_by || null,
+        shared.customer_name || null, shared.product_id || null, shared.product_specifications || null,
+        shared.drawing_no || null, shared.controller_type || null,
+      ]);
       const batch = batchResult.rows[0];
 
       const reports = [];
@@ -62,7 +87,7 @@ class PdiReportBatches {
             (status, template_id, template_version, data, photos, batch_id, lot_index)
           VALUES ('Pending', $1, $2, $3, '{}'::jsonb, $4, $5)
           RETURNING report_id, lot_index
-        `, [templateId, templateVersion, JSON.stringify({ pdi_no }), batch.batch_id, lotIndex]);
+        `, [templateId, templateVersion, JSON.stringify({ pdi_no, ...shared }), batch.batch_id, lotIndex]);
         reports.push({ report_id: reportResult.rows[0].report_id, lot_index: reportResult.rows[0].lot_index, lot_quantity: qty });
       }
 
@@ -81,7 +106,7 @@ class PdiReportBatches {
     if (!Number.isFinite(_id)) throw new Error('Batch not found');
 
     const batchResult = await pool.query(
-      `SELECT batch_id, template_id, pdi_no, lot_quantity, status FROM pdi_report_batches WHERE batch_id = $1`,
+      `SELECT batch_id, template_id, pdi_no, lot_quantity, status, customer_name, product_id, product_specifications, drawing_no, controller_type FROM pdi_report_batches WHERE batch_id = $1`,
       [_id]
     );
     if (batchResult.rows.length === 0) throw new Error('Batch not found');
@@ -110,7 +135,7 @@ class PdiReportBatches {
     if (!Number.isFinite(_id)) throw new Error('Batch not found');
 
     const batchResult = await pool.query(
-      `SELECT batch_id, template_id, pdi_no, lot_quantity, status FROM pdi_report_batches WHERE batch_id = $1`,
+      `SELECT batch_id, template_id, pdi_no, lot_quantity, status, customer_name, product_id, product_specifications, drawing_no, controller_type FROM pdi_report_batches WHERE batch_id = $1`,
       [_id]
     );
     if (batchResult.rows.length === 0) throw new Error('Batch not found');
@@ -145,11 +170,16 @@ class PdiReportBatches {
 
     // Render before any status change -- a render failure must leave every
     // report and the batch exactly as they were, not locked Completed.
+    // batch.pdi_no and any set shared field (SHARED_FIELDS) are authoritative
+    // over whatever an individual report's own drifted data holds -- same
+    // reasoning as pdi_no, extended to the other lot-wide fields (customer,
+    // product id/specs, dwg no, controller type).
+    const overrides = pickSharedFields(batch);
     const pdfBuffer = await bufferPdf(await PDIGenerator.generateCombined(
       reports.map((r) => ({
         templateId: r.template_id,
         templateVersion: r.template_version,
-        data: { ...(r.data || {}), pdi_no: batch.pdi_no, photos: r.photos || {} },
+        data: { ...(r.data || {}), pdi_no: batch.pdi_no, ...overrides, photos: r.photos || {} },
       }))
     ));
 
@@ -223,7 +253,10 @@ class PdiReportBatches {
     const _id = Number(batchId);
     if (!Number.isFinite(_id)) throw new Error('Batch not found');
 
-    const meta = await pool.query(`SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id = $1`, [_id]);
+    const meta = await pool.query(
+      `SELECT status, pdi_no, customer_name, product_id, product_specifications, drawing_no, controller_type FROM pdi_report_batches WHERE batch_id = $1`,
+      [_id]
+    );
     if (meta.rows.length === 0) throw new Error('Batch not found');
 
     if (meta.rows[0].status !== 'Completed') {
@@ -238,7 +271,8 @@ class PdiReportBatches {
     // Cache miss on a Completed batch (e.g. after a redeploy emptied the disk
     // cache) -- re-render the combined PDF from each report's stored data,
     // same fallback shape PdiReports.getPdfForDownload already has for a
-    // single report.
+    // single report. Same shared-field override as finalizeBatch.
+    const overrides = pickSharedFields(meta.rows[0]);
     const reportsResult = await pool.query(`
       SELECT report_id, lot_index, template_id, template_version, data, photos
       FROM pre_dispatch_inspection_reports WHERE batch_id = $1
@@ -248,7 +282,7 @@ class PdiReportBatches {
       reportsResult.rows.map((r) => ({
         templateId: r.template_id,
         templateVersion: r.template_version,
-        data: { ...(r.data || {}), pdi_no: meta.rows[0].pdi_no, photos: r.photos || {} },
+        data: { ...(r.data || {}), pdi_no: meta.rows[0].pdi_no, ...overrides, photos: r.photos || {} },
       }))
     ));
     await pdfCache.write(_id, buffer, 'batch');

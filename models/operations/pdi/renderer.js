@@ -440,29 +440,36 @@ const DRAWERS = {
   text: drawTextSection,
 };
 
-// Draws page-number footers ("Pg X of TOTAL") on every currently-buffered
-// page. Split out of renderTemplate so batch-combining code can call it
-// exactly ONCE after rendering all N reports into one shared document,
-// instead of once per report -- see renderTemplate's numberPages option.
-function numberBufferedPages(doc) {
-  const range = doc.bufferedPageRange();
-  for (let i = 0; i < range.count; i++) {
-    doc.switchToPage(range.start + i);
-    drawPageNum(doc, i + 1, range.count);
+// Draws page-number footers ("Pg X of COUNT") on exactly `pageCount` pages
+// starting at `startPage`, restarting the local count at 1 regardless of how
+// many other pages exist in the document. Split out so batch-combining code
+// can number each report's own page range independently right after
+// rendering it (see renderTemplate's numberPages option and
+// pdi_generator.js's generateCombined) -- doc.bufferedPageRange() returns
+// EVERY page ever added to `doc`, so re-deriving a range like this each time
+// (rather than re-running the whole-document numbering pass more than once)
+// is what lets each report restart at "Pg 1 of N" instead of the whole
+// combined document being numbered continuously, and avoids redrawing text
+// on top of an already-numbered earlier report's footer (t() draws
+// transparent text, nothing else, so a second pass over the same page would
+// leave both texts visible, garbled together).
+function numberPageRange(doc, startPage, pageCount) {
+  for (let i = 0; i < pageCount; i++) {
+    doc.switchToPage(startPage + i);
+    drawPageNum(doc, i + 1, pageCount);
   }
 }
 
+// Numbers every currently-buffered page as one continuous range -- the
+// single-report behavior every existing call site relies on.
+function numberBufferedPages(doc) {
+  const range = doc.bufferedPageRange();
+  numberPageRange(doc, range.start, range.count);
+}
+
 // `numberPages` (default true, unchanged for every existing single-report
-// call site): when false, skips the page-numbering pass. Needed because
-// doc.bufferedPageRange() returns EVERY page ever added to `doc`, not just
-// the ones from this call -- calling the numbering pass a second time (e.g.
-// once per report while combining several into one shared document) would
-// redraw "Pg X of TOTAL" text directly over every earlier report's
-// already-numbered footer, with no background rectangle to hide the old
-// text underneath (t() draws transparent text, nothing else). A caller doing
-// that instead passes numberPages:false for every report and calls
-// numberBufferedPages(doc) itself exactly once at the end, producing one
-// continuous page count across the whole combined document.
+// call site): when false, skips the page-numbering pass, leaving the caller
+// to number the pages itself (e.g. via numberPageRange, once per report).
 function renderTemplate(doc, template, data, { numberPages = true } = {}) {
   template.pages.forEach(page => {
     doc.addPage();
@@ -478,4 +485,4 @@ function renderTemplate(doc, template, data, { numberPages = true } = {}) {
   if (numberPages) numberBufferedPages(doc);
 }
 
-module.exports = { renderTemplate, numberBufferedPages };
+module.exports = { renderTemplate, numberBufferedPages, numberPageRange };
