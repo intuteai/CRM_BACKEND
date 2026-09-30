@@ -701,6 +701,18 @@ class PdiReports {
     }
   }
 
+  // Exposed for one-off maintenance scripts (e.g.
+  // scripts/migrations/2026-09-30-fix-autonxt-spec-display.js) that correct
+  // a report's stored `data` directly in the database and then need to
+  // force a matching PDF re-render/Drive re-upload -- there is no "edit" by
+  // a user to attribute here, so this deliberately bypasses patchReport's
+  // permission/revision machinery entirely, same as the script's own direct
+  // UPDATE does for the data correction itself. Not part of the public
+  // HTTP-facing API -- no controller or route should call this.
+  static async reRenderFinalizedReportForMaintenance(reportId) {
+    return this.#reRenderFinalizedReport(reportId);
+  }
+
   static async getPdfBuffer(reportId) {
     const report = await this.getById(reportId);
     return bufferPdf(await PDIGenerator.generate(report.template_id, report.template_version, { ...(report.data || {}), photos: report.photos || [] }));
