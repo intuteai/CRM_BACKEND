@@ -10,6 +10,13 @@ const PdiReports = require('../../models/operations/pdiReports');
 // using the exact same formula as CRM's formatAutoNxtSpecDisplay (kept in
 // sync by convention, not by a shared package -- see that spec for why).
 // Run with --dry-run first and review the output before running for real.
+//
+// SAFETY: this does a bulk read then, per report, an unconditional whole-
+// row `data` overwrite from that stale snapshot -- no revision/version
+// check (deliberately, per the design spec: this isn't a user edit). If an
+// AutoNXT report is being actively edited through the app while this runs,
+// that edit can be silently clobbered. Run during a maintenance window /
+// low-traffic period, not during business hours.
 const DRY_RUN = process.argv.includes('--dry-run');
 
 // Mirrors CRM/src/components/admin/AutoNXTGeneratorForm.jsx's SPEC_DEFAULTS
@@ -69,13 +76,15 @@ async function run() {
   console.log(DRY_RUN ? 'DRY RUN -- no writes will be made.\n' : 'LIVE RUN -- this will write to the database.\n');
 
   const { rows: reports } = await pool.query(
-    `SELECT report_id, status, data FROM pre_dispatch_inspection_reports WHERE template_id = 'autonxt'`
+    `SELECT report_id, status, data FROM pre_dispatch_inspection_reports WHERE template_id = $1`,
+    ['autonxt']
   );
   console.log(`Found ${reports.length} AutoNXT report(s).\n`);
 
   let reportsChanged = 0;
   let fieldsChanged = 0;
   let reportsRerendered = 0;
+  let wouldRerenderCount = 0;
 
   for (const report of reports) {
     const data = report.data || {};
@@ -105,16 +114,25 @@ async function run() {
       });
     }
 
-    if (!DRY_RUN) {
+    const wouldRerender = report.status === 'Completed' && changedFieldsForThisReport.length > 0;
+    if (wouldRerender) {
+      wouldRerenderCount++;
+    }
+
+    if (changedFieldsForThisReport.length > 0 && DRY_RUN && wouldRerender) {
+      console.log(`  (would re-render PDF + re-upload to Drive on a real run)`);
+    }
+
+    if (!DRY_RUN && changedFieldsForThisReport.length > 0) {
       await pool.query(
         `UPDATE pre_dispatch_inspection_reports SET data = $1 WHERE report_id = $2`,
         [JSON.stringify(newData), report.report_id]
       );
 
-      if (report.status === 'Completed' && changedFieldsForThisReport.length > 0) {
+      if (wouldRerender) {
         await PdiReports.reRenderFinalizedReportForMaintenance(report.report_id);
         reportsRerendered++;
-        console.log(`  -> PDF re-rendered and re-uploaded to Drive.`);
+        console.log(`  -> Requested PDF re-render (reRenderFinalizedReportForMaintenance does not report success/failure directly -- check server logs for "PDI report re-rendered after finalized edit" or "Re-render ... failed" lines for report ${report.report_id} to confirm it actually succeeded).`);
       }
     }
   }
@@ -123,6 +141,7 @@ async function run() {
   if (!DRY_RUN) {
     console.log(`${reportsRerendered} finalized report(s) had their PDF re-rendered.`);
   } else {
+    console.log(`${wouldRerenderCount} finalized report(s) would have their PDF re-rendered on a real run.`);
     console.log('Dry run only -- nothing was written. Re-run without --dry-run to apply.');
   }
 
