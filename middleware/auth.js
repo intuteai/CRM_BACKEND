@@ -54,6 +54,21 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
+// Plain, directly-callable permission lookup -- the same query
+// checkPermission (route middleware, below) already ran, just usable from
+// anywhere, not only as an Express middleware. Added so a model method
+// (PdiReports.patchReport, editing an already-Completed report) can gate one
+// specific action without needing blanket route middleware on every PDI
+// edit -- see docs/superpowers/specs/2026-09-30-pdi-finalized-report-editing-design.md.
+async function hasPermission(role_id, module, action) {
+  const dbAction = action === 'can_create' ? 'can_write' : action;
+  const result = await pool.query(
+    `SELECT ${dbAction} FROM permissions WHERE role_id = $1 AND module = $2`,
+    [role_id, module]
+  );
+  return result.rows.length > 0 && !!result.rows[0][dbAction];
+}
+
 const checkPermission = (module, action) => {
   return async (req, res, next) => {
     // defensive: ensure req.user exists and contains role_id
@@ -61,13 +76,9 @@ const checkPermission = (module, action) => {
       return res.status(403).json({ error: 'Permission denied (no user)', code: 'PERM_DENIED' });
     }
 
-    const { role_id } = req.user;
-    const dbAction = action === 'can_create' ? 'can_write' : action;
-    const query = `SELECT ${dbAction} FROM permissions WHERE role_id = $1 AND module = $2`;
-
     try {
-      const result = await pool.query(query, [role_id, module]);
-      if (result.rows.length > 0 && result.rows[0][dbAction]) {
+      const allowed = await hasPermission(req.user.role_id, module, action);
+      if (allowed) {
         next();
       } else {
         res.status(403).json({ error: 'Permission denied', code: 'PERM_DENIED' });
@@ -79,4 +90,4 @@ const checkPermission = (module, action) => {
   };
 };
 
-module.exports = { authenticateToken, checkPermission };
+module.exports = { authenticateToken, checkPermission, hasPermission };
