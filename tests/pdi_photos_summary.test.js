@@ -126,6 +126,14 @@ describe('PDI reports ?photos=summary', () => {
     expect(res.body.photos).toHaveLength(3);
   });
 
+  // Incidentally the only real-DB, real-HTTP coverage of the finalized-editing
+  // feature's controller/route wiring and hasPermission's actual SQL --
+  // tests/pdi_finalized_edit.test.js covers patchReport's own logic
+  // thoroughly but with a fully mocked DB, so it never exercises the real
+  // `permissions` table lookup or the controller's error-code mapping. Kept
+  // here (not moved) because it needs zero extra fixture setup on top of
+  // what this file's `?photos=summary` tests already have (an Admin user, a
+  // throwaway report) -- if that setup ever changes, keep this assertion in mind.
   it('editing a finalized report without a matching expected_revision is still rejected (now REPORT_VERSION_CONFLICT, since this Admin user IS permitted to edit a Completed report -- see the finalized-report-editing feature), and a missing report is still 404, with the parameter', async () => {
     const id = await newReport(threeAndOne());
     await pool.query(`UPDATE pre_dispatch_inspection_reports SET status = 'Completed' WHERE report_id = $1`, [id]);

@@ -91,6 +91,10 @@ exports.patchReport = async (req, res) => {
   try {
     const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io, {
       photosSummary: wantsPhotosSummary(req),
+      // Only meaningful when editing an already-Completed report. role_id
+      // drives the permission check; edited_by (a different id space --
+      // the actual user, not their role) is who the audit snapshot
+      // attributes the edit to. Don't collapse these into one field.
       role_id: req.user.role_id,
       edited_by: req.user.user_id,
       expected_revision: req.body?.expected_revision,
