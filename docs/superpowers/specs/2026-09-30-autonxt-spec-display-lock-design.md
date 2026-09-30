@@ -47,8 +47,8 @@ Added alongside each client's existing AutoNXT spec catalog (`AUTO_NXT_SPECIFICA
 `formatAutoNxtSpecDisplay(nominal, tolMode, tol, tolMinus, { unit = '', prefix = '' })`, implemented once per client (mirrors `formatToleranceSpecification`'s existing shape/signature style):
 
 - Blank/non-numeric `nominal` → returns `"-"` (matches the existing placeholder already used by the four undefined RPM tiers' defaults — not an empty string, since AutoNXT reports commonly leave those tiers blank and the table cell must still show something).
-- `tolMode === '±'` or `'%'`: `` `${prefix}${nominal} ±${tol}${tolMode === '%' ? '%' : ''}${unit}` `` — e.g. `"6.0 ±2.0A"`, `"79.0 ±3%"`, `"467.5 ±1.0"`.
-- `tolMode === 'bilateral'`: `` `${prefix}${nominal} (${tol} TO ${tolMinus})` `` — e.g. `"Ø180.0 (-0.01 TO -0.05)"`.
+- `tolMode === '±'` or `'%'`: `` `${prefix}${nominal}±${tol}${tolMode === '%' ? '%' : ''}${unit}` `` — **no space** before `±` (today's defaults have none: `"79.0±3%"`, `"6.0±2.0A"`, `"467.5±1.0"`) — e.g. `"6.0±2.0A"`, `"79.0±3%"`, `"467.5±1.0"`.
+- `tolMode === 'bilateral'`: `` `${prefix}${nominal} (${tol} TO ${tolMinus})` `` — **with a space** before the parenthetical (today's one bilateral default has one: `"Ø180.0 (-0.01 TO -0.05)"`) — e.g. `"Ø180.0 (-0.01 TO -0.05)"`.
 
 This reproduces every one of today's 19 default strings exactly (verified by direct comparison against `CRM_BACKEND`'s `SPEC_DEFAULTS` table and `autonxtParity.ts`'s `defaultDisplay` values during implementation/testing).
 
