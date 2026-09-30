@@ -149,7 +149,7 @@ class PdiReportBatches {
       reports.map((r) => ({
         templateId: r.template_id,
         templateVersion: r.template_version,
-        data: { ...(r.data || {}), photos: r.photos || {} },
+        data: { ...(r.data || {}), pdi_no: batch.pdi_no, photos: r.photos || {} },
       }))
     ));
 
@@ -158,20 +158,17 @@ class PdiReportBatches {
     try {
       await client.query('BEGIN');
 
-      const reportIds = reports.map((r) => r.report_id);
-      const updateReportsResult = await client.query(`
+      // A row already Completed (e.g. finalized individually via the
+      // single-report endpoint before this batch finalize ran) is skipped by
+      // the WHERE clause -- that's fine, it's already in the desired end
+      // state, so there's nothing meaningful to check about how many rows
+      // this UPDATE actually touched. The earlier BATCH_INCOMPLETE check
+      // already guarantees the right set of reports exists.
+      await client.query(`
         UPDATE pre_dispatch_inspection_reports
         SET status = 'Completed'
         WHERE batch_id = $1 AND status <> 'Completed'
-        RETURNING report_id
       `, [_id]);
-      if (updateReportsResult.rows.length !== reportIds.length) {
-        rolledBack = true;
-        await client.query('ROLLBACK');
-        const err = new Error(`Batch ${_id}: one or more linked reports were already finalized outside this batch (expected ${reportIds.length}, updated ${updateReportsResult.rows.length}).`);
-        err.code = 'BATCH_REPORT_CONFLICT';
-        throw err;
-      }
 
       const updateBatchResult = await client.query(`
         UPDATE pdi_report_batches
@@ -226,7 +223,7 @@ class PdiReportBatches {
     const _id = Number(batchId);
     if (!Number.isFinite(_id)) throw new Error('Batch not found');
 
-    const meta = await pool.query(`SELECT status FROM pdi_report_batches WHERE batch_id = $1`, [_id]);
+    const meta = await pool.query(`SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id = $1`, [_id]);
     if (meta.rows.length === 0) throw new Error('Batch not found');
 
     if (meta.rows[0].status !== 'Completed') {
@@ -251,7 +248,7 @@ class PdiReportBatches {
       reportsResult.rows.map((r) => ({
         templateId: r.template_id,
         templateVersion: r.template_version,
-        data: { ...(r.data || {}), photos: r.photos || {} },
+        data: { ...(r.data || {}), pdi_no: meta.rows[0].pdi_no, photos: r.photos || {} },
       }))
     ));
     await pdfCache.write(_id, buffer, 'batch');

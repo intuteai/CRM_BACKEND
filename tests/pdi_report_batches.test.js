@@ -31,6 +31,15 @@ jest.mock('../services/googleDrive', () => ({
 
 const PdiReportBatches = require('../models/operations/pdiReportBatches');
 const pdfCache = require('../models/operations/pdi/pdfCache');
+const PDIGenerator = require('../models/operations/pdi_generator');
+
+// Shared report-row fixture used by both the finalizeBatch and
+// getBatchPdfForDownload describe blocks below.
+const reportRow = (lotIndex, over = {}) => ({
+  report_id: 1000 + lotIndex, lot_index: lotIndex, status: 'Pending', template_id: 'autonxt', template_version: null,
+  data: { pdi_no: 'PDI-2026-001', customer_name: 'Unit', motor_sr_no: `SR${lotIndex}` }, photos: {},
+  ...over,
+});
 
 let cacheDir;
 beforeEach(() => {
@@ -122,12 +131,6 @@ describe('createBatch', () => {
 });
 
 describe('finalizeBatch', () => {
-  const reportRow = (lotIndex, over = {}) => ({
-    report_id: 1000 + lotIndex, lot_index: lotIndex, status: 'Pending', template_id: 'autonxt', template_version: null,
-    data: { pdi_no: 'PDI-2026-001', customer_name: 'Unit', motor_sr_no: `SR${lotIndex}` }, photos: {},
-    ...over,
-  });
-
   // finalizeBatch now does its two status UPDATEs inside a transaction via
   // client.query (pool.connect()), while the read-only SELECTs still go
   // through plain pool.query -- so a successful-finalize test needs both
@@ -240,12 +243,74 @@ describe('finalizeBatch', () => {
     expect(mockConnect).not.toHaveBeenCalled();
     expect(mockUpload).not.toHaveBeenCalled();
   });
+
+  it('succeeds even when one member report was already Completed before this batch finalize ran (e.g. finalized individually via the single-report endpoint first)', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        // report 1 was already finalized individually (status Completed already);
+        // report 2 is still Pending.
+        return { rows: [reportRow(1, { status: 'Completed' }), reportRow(2)] };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    mockClient.query.mockImplementation(async (sql) => {
+      if (sql === 'BEGIN' || sql === 'COMMIT' || sql === 'ROLLBACK') return {};
+      if (/UPDATE pre_dispatch_inspection_reports[\s\S]*SET status = 'Completed'[\s\S]*WHERE batch_id/.test(sql)) {
+        // The already-Completed row (report 1) is skipped by `status <> 'Completed'`,
+        // so only 1 of the 2 linked reports is actually updated here.
+        return { rows: [{ report_id: 1002 }], rowCount: 1 };
+      }
+      if (/UPDATE pdi_report_batches[\s\S]*SET status = 'Completed'[\s\S]*WHERE batch_id/.test(sql)) {
+        return { rowCount: 1 };
+      }
+      throw new Error(`Unexpected client query in test: ${sql}`);
+    });
+    mockUpload.mockResolvedValue({ id: 'drive-batch-1' });
+
+    const result = await PdiReportBatches.finalizeBatch(101);
+
+    expect(result.pdfBuffer.slice(0, 5).toString('ascii')).toBe('%PDF-');
+    expect(result.payload.status).toBe('Completed');
+    expect(mockClient.query).toHaveBeenCalledWith('COMMIT');
+    expect(mockClient.query).not.toHaveBeenCalledWith('ROLLBACK');
+  });
+
+  it("forces every rendered report data.pdi_no to the batch pdi_no, even when a report's own stored data.pdi_no differs", async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        // report 2's stored data.pdi_no has drifted from the batch's pdi_no
+        // (e.g. a single-report PATCH replaced `data` without pdi_no in it).
+        return { rows: [reportRow(1), reportRow(2, { data: { pdi_no: 'DRIFTED-NO', customer_name: 'Unit', motor_sr_no: 'SR2' } })] };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    mockSuccessfulFinalizeTransaction();
+    mockUpload.mockResolvedValue({ id: 'drive-batch-1' });
+    const generateCombinedSpy = jest.spyOn(PDIGenerator, 'generateCombined');
+
+    await PdiReportBatches.finalizeBatch(101);
+
+    expect(generateCombinedSpy).toHaveBeenCalledTimes(1);
+    const reportsData = generateCombinedSpy.mock.calls[0][0];
+    expect(reportsData).toHaveLength(2);
+    for (const r of reportsData) {
+      expect(r.data.pdi_no).toBe('PDI-2026-001');
+    }
+
+    generateCombinedSpy.mockRestore();
+  });
 });
 
 describe('getBatchPdfForDownload', () => {
   it('returns 409 BATCH_NOT_READY when the batch has not been finalized', async () => {
     mockState.poolQueryImpl = async (sql) => {
-      if (/SELECT status FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'In Progress' }] };
+      if (/SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'In Progress', pdi_no: 'PDI-2026-001' }] };
       return { rows: [], rowCount: 0 };
     };
     await expect(PdiReportBatches.getBatchPdfForDownload(101)).rejects.toMatchObject({ code: 'BATCH_NOT_READY' });
@@ -254,11 +319,45 @@ describe('getBatchPdfForDownload', () => {
   it('serves the cached combined PDF for a Completed batch', async () => {
     await pdfCache.write(101, Buffer.from('%PDF-1.4 combined'), 'batch');
     mockState.poolQueryImpl = async (sql) => {
-      if (/SELECT status FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'Completed' }] };
+      if (/SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id/.test(sql)) return { rows: [{ status: 'Completed', pdi_no: 'PDI-2026-001' }] };
       return { rows: [], rowCount: 0 };
     };
     const { buffer, source } = await PdiReportBatches.getBatchPdfForDownload(101);
     expect(buffer.toString()).toBe('%PDF-1.4 combined');
     expect(source).toBe('cache');
+  });
+
+  it('re-renders the combined PDF on a cache miss for a Completed batch, forcing every report data.pdi_no to the batch pdi_no', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT status, pdi_no FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ status: 'Completed', pdi_no: 'PDI-2026-001' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return {
+          rows: [
+            reportRow(1),
+            reportRow(2, { data: { pdi_no: 'SOME-OTHER-NO', customer_name: 'Unit', motor_sr_no: 'SR2' } }),
+          ],
+        };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    const generateCombinedSpy = jest.spyOn(PDIGenerator, 'generateCombined');
+
+    const { buffer, source } = await PdiReportBatches.getBatchPdfForDownload(101);
+
+    expect(source).toBe('rendered');
+    expect(buffer.slice(0, 5).toString('ascii')).toBe('%PDF-');
+    expect(generateCombinedSpy).toHaveBeenCalledTimes(1);
+    const reportsData = generateCombinedSpy.mock.calls[0][0];
+    expect(reportsData).toHaveLength(2);
+    for (const r of reportsData) {
+      expect(r.data.pdi_no).toBe('PDI-2026-001');
+    }
+
+    // cache-miss render also writes the disk cache, same as the finalize path.
+    expect(await pdfCache.read(101, 'batch')).not.toBeNull();
+
+    generateCombinedSpy.mockRestore();
   });
 });
