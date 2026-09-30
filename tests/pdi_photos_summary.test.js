@@ -126,12 +126,12 @@ describe('PDI reports ?photos=summary', () => {
     expect(res.body.photos).toHaveLength(3);
   });
 
-  it('a finalized report is still locked and a missing one is still 404, with the parameter', async () => {
+  it('editing a finalized report without a matching expected_revision is still rejected (now REPORT_VERSION_CONFLICT, since this Admin user IS permitted to edit a Completed report -- see the finalized-report-editing feature), and a missing report is still 404, with the parameter', async () => {
     const id = await newReport(threeAndOne());
     await pool.query(`UPDATE pre_dispatch_inspection_reports SET status = 'Completed' WHERE report_id = $1`, [id]);
     const locked = await request(app).patch(`/api/pdi/reports/${id}?photos=summary`).set(auth()).send({ data: { pdi_no: 'X' } });
     expect(locked.statusCode).toBe(409);
-    expect(locked.body.code).toBe('REPORT_LOCKED');
+    expect(locked.body.code).toBe('REPORT_VERSION_CONFLICT');
 
     const missing = await request(app).get('/api/pdi/reports/2147483000?photos=summary').set(auth());
     expect(missing.statusCode).toBe(404);

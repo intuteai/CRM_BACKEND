@@ -89,7 +89,12 @@ exports.patchReport = async (req, res) => {
   const started = Date.now();
   const bytes = req.headers['content-length'] || 'unknown';
   try {
-    const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io, { photosSummary: wantsPhotosSummary(req) });
+    const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io, {
+      photosSummary: wantsPhotosSummary(req),
+      role_id: req.user.role_id,
+      edited_by: req.user.user_id,
+      expected_revision: req.body?.expected_revision,
+    });
     await invalidateCache();
     const ms = Date.now() - started;
     if (ms > 5000) logger.warn(`Slow PDI report save: report ${req.params.id}, ${ms}ms, ${bytes} bytes`);
@@ -97,8 +102,21 @@ exports.patchReport = async (req, res) => {
   } catch (error) {
     if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
     if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
+    if (error.code === 'FINALIZED_REPORT_FORBIDDEN') return res.status(403).json({ error: error.message, code: error.code });
+    if (error.code === 'REPORT_VERSION_CONFLICT') return res.status(409).json({ error: error.message, code: error.code });
     if (error.code === 'INVALID_INSPECTION_DATE') return res.status(400).json({ error: error.message, code: error.code });
     logger.error(`Error updating PDI report ${req.params.id} (${Date.now() - started}ms, ${bytes} bytes): ${error.message}`, error.stack);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.getRevisions = async (req, res) => {
+  try {
+    const revisions = await PdiReports.getRevisions(req.params.id);
+    res.json(revisions);
+  } catch (error) {
+    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    logger.error(`Error fetching PDI report revisions ${req.params.id}: ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
