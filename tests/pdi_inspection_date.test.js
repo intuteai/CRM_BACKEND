@@ -6,12 +6,20 @@
 // field held an unparseable value, 4ms in, never touching the database.
 // This mocks the database, so it touches no real data.
 const mockQuery = jest.fn(async (sql) => {
+  // patchReport's pre-read of the report's current status/revision_no/data,
+  // now issued before the guarded UPDATE (see the design spec) -- these
+  // tests are about date parsing, not the Completed-report edit path, so
+  // 'Pending' keeps every one of them on the same normal-edit branch they
+  // exercised before this query existed.
+  if (/SELECT status, revision_no, data FROM/.test(sql)) {
+    return { rows: [{ status: 'Pending', revision_no: 1, data: {} }] };
+  }
   if (/RETURNING/.test(sql)) {
     return {
       rows: [{
         report_id: 1, sr_no: 1, customer_id: null, order_id: null, status: 'Pending',
         inspected_by: null, inspection_date: null, template_id: 'general', template_version: 1,
-        drive_file_id: null, prepared_by: null, approved_by: null, data: {}, photos: [], created_at: new Date(),
+        drive_file_id: null, prepared_by: null, approved_by: null, revision_no: 1, data: {}, photos: [], created_at: new Date(),
       }],
     };
   }
@@ -43,7 +51,8 @@ describe('Inspection date parsing', () => {
 
   it('still accepts a normal ISO date', async () => {
     await PdiReports.patchReport(1, { inspection_date: '2026-09-22' });
-    const values = mockQuery.mock.calls[0][1];
+    // [0] is the new pre-read; [1] is the actual UPDATE.
+    const values = mockQuery.mock.calls[1][1];
     expect(values).toContain(new Date('2026-09-22').toISOString());
   });
 
@@ -51,7 +60,7 @@ describe('Inspection date parsing', () => {
     await expect(
       PdiReports.patchReport(1, { inspection_date: '' })
     ).resolves.toBeDefined();
-    const values = mockQuery.mock.calls[0][1];
+    const values = mockQuery.mock.calls[1][1];
     expect(values).toContain(null);
   });
 });

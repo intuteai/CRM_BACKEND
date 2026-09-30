@@ -2,6 +2,7 @@ const pool = require('../../config/db');
 const logger = require('../../utils/logger');
 const PDIGenerator = require('./pdi_generator');
 const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/googleDrive');
+const { hasPermission } = require('../../middleware/auth');
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 const pdfCache = require('./pdi/pdfCache');
@@ -99,6 +100,7 @@ function reportColumns(prefix = '', { photosSummary = false } = {}) {
   return `
     ${p}report_id, ${p}sr_no, ${p}customer_id, ${p}order_id, ${p}status,
     ${p}inspected_by, ${p}inspection_date, ${p}template_id, ${p}template_version, ${p}drive_file_id,
+    ${p}revision_no,
     ${p}data, ${photosSummary ? photosSummarySql(p) : `${p}photos`}
   `;
 }
@@ -117,6 +119,7 @@ class PdiReports {
       inspection_date: row.inspection_date,
       report_link: `/api/pdi/reports/${row.report_id}/pdf`,
       drive_file_id: row.drive_file_id,
+      revision_no: row.revision_no,
       data: row.data,
       photos: row.photos,
     };
@@ -227,7 +230,7 @@ class PdiReports {
 
   // `options.photosSummary`: answer with photo counts instead of the photos
   // themselves (the save is unaffected -- `fields.photos` is still stored in full).
-  static async patchReport(reportId, fields, io, { photosSummary = false } = {}) {
+  static async patchReport(reportId, fields, io, { photosSummary = false, role_id = null, expected_revision } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
@@ -266,39 +269,132 @@ class PdiReports {
       i++;
     }
 
+    // toIsoDateOrNull above can already have thrown INVALID_INSPECTION_DATE --
+    // deliberately before any query, so a malformed date never even reaches
+    // the database (this ordering predates this feature; keep it that way).
     if (sets.length === 0) return this.getById(_id, { photosSummary });
 
-    values.push(_id);
-    // AND status <> 'Completed' -- a finalized report is locked against
-    // further writes. Without this, a stale save-draft request from a
-    // second device/tab that hasn't caught up with another device's
-    // finalize (exactly the kind of delayed/retried write the client-side
-    // timeout and retry work elsewhere is meant to tolerate) can silently
-    // overwrite a Completed report's data/photos with older content and
-    // even revert its status -- reproduced directly against this endpoint
-    // during the investigation that led to this guard. No error, no trace,
-    // just a "disappeared" finalized report. If a finalized report genuinely
-    // needs correcting, Duplicate it into a new report instead of editing
-    // the finalized one in place.
+    // A report currently Completed needs a different guard (permission +
+    // expected_revision, see the design spec) than a normal draft edit, and
+    // must never have its `status` changed through this path once Completed
+    // (that would silently un-finalize it -- finalizeReport's job, not this
+    // one) -- so its current status/revision_no/data has to be known before
+    // deciding which UPDATE to issue.
+    const current = await pool.query(
+      `SELECT status, revision_no, data FROM pre_dispatch_inspection_reports WHERE report_id = $1`,
+      [_id]
+    );
+    if (current.rows.length === 0) throw new Error('Report not found');
+    const { status: currentStatus, revision_no: currentRevision, data: currentData } = current.rows[0];
+
+    if (currentStatus !== 'Completed') {
+      // Unchanged from before this feature existed: a normal in-progress
+      // report, no permission or revision requirement. AND status <>
+      // 'Completed' is what originally made this a hard, unconditional lock
+      // -- added after a stale save-draft request from a second device/tab
+      // that hadn't caught up with another device's finalize (exactly the
+      // kind of delayed/retried write the client-side timeout and retry work
+      // elsewhere is meant to tolerate) was reproduced silently overwriting a
+      // Completed report's data/photos with older content, with no error and
+      // no trace. It still guards the same race here (now also covering the
+      // rarer case of a concurrent finalize landing between the read above
+      // and this UPDATE); a *permitted* edit to an already-Completed report
+      // is a new, deliberate, gated path below, not a change to this guard.
+      values.push(_id);
+      const result = await pool.query(`
+        UPDATE pre_dispatch_inspection_reports
+        SET ${sets.join(', ')}
+        WHERE report_id = $${i} AND status <> 'Completed'
+        RETURNING ${reportColumns('', { photosSummary })}
+      `, values);
+
+      if (result.rows.length === 0) {
+        const lockedError = new Error('This report is already finalized and can no longer be edited. Duplicate it to make changes.');
+        lockedError.code = 'REPORT_LOCKED';
+        throw lockedError;
+      }
+
+      const payload = this.#toPayload(result.rows[0]);
+      if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
+      return payload;
+    }
+
+    // Editing an already-Completed report -- gated by the permission this
+    // module has always had in the `permissions` table but no PDI route has
+    // ever checked until now, plus an optimistic-concurrency revision check.
+    if (!(await hasPermission(role_id, 'PreDispatchInspectionReports', 'can_write'))) {
+      const forbidden = new Error('Editing a finalized report requires PDI write permission.');
+      forbidden.code = 'FINALIZED_REPORT_FORBIDDEN';
+      throw forbidden;
+    }
+    if (expected_revision === undefined || expected_revision === null || Number(expected_revision) !== currentRevision) {
+      const conflict = new Error('This report has been edited since you last loaded it. Reload and try again.');
+      conflict.code = 'REPORT_VERSION_CONFLICT';
+      throw conflict;
+    }
+
+    // `status` never changes through this path once a report is Completed --
+    // that would silently un-finalize it, which is finalizeReport's job, not
+    // this one. Drop it from the SET clause text; its value (if `fields.status`
+    // was sent) stays harmlessly unreferenced in `values` -- Postgres doesn't
+    // require every bound parameter to be used by the query text, only that
+    // every $N IN the text has a value at that position.
+    const finalizedSets = sets.filter((s) => !s.startsWith('status = $'));
+    if (finalizedSets.length === 0) {
+      // Only `status` was being sent (excluded above) -- nothing left to apply.
+      return this.getById(_id, { photosSummary });
+    }
+
+    await pool.query(
+      `INSERT INTO pdi_report_revisions (report_id, revision_no, data, edited_by) VALUES ($1, $2, $3, $4)`,
+      [_id, currentRevision, JSON.stringify(currentData || {}), role_id || null]
+    );
+
+    finalizedSets.push('revision_no = revision_no + 1');
+    values.push(_id, currentRevision);
     const result = await pool.query(`
       UPDATE pre_dispatch_inspection_reports
-      SET ${sets.join(', ')}
-      WHERE report_id = $${i} AND status <> 'Completed'
+      SET ${finalizedSets.join(', ')}
+      WHERE report_id = $${i} AND status = 'Completed' AND revision_no = $${i + 1}
       RETURNING ${reportColumns('', { photosSummary })}
     `, values);
 
     if (result.rows.length === 0) {
-      // Only asking "does it exist?" -- never worth loading its photos for.
-      const existing = await this.getById(_id, { photosSummary: true }).catch(() => null);
-      if (!existing) throw new Error('Report not found');
-      const lockedError = new Error('This report is already finalized and can no longer be edited. Duplicate it to make changes.');
-      lockedError.code = 'REPORT_LOCKED';
-      throw lockedError;
+      // Another edit won the race between the read above and this UPDATE --
+      // the snapshot row just inserted still accurately describes what
+      // revision_no=`currentRevision` contained, so it's left in place.
+      const conflict = new Error('This report was edited by someone else first. Reload and try again.');
+      conflict.code = 'REPORT_VERSION_CONFLICT';
+      throw conflict;
     }
 
     const payload = this.#toPayload(result.rows[0]);
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
+    // Non-enumerable so `res.json(payload)` / JSON.stringify never leaks a
+    // Promise into the API response -- callers that want to await it (tests,
+    // same as finalizeReport's own `background`) still can.
+    Object.defineProperty(payload, 'background', {
+      value: this.#reRenderFinalizedReport(_id).catch(() => {}),
+      enumerable: false,
+    });
     return payload;
+  }
+
+  // Newest-first audit trail for an already-Completed report's edits -- see
+  // the design spec. No permission gate on this read, matching every other
+  // PDI GET today; only the write path (editing a Completed report) is gated.
+  static async getRevisions(reportId) {
+    const _id = Number(reportId);
+    if (!Number.isFinite(_id)) throw new Error('Report not found');
+
+    const exists = await pool.query('SELECT 1 FROM pre_dispatch_inspection_reports WHERE report_id = $1', [_id]);
+    if (exists.rows.length === 0) throw new Error('Report not found');
+
+    const result = await pool.query(
+      `SELECT revision_no, edited_by, edited_at, data FROM pdi_report_revisions WHERE report_id = $1 ORDER BY revision_no DESC`,
+      [_id]
+    );
+    return result.rows;
   }
 
   // Allowlist mapping a client-supplied sortBy key to the exact SQL expression
@@ -534,6 +630,45 @@ class PdiReports {
       logger.info(`PDI Drive backup: report ${reportId}, ${Date.now() - startedAt}ms, ${pdfBuffer.length} bytes`);
     } catch (e) {
       logger.warn(`Drive backup failed for PDI report ${reportId}: ${e.message}`);
+    }
+  }
+
+  // Fire-and-forget, same pattern as finalizeReport's own #backupPdfToDrive:
+  // re-renders the PDF after a successful edit to an already-Completed
+  // report (the one case where stored data can change after the PDF was
+  // first built), refreshes the disk cache, and replaces the Drive backup --
+  // deleting the superseded Drive file so edits don't leak storage. Never
+  // throws: the edit itself already committed, so a failure here only means
+  // the next GET /pdf falls back to rendering from the now-current data,
+  // exactly like any other cache miss already does.
+  static async #reRenderFinalizedReport(reportId) {
+    const startedAt = Date.now();
+    try {
+      const report = await this.getById(reportId);
+      const previousDriveFileId = report.drive_file_id; // the edit UPDATE never touches this column
+      const pdfBuffer = await bufferPdf(await PDIGenerator.generate(
+        report.template_id, report.template_version,
+        { ...(report.data || {}), photos: report.photos || [] },
+      ));
+      await pdfCache.write(reportId, pdfBuffer);
+
+      const safeNo = String(report.data?.pdi_no || reportId).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
+      const res = await pool.query(
+        'UPDATE pre_dispatch_inspection_reports SET drive_file_id = $1 WHERE report_id = $2',
+        [uploaded.id, reportId]
+      );
+      if (res.rowCount === 0) {
+        // The report was deleted while this was uploading.
+        await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for deleted PDI report ${reportId}: ${e.message}`));
+        return;
+      }
+      if (previousDriveFileId) {
+        await deleteDriveFile(previousDriveFileId).catch((e) => logger.warn(`Failed to delete superseded Drive file for PDI report ${reportId}: ${e.message}`));
+      }
+      logger.info(`PDI report re-rendered after finalized edit: report ${reportId}, ${Date.now() - startedAt}ms, ${pdfBuffer.length} bytes`);
+    } catch (e) {
+      logger.warn(`Re-render after finalized edit failed for PDI report ${reportId}: ${e.message}`);
     }
   }
 

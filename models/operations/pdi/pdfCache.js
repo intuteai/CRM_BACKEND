@@ -5,9 +5,13 @@ const os = require('os');
 const path = require('path');
 const logger = require('../../../utils/logger');
 
-// A finished (Completed) PDI report is locked against edits, so the PDF built
-// when it was finalized is the PDF it will always have -- there is nothing to
-// gain by rendering it again on every "View PDF" / recovery request. This keeps
+// A finished (Completed) PDI report is locked against ordinary edits, so most
+// of the time the PDF built when it was finalized is the PDF it will always
+// have -- there is nothing to gain by rendering it again on every "View PDF" /
+// recovery request. The one exception is a permission-gated edit to an
+// already-Completed report (see pdiReports.js's patchReport and
+// docs/superpowers/specs/2026-09-30-pdi-finalized-report-editing-design.md),
+// which explicitly overwrites this cache entry after re-rendering. This keeps
 // the last MAX_FILES of them on the server's disk and serves them straight back.
 //
 // It is only a cache: the disk is the container's own, so a redeploy empties it,
