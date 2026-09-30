@@ -60,6 +60,10 @@ const authenticateToken = async (req, res, next) => {
 // (PdiReports.patchReport, editing an already-Completed report) can gate one
 // specific action without needing blanket route middleware on every PDI
 // edit -- see docs/superpowers/specs/2026-09-30-pdi-finalized-report-editing-design.md.
+// Does no input validation of its own (unlike checkPermission's req.user
+// guard) -- an invalid/missing role_id just matches zero permission rows and
+// resolves false (fails closed), it never throws. Callers are expected to
+// already have a real, validated numeric role_id before calling this.
 async function hasPermission(role_id, module, action) {
   const dbAction = action === 'can_create' ? 'can_write' : action;
   const result = await pool.query(
