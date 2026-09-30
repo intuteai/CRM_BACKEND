@@ -230,7 +230,7 @@ class PdiReports {
 
   // `options.photosSummary`: answer with photo counts instead of the photos
   // themselves (the save is unaffected -- `fields.photos` is still stored in full).
-  static async patchReport(reportId, fields, io, { photosSummary = false, role_id = null, expected_revision } = {}) {
+  static async patchReport(reportId, fields, io, { photosSummary = false, role_id = null, edited_by = null, expected_revision } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
@@ -347,7 +347,10 @@ class PdiReports {
 
     await pool.query(
       `INSERT INTO pdi_report_revisions (report_id, revision_no, data, edited_by) VALUES ($1, $2, $3, $4)`,
-      [_id, currentRevision, JSON.stringify(currentData || {}), role_id || null]
+      // edited_by references users(user_id) -- a completely different id
+      // space from role_id (used above only for the permission check), so
+      // the actual editing user's id must be threaded through separately.
+      [_id, currentRevision, JSON.stringify(currentData || {}), edited_by || null]
     );
 
     finalizedSets.push('revision_no = revision_no + 1');

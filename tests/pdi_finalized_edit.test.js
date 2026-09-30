@@ -56,14 +56,18 @@ describe('patchReport editing an already-Completed report', () => {
   it('permitted edit with the correct expected_revision succeeds: bumps revision_no, snapshots the pre-edit data, and re-renders in the background', async () => {
     const result = await PdiReports.patchReport(
       7, { data: { pdi_no: 'PDI-EDIT-1', customer_name: 'New Name' } }, null,
-      { role_id: 1, expected_revision: 3 }
+      // role_id (1) and edited_by (42) are deliberately different values here
+      // -- edited_by references users(user_id), a completely different id
+      // space from role_id, and using distinct numbers proves the snapshot
+      // stores the editing USER, not their role.
+      { role_id: 1, edited_by: 42, expected_revision: 3 }
     );
 
     expect(result.revision_no).toBe(4);
     expect(result.status).toBe('Completed');
 
     const snapshotInsert = mockState.queries.find((q) => /INSERT INTO pdi_report_revisions/.test(q.sql));
-    expect(snapshotInsert.params).toEqual([7, 3, JSON.stringify({ pdi_no: 'PDI-EDIT-1', customer_name: 'Old Name' }), 1]);
+    expect(snapshotInsert.params).toEqual([7, 3, JSON.stringify({ pdi_no: 'PDI-EDIT-1', customer_name: 'Old Name' }), 42]);
 
     await result.background;
     expect(mockUpload).toHaveBeenCalledTimes(1);

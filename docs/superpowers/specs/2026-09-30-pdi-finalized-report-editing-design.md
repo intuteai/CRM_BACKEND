@@ -51,7 +51,7 @@ Every existing report defaults to `revision_no = 1` (additive, no backfill neede
 
 ## Edit flow
 
-`patchReport(reportId, fields, io, options)` gains two new inputs threaded through from the controller: `role_id` (from `req.user`) and `expected_revision` (from the request body, only meaningful when editing a `Completed` report). The SQL branches on the report's current status:
+`patchReport(reportId, fields, io, options)` gains three new inputs threaded through from the controller: `role_id` (from `req.user.role_id`, used only for the permission check), `edited_by` (from `req.user.user_id` — the actual editing user, stored in the audit snapshot; distinct from `role_id` since `pdi_report_revisions.edited_by` references `users(user_id)`, a completely different id space from a role id), and `expected_revision` (from the request body, only meaningful when editing a `Completed` report). The SQL branches on the report's current status:
 
 - **Status is not `Completed`:** completely unchanged from today — same guarded `UPDATE ... WHERE status <> 'Completed'`, no permission check, no `expected_revision` requirement.
 - **Status is `Completed`:**
