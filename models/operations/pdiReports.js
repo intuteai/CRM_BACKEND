@@ -6,6 +6,7 @@ const { hasPermission } = require('../../middleware/auth');
 const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 const pdfCache = require('./pdi/pdfCache');
+const { getActiveBatchOverride } = require('./pdi/batchOverrides');
 
 // How many photos a report holds, for the finalize/PDF timing log: a freeform
 // list of { images: [...] } entries, or a fixed-slots map of slot -> uri | [uri].
@@ -689,9 +690,10 @@ class PdiReports {
     try {
       const report = await this.getById(reportId);
       const previousDriveFileId = report.drive_file_id; // the edit UPDATE never touches this column
+      const batchOverride = await getActiveBatchOverride(reportId);
       const pdfBuffer = await bufferPdf(await PDIGenerator.generate(
         report.template_id, report.template_version,
-        { ...(report.data || {}), photos: report.photos || [] },
+        { ...(report.data || {}), ...(batchOverride || {}), photos: report.photos || [] },
       ));
       await pdfCache.write(reportId, pdfBuffer);
 
@@ -768,11 +770,13 @@ class PdiReports {
     timings.loadMs = Date.now() - t;
     timings.photos = countPhotos(report.photos);
 
+    const batchOverride = await getActiveBatchOverride(_id);
+
     t = Date.now();
     const generateTimings = {};
     const buffer = await bufferPdf(await PDIGenerator.generate(
       report.template_id, report.template_version,
-      { ...(report.data || {}), photos: report.photos || [] },
+      { ...(report.data || {}), ...(batchOverride || {}), photos: report.photos || [] },
       { timings: generateTimings },
     ));
     timings.renderMs = Date.now() - t;

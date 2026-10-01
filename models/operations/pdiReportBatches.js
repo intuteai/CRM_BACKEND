@@ -6,25 +6,10 @@ const PDIGenerator = require('./pdi_generator');
 const PdiReports = require('./pdiReports');
 const { uploadBufferToDrivePrivate, deleteDriveFile } = require('../../services/googleDrive');
 const pdfCache = require('./pdi/pdfCache');
+const { pickSharedFields } = require('./pdi/batchOverrides');
 
 const MIN_LOT_QUANTITY = 1;
 const MAX_LOT_QUANTITY = 50; // a technical safety cap, not a real business limit
-
-// A real multi-motor AutoNXT lot repeats these five fields identically
-// across every linked report (confirmed against an actual 16-motor Compage
-// QA document) -- optionally seeded once at batch creation so a technician
-// doesn't retype them on every one of N reports, and (mirroring pdi_no's
-// existing authoritative-at-render behavior) kept consistent across the
-// whole lot at render time even if an individual report's own data drifts.
-const SHARED_FIELDS = ['customer_name', 'product_id', 'product_specifications', 'drawing_no', 'controller_type'];
-
-function pickSharedFields(source) {
-  const picked = {};
-  for (const f of SHARED_FIELDS) {
-    if (source[f]) picked[f] = source[f];
-  }
-  return picked;
-}
 
 function bufferPdf(doc) {
   return new Promise((resolve, reject) => {
