@@ -687,6 +687,7 @@ class PdiReports {
   // exactly like any other cache miss already does.
   static async #reRenderFinalizedReport(reportId) {
     const startedAt = Date.now();
+    let uploaded;
     try {
       const report = await this.getById(reportId);
       const batchOverride = await getActiveBatchOverride(reportId);
@@ -697,7 +698,7 @@ class PdiReports {
       await pdfCache.write(reportId, pdfBuffer);
 
       const safeNo = String(report.data?.pdi_no || reportId).replace(/[^a-zA-Z0-9_-]/g, '_');
-      const uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
+      uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
 
       // SELECT ... FOR UPDATE + the write in one transaction serializes two
       // near-simultaneous re-renders on the same report: the second call's
@@ -735,10 +736,9 @@ class PdiReports {
       }
 
       if (!committed) {
-        // Either the report was deleted mid-upload (0 rows from the
-        // SELECT), or the transaction threw -- the row-lock guarantees the
-        // UPDATE itself can never affect 0 rows once the SELECT found one,
-        // so "not committed" and "report gone" are the same case here.
+        // Only reached when the SELECT found 0 rows (report deleted
+        // mid-upload) -- a thrown transaction error skips this block
+        // entirely and is handled by the outer catch below instead.
         await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for PDI report ${reportId}: ${e.message}`));
         return;
       }
@@ -748,6 +748,10 @@ class PdiReports {
       logger.info(`PDI report re-rendered after finalized edit: report ${reportId}, ${Date.now() - startedAt}ms, ${pdfBuffer.length} bytes`);
     } catch (e) {
       logger.warn(`Re-render after finalized edit failed for PDI report ${reportId}: ${e.message}`);
+      if (uploaded) {
+        await deleteDriveFile(uploaded.id).catch((e2) =>
+          logger.warn(`Drive cleanup failed for orphaned re-render upload, PDI report ${reportId}: ${e2.message}`));
+      }
     }
   }
 
