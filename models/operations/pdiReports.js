@@ -689,7 +689,6 @@ class PdiReports {
     const startedAt = Date.now();
     try {
       const report = await this.getById(reportId);
-      const previousDriveFileId = report.drive_file_id; // the edit UPDATE never touches this column
       const batchOverride = await getActiveBatchOverride(reportId);
       const pdfBuffer = await bufferPdf(await PDIGenerator.generate(
         report.template_id, report.template_version,
@@ -699,11 +698,43 @@ class PdiReports {
 
       const safeNo = String(report.data?.pdi_no || reportId).replace(/[^a-zA-Z0-9_-]/g, '_');
       const uploaded = await uploadBufferToDrivePrivate(pdfBuffer, 'application/pdf', `PDI_${safeNo}.pdf`);
-      const res = await pool.query(
-        'UPDATE pre_dispatch_inspection_reports SET drive_file_id = $1 WHERE report_id = $2',
-        [uploaded.id, reportId]
-      );
-      if (res.rowCount === 0) {
+
+      // SELECT ... FOR UPDATE + the write in one transaction serializes two
+      // near-simultaneous re-renders on the same report: the second call's
+      // SELECT blocks until the first's COMMIT, so it reads the FIRST
+      // call's newly-set drive_file_id as its own "previous" value, instead
+      // of both racers reading the same stale original and one of their
+      // uploads going permanently unreferenced and undeleted.
+      const client = await pool.connect();
+      let previousDriveFileId;
+      let rowCount;
+      try {
+        await client.query('BEGIN');
+        const locked = await client.query(
+          'SELECT drive_file_id FROM pre_dispatch_inspection_reports WHERE report_id = $1 FOR UPDATE',
+          [reportId]
+        );
+        if (locked.rows.length === 0) {
+          await client.query('ROLLBACK');
+          // The report was deleted while this was uploading.
+          await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for PDI report ${reportId}: ${e.message}`));
+          return;
+        }
+        previousDriveFileId = locked.rows[0].drive_file_id;
+        const updated = await client.query(
+          'UPDATE pre_dispatch_inspection_reports SET drive_file_id = $1 WHERE report_id = $2',
+          [uploaded.id, reportId]
+        );
+        rowCount = updated.rowCount;
+        await client.query('COMMIT');
+      } catch (e) {
+        await client.query('ROLLBACK').catch(() => {});
+        throw e;
+      } finally {
+        client.release();
+      }
+
+      if (rowCount === 0) {
         // The report was deleted while this was uploading.
         await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for deleted PDI report ${reportId}: ${e.message}`));
         return;
