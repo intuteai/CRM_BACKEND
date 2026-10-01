@@ -788,41 +788,53 @@ class PdiReports {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
-    const check = await pool.query(`
-      SELECT r.status, r.batch_id, b.status AS batch_status
-      FROM pre_dispatch_inspection_reports r
-      LEFT JOIN pdi_report_batches b ON b.batch_id = r.batch_id
+    // Permission doesn't need to be inside the atomic guard the way status
+    // does -- a role's permissions aren't racing per-request -- so it's
+    // safe to resolve once, up front, and pass it into the guarded DELETE
+    // below as a plain boolean.
+    const canForceDelete = await hasPermission(role_id, 'PreDispatchInspectionReports', 'can_write');
+
+    // The DELETE itself is the guard, not a separate check-then-act read --
+    // same reasoning as patchReport's guarded UPDATE and finalizeBatch's
+    // guarded UPDATE elsewhere in this codebase: a report that becomes
+    // batch-locked or Completed in between a read and a later write would
+    // otherwise still get deleted once the write finally runs, reproducing
+    // exactly the corruption this feature exists to prevent.
+    const result = await pool.query(`
+      DELETE FROM pre_dispatch_inspection_reports r
       WHERE r.report_id = $1
-    `, [_id]);
-    if (check.rows.length === 0) throw new Error('Report not found');
-    const { status, batch_id, batch_status } = check.rows[0];
+        AND NOT EXISTS (
+          SELECT 1 FROM pdi_report_batches b WHERE b.batch_id = r.batch_id AND b.status = 'Completed'
+        )
+        AND (r.status <> 'Completed' OR $2)
+      RETURNING report_id, drive_file_id
+    `, [_id, canForceDelete]);
 
-    // No repair/renumbering mechanism exists for a batch once it's
-    // Completed -- deleting a member then is what silently corrupts the
-    // combined PDF on its next cache-miss re-render (lot_quantity stays
-    // stale, pages just vanish, no error). Block outright rather than
-    // building that repair tooling; a non-Completed batch's incompleteness
-    // is already caught by finalizeBatch's own BATCH_INCOMPLETE check.
-    if (batch_id && batch_status === 'Completed') {
-      const err = new Error('This report belongs to a finalized batch lot and cannot be deleted.');
-      err.code = 'BATCH_MEMBER_LOCKED';
-      throw err;
-    }
-
-    // Same permission the finalized-report-editing feature already gates
-    // PATCH behind -- deleting a finalized report is a more extreme edit,
-    // not a different capability.
-    if (status === 'Completed' && !(await hasPermission(role_id, 'PreDispatchInspectionReports', 'can_write'))) {
+    if (result.rows.length === 0) {
+      // Zero rows means: not found, OR blocked by one of the two guards
+      // above. Re-read (plain SELECT, no race concern here -- this is only
+      // for producing an accurate error message, not for deciding whether
+      // to delete) to report the right one.
+      const check = await pool.query(`
+        SELECT r.status, r.batch_id, b.status AS batch_status
+        FROM pre_dispatch_inspection_reports r
+        LEFT JOIN pdi_report_batches b ON b.batch_id = r.batch_id
+        WHERE r.report_id = $1
+      `, [_id]);
+      if (check.rows.length === 0) throw new Error('Report not found');
+      const { status, batch_id, batch_status } = check.rows[0];
+      if (batch_id && batch_status === 'Completed') {
+        const err = new Error('This report belongs to a finalized batch lot and cannot be deleted.');
+        err.code = 'BATCH_MEMBER_LOCKED';
+        throw err;
+      }
+      // The only other way the guarded DELETE could have matched 0 rows,
+      // given the batch check above didn't fire, is status === 'Completed'
+      // && !canForceDelete.
       const err = new Error('Deleting a finalized report requires PDI write permission.');
       err.code = 'FINALIZED_REPORT_FORBIDDEN';
       throw err;
     }
-
-    const result = await pool.query(
-      'DELETE FROM pre_dispatch_inspection_reports WHERE report_id = $1 RETURNING report_id, drive_file_id',
-      [_id]
-    );
-    if (result.rows.length === 0) throw new Error('Report not found');
 
     await pdfCache.remove(_id);
 
