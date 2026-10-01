@@ -166,6 +166,11 @@ class PdiReportBatches {
         err.code = 'PDI_NO_REQUIRED';
         throw err;
       }
+      if (!report.data?.motor_sr_no) {
+        const err = new Error(`Report ${report.report_id} (lot ${report.lot_index}) is missing motor_sr_no.`);
+        err.code = 'MOTOR_SR_NO_REQUIRED';
+        throw err;
+      }
     }
 
     // Render before any status change -- a render failure must leave every
