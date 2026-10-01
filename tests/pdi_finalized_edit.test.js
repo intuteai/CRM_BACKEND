@@ -48,6 +48,14 @@ beforeEach(() => {
     if (sql === 'BEGIN' || sql === 'COMMIT' || sql === 'ROLLBACK') return {};
     if (/status = 'Completed' AND revision_no = /.test(sql)) return { rows: mockState.updateRows, rowCount: mockState.updateRows.length };
     if (/INSERT INTO pdi_report_revisions/.test(sql)) return { rows: [], rowCount: 1 };
+    // #reRenderFinalizedReport's own transaction (the Drive-swap race fix):
+    // SELECT ... FOR UPDATE reads the row's drive_file_id as it stands right
+    // now -- i.e. whatever getById (fullReportRow) would also see -- then the
+    // UPDATE below overwrites it with the freshly-uploaded Drive file's id.
+    if (/SELECT drive_file_id FROM pre_dispatch_inspection_reports WHERE report_id = \$1 FOR UPDATE/.test(sql)) {
+      return { rows: [{ drive_file_id: mockState.fullReportRow ? mockState.fullReportRow.drive_file_id : null }] };
+    }
+    if (/SET drive_file_id/.test(sql)) return { rows: [], rowCount: 1 };
     throw new Error(`Unexpected client query in test: ${sql}`);
   });
   mockState.preReadRow = { status: 'Completed', revision_no: 3, data: { pdi_no: 'PDI-EDIT-1', customer_name: 'Old Name' } };
