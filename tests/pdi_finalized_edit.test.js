@@ -184,7 +184,14 @@ describe('patchReport editing an already-Completed report', () => {
     expect(finalUpdate.sql).not.toMatch(/customer_id = \$/);
     expect(finalUpdate.sql).not.toMatch(/order_id = \$/);
     expect(finalUpdate.sql).not.toMatch(/inspection_date = \$/);
-    expect(finalUpdate.sql).toMatch(/data = data \|\| \$\d+::jsonb/);
+    // The merge now happens in JS (against the already-fetched currentData),
+    // not via Postgres's `||` jsonb operator -- see pdiReports.js for why:
+    // `||` only merges two JSON objects; any other shape on either side
+    // (null, a string, a number, an array) silently wraps into a JSON array
+    // instead of merging, which would corrupt the stored data. The SQL here
+    // is a plain assignment of an already-merged value.
+    expect(finalUpdate.sql).toMatch(/data = \$\d+::jsonb/);
+    expect(finalUpdate.sql).not.toMatch(/data = data \|\|/);
     expect(finalUpdate.sql).toMatch(/prepared_by = \$\d+/);
     expect(finalUpdate.sql).toMatch(/approved_by = \$\d+/);
     expect(finalUpdate.sql).toMatch(/revision_no = revision_no \+ 1/);
@@ -195,6 +202,36 @@ describe('patchReport editing an already-Completed report', () => {
     // present in the query text must equal the number of bound values.
     const placeholderCount = new Set(finalUpdate.sql.match(/\$\d+/g) || []).size;
     expect(finalUpdate.params.length).toBe(placeholderCount);
+  });
+
+  it('merges fields.data onto currentData in JS, so a partial payload does not lose keys the client omitted', async () => {
+    // preReadRow.data (set in beforeEach) has both pdi_no and customer_name;
+    // send only customer_name and confirm the merged value written still
+    // carries pdi_no through from currentData -- proving the merge reads
+    // the pre-fetched row, not just `fields.data` alone.
+    const result = await PdiReports.patchReport(
+      7, { data: { customer_name: 'New Name' } }, null, { role_id: 1, expected_revision: 3 }
+    );
+    expect(result).toBeDefined();
+
+    const finalUpdate = mockState.queries.find((q) => /status = 'Completed' AND revision_no = /.test(q.sql));
+    const dataParamIndex = Number(finalUpdate.sql.match(/data = \$(\d+)::jsonb/)[1]);
+    const dataValue = JSON.parse(finalUpdate.params[dataParamIndex - 1]);
+    expect(dataValue).toEqual({ pdi_no: 'PDI-EDIT-1', customer_name: 'New Name' });
+  });
+
+  it.each([
+    ['null', null],
+    ['a string', 'oops'],
+    ['an array', ['oops']],
+  ])('throws INVALID_DATA_PAYLOAD when fields.data is %s, without reaching the database or Drive', async (_label, badData) => {
+    await expect(
+      PdiReports.patchReport(7, { data: badData }, null, { role_id: 1, expected_revision: 3 })
+    ).rejects.toMatchObject({ code: 'INVALID_DATA_PAYLOAD' });
+    // Only the pre-read SELECT should have run -- never the guarded UPDATE
+    // transaction (mockConnect) or the Drive upload.
+    expect(mockConnect).not.toHaveBeenCalled();
+    expect(mockUpload).not.toHaveBeenCalled();
   });
 
   it('does not touch permission/revision/snapshot machinery for a report that is NOT Completed (unchanged existing behavior)', async () => {

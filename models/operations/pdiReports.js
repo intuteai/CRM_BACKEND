@@ -271,16 +271,27 @@ class PdiReports {
     if (fields.customer_id !== undefined && !isFinalizedEdit) { sets.push(`customer_id = $${i++}`); values.push(fields.customer_id || null); }
     if (fields.order_id !== undefined && !isFinalizedEdit) { sets.push(`order_id = $${i++}`); values.push(fields.order_id || null); }
     if (fields.data !== undefined) {
-      // Merge, not replace -- every current caller already resends full
-      // form state, so this is behavior-identical to replace for them, but
-      // a future caller that sends a partial `data` object no longer
-      // silently deletes every field it didn't mention.
-      sets.push(`data = data || $${i++}::jsonb`);
-      values.push(JSON.stringify(fields.data));
-      // Keep the denormalized signer columns in sync with data on every write
-      // that touches it -- these two columns can never legitimately drift
-      // from what data actually contains.
-      const { prepared_by, approved_by } = extractSignerNames(fields.data);
+      // Merge in JS using the already-fetched currentData, not Postgres's
+      // `||` jsonb operator -- `||` only does a true object-merge when BOTH
+      // operands are JSON objects; if fields.data were ever null, a
+      // string, a number, or an array, its documented fallback wraps each
+      // non-array operand into a single-element array and concatenates
+      // (e.g. `{"a":1} || null` -> `[{"a":1}, null]`), silently replacing
+      // the stored object with a JSON array. Merging here lets us validate
+      // shape first and means extractSignerNames below reads the real
+      // merged result, not just whatever partial object the client sent --
+      // a partial payload that omits the signer-name keys would otherwise
+      // wrongly null out prepared_by/approved_by even though the merged
+      // data itself still has them.
+      if (fields.data === null || typeof fields.data !== 'object' || Array.isArray(fields.data)) {
+        const err = new Error('data must be a JSON object');
+        err.code = 'INVALID_DATA_PAYLOAD';
+        throw err;
+      }
+      const mergedData = { ...(currentData || {}), ...fields.data };
+      sets.push(`data = $${i++}::jsonb`);
+      values.push(JSON.stringify(mergedData));
+      const { prepared_by, approved_by } = extractSignerNames(mergedData);
       sets.push(`prepared_by = $${i++}`); values.push(prepared_by);
       sets.push(`approved_by = $${i++}`); values.push(approved_by);
     }
@@ -346,10 +357,6 @@ class PdiReports {
       const conflict = new Error('This report has been edited since you last loaded it. Reload and try again.');
       conflict.code = 'REPORT_VERSION_CONFLICT';
       throw conflict;
-    }
-
-    if (sets.length === 0) {
-      return this.getById(_id, { photosSummary });
     }
 
     // The guarded UPDATE and the audit snapshot must commit or fail together
