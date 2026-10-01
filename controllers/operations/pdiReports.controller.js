@@ -109,6 +109,7 @@ exports.patchReport = async (req, res) => {
     if (error.code === 'FINALIZED_REPORT_FORBIDDEN') return res.status(403).json({ error: error.message, code: error.code });
     if (error.code === 'REPORT_VERSION_CONFLICT') return res.status(409).json({ error: error.message, code: error.code });
     if (error.code === 'INVALID_INSPECTION_DATE') return res.status(400).json({ error: error.message, code: error.code });
+    if (error.code === 'INVALID_DATA_PAYLOAD') return res.status(400).json({ error: error.message, code: error.code });
     logger.error(`Error updating PDI report ${req.params.id} (${Date.now() - started}ms, ${bytes} bytes): ${error.message}`, error.stack);
     res.status(500).json({ error: 'Internal Server Error' });
   }
