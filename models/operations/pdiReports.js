@@ -704,29 +704,29 @@ class PdiReports {
       // SELECT blocks until the first's COMMIT, so it reads the FIRST
       // call's newly-set drive_file_id as its own "previous" value, instead
       // of both racers reading the same stale original and one of their
-      // uploads going permanently unreferenced and undeleted.
+      // uploads going permanently unreferenced and undeleted. Both Drive
+      // deletions below happen AFTER client.release() -- an external API
+      // call must never run while a pooled DB connection is held.
       const client = await pool.connect();
       let previousDriveFileId;
-      let rowCount;
+      let committed = false;
       try {
         await client.query('BEGIN');
         const locked = await client.query(
           'SELECT drive_file_id FROM pre_dispatch_inspection_reports WHERE report_id = $1 FOR UPDATE',
           [reportId]
         );
-        if (locked.rows.length === 0) {
+        if (locked.rows.length > 0) {
+          previousDriveFileId = locked.rows[0].drive_file_id;
+          await client.query(
+            'UPDATE pre_dispatch_inspection_reports SET drive_file_id = $1 WHERE report_id = $2',
+            [uploaded.id, reportId]
+          );
+          await client.query('COMMIT');
+          committed = true;
+        } else {
           await client.query('ROLLBACK');
-          // The report was deleted while this was uploading.
-          await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for PDI report ${reportId}: ${e.message}`));
-          return;
         }
-        previousDriveFileId = locked.rows[0].drive_file_id;
-        const updated = await client.query(
-          'UPDATE pre_dispatch_inspection_reports SET drive_file_id = $1 WHERE report_id = $2',
-          [uploaded.id, reportId]
-        );
-        rowCount = updated.rowCount;
-        await client.query('COMMIT');
       } catch (e) {
         await client.query('ROLLBACK').catch(() => {});
         throw e;
@@ -734,9 +734,12 @@ class PdiReports {
         client.release();
       }
 
-      if (rowCount === 0) {
-        // The report was deleted while this was uploading.
-        await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for deleted PDI report ${reportId}: ${e.message}`));
+      if (!committed) {
+        // Either the report was deleted mid-upload (0 rows from the
+        // SELECT), or the transaction threw -- the row-lock guarantees the
+        // UPDATE itself can never affect 0 rows once the SELECT found one,
+        // so "not committed" and "report gone" are the same case here.
+        await deleteDriveFile(uploaded.id).catch((e) => logger.warn(`Drive cleanup failed for PDI report ${reportId}: ${e.message}`));
         return;
       }
       if (previousDriveFileId) {
