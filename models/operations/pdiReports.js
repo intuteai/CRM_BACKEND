@@ -784,9 +784,40 @@ class PdiReports {
     return { buffer, pdiNo, source: 'rendered', timings };
   }
 
-  static async deleteReport(reportId, io) {
+  static async deleteReport(reportId, io, { role_id = null } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
+
+    const check = await pool.query(`
+      SELECT r.status, r.batch_id, b.status AS batch_status
+      FROM pre_dispatch_inspection_reports r
+      LEFT JOIN pdi_report_batches b ON b.batch_id = r.batch_id
+      WHERE r.report_id = $1
+    `, [_id]);
+    if (check.rows.length === 0) throw new Error('Report not found');
+    const { status, batch_id, batch_status } = check.rows[0];
+
+    // No repair/renumbering mechanism exists for a batch once it's
+    // Completed -- deleting a member then is what silently corrupts the
+    // combined PDF on its next cache-miss re-render (lot_quantity stays
+    // stale, pages just vanish, no error). Block outright rather than
+    // building that repair tooling; a non-Completed batch's incompleteness
+    // is already caught by finalizeBatch's own BATCH_INCOMPLETE check.
+    if (batch_id && batch_status === 'Completed') {
+      const err = new Error('This report belongs to a finalized batch lot and cannot be deleted.');
+      err.code = 'BATCH_MEMBER_LOCKED';
+      throw err;
+    }
+
+    // Same permission the finalized-report-editing feature already gates
+    // PATCH behind -- deleting a finalized report is a more extreme edit,
+    // not a different capability.
+    if (status === 'Completed' && !(await hasPermission(role_id, 'PreDispatchInspectionReports', 'can_write'))) {
+      const err = new Error('Deleting a finalized report requires PDI write permission.');
+      err.code = 'FINALIZED_REPORT_FORBIDDEN';
+      throw err;
+    }
+
     const result = await pool.query(
       'DELETE FROM pre_dispatch_inspection_reports WHERE report_id = $1 RETURNING report_id, drive_file_id',
       [_id]
