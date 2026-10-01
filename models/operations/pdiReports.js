@@ -234,20 +234,48 @@ class PdiReports {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
+    // Read BEFORE building sets/values -- the Completed-report branch below
+    // excludes several fields entirely (status, inspected_by, customer_id,
+    // order_id, inspection_date) rather than filtering them out after the
+    // fact, and that requires knowing currentStatus from the start. A
+    // malformed inspection_date on a finalized edit is a no-op, not an
+    // error (see toIsoDateOrNull call below) -- so even date validation
+    // needs this read to have already happened.
+    const current = await pool.query(
+      `SELECT status, revision_no, data FROM pre_dispatch_inspection_reports WHERE report_id = $1`,
+      [_id]
+    );
+    if (current.rows.length === 0) throw new Error('Report not found');
+    const { status: currentStatus, revision_no: currentRevision, data: currentData } = current.rows[0];
+    const isFinalizedEdit = currentStatus === 'Completed';
+
     const sets = [];
     const values = [];
     let i = 1;
 
-    if (fields.status !== undefined) { sets.push(`status = $${i++}`); values.push(fields.status); }
-    if (fields.inspected_by !== undefined) { sets.push(`inspected_by = $${i++}`); values.push(fields.inspected_by || null); }
-    if (fields.inspection_date !== undefined) {
+    // status/inspected_by/customer_id/order_id/inspection_date are no-ops on
+    // a finalized edit, not errors -- only data/photos are actually
+    // editable once Completed (see the finalized-report-editing design).
+    // Previously these were added unconditionally and `status` alone was
+    // stripped from the SQL *text* afterward without removing its bound
+    // *value*, leaving an unreferenced parameter Postgres couldn't
+    // type-infer (42P18). Not adding them here at all, for any of the five
+    // fields, avoids that whole class of bug rather than patching around
+    // one instance of it.
+    if (fields.status !== undefined && !isFinalizedEdit) { sets.push(`status = $${i++}`); values.push(fields.status); }
+    if (fields.inspected_by !== undefined && !isFinalizedEdit) { sets.push(`inspected_by = $${i++}`); values.push(fields.inspected_by || null); }
+    if (fields.inspection_date !== undefined && !isFinalizedEdit) {
       sets.push(`inspection_date = $${i++}`);
       values.push(toIsoDateOrNull(fields.inspection_date));
     }
-    if (fields.customer_id !== undefined) { sets.push(`customer_id = $${i++}`); values.push(fields.customer_id || null); }
-    if (fields.order_id !== undefined) { sets.push(`order_id = $${i++}`); values.push(fields.order_id || null); }
+    if (fields.customer_id !== undefined && !isFinalizedEdit) { sets.push(`customer_id = $${i++}`); values.push(fields.customer_id || null); }
+    if (fields.order_id !== undefined && !isFinalizedEdit) { sets.push(`order_id = $${i++}`); values.push(fields.order_id || null); }
     if (fields.data !== undefined) {
-      sets.push(`data = $${i++}`);
+      // Merge, not replace -- every current caller already resends full
+      // form state, so this is behavior-identical to replace for them, but
+      // a future caller that sends a partial `data` object no longer
+      // silently deletes every field it didn't mention.
+      sets.push(`data = data || $${i++}::jsonb`);
       values.push(JSON.stringify(fields.data));
       // Keep the denormalized signer columns in sync with data on every write
       // that touches it -- these two columns can never legitimately drift
@@ -273,19 +301,6 @@ class PdiReports {
     // deliberately before any query, so a malformed date never even reaches
     // the database (this ordering predates this feature; keep it that way).
     if (sets.length === 0) return this.getById(_id, { photosSummary });
-
-    // A report currently Completed needs a different guard (permission +
-    // expected_revision, see the design spec) than a normal draft edit, and
-    // must never have its `status` changed through this path once Completed
-    // (that would silently un-finalize it -- finalizeReport's job, not this
-    // one) -- so its current status/revision_no/data has to be known before
-    // deciding which UPDATE to issue.
-    const current = await pool.query(
-      `SELECT status, revision_no, data FROM pre_dispatch_inspection_reports WHERE report_id = $1`,
-      [_id]
-    );
-    if (current.rows.length === 0) throw new Error('Report not found');
-    const { status: currentStatus, revision_no: currentRevision, data: currentData } = current.rows[0];
 
     if (currentStatus !== 'Completed') {
       // Unchanged from before this feature existed: a normal in-progress
@@ -333,15 +348,7 @@ class PdiReports {
       throw conflict;
     }
 
-    // `status` never changes through this path once a report is Completed --
-    // that would silently un-finalize it, which is finalizeReport's job, not
-    // this one. Drop it from the SET clause text; its value (if `fields.status`
-    // was sent) stays harmlessly unreferenced in `values` -- Postgres doesn't
-    // require every bound parameter to be used by the query text, only that
-    // every $N IN the text has a value at that position.
-    const finalizedSets = sets.filter((s) => !s.startsWith('status = $'));
-    if (finalizedSets.length === 0) {
-      // Only `status` was being sent (excluded above) -- nothing left to apply.
+    if (sets.length === 0) {
       return this.getById(_id, { photosSummary });
     }
 
@@ -355,7 +362,7 @@ class PdiReports {
     // currentRevision (read before this transaction opened) were still
     // accurate at commit time -- nothing else could have changed revision_no
     // in between, or this UPDATE's WHERE clause would itself have matched 0 rows.
-    finalizedSets.push('revision_no = revision_no + 1');
+    sets.push('revision_no = revision_no + 1');
     values.push(_id, currentRevision);
 
     const client = await pool.connect();
@@ -366,7 +373,7 @@ class PdiReports {
 
       result = await client.query(`
         UPDATE pre_dispatch_inspection_reports
-        SET ${finalizedSets.join(', ')}
+        SET ${sets.join(', ')}
         WHERE report_id = $${i} AND status = 'Completed' AND revision_no = $${i + 1}
         RETURNING ${reportColumns('', { photosSummary })}
       `, values);

@@ -5,14 +5,31 @@
 // on 22 Sep 2026: every save failed identically from the moment the date
 // field held an unparseable value, 4ms in, never touching the database.
 // This mocks the database, so it touches no real data.
-const mockQuery = jest.fn(async (sql) => {
+const mockQuery = jest.fn(async (sql, params) => {
   // patchReport's pre-read of the report's current status/revision_no/data,
   // now issued before the guarded UPDATE (see the design spec) -- these
   // tests are about date parsing, not the Completed-report edit path, so
   // 'Pending' keeps every one of them on the same normal-edit branch they
-  // exercised before this query existed.
+  // exercised before this query existed. Report 2 is the one exception,
+  // kept Completed for the finalized-edit date-ignoring test below.
   if (/SELECT status, revision_no, data FROM/.test(sql)) {
+    const [id] = params || [];
+    if (id === 2) return { rows: [{ status: 'Completed', revision_no: 5, data: { pdi_no: 'FINAL-1' } }] };
     return { rows: [{ status: 'Pending', revision_no: 1, data: {} }] };
+  }
+  // getById's plain SELECT (no RETURNING) -- hit when a finalized edit
+  // excludes every field it was given, leaving nothing to update. Unique
+  // to this query among the ones patchReport/getById issue: the pre-read
+  // (checked above, already returned by now) is the only other query
+  // against this same table+WHERE, and the UPDATE path has no `FROM` at all.
+  if (/FROM pre_dispatch_inspection_reports WHERE report_id = \$1/.test(sql)) {
+    return {
+      rows: [{
+        report_id: 2, sr_no: 2, customer_id: null, order_id: null, status: 'Completed',
+        inspected_by: null, inspection_date: null, template_id: 'general', template_version: 1,
+        drive_file_id: null, revision_no: 5, data: { pdi_no: 'FINAL-1' }, photos: [],
+      }],
+    };
   }
   if (/RETURNING/.test(sql)) {
     return {
@@ -37,9 +54,14 @@ describe('Inspection date parsing', () => {
     await expect(
       PdiReports.patchReport(1, { inspection_date: '22-09-2026' })
     ).rejects.toMatchObject({ code: 'INVALID_INSPECTION_DATE' });
-    // Must fail before ever touching the database -- exactly what made this
-    // bug invisible in the request's timing (4ms, no DB round trip).
-    expect(mockQuery).not.toHaveBeenCalled();
+    // patchReport now reads the report's current status BEFORE building
+    // sets/values (needed so a finalized edit can exclude inspection_date
+    // entirely -- see the test below), so the database IS touched once
+    // here, for that pre-read. It must still fail before ever issuing the
+    // actual UPDATE: exactly one query is sent, and it's the pre-read, not
+    // a write.
+    expect(mockQuery).toHaveBeenCalledTimes(1);
+    expect(mockQuery.mock.calls[0][0]).toMatch(/SELECT status, revision_no, data FROM/);
   });
 
   it('rejects the same bad date on report creation', async () => {
@@ -62,5 +84,19 @@ describe('Inspection date parsing', () => {
     ).resolves.toBeDefined();
     const values = mockQuery.mock.calls[1][1];
     expect(values).toContain(null);
+  });
+
+  it('silently ignores a malformed inspection_date on a finalized (Completed) report, never validating it', async () => {
+    // Report 2 is mocked Completed (revision_no 5). isFinalizedEdit excludes
+    // inspection_date from the build pass entirely, so toIsoDateOrNull never
+    // runs on it in this branch -- the malformed value is a no-op, not an
+    // error. role_id/expected_revision are supplied as they would be for a
+    // real finalized edit, even though this particular call never reaches
+    // the permission/revision checks (nothing is left in `sets` once
+    // inspection_date is excluded, so it short-circuits to the no-op
+    // getById fallback before that code runs).
+    await expect(
+      PdiReports.patchReport(2, { inspection_date: '22-09-2026' }, null, { role_id: 1, expected_revision: 5 })
+    ).resolves.toMatchObject({ report_id: 2, status: 'Completed' });
   });
 });

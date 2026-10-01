@@ -159,6 +159,44 @@ describe('patchReport editing an already-Completed report', () => {
     expect(finalUpdate.sql).not.toMatch(/status = \$/);
   });
 
+  it('excludes status/inspected_by/customer_id/order_id/inspection_date entirely from the SET clause on a finalized edit, and never leaves a bound value with no matching placeholder (the original 42P18 bug)', async () => {
+    const result = await PdiReports.patchReport(
+      7,
+      {
+        data: { pdi_no: 'X' },
+        status: 'Pending',
+        inspected_by: 'Someone',
+        customer_id: 99,
+        order_id: 42,
+        inspection_date: '2026-01-01',
+      },
+      null,
+      { role_id: 1, expected_revision: 3 }
+    );
+    expect(result).toBeDefined();
+
+    const finalUpdate = mockState.queries.find((q) => /status = 'Completed' AND revision_no = /.test(q.sql));
+    expect(finalUpdate).toBeDefined();
+    // Only data/photos are actually editable once Completed -- these five
+    // are no-ops, not errors, and must not appear as SET targets at all.
+    expect(finalUpdate.sql).not.toMatch(/status = \$/);
+    expect(finalUpdate.sql).not.toMatch(/inspected_by = \$/);
+    expect(finalUpdate.sql).not.toMatch(/customer_id = \$/);
+    expect(finalUpdate.sql).not.toMatch(/order_id = \$/);
+    expect(finalUpdate.sql).not.toMatch(/inspection_date = \$/);
+    expect(finalUpdate.sql).toMatch(/data = data \|\| \$\d+::jsonb/);
+    expect(finalUpdate.sql).toMatch(/prepared_by = \$\d+/);
+    expect(finalUpdate.sql).toMatch(/approved_by = \$\d+/);
+    expect(finalUpdate.sql).toMatch(/revision_no = revision_no \+ 1/);
+
+    // Direct regression test for the original bug: a stray bound value with
+    // no matching placeholder in the SQL text, which Postgres can't
+    // type-infer (42P18). The number of distinct $N placeholders actually
+    // present in the query text must equal the number of bound values.
+    const placeholderCount = new Set(finalUpdate.sql.match(/\$\d+/g) || []).size;
+    expect(finalUpdate.params.length).toBe(placeholderCount);
+  });
+
   it('does not touch permission/revision/snapshot machinery for a report that is NOT Completed (unchanged existing behavior)', async () => {
     mockState.preReadRow = { status: 'Pending', revision_no: 1, data: {} };
     mockState.updateRows = [{
