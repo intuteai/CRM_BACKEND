@@ -279,6 +279,25 @@ describe('finalizeBatch', () => {
     expect(updateCalls).toHaveLength(0);
   });
 
+  it('fails the whole batch before marking anything Completed if one report is missing motor_sr_no', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return { rows: [reportRow(1), reportRow(2, { data: { pdi_no: 'PDI-2026-001' /* no motor_sr_no */ } })] };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    await expect(PdiReportBatches.finalizeBatch(101)).rejects.toMatchObject({ code: 'MOTOR_SR_NO_REQUIRED' });
+    expect(mockUpload).not.toHaveBeenCalled();
+
+    // Same reasoning as the pdi_no case above: prove the validate loop runs
+    // before ANY write, not just that Drive wasn't reached.
+    const updateCalls = mockClient.query.mock.calls.filter(([sql]) => /UPDATE pre_dispatch_inspection_reports/.test(sql));
+    expect(updateCalls).toHaveLength(0);
+  });
+
   it('if rendering the combined PDF fails, no report and no batch status is touched (the whole point of rendering before writing)', async () => {
     mockState.poolQueryImpl = async (sql) => {
       if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
@@ -376,8 +395,8 @@ describe('finalizeBatch', () => {
       if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
         return {
           rows: [
-            reportRow(1, { data: { pdi_no: 'PDI-2026-001', customer_name: 'Drifted Co.', controller_type: 'CASHV38140' } }),
-            reportRow(2, { data: { pdi_no: 'PDI-2026-001', controller_type: 'CASHV38140' } }),
+            reportRow(1, { data: { pdi_no: 'PDI-2026-001', customer_name: 'Drifted Co.', controller_type: 'CASHV38140', motor_sr_no: 'SR1' } }),
+            reportRow(2, { data: { pdi_no: 'PDI-2026-001', controller_type: 'CASHV38140', motor_sr_no: 'SR2' } }),
           ],
         };
       }
