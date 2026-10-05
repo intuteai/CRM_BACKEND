@@ -70,6 +70,7 @@ exports.finalizeBatch = async (req, res) => {
     if (error.message === 'Batch not found') return res.status(404).json({ error: error.message });
     if (error.code === 'PDI_NO_REQUIRED') return res.status(400).json({ error: error.message, code: error.code });
     if (error.code === 'MOTOR_SR_NO_REQUIRED') return res.status(400).json({ error: error.message, code: error.code });
+    if (error.code === 'CONTROLLER_SR_NO_REQUIRED') return res.status(400).json({ error: error.message, code: error.code });
     if (error.code === 'BATCH_ALREADY_FINALIZED') return res.status(409).json({ error: error.message, code: error.code });
     if (error.code === 'BATCH_INCOMPLETE') return res.status(409).json({ error: error.message, code: error.code });
     logger.error(`Error finalizing PDI report batch ${req.params.batchId}: ${error.message}`, error.stack);

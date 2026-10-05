@@ -145,15 +145,21 @@ class PdiReportBatches {
       throw err;
     }
 
+    // A batch is homogeneous -- createBatch stamps every linked report with
+    // the same template_id -- so which serial-number field is required is
+    // decided once from the batch itself, not per report.
+    const srNoField = batch.template_id === 'autonxt_controller' ? 'controller_sr_no' : 'motor_sr_no';
+    const srNoErrorCode = batch.template_id === 'autonxt_controller' ? 'CONTROLLER_SR_NO_REQUIRED' : 'MOTOR_SR_NO_REQUIRED';
+
     for (const report of reports) {
       if (!report.data?.pdi_no) {
         const err = new Error(`Report ${report.report_id} (lot ${report.lot_index}) is missing pdi_no.`);
         err.code = 'PDI_NO_REQUIRED';
         throw err;
       }
-      if (!report.data?.motor_sr_no) {
-        const err = new Error(`Report ${report.report_id} (lot ${report.lot_index}) is missing motor_sr_no.`);
-        err.code = 'MOTOR_SR_NO_REQUIRED';
+      if (!report.data?.[srNoField]) {
+        const err = new Error(`Report ${report.report_id} (lot ${report.lot_index}) is missing ${srNoField}.`);
+        err.code = srNoErrorCode;
         throw err;
       }
     }

@@ -298,6 +298,50 @@ describe('finalizeBatch', () => {
     expect(updateCalls).toHaveLength(0);
   });
 
+  it('fails the whole batch before marking anything Completed if one report is missing controller_sr_no (autonxt_controller template)', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt_controller', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return {
+          rows: [
+            reportRow(1, { template_id: 'autonxt_controller', data: { pdi_no: 'PDI-2026-001', controller_sr_no: 'SR1' } }),
+            reportRow(2, { template_id: 'autonxt_controller', data: { pdi_no: 'PDI-2026-001' /* no controller_sr_no */ } }),
+          ],
+        };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    await expect(PdiReportBatches.finalizeBatch(101)).rejects.toMatchObject({ code: 'CONTROLLER_SR_NO_REQUIRED' });
+    expect(mockUpload).not.toHaveBeenCalled();
+
+    const updateCalls = mockClient.query.mock.calls.filter(([sql]) => /UPDATE pre_dispatch_inspection_reports/.test(sql));
+    expect(updateCalls).toHaveLength(0);
+  });
+
+  it('an autonxt_controller batch with every controller_sr_no set does NOT require motor_sr_no', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt_controller', pdi_no: 'PDI-2026-001', lot_quantity: 1, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return {
+          rows: [reportRow(1, {
+            template_id: 'autonxt_controller',
+            template_version: 1,
+            data: { pdi_no: 'PDI-2026-001', controller_sr_no: 'SR1' },
+          })],
+        };
+      }
+      return { rows: [], rowCount: 0 };
+    };
+    mockSuccessfulFinalizeTransaction();
+    mockUpload.mockResolvedValue({ id: 'drive-file-1' });
+    const result = await PdiReportBatches.finalizeBatch(101);
+    expect(result.payload.status).toBe('Completed');
+  });
+
   it('if rendering the combined PDF fails, no report and no batch status is touched (the whole point of rendering before writing)', async () => {
     mockState.poolQueryImpl = async (sql) => {
       if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
