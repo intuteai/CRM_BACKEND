@@ -97,7 +97,9 @@ class PdiReportBatches {
     if (batchResult.rows.length === 0) throw new Error('Batch not found');
 
     const reportsResult = await pool.query(`
-      SELECT report_id, lot_index, status, data->>'motor_sr_no' AS motor_sr_no, data->>'pdi_no' AS pdi_no
+      SELECT report_id, lot_index, status,
+             data->>'motor_sr_no' AS motor_sr_no, data->>'controller_sr_no' AS controller_sr_no,
+             data->>'pdi_no' AS pdi_no
       FROM pre_dispatch_inspection_reports WHERE batch_id = $1
       ORDER BY lot_index ASC
     `, [_id]);

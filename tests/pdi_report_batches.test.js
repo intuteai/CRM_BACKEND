@@ -185,6 +185,63 @@ describe('createBatch', () => {
   });
 });
 
+describe('getBatch', () => {
+  it('throws Batch not found for a non-numeric batchId, without querying the database', async () => {
+    await expect(PdiReportBatches.getBatch('not-a-number')).rejects.toThrow('Batch not found');
+    expect(mockQuery).not.toHaveBeenCalled();
+  });
+
+  it('throws Batch not found when no batch row matches', async () => {
+    mockState.poolQueryImpl = async () => ({ rows: [] });
+    await expect(PdiReportBatches.getBatch(101)).rejects.toThrow('Batch not found');
+  });
+
+  it('returns controller_sr_no (alongside motor_sr_no) for each linked report, matching whichever field that report\'s data actually holds', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 101, template_id: 'autonxt_controller', pdi_no: 'PDI-2026-001', lot_quantity: 2, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return {
+          rows: [
+            { report_id: 1001, lot_index: 1, status: 'Completed', motor_sr_no: null, controller_sr_no: 'CSR1', pdi_no: 'PDI-2026-001' },
+            { report_id: 1002, lot_index: 2, status: 'Pending', motor_sr_no: null, controller_sr_no: null, pdi_no: 'PDI-2026-001' },
+          ],
+        };
+      }
+      throw new Error(`Unexpected query in test: ${sql}`);
+    };
+
+    const result = await PdiReportBatches.getBatch(101);
+
+    expect(result.reports).toHaveLength(2);
+    expect(result.reports[0].controller_sr_no).toBe('CSR1');
+    expect(result.reports[0].motor_sr_no).toBeNull();
+    expect(result.reports[1].controller_sr_no).toBeNull();
+
+    // Guard against a future regression silently dropping the column again --
+    // the query itself must actually select controller_sr_no, not just happen
+    // to pass because the mock echoes it back.
+    const [reportsQuerySql] = mockQuery.mock.calls.find(([sql]) => /FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql));
+    expect(reportsQuerySql).toMatch(/data->>'controller_sr_no' AS controller_sr_no/);
+  });
+
+  it('still returns motor_sr_no correctly for a Motor (autonxt) batch -- no regression', async () => {
+    mockState.poolQueryImpl = async (sql) => {
+      if (/SELECT [\s\S]*FROM pdi_report_batches WHERE batch_id/.test(sql)) {
+        return { rows: [{ batch_id: 102, template_id: 'autonxt', pdi_no: 'PDI-2026-002', lot_quantity: 1, status: 'In Progress' }] };
+      }
+      if (/SELECT [\s\S]*FROM pre_dispatch_inspection_reports WHERE batch_id/.test(sql)) {
+        return { rows: [{ report_id: 2001, lot_index: 1, status: 'Pending', motor_sr_no: 'SR1', controller_sr_no: null, pdi_no: 'PDI-2026-002' }] };
+      }
+      throw new Error(`Unexpected query in test: ${sql}`);
+    };
+
+    const result = await PdiReportBatches.getBatch(102);
+    expect(result.reports[0].motor_sr_no).toBe('SR1');
+  });
+});
+
 describe('finalizeBatch', () => {
   // finalizeBatch now does its two status UPDATEs inside a transaction via
   // client.query (pool.connect()), while the read-only SELECTs still go
