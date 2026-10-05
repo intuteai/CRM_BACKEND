@@ -273,6 +273,7 @@ describe('PDI Reports API', () => {
     expect(res.body).toEqual([
       { id: 'general', name: 'General', version: 1 },
       { id: 'autonxt', name: 'AutoNXT Motor PDI', version: 1 },
+      { id: 'autonxt_controller', name: 'AutoNXT Controller PDI', version: 1 },
     ]);
   });
 
