@@ -220,6 +220,51 @@ describe('PDI Reports API', () => {
     expect(fetched.statusCode).toBe(404);
   });
 
+  it('duplicates an AutoNXT Controller report, resetting per-unit fields but keeping identity fields', async () => {
+    const created = await request(app)
+      .post('/api/pdi/reports')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        template_id: 'autonxt_controller',
+        data: {
+          customer_name: 'Controller Dup Co.',
+          product_id: 'CTRL-125',
+          controller_type: 'CASHV38140',
+          pdi_no: 'PDI-TEST-CTRL-DUP-1',
+          controller_sr_no: 'SR-0001',
+          parameter_rows: [{ parameter: 'F01.00', specification: '11', measured: '11' }],
+          general_check: { can_card: { measured: 'GO' } },
+          page1_remarks: 'ALL OK, PASSED.',
+          page2_remarks: 'ALL OK, PASSED.',
+          prepared_by: 'Alice',
+          approved_by: 'Bob',
+        },
+      });
+    createdReportIds.push(created.body.report_id);
+
+    const duplicated = await request(app)
+      .post(`/api/pdi/reports/${created.body.report_id}/duplicate`)
+      .set('Authorization', `Bearer ${adminToken}`);
+    createdReportIds.push(duplicated.body.report_id);
+
+    expect(duplicated.statusCode).toBe(201);
+    expect(duplicated.body.template_id).toBe('autonxt_controller');
+    // Per-unit fields reset (absent, since duplicateReport only carries
+    // forward keys not in the reset set -- it never writes blanks for them).
+    expect(duplicated.body.data.controller_sr_no).toBeUndefined();
+    expect(duplicated.body.data.parameter_rows).toBeUndefined();
+    expect(duplicated.body.data.general_check).toBeUndefined();
+    expect(duplicated.body.data.page1_remarks).toBeUndefined();
+    expect(duplicated.body.data.page2_remarks).toBeUndefined();
+    expect(duplicated.body.data.prepared_by).toBeUndefined();
+    expect(duplicated.body.data.approved_by).toBeUndefined();
+    expect(duplicated.body.data.pdi_no).toBeUndefined();
+    // Identity/batch-spec fields carried forward unchanged.
+    expect(duplicated.body.data.customer_name).toBe('Controller Dup Co.');
+    expect(duplicated.body.data.product_id).toBe('CTRL-125');
+    expect(duplicated.body.data.controller_type).toBe('CASHV38140');
+  });
+
   it('lists the registered templates', async () => {
     const res = await request(app)
       .get('/api/pdi/templates')

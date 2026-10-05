@@ -199,6 +199,13 @@ class PdiReports {
         'page1_remarks', 'page2_remarks', // per-run remarks, not batch spec
         'prepared_by_electrical', 'prepared_by_mechanical', 'approved_by', // AutoNXT's signatures
       ],
+      autonxt_controller: [
+        'pdi_no', 'date', 'controller_sr_no',
+        'parameter_rows', // Controller's measured parameter checklist
+        'general_check', // Controller's fixed GO/NG checks
+        'page1_remarks', 'page2_remarks', // per-run remarks, not batch spec
+        'prepared_by', 'approved_by', // Controller's 2-role signature
+      ],
     };
     // Admin-authored templates aren't in this map yet — their per-run fields
     // are admin-defined (arbitrary dataKeys per section), so only pdi_no/date
