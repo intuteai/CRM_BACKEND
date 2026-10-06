@@ -163,12 +163,11 @@ describe('patchReport editing an already-Completed report', () => {
     expect(mockClient.release).toHaveBeenCalledTimes(1);
   });
 
-  it('never lets `status` change through this path, even if the caller sends one', async () => {
-    await PdiReports.patchReport(
+  it('refuses a caller that sends a status for a Completed report (a stale screen), and changes nothing', async () => {
+    await expect(PdiReports.patchReport(
       7, { status: 'Pending', data: { pdi_no: 'PDI-EDIT-1' } }, null, { role_id: 1, expected_revision: 3 }
-    );
-    const finalUpdate = mockState.queries.find((q) => /status = 'Completed' AND revision_no = /.test(q.sql));
-    expect(finalUpdate.sql).not.toMatch(/status = \$/);
+    )).rejects.toMatchObject({ code: 'REPORT_LOCKED' });
+    expect(mockState.queries.find((q) => /^\s*UPDATE pre_dispatch_inspection_reports/.test(q.sql))).toBeUndefined();
   });
 
   it('excludes status/inspected_by/customer_id/order_id/inspection_date entirely from the SET clause on a finalized edit, and never leaves a bound value with no matching placeholder (the original 42P18 bug)', async () => {
@@ -176,7 +175,6 @@ describe('patchReport editing an already-Completed report', () => {
       7,
       {
         data: { pdi_no: 'X' },
-        status: 'Pending',
         inspected_by: 'Someone',
         customer_id: 99,
         order_id: 42,

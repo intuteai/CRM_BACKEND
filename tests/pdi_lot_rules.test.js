@@ -116,6 +116,20 @@ describe('patchReport rules', () => {
     await expect(PdiReports.patchReport(7, { status })).resolves.toBeDefined();
   });
 
+  it.each(['In Progress', 'Failed', 'Pending'])('refuses a save sending status %p to a Completed report with REPORT_LOCKED (stale screen)', async (status) => {
+    fakeReport({ preRead: { status: 'Completed', revision_no: 3, data: {}, batch_status: null } });
+    await expect(PdiReports.patchReport(7, { status, data: { a: 1 } }, null, { expected_revision: 3, role_id: 1 }))
+      .rejects.toMatchObject({ code: 'REPORT_LOCKED' });
+    expect(updateCall()).toBeUndefined();
+  });
+
+  it('still allows a finalized edit that sends expected_revision and no status', async () => {
+    fakeReport({ preRead: { status: 'Completed', revision_no: 3, data: {}, batch_status: null } });
+    const res = await PdiReports.patchReport(7, { data: { a: 1 } }, null, { expected_revision: 3, role_id: 1, edited_by: 1 })
+      .catch((e) => e);
+    expect(res && res.code).not.toBe('REPORT_LOCKED');
+  });
+
   it.each(['Completed', 'Finalizing'])('refuses to save a member of a %s lot with BATCH_MEMBER_LOCKED', async (batchStatus) => {
     fakeReport({ preRead: { status: 'In Progress', revision_no: 3, data: {}, batch_status: batchStatus } });
     await expect(PdiReports.patchReport(7, { data: { motor_sr_no: 'X' } })).rejects.toMatchObject({

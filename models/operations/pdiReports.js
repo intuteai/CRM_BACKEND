@@ -301,6 +301,17 @@ class PdiReports {
     const { status: currentStatus, revision_no: currentRevision, data: currentData, batch_status: batchStatus } = current.rows[0];
     const isFinalizedEdit = currentStatus === 'Completed';
 
+    // Every client (web forms and both mobile editors) sends a status only
+    // while it believes the report is still open, and only expected_revision
+    // when it knows it's editing a finalized one. A status on a Completed
+    // report therefore means a stale screen: refuse it rather than silently
+    // turning an ordinary save into an edit of the finalized PDF. If the
+    // report is finalized after this read, the guarded UPDATE below (status
+    // <> 'Completed') refuses it the same way.
+    if (isFinalizedEdit && fields.status !== undefined) {
+      throw codedError('This report was finalized while you were editing. Reopen it to see the finalized version.', 'REPORT_LOCKED');
+    }
+
     // Fast, friendly failures only -- the guarded UPDATEs below re-check
     // both conditions atomically.
     if (batchStatus && batchStatus !== 'In Progress') throw batchMemberEditLockedError();
