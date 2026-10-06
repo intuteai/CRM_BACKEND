@@ -234,14 +234,14 @@ describe('requirePdiAccess', () => {
   };
 
   it.each([
-    ['admin', 1], ['production', 5], ['design', 4], ['dispatch', 7],
+    ['admin', 1], ['production', 5],
     ['Production', 99], // role_name from the roles table, any case
     ['', 5], // role_name missing, role_id maps to production
   ])('lets %p (role_id %p) through', (role_name, role_id) => {
     expect(run({ role_name: role_name.toLowerCase(), role_id }).next).toHaveBeenCalled();
   });
 
-  it.each([['sales', 3], ['customer', 2], ['store', 6], ['accounts', 8], ['hr', 10], ['', undefined]])('refuses %p with 403 PDI_FORBIDDEN', (role_name, role_id) => {
+  it.each([['sales', 3], ['customer', 2], ['design', 4], ['store', 6], ['dispatch', 7], ['accounts', 8], ['employee', 9], ['hr', 10], ['', undefined]])('refuses %p with 403 PDI_FORBIDDEN', (role_name, role_id) => {
     const { res, next } = run({ role_name, role_id });
     expect(next).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(403);
