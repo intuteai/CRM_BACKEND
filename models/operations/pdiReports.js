@@ -112,7 +112,8 @@ function reportColumns(prefix = '', { photosSummary = false } = {}) {
   `;
 }
 
-const ALLOWED_PATCH_STATUSES = ['Pending', 'In Progress'];
+// 'Failed' is the mobile app's "Mark as failed" action.
+const ALLOWED_PATCH_STATUSES = ['Pending', 'In Progress', 'Failed'];
 
 // WHERE fragment for an UPDATE of pre_dispatch_inspection_reports: the report
 // is standalone, or its lot is still In Progress. FOR SHARE makes a
@@ -278,7 +279,7 @@ class PdiReports {
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
     if (fields.status !== undefined && !ALLOWED_PATCH_STATUSES.includes(fields.status)) {
-      throw codedError('status must be Pending or In Progress. A report is completed only by finalizing it.', 'INVALID_STATUS');
+      throw codedError('status must be Pending, In Progress or Failed. A report is completed only by finalizing it.', 'INVALID_STATUS');
     }
     const hasExpectedRevision = expected_revision !== undefined && expected_revision !== null && expected_revision !== '';
 

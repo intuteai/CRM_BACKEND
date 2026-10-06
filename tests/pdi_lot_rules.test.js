@@ -111,7 +111,7 @@ describe('patchReport rules', () => {
     expect(mockQuery).not.toHaveBeenCalled();
   });
 
-  it.each(['Pending', 'In Progress'])('accepts status %p', async (status) => {
+  it.each(['Pending', 'In Progress', 'Failed'])('accepts status %p', async (status) => {
     fakeReport({ preRead: { status: 'Pending', revision_no: 3, data: {}, batch_status: null } });
     await expect(PdiReports.patchReport(7, { status })).resolves.toBeDefined();
   });
