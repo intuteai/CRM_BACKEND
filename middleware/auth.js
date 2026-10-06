@@ -22,14 +22,22 @@ const authenticateToken = async (req, res, next) => {
       return res.status(403).json({ error: 'Invalid token payload', code: 'AUTH_INVALID_TOKEN' });
     }
 
-    // Fetch user row and role_name from DB to ensure correctness and freshness
-    const { rows } = await pool.query(
-      `SELECT u.user_id, u.name, u.role_id, r.role_name
-       FROM users u
-       LEFT JOIN roles r ON u.role_id = r.role_id
-       WHERE u.user_id = $1`,
-      [payload.user_id]
-    );
+    // Fetch user row and role_name from DB to ensure correctness and freshness.
+    // A database failure here is not a bad token: answering AUTH_INVALID_TOKEN
+    // would make the clients log the user out mid-work.
+    let rows;
+    try {
+      ({ rows } = await pool.query(
+        `SELECT u.user_id, u.name, u.role_id, r.role_name
+         FROM users u
+         LEFT JOIN roles r ON u.role_id = r.role_id
+         WHERE u.user_id = $1`,
+        [payload.user_id]
+      ));
+    } catch (dbErr) {
+      console.error('authenticateToken database error:', dbErr && dbErr.message ? dbErr.message : dbErr);
+      return res.status(503).json({ error: 'The server is temporarily unavailable. Please try again.', code: 'AUTH_UNAVAILABLE' });
+    }
 
     if (rows.length === 0) {
       return res.status(403).json({ error: 'User not found', code: 'AUTH_INVALID_USER' });

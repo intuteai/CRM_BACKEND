@@ -46,4 +46,15 @@ describe('checkTolerance', () => {
     expect(checkTolerance('153.5', '152.7', '±', '0.2').outOfRange).toBe(true);
     expect(checkTolerance('152.8', '152.7', '±', '0.2').outOfRange).toBe(false);
   });
+
+  it('does not flag a reading exactly on a limit because of float error', () => {
+    // 0.7 + 0.1 === 0.7999999999999999 and 8.2 + 0.1 === 8.299999999999999
+    expect(checkTolerance('0.8', '0.7', '±', '0.1').outOfRange).toBe(false);
+    expect(checkTolerance('8.3', '8.2', '±', '0.1').outOfRange).toBe(false);
+    expect(checkTolerance('8.1', '8.2', '±', '0.1').outOfRange).toBe(false);
+    expect(checkTolerance('0.8', '0.7', 'bilateral', '0.1', '-0.1').outOfRange).toBe(false);
+    // Just past the limit is still flagged.
+    expect(checkTolerance('8.31', '8.2', '±', '0.1').outOfRange).toBe(true);
+    expect(checkTolerance('0.81', '0.7', 'bilateral', '0.1', '-0.1').outOfRange).toBe(true);
+  });
 });

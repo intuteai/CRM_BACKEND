@@ -22,7 +22,17 @@ exports.getTemplateDefinition = async (req, res) => {
     // that exists specifically to serve admin-authored templates.
     if (templates[id]) return res.status(404).json({ error: 'Template not found' });
 
-    const row = await AuthoredTemplates.getActive(id);
+    // ?version=N serves that exact version, archived or not, so an existing
+    // report can be edited against the definition its PDF will render with.
+    // Without it, only the latest active version is served (new reports).
+    const { version } = req.query;
+    let row;
+    if (version !== undefined) {
+      if (!/^\d{1,9}$/.test(String(version))) return res.status(404).json({ error: 'Template not found' });
+      row = await AuthoredTemplates.getByVersion(id, Number(version));
+    } else {
+      row = await AuthoredTemplates.getActive(id);
+    }
     if (!row) return res.status(404).json({ error: 'Template not found' });
     res.json({ id: row.id, name: row.name, version: row.version, definition: row.definition });
   } catch (error) {

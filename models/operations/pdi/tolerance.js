@@ -16,6 +16,10 @@
 // Bilateral's min/max wrapping is deliberate — same defensive reasoning as
 // the existing Math.abs guard below, so a mistyped sign on either field
 // can't silently invert the range.
+// Float slack: 0.7 + 0.1 is 0.7999999999999999, so without it a reading
+// exactly on a limit (0.8) is flagged. Mirrored in the web and mobile copies.
+const EPS = 1e-9;
+
 function checkTolerance(measuredStr, nominalStr, toleranceMode, toleranceAmountStr, toleranceAmount2Str) {
   const measured = parseFloat(measuredStr);
   const nominal = parseFloat(nominalStr);
@@ -41,7 +45,7 @@ function checkTolerance(measuredStr, nominalStr, toleranceMode, toleranceAmountS
     }
     const low = nominal + Math.min(plus, minus);
     const high = nominal + Math.max(plus, minus);
-    return { outOfRange: measured < low || measured > high };
+    return { outOfRange: measured < low - EPS || measured > high + EPS };
   }
 
   const toleranceAmount = parseFloat(toleranceAmountStr);
@@ -53,7 +57,7 @@ function checkTolerance(measuredStr, nominalStr, toleranceMode, toleranceAmountS
   // delta) and flag nearly every row at once.
   const amount = Math.abs(toleranceAmount);
   const delta = toleranceMode === '%' ? Math.abs(nominal) * (amount / 100) : amount;
-  const outOfRange = measured < nominal - delta || measured > nominal + delta;
+  const outOfRange = measured < nominal - delta - EPS || measured > nominal + delta + EPS;
   return { outOfRange };
 }
 

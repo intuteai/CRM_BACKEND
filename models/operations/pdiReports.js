@@ -214,7 +214,8 @@ class PdiReports {
   // inspected_by/status/created_at are freshly assigned via createReport,
   // same as any brand-new report.
   static async duplicateReport(reportId, inspectedBy, io) {
-    const source = await this.getById(reportId);
+    // Photos never carry over (photos: [] below), so don't load them.
+    const source = await this.getById(reportId, { photosSummary: true });
     const sourceData = source.data || {};
 
     // Reset: pdi_no, date, every table's rows, every signature field, general
