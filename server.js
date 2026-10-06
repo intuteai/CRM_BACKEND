@@ -100,6 +100,14 @@ async function initializeServer() {
     const pool = require('./config/db');
     await pool.query('SELECT 1');
 
+    // A lot finalize that was mid-render when the previous process died leaves
+    // the lot in 'Finalizing' with nothing to revert it. One container runs at
+    // a time (the deploy stops the old one first), so none can be live here.
+    const stuck = await pool.query(
+      `UPDATE pdi_report_batches SET status = 'In Progress' WHERE status = 'Finalizing' RETURNING batch_id`
+    );
+    if (stuck.rowCount) logger.warn(`Reset ${stuck.rowCount} PDI lot(s) stuck in Finalizing: ${stuck.rows.map(r => r.batch_id).join(', ')}`);
+
     require('./config/redis');
   } catch (err) {
     logger.error('Server initialization failed:', err.stack);

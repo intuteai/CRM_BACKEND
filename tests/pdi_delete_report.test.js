@@ -64,6 +64,19 @@ describe('deleteReport (guarded DELETE closes the TOCTOU race)', () => {
     expect(mockDeleteDrive).not.toHaveBeenCalled();
   });
 
+  it('rejects with BATCH_MEMBER_LOCKED for ANY lot member, even of an In Progress lot -- the whole lot is deleted from the lot page', async () => {
+    mockState.deleteRows = [];
+    mockState.checkRow = { status: 'Pending', batch_id: 21, batch_status: 'In Progress' };
+
+    await expect(
+      PdiReports.deleteReport(7, null, { role_id: 1 })
+    ).rejects.toMatchObject({ code: 'BATCH_MEMBER_LOCKED', message: 'This report is part of a lot. Delete the whole lot from the lot page instead.' });
+    // The lot check lives in the guarded DELETE itself, not only in the fallback read.
+    const del = mockState.queries.find((q) => /DELETE FROM pre_dispatch_inspection_reports r/.test(q.sql));
+    expect(del.sql).toMatch(/AND r\.batch_id IS NULL/);
+    expect(mockRemove).not.toHaveBeenCalled();
+  });
+
   it('rejects with FINALIZED_REPORT_FORBIDDEN for a Completed report when the role lacks can_write', async () => {
     mockState.deleteRows = []; // guarded DELETE matched nothing ($2 was false)
     mockState.checkRow = { status: 'Completed', batch_id: null, batch_status: null };

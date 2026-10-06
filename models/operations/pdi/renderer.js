@@ -3,7 +3,7 @@
 const {
   box, t, decodeImageDataUri, drawImageInBox, assetPath,
   drawPageNum, drawPaginatedRows, resolveCols, getFonts,
-  M, CW, PAGE_H, BOT_M,
+  M, CW, PAGE_H, BOT_M, END_OF_REPORT_H,
 } = require('./primitives');
 
 /* ── header section ─────────────────────────────────────────── */
@@ -275,6 +275,7 @@ function drawTableSection(doc, section, data, y) {
   // reserved footer so whatever follows on the page never gets orphaned.
   const source = Array.isArray(data[section.dataKey]) ? data[section.dataKey] : [];
   const rows = source
+    .filter((r) => r && typeof r === 'object' && !Array.isArray(r))
     .filter(section.filterRow || (() => true))
     .map((r, i) => ({ ...r, sno: r.sno ?? i + 1 }));
 
@@ -292,7 +293,6 @@ function drawTableSection(doc, section, data, y) {
 const PHOTO_GAP    = 8;
 const PHOTO_LBL_H  = 16;
 const PHOTO_IMG_H  = 150;
-const PHOTO_ROW_H  = PHOTO_LBL_H + PHOTO_IMG_H + 8;
 const PHOTO_CELL_W = (CW - PHOTO_GAP) / 2;
 
 function drawPhotosHeader(doc, y) {
@@ -302,13 +302,18 @@ function drawPhotosHeader(doc, y) {
   return y + 18 + 6;
 }
 
-function drawPhotoCell(doc, label, image, index, x, y) {
-  const { FB } = getFonts();
+function drawPhotoCell(doc, label, image, index, x, y, imgH) {
+  const { F, FB } = getFonts();
   box(doc, x, y, PHOTO_CELL_W, PHOTO_LBL_H, { stroke: '#000', sw: 0.5 });
   t(doc, `${index + 1}. ${label}`, x + 4, y + 4, PHOTO_CELL_W - 8, { font: FB, size: 8.5 });
   const imgY = y + PHOTO_LBL_H;
-  box(doc, x, imgY, PHOTO_CELL_W, PHOTO_IMG_H, { stroke: '#000', sw: 0.5 });
-  drawImageInBox(doc, decodeImageDataUri(image), x, imgY, PHOTO_CELL_W, PHOTO_IMG_H);
+  box(doc, x, imgY, PHOTO_CELL_W, imgH, { stroke: '#000', sw: 0.5 });
+  const drawn = drawImageInBox(doc, decodeImageDataUri(image), x, imgY, PHOTO_CELL_W, imgH);
+  // A photo that was uploaded but can't be decoded would otherwise look
+  // exactly like an unfilled slot.
+  if (!drawn && image) {
+    t(doc, 'Image could not be rendered', x + 4, imgY + imgH / 2 - 4, PHOTO_CELL_W - 8, { font: F, size: 7.5, align: 'center', color: '#888' });
+  }
 }
 
 function drawPhotoSection(doc, section, data, y) {
@@ -357,17 +362,25 @@ function drawPhotoSection(doc, section, data, y) {
     }
   });
 
+  const imgH = section.imgHeight || PHOTO_IMG_H;
+  const rowH = PHOTO_LBL_H + imgH + 8;
+  // Space for whatever follows the photos (e.g. the signature block), kept on
+  // the same page as the LAST photo row.
+  const footerH = typeof section.footerHeight === 'function'
+    ? section.footerHeight(data) : (section.footerHeight || 0);
+
   y = drawPhotosHeader(doc, y);
   for (let i = 0; i < items.length; i += 2) {
-    if (y + PHOTO_ROW_H > PAGE_H - BOT_M) {
+    const isLastRow = i + 2 >= items.length;
+    if (y + rowH + (isLastRow ? footerH : 0) > PAGE_H - BOT_M) {
       doc.addPage();
       y = drawPhotosHeader(doc, 10);
     }
-    drawPhotoCell(doc, items[i].label || `Photo ${i + 1}`, items[i].image, i, M, y);
+    drawPhotoCell(doc, items[i].label || `Photo ${i + 1}`, items[i].image, i, M, y, imgH);
     if (items[i + 1]) {
-      drawPhotoCell(doc, items[i + 1].label || `Photo ${i + 2}`, items[i + 1].image, i + 1, M + PHOTO_CELL_W + PHOTO_GAP, y);
+      drawPhotoCell(doc, items[i + 1].label || `Photo ${i + 2}`, items[i + 1].image, i + 1, M + PHOTO_CELL_W + PHOTO_GAP, y, imgH);
     }
-    y += PHOTO_ROW_H;
+    y += rowH;
   }
   return y;
 }
@@ -405,6 +418,12 @@ function drawSignatureSection(doc, section, data, y) {
   const { F, FB } = getFonts();
   const n = section.roles.length;
   const w = CW / n;
+  // Continuation pages carry no page header, same as table/photo overflow.
+  // `reserveBelow` keeps room for footer text drawn later (END OF REPORT).
+  if (n && y + SIG_H + (section.reserveBelow || 0) > PAGE_H - BOT_M) {
+    doc.addPage();
+    y = 10;
+  }
   section.roles.forEach((role, i) => {
     const x = M + w * i;
     // Same value/key convention as a table column (resolveCellValue): a role
@@ -426,7 +445,11 @@ function drawTextSection(doc, section, data, y) {
   const { F, FB } = getFonts();
   box(doc, M, y, CW, TEXT_H, { stroke: '#000', sw: 0.4 });
   t(doc, section.label, M + 4, y + 8, 58, { font: FB, size: 8 });
-  t(doc, data[section.dataKey] || section.default || '', M + 64, y + 8, CW - 68, { font: F, size: 8 });
+  const raw = data[section.dataKey];
+  const blank = raw == null || (typeof raw === 'string' && !raw.trim());
+  let value = raw;
+  if (blank) value = typeof section.default === 'function' ? section.default(data) : (section.default || '');
+  t(doc, value, M + 64, y + 8, CW - 68, { font: F, size: 8, maxHeight: TEXT_H - 10 });
   return y + TEXT_H;
 }
 
@@ -453,10 +476,18 @@ const DRAWERS = {
 // on top of an already-numbered earlier report's footer (t() draws
 // transparent text, nothing else, so a second pass over the same page would
 // leave both texts visible, garbled together).
-function numberPageRange(doc, startPage, pageCount) {
+//
+// `opts` ({ pageNumberPad, endOfReport }) defaults to the options of the
+// template most recently rendered into `doc`: generateCombined calls this
+// right after each report's renderTemplate, so each unit picks up its own.
+const lastNumbering = new WeakMap();
+function numberPageRange(doc, startPage, pageCount, opts = lastNumbering.get(doc) || {}) {
   for (let i = 0; i < pageCount; i++) {
     doc.switchToPage(startPage + i);
-    drawPageNum(doc, i + 1, pageCount);
+    drawPageNum(doc, i + 1, pageCount, {
+      pad: opts.pageNumberPad,
+      endOfReport: !!opts.endOfReport && i === pageCount - 1,
+    });
   }
 }
 
@@ -471,6 +502,7 @@ function numberBufferedPages(doc) {
 // call site): when false, skips the page-numbering pass, leaving the caller
 // to number the pages itself (e.g. via numberPageRange, once per report).
 function renderTemplate(doc, template, data, { numberPages = true } = {}) {
+  lastNumbering.set(doc, { pageNumberPad: template.pageNumberPad, endOfReport: template.endOfReport });
   template.pages.forEach(page => {
     doc.addPage();
     let y = 10;

@@ -1,6 +1,7 @@
 const PDFDocument = require('pdfkit');
 const {
   decodeImageDataUri, resolveCols, fmtDate, registerFonts, getFonts,
+  stripEmoji, t, drawPaginatedRows, PAGE_H, BOT_M,
 } = require('../models/operations/pdi/primitives');
 
 // A real (tiny, valid) 1x1 transparent PNG, base64-encoded.
@@ -106,5 +107,90 @@ describe('pdi primitives', () => {
 
   afterEach(() => {
     jest.resetModules();
+  });
+});
+
+describe('stripEmoji', () => {
+  it('removes emoji, skin tones, variation selectors and ZWJ sequences', () => {
+    expect(stripEmoji('OK 👍✅')).toBe('OK ');
+    expect(stripEmoji('a👨‍👩‍👧b')).toBe('ab');
+    expect(stripEmoji('x👍🏽y')).toBe('xy');
+    expect(stripEmoji('❤️ok')).toBe('ok');
+  });
+
+  it('leaves ordinary text, symbols and other scripts alone', () => {
+    expect(stripEmoji('384V ±5% Ω µ °C – “q” © ®')).toBe('384V ±5% Ω µ °C – “q” © ®');
+    expect(stripEmoji('सभी ठीक')).toBe('सभी ठीक');
+    expect(stripEmoji('plain ascii')).toBe('plain ascii');
+  });
+});
+
+describe('t()', () => {
+  function capture(text, opts) {
+    const doc = new PDFDocument({ autoFirstPage: false });
+    registerFonts(doc);
+    doc.addPage();
+    const calls = [];
+    const original = doc.text.bind(doc);
+    doc.text = (str, x, y, o) => { calls.push({ str, o }); return original(str, x, y, o); };
+    t(doc, text, 10, 10, 200, opts);
+    return calls[0];
+  }
+
+  it('is single-line with ellipsis by default', () => {
+    const { o } = capture('hello');
+    expect(o.lineBreak).toBe(false);
+    expect(o.ellipsis).toBe(true);
+  });
+
+  it('wraps within maxHeight and ellipsizes there', () => {
+    const { o } = capture('a\nb', { maxHeight: 30 });
+    expect(o.lineBreak).toBe(true);
+    expect(o.height).toBe(30);
+    expect(o.ellipsis).toBe(true);
+  });
+
+  it('strips emoji and does not crash on Devanagari or non-strings', () => {
+    expect(capture('ok 🚀').str).toBe('ok ');
+    expect(() => capture('जितेंद्र')).not.toThrow();
+    expect(capture(0).str).toBe('0');
+    expect(capture(null).str).toBe('');
+  });
+});
+
+describe('drawPaginatedRows', () => {
+  // Lays out `n` rows starting at `startY`, recording which page each row and
+  // the footer land on.
+  function layout(n, { startY = 100, rowHeight = 14, footerHeight = 92 } = {}) {
+    let page = 0;
+    const rowPages = [];
+    const doc = { addPage: () => { page++; } };
+    const y = drawPaginatedRows(doc, {
+      rows: Array.from({ length: n }, (_, i) => i),
+      drawRow: (d, row, ry) => { rowPages.push(page); return ry + rowHeight; },
+      rowHeight, y: startY, footerHeight,
+      redrawHeader: (py) => py + 14,
+    });
+    return { rowPages, footerFits: y + footerHeight <= PAGE_H - BOT_M, pages: page + 1 };
+  }
+
+  it('never leaves fewer than 3 rows above the footer on a continuation page', () => {
+    for (let n = 3; n <= 120; n++) {
+      const { rowPages, footerFits } = layout(n);
+      const last = rowPages[rowPages.length - 1];
+      expect(rowPages.filter((p) => p === last).length).toBeGreaterThanOrEqual(Math.min(3, n));
+      expect(footerFits).toBe(true);
+    }
+  });
+
+  it('does not break when everything fits', () => {
+    const { pages } = layout(10);
+    expect(pages).toBe(1);
+  });
+
+  it('without a footer, fills each page fully', () => {
+    const { rowPages } = layout(60, { footerHeight: 0 });
+    const perPage = rowPages.filter((p) => p === 0).length;
+    expect(perPage).toBe(Math.floor((PAGE_H - BOT_M - 100) / 14));
   });
 });

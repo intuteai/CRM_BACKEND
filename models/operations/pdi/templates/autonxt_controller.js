@@ -1,6 +1,6 @@
 'use strict';
 
-const { fmtDate } = require('../primitives');
+const { fmtDate, END_OF_REPORT_H } = require('../primitives');
 
 // ── Section A: Parameter Check — a per-controller-type preset of firmware
 //    parameter codes/specs seeds data.parameter_rows at report-creation time
@@ -54,33 +54,67 @@ const CONTROLLER_TYPE_PRESETS = {
 
 // Remarks is sent pre-computed from the client (CRM / mobile app), same
 // "computed right before sending" convention as AutoNXT Motor's
-// spec_<id>_display (withComputedSpecDisplays). This is also the render-
-// time fallback for older or partial data: an explicit row.remarks (e.g. a
-// manual NA override) always wins; otherwise OK/NG is derived from an exact
-// (trimmed) string match between Measured and Specification -- not a
-// tolerance range, since this is firmware-parameter verification, not a
-// physical dimension. A row with no Measured value yet renders blank rather
-// than a premature NG.
+// spec_<id>_display (withComputedSpecDisplays), and is recomputed here at
+// render time (mirrored in CRM's AutoNXTControllerGeneratorForm.jsx and the
+// mobile app). A stored remark other than OK/NG (e.g. a manual NA) is an
+// override and wins; a stored OK/NG is always recomputed, so a stale OK can't
+// hide a mismatch. Otherwise it's a match between Measured and Specification
+// -- numeric when both are plain decimals (1 = 0001 = 1.0, 37.5 = 37.50),
+// else an exact trimmed string match -- not a tolerance range, since this is
+// firmware-parameter verification, not a physical dimension. A row with no
+// Measured value yet renders blank rather than a premature NG.
+const DECIMAL_RE = /^[+-]?(\d+(\.\d*)?|\.\d+)$/;
 function computeRemarks(row) {
-  const explicit = String(row.remarks ?? '').trim();
-  if (explicit) return explicit;
-  const measured = String(row.measured ?? '').trim();
-  if (!measured) return '';
-  const spec = String(row.specification ?? '').trim();
-  return measured === spec ? 'OK' : 'NG';
+  const r = row && typeof row === 'object' ? row : {};
+  const explicit = String(r.remarks ?? '').trim();
+  if (explicit && !/^(ok|ng)$/i.test(explicit)) return explicit;
+  const m = String(r.measured ?? '').trim();
+  if (!m) return '';
+  const s = String(r.specification ?? '').trim();
+  if (DECIMAL_RE.test(m) && DECIMAL_RE.test(s)) return Number(m) === Number(s) ? 'OK' : 'NG';
+  return m === s ? 'OK' : 'NG';
 }
 
+const isRowObject = (r) => !!r && typeof r === 'object' && !Array.isArray(r);
+const str = (v) => String(v ?? '');
+
 const PARAMETER_CHECK_COLUMNS = [
-  { label: 'S.No', w: 30, align: 'center', key: 'sno' },
-  { label: 'Parameter', w: 90, align: 'center', value: (row) => row.parameter || '' },
-  { label: 'Specification', w: 90, align: 'center', value: (row) => row.specification || '' },
-  { label: 'Measured Value', w: 90, align: 'center', value: (row) => row.measured || '' },
+  { label: 'S.NO', w: 60, align: 'center', key: 'sno' },
+  { label: 'PARAMETER', w: 107, align: 'center', value: (row) => str(row.parameter) },
+  { label: 'SPECIFICATION', w: 108, align: 'center', value: (row) => str(row.specification) },
   {
-    label: 'Remarks', align: 'center',
+    label: 'MEASURED VALUE', w: 108, align: 'center',
+    value: (row) => str(row.measured),
+    isOutOfTolerance: (row) => computeRemarks(row) === 'NG',
+  },
+  {
+    label: 'REMARKS', align: 'center',
     value: (row) => computeRemarks(row),
     isOutOfTolerance: (row) => computeRemarks(row) === 'NG',
   },
 ];
+
+function hasParameterNg(data) {
+  const rows = Array.isArray(data.parameter_rows) ? data.parameter_rows : [];
+  return rows.some((r) => isRowObject(r) && computeRemarks(r) === 'NG');
+}
+
+function generalCheckMeasured(data, key) {
+  const gc = data.general_check;
+  if (!isRowObject(gc)) return undefined;
+  const entry = gc[key];
+  return isRowObject(entry) ? entry.measured : undefined;
+}
+
+const isNg = (v) => str(v).trim().toUpperCase() === 'NG';
+
+function hasGeneralCheckNg(data) {
+  const gc = data.general_check;
+  if (!isRowObject(gc)) return false;
+  return Object.values(gc).some((e) => isRowObject(e) && isNg(e.measured));
+}
+
+const PASSED_TEXT = 'ALL OK, PASSED.';
 
 /* ── Section B: General Check — fixed 10-row Go/NG checklist, same shape as
       AutoNXT Motor's own General Check section (generalCheckColumns in
@@ -100,11 +134,18 @@ const CONTROLLER_GENERAL_CHECK_ROWS = [
 
 function controllerGeneralCheckColumns() {
   return [
-    { label: 'Sr.No', w: 30, align: 'center', value: (row) => row.sno },
-    { label: 'Parameter', w: 180, align: 'left', value: (row) => row.label },
-    { label: 'Specification', w: 100, align: 'center', value: (row) => row.spec },
-    { label: 'Measurement', w: 90, align: 'center', value: (row, sectionData) => (sectionData[row.key] || {}).measured || 'GO' },
-    { label: 'Measurement Method', align: 'center', value: (row) => row.method },
+    { label: 'Sr.No', w: 40, align: 'center', value: (row) => str(row.sno) },
+    { label: 'Parameter', w: 150, align: 'center', value: (row) => str(row.label) },
+    { label: 'Specification', w: 100, align: 'center', value: (row) => str(row.spec) },
+    {
+      label: 'Measurement', w: 100, align: 'center',
+      value: (row, sectionData, data) => {
+        const m = str(generalCheckMeasured(data, row.key));
+        return m.trim() ? m : 'GO';
+      },
+      isOutOfTolerance: (row, data) => isNg(generalCheckMeasured(data, row.key)),
+    },
+    { label: 'Measurement Method', align: 'center', value: (row) => str(row.method) },
   ];
 }
 
@@ -126,10 +167,16 @@ const SIG_ROLES = [
 const REM_H = 40;
 const SIG_H = 36;
 
+// Shorter than the renderer's default photo height so the 5-photo page 2 (3
+// photo rows) still fits the signature and END OF REPORT above the page number.
+const PHOTO_IMG_H = 140;
+
 const autonxtControllerTemplate = {
   id: 'autonxt_controller',
   name: 'AutoNXT Controller PDI',
   version: 1,
+  pageNumberPad: 2,
+  endOfReport: true,
   pages: [
     {
       // Page 1 — header, Parameter Check, remarks, signature
@@ -149,12 +196,16 @@ const autonxtControllerTemplate = {
         },
         {
           type: 'table', gap: 6,
-          title: 'A. Parameter Check:',
+          title: 'A. PARAMETER CHECK:',
           mode: 'repeatable', dataKey: 'parameter_rows',
+          filterRow: isRowObject,
           columns: PARAMETER_CHECK_COLUMNS, headerHeight: 14, rowHeight: 14,
           footerHeight: () => REM_H + 8 + SIG_H + 8,
         },
-        { type: 'text', gap: 8, label: 'Remarks:', dataKey: 'page1_remarks', default: 'ALL OK, PASSED.' },
+        {
+          type: 'text', gap: 8, label: 'Remarks:', dataKey: 'page1_remarks',
+          default: (d) => (hasParameterNg(d) ? '' : PASSED_TEXT),
+        },
         { type: 'signature', roles: SIG_ROLES },
       ],
     },
@@ -171,9 +222,14 @@ const autonxtControllerTemplate = {
           fixedRows: () => CONTROLLER_GENERAL_CHECK_ROWS, columns: controllerGeneralCheckColumns(),
           headerHeight: 14, rowHeight: 14,
         },
-        { type: 'text', gap: 8, label: 'Remarks:', dataKey: 'page2_remarks', default: 'ALL OK, PASSED.' },
+        {
+          type: 'text', gap: 8, label: 'Remarks:', dataKey: 'page2_remarks',
+          default: (d) => (hasGeneralCheckNg(d) ? '' : PASSED_TEXT),
+        },
         {
           type: 'photo', mode: 'fixed-slots', dataKey: 'photos',
+          imgHeight: PHOTO_IMG_H,
+          footerHeight: SIG_H + END_OF_REPORT_H,
           slots: [
             { key: 'overall_controller', label: 'Overall Controller Photo' },
             { key: 'name_plate', label: 'Controller Name Plate' },
@@ -182,7 +238,7 @@ const autonxtControllerTemplate = {
             { key: 'packing_photo', label: 'Packing Photo' },
           ],
         },
-        { type: 'signature', roles: SIG_ROLES },
+        { type: 'signature', roles: SIG_ROLES, reserveBelow: END_OF_REPORT_H },
       ],
     },
   ],

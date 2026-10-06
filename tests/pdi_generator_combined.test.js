@@ -56,6 +56,18 @@ describe('PDIGenerator.generateCombined', () => {
     expect(pageLabels).toEqual(['Pg 1 of 3', 'Pg 2 of 3', 'Pg 3 of 3', 'Pg 1 of 3', 'Pg 2 of 3', 'Pg 3 of 3']);
   });
 
+  it('loads each report\'s photos through its loadPhotos, one report at a time, in order', async () => {
+    const order = [];
+    const loader = (n) => async () => { order.push(`load${n}`); return {}; };
+    const doc = await PDIGenerator.generateCombined([
+      { templateId: 'autonxt', templateVersion: null, data: motorData(1), loadPhotos: loader(1) },
+      { templateId: 'autonxt', templateVersion: null, data: motorData(2), loadPhotos: loader(2) },
+    ]);
+    const pdf = await bufferPdf(doc);
+    expect(pdf.slice(0, 5).toString('ascii')).toBe('%PDF-');
+    expect(order).toEqual(['load1', 'load2']);
+  });
+
   it('rejects a report missing pdi_no, the same requirement generate() already has', async () => {
     await expect(PDIGenerator.generateCombined([
       { templateId: 'autonxt', templateVersion: null, data: { customer_name: 'No number' } },

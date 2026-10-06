@@ -126,40 +126,77 @@ function box(doc, x, y, w, h, { fill, stroke = '#000', sw = 0.5 } = {}) {
   doc.restore();
 }
 
+// Emoji have no glyph in any bundled font and print as tofu boxes. Pictographs
+// below U+2300 (©, ®, ™, arrows) are left alone because Roboto has them.
+const EMOJI_RE = /[\p{Extended_Pictographic}\u{1F3FB}-\u{1F3FF}\u{1F1E6}-\u{1F1FF}\u{E0020}-\u{E007F}\u{FE0E}\u{FE0F}\u{200D}\u{20E3}]/gu;
+function stripEmoji(s) {
+  if (!/[^\x00-\x7F]/.test(s)) return s;
+  return s.replace(EMOJI_RE, (c) => (c.codePointAt(0) < 0x2300 && c !== '‍' && c !== '⃣' ? c : ''));
+}
+
 /** Text with always-explicit x, y — never relies on cursor. Forces
  *  single-line + ellipsis truncation since every caller passes `width` and
- *  none want PDFKit's default wrap-and-spill behavior. */
-function t(doc, text, x, y, w, { font, size = 8, align = 'left', color = '#000', lb = false } = {}) {
+ *  none want PDFKit's default wrap-and-spill behavior. `maxHeight` instead
+ *  wraps (honouring newlines) within that height, ellipsizing the last line
+ *  that fits. */
+function t(doc, text, x, y, w, { font, size = 8, align = 'left', color = '#000', lb = false, maxHeight } = {}) {
   doc.save().font(font || F).fontSize(size).fillColor(color);
   const opts = { width: w, align, lineBreak: lb };
-  if (!lb) {
+  if (maxHeight) {
+    opts.lineBreak = true;
+    opts.height = Math.max(maxHeight, doc.currentLineHeight(true));
+    opts.ellipsis = true;
+  } else if (!lb) {
     opts.height = doc.currentLineHeight(true);
     opts.ellipsis = true;
   }
-  doc.text(String(text ?? ''), x, y, opts).restore();
+  doc.text(stripEmoji(String(text ?? '')), x, y, opts).restore();
 }
 
 /** Page number, drawn inside the bottom margin area. Safe only because the
- *  PDFDocument is constructed with margins.bottom: 0 — see renderer.js. */
-function drawPageNum(doc, n, total) {
+ *  PDFDocument is constructed with margins.bottom: 0 — see renderer.js.
+ *  `pad` is a minimum digit count ("Pg 01 of 02"); `endOfReport` prints
+ *  "END OF REPORT" just above the number (callers pass it for the last page
+ *  only, and must keep END_OF_REPORT_H clear above the bottom margin). */
+const END_OF_REPORT_H = 12;
+function drawPageNum(doc, n, total, { pad: minPad = 0, endOfReport = false } = {}) {
   const y = PAGE_H - BOT_M + 6;
-  const pad = String(total).length;
+  const pad = Math.max(String(total).length, minPad || 0);
   const label = `Pg ${String(n).padStart(pad, '0')} of ${String(total).padStart(pad, '0')}`;
+  if (endOfReport) {
+    t(doc, 'END OF REPORT', M, y - END_OF_REPORT_H, CW, { font: F, size: 8, align: 'center', color: '#000' });
+  }
   t(doc, label, M, y, CW, { font: F, size: 8, align: 'center', color: '#555' });
 }
 
+// How many trailing rows must share a page with the footer, so remarks and
+// signatures never sit under a lone orphaned row on a page of their own.
+const KEEP_WITH_FOOTER = 3;
+
 /** Draw a row list that overflows onto continuation pages. Starts a new page
  *  (redrawing the table header via `redrawHeader`) whenever the next row
- *  wouldn't fit, and — on the row that would be last — also reserves
- *  `footerHeight` so whatever follows on the page never gets orphaned. */
+ *  wouldn't fit. When there is a footer, the last KEEP_WITH_FOOTER rows are
+ *  kept together with `footerHeight` so whatever follows on the page never
+ *  gets orphaned, and never follows a single stray row. */
 function drawPaginatedRows(doc, { rows, drawRow, rowHeight, y, footerHeight, redrawHeader }) {
+  const keep = Math.min(KEEP_WITH_FOOTER, rows.length);
+  let rowsOnPage = 0;
+  let continuation = false;
   rows.forEach((row, idx) => {
-    const reserve = idx === rows.length - 1 ? footerHeight : 0;
-    if (y + rowHeight + reserve > PAGE_H - BOT_M) {
+    const remaining = rows.length - idx;
+    let need = rowHeight;
+    if (footerHeight && remaining === keep) need = keep * rowHeight + footerHeight;
+    else if (remaining === 1) need = rowHeight + footerHeight;
+    // A continuation page with no rows yet can't do any better by breaking again.
+    const freshPage = continuation && rowsOnPage === 0;
+    if (!freshPage && y + need > PAGE_H - BOT_M) {
       doc.addPage();
       y = redrawHeader(10);
+      continuation = true;
+      rowsOnPage = 0;
     }
     y = drawRow(doc, row, y);
+    rowsOnPage++;
   });
   if (rows.length === 0 && y + footerHeight > PAGE_H - BOT_M) {
     doc.addPage();
@@ -180,6 +217,6 @@ function resolveCols(defs, contentWidth) {
 module.exports = {
   registerFonts, getFonts, assetPath,
   decodeImageDataUri, drawImageInBox,
-  fmtDate, box, t, drawPageNum, drawPaginatedRows, resolveCols,
-  M, PAGE_W, PAGE_H, CW, BOT_M,
+  fmtDate, box, t, stripEmoji, drawPageNum, drawPaginatedRows, resolveCols,
+  M, PAGE_W, PAGE_H, CW, BOT_M, END_OF_REPORT_H, KEEP_WITH_FOOTER,
 };

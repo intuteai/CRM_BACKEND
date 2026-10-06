@@ -82,6 +82,9 @@ class PDIGenerator {
   // restarts per motor rather than numbering the whole lot continuously).
   // See renderer.js's numberPageRange for why this is done per report
   // immediately after rendering it, not once at the end.
+  // An entry may carry `loadPhotos: async () => photos` instead of
+  // data.photos, so a big lot holds one unit's photos in memory at a time
+  // rather than every unit's at once.
   static async generateCombined(reportsData, options = {}) {
     const doc = new PDFDocument({
       size: 'A4',
@@ -91,9 +94,10 @@ class PDIGenerator {
     });
     registerFonts(doc);
 
-    for (const { templateId, templateVersion, data } of reportsData) {
-      if (!data.pdi_no) throw new Error('pdi_no required');
+    for (const { templateId, templateVersion, data: baseData, loadPhotos } of reportsData) {
+      if (!baseData.pdi_no) throw new Error('pdi_no required');
       const template = await resolveTemplate(templateId, templateVersion);
+      const data = loadPhotos ? { ...baseData, photos: await loadPhotos() } : baseData;
       const stats = {};
       const optimized = await optimizePhotoData(template, data, stats);
       if (options.timings) options.timings.push(stats);

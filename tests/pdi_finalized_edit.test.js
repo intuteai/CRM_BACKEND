@@ -13,7 +13,11 @@ const mockState = {
 const mockQuery = jest.fn(async (sql, params) => {
   mockState.queries.push({ sql, params });
   if (/SELECT can_write FROM permissions/.test(sql)) return { rows: mockState.permissionRows };
-  if (/SELECT status, revision_no, data FROM/.test(sql)) return { rows: mockState.preReadRow ? [mockState.preReadRow] : [] };
+  if (/SELECT status, revision_no, data,/.test(sql)) return { rows: mockState.preReadRow ? [mockState.preReadRow] : [] };
+  // Only runs after a guarded UPDATE matched no row, to pick the error message.
+  if (/SELECT r\.status, r\.revision_no, r\.batch_id, b\.status AS batch_status/.test(sql)) {
+    return { rows: mockState.preReadRow ? [{ status: mockState.preReadRow.status, revision_no: mockState.preReadRow.revision_no + 1, batch_id: mockState.preReadRow.batch_id ?? null, batch_status: mockState.preReadRow.batch_status ?? null }] : [] };
+  }
   if (/WHERE report_id = \$\d+ AND status <> 'Completed'/.test(sql)) return { rows: mockState.updateRows, rowCount: mockState.updateRows.length };
   if (/SET drive_file_id/.test(sql)) return { rows: [], rowCount: 1 };
   if (/SELECT 1 FROM pre_dispatch_inspection_reports WHERE report_id/.test(sql)) return { rows: mockState.reportExists ? [{ '?column?': 1 }] : [] };

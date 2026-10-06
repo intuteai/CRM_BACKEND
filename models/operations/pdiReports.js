@@ -96,14 +96,44 @@ function photosSummarySql(p) {
   ) AS photos`;
 }
 
+// The lot fields come from a scalar subquery rather than a JOIN so the same
+// column list also works in UPDATE ... RETURNING. The outer batch_id is
+// qualified with the table name: unqualified, it would resolve to b.batch_id.
 function reportColumns(prefix = '', { photosSummary = false } = {}) {
   const p = prefix ? `${prefix}.` : '';
+  const outer = prefix || 'pre_dispatch_inspection_reports';
   return `
     ${p}report_id, ${p}sr_no, ${p}customer_id, ${p}order_id, ${p}status,
     ${p}inspected_by, ${p}inspection_date, ${p}template_id, ${p}template_version, ${p}drive_file_id,
-    ${p}revision_no,
+    ${p}revision_no, ${p}batch_id, ${p}lot_index,
+    (SELECT jsonb_build_object('lot_quantity', b.lot_quantity, 'status', b.status, 'pdi_no', b.pdi_no)
+       FROM pdi_report_batches b WHERE b.batch_id = ${outer}.batch_id) AS batch,
     ${p}data, ${photosSummary ? photosSummarySql(p) : `${p}photos`}
   `;
+}
+
+const ALLOWED_PATCH_STATUSES = ['Pending', 'In Progress'];
+
+// WHERE fragment for an UPDATE of pre_dispatch_inspection_reports: the report
+// is standalone, or its lot is still In Progress. FOR SHARE makes a
+// concurrent lot finalize (whose first step UPDATEs the lot row to
+// Finalizing) wait for this save to commit, or makes this save wait for the
+// flip and then see Finalizing -- either way finalize renders what was saved.
+const LOT_OPEN_GUARD = `(pre_dispatch_inspection_reports.batch_id IS NULL OR EXISTS (
+  SELECT 1 FROM pdi_report_batches b
+  WHERE b.batch_id = pre_dispatch_inspection_reports.batch_id AND b.status = 'In Progress'
+  FOR SHARE
+))`;
+
+function codedError(message, code, extra = {}) {
+  const err = new Error(message);
+  err.code = code;
+  Object.assign(err, extra);
+  return err;
+}
+
+function batchMemberEditLockedError() {
+  return codedError("This report belongs to a finalized lot and can't be edited.", 'BATCH_MEMBER_LOCKED');
 }
 
 class PdiReports {
@@ -121,6 +151,11 @@ class PdiReports {
       report_link: `/api/pdi/reports/${row.report_id}/pdf`,
       drive_file_id: row.drive_file_id,
       revision_no: row.revision_no,
+      batch_id: row.batch_id ?? null,
+      lot_index: row.lot_index ?? null,
+      lot_quantity: row.batch?.lot_quantity ?? null,
+      batch_status: row.batch?.status ?? null,
+      batch_pdi_no: row.batch?.pdi_no ?? null,
       data: row.data,
       photos: row.photos,
     };
@@ -242,6 +277,11 @@ class PdiReports {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
 
+    if (fields.status !== undefined && !ALLOWED_PATCH_STATUSES.includes(fields.status)) {
+      throw codedError('status must be Pending or In Progress. A report is completed only by finalizing it.', 'INVALID_STATUS');
+    }
+    const hasExpectedRevision = expected_revision !== undefined && expected_revision !== null && expected_revision !== '';
+
     // Read BEFORE building sets/values -- the Completed-report branch below
     // excludes several fields entirely (status, inspected_by, customer_id,
     // order_id, inspection_date) rather than filtering them out after the
@@ -250,12 +290,21 @@ class PdiReports {
     // error (see toIsoDateOrNull call below) -- so even date validation
     // needs this read to have already happened.
     const current = await pool.query(
-      `SELECT status, revision_no, data FROM pre_dispatch_inspection_reports WHERE report_id = $1`,
+      `SELECT status, revision_no, data,
+         (SELECT b.status FROM pdi_report_batches b WHERE b.batch_id = pre_dispatch_inspection_reports.batch_id) AS batch_status
+       FROM pre_dispatch_inspection_reports WHERE report_id = $1`,
       [_id]
     );
     if (current.rows.length === 0) throw new Error('Report not found');
-    const { status: currentStatus, revision_no: currentRevision, data: currentData } = current.rows[0];
+    const { status: currentStatus, revision_no: currentRevision, data: currentData, batch_status: batchStatus } = current.rows[0];
     const isFinalizedEdit = currentStatus === 'Completed';
+
+    // Fast, friendly failures only -- the guarded UPDATEs below re-check
+    // both conditions atomically.
+    if (batchStatus && batchStatus !== 'In Progress') throw batchMemberEditLockedError();
+    if (hasExpectedRevision && Number(expected_revision) !== currentRevision) {
+      throw codedError('This report has been edited since you last loaded it. Reload and try again.', 'REPORT_VERSION_CONFLICT');
+    }
 
     const sets = [];
     const values = [];
@@ -334,18 +383,30 @@ class PdiReports {
       // rarer case of a concurrent finalize landing between the read above
       // and this UPDATE); a *permitted* edit to an already-Completed report
       // is a new, deliberate, gated path below, not a change to this guard.
+      sets.push('revision_no = revision_no + 1');
       values.push(_id);
+      const idParam = i++;
+      let revisionGuard = '';
+      if (hasExpectedRevision) {
+        values.push(Number(expected_revision));
+        revisionGuard = ` AND revision_no = $${i++}`;
+      }
       const result = await pool.query(`
         UPDATE pre_dispatch_inspection_reports
         SET ${sets.join(', ')}
-        WHERE report_id = $${i} AND status <> 'Completed'
+        WHERE report_id = $${idParam} AND status <> 'Completed'${revisionGuard}
+          AND ${LOT_OPEN_GUARD}
         RETURNING ${reportColumns('', { photosSummary })}
       `, values);
 
       if (result.rows.length === 0) {
-        const lockedError = new Error('This report is already finalized and can no longer be edited. Duplicate it to make changes.');
-        lockedError.code = 'REPORT_LOCKED';
-        throw lockedError;
+        const state = await this.#rejectedWriteState(_id);
+        if (!state.exists) throw new Error('Report not found');
+        if (state.lotLocked) throw batchMemberEditLockedError();
+        if (state.status === 'Completed') {
+          throw codedError('This report is already finalized and can no longer be edited. Duplicate it to make changes.', 'REPORT_LOCKED');
+        }
+        throw codedError('This report has been edited since you last loaded it. Reload and try again.', 'REPORT_VERSION_CONFLICT');
       }
 
       const payload = this.#toPayload(result.rows[0]);
@@ -361,7 +422,7 @@ class PdiReports {
       forbidden.code = 'FINALIZED_REPORT_FORBIDDEN';
       throw forbidden;
     }
-    if (expected_revision === undefined || expected_revision === null || Number(expected_revision) !== currentRevision) {
+    if (!hasExpectedRevision || Number(expected_revision) !== currentRevision) {
       const conflict = new Error('This report has been edited since you last loaded it. Reload and try again.');
       conflict.code = 'REPORT_VERSION_CONFLICT';
       throw conflict;
@@ -390,15 +451,14 @@ class PdiReports {
         UPDATE pre_dispatch_inspection_reports
         SET ${sets.join(', ')}
         WHERE report_id = $${i} AND status = 'Completed' AND revision_no = $${i + 1}
+          AND ${LOT_OPEN_GUARD}
         RETURNING ${reportColumns('', { photosSummary })}
       `, values);
 
       if (result.rows.length === 0) {
         rolledBack = true;
         await client.query('ROLLBACK');
-        const conflict = new Error('This report was edited by someone else first. Reload and try again.');
-        conflict.code = 'REPORT_VERSION_CONFLICT';
-        throw conflict;
+        throw codedError('This report was edited by someone else first. Reload and try again.', 'REPORT_VERSION_CONFLICT', { needsClassify: true });
       }
 
       await client.query(
@@ -414,10 +474,16 @@ class PdiReports {
       if (!rolledBack) {
         try { await client.query('ROLLBACK'); } catch { /* connection may already be dead */ }
       }
-      throw error;
-    } finally {
       client.release();
+      if (error.needsClassify) {
+        const state = await this.#rejectedWriteState(_id);
+        if (state.lotLocked) throw batchMemberEditLockedError();
+        if (!state.exists) throw new Error('Report not found');
+        delete error.needsClassify;
+      }
+      throw error;
     }
+    client.release();
 
     const payload = this.#toPayload(result.rows[0]);
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
@@ -429,6 +495,20 @@ class PdiReports {
       enumerable: false,
     });
     return payload;
+  }
+
+  // Explains why a guarded write matched no row. Only picks the error
+  // message; the guarded statement already made the decision.
+  static async #rejectedWriteState(reportId) {
+    const { rows } = await pool.query(`
+      SELECT r.status, r.revision_no, r.batch_id, b.status AS batch_status
+      FROM pre_dispatch_inspection_reports r
+      LEFT JOIN pdi_report_batches b ON b.batch_id = r.batch_id
+      WHERE r.report_id = $1
+    `, [reportId]);
+    if (rows.length === 0) return { exists: false, lotLocked: false };
+    const { status, batch_id: batchId, batch_status: batchStatus } = rows[0];
+    return { exists: true, status, lotLocked: batchId != null && batchStatus !== 'In Progress' };
   }
 
   // Newest-first audit trail for an already-Completed report's edits -- see
@@ -458,7 +538,7 @@ class PdiReports {
   static SORTABLE_COLUMNS = {
     sr_no: 'pdi.sr_no',
     pdi_no: "pdi.data->>'pdi_no'",
-    customer_name: "COALESCE(pdi.data->>'customer_name', u.name)",
+    customer_name: "COALESCE(NULLIF(pdi.data->>'customer_name', ''), u.name)",
     status: 'pdi.status',
     prepared_by: 'pdi.prepared_by',
     approved_by: 'pdi.approved_by',
@@ -473,23 +553,37 @@ class PdiReports {
       ? this.SORTABLE_COLUMNS[sortBy]
       : null;
 
+    // Code-template names live in JS, not the database, so the ids whose
+    // name matches the search are worked out here and passed in as $4.
+    const searchText = search ? String(search) : null;
+    const matchingCodeTemplateIds = searchText
+      ? Object.values(templates)
+        .filter((t) => String(t.name || '').toLowerCase().includes(searchText.toLowerCase()))
+        .map((t) => t.id)
+      : [];
+
     const whereParts = [
       '($1::text IS NULL OR pdi.status = $1)',
       '($2::text IS NULL OR pdi.template_id = $2)',
       `($3::text IS NULL OR (
         pdi.data->>'pdi_no' ILIKE '%' || $3 || '%' OR
-        COALESCE(pdi.data->>'customer_name', u.name) ILIKE '%' || $3 || '%' OR
+        COALESCE(NULLIF(pdi.data->>'customer_name', ''), u.name) ILIKE '%' || $3 || '%' OR
         pdi.status ILIKE '%' || $3 || '%' OR
         pdi.prepared_by ILIKE '%' || $3 || '%' OR
-        pdi.approved_by ILIKE '%' || $3 || '%'
+        pdi.approved_by ILIKE '%' || $3 || '%' OR
+        pdi.data->>'motor_sr_no' ILIKE '%' || $3 || '%' OR
+        pdi.data->>'controller_sr_no' ILIKE '%' || $3 || '%' OR
+        pt.name ILIKE '%' || $3 || '%' OR
+        pdi.template_id = ANY($4::text[])
       ))`,
     ];
-    const baseValues = [status || null, template_id || null, search || null];
+    const baseValues = [status || null, template_id || null, searchText, matchingCodeTemplateIds];
 
     const joins = `
       LEFT JOIN customers c ON pdi.customer_id = c.customer_id
       LEFT JOIN users u ON c.user_id = u.user_id
       LEFT JOIN pdi_templates pt ON pt.id = pdi.template_id AND pt.version = pdi.template_version
+      LEFT JOIN pdi_report_batches b ON b.batch_id = pdi.batch_id
     `;
     const selectCols = `
       pdi.report_id, pdi.sr_no, pdi.customer_id, pdi.order_id, pdi.status,
@@ -497,6 +591,10 @@ class PdiReports {
       pdi.prepared_by, pdi.approved_by,
       pdi.data->>'pdi_no' AS pdi_no,
       pdi.data->>'customer_name' AS form_customer_name,
+      pdi.data->>'motor_sr_no' AS motor_sr_no,
+      pdi.data->>'controller_sr_no' AS controller_sr_no,
+      pdi.batch_id, pdi.lot_index,
+      b.lot_quantity, b.status AS batch_status, b.pdi_no AS batch_pdi_no,
       u.name AS linked_customer_name,
       pt.name AS custom_template_name
     `;
@@ -522,14 +620,14 @@ class PdiReports {
         ${joins}
         WHERE ${whereParts.join(' AND ')}
         ORDER BY ${sortColumn} ${dir} NULLS LAST, pdi.report_id ${dir}
-        LIMIT $4 OFFSET $5
+        LIMIT $5 OFFSET $6
       `;
       values = [...baseValues, _limit + 1, _offset];
     } else {
       // Default order: keyset/cursor pagination by report_id (creation
       // order), unchanged from before this change.
       const cursorReportId = cursor ? parseInt(String(cursor), 10) : null;
-      whereParts.push('($4::int IS NULL OR pdi.report_id < $4)');
+      whereParts.push('($5::int IS NULL OR pdi.report_id < $5)');
       useOffset = false;
       query = `
         SELECT ${selectCols}
@@ -537,7 +635,7 @@ class PdiReports {
         ${joins}
         WHERE ${whereParts.join(' AND ')}
         ORDER BY pdi.report_id DESC
-        LIMIT $5
+        LIMIT $6
       `;
       values = [...baseValues, Number.isNaN(cursorReportId) ? null : cursorReportId, _limit + 1];
     }
@@ -545,8 +643,7 @@ class PdiReports {
     const countQuery = `
       SELECT COUNT(*)::int AS count
       FROM pre_dispatch_inspection_reports pdi
-      LEFT JOIN customers c ON pdi.customer_id = c.customer_id
-      LEFT JOIN users u ON c.user_id = u.user_id
+      ${joins}
       WHERE ${whereParts.slice(0, 3).join(' AND ')}
     `;
 
@@ -577,6 +674,13 @@ class PdiReports {
         approved_by: row.approved_by,
         inspection_date: row.inspection_date,
         report_link: `/api/pdi/reports/${row.report_id}/pdf`,
+        motor_sr_no: row.motor_sr_no || null,
+        controller_sr_no: row.controller_sr_no || null,
+        batch_id: row.batch_id ?? null,
+        lot_index: row.lot_index ?? null,
+        lot_quantity: row.lot_quantity ?? null,
+        batch_status: row.batch_status ?? null,
+        batch_pdi_no: row.batch_pdi_no ?? null,
       })),
       total: parseInt(totalResult.rows[0].count, 10),
       cursor: nextCursor,
@@ -592,6 +696,10 @@ class PdiReports {
     const report = await this.getById(reportId);
     timings.loadMs = Date.now() - t;
     timings.photos = countPhotos(report.photos);
+
+    if (report.batch_id != null) {
+      throw codedError('This report is part of a lot. Finalize it from the lot page.', 'BATCH_MEMBER_USE_LOT');
+    }
 
     if (!report.data?.pdi_no) {
       const missing = new Error('pdi_no required before finalizing');
@@ -632,7 +740,7 @@ class PdiReports {
     const result = await pool.query(`
       UPDATE pre_dispatch_inspection_reports
       SET status = 'Completed'
-      WHERE report_id = $1 AND status <> 'Completed'
+      WHERE report_id = $1 AND status <> 'Completed' AND batch_id IS NULL
       RETURNING report_id, status
     `, [Number(reportId)]);
     timings.updateMs = Date.now() - t;
@@ -852,9 +960,7 @@ class PdiReports {
     const result = await pool.query(`
       DELETE FROM pre_dispatch_inspection_reports r
       WHERE r.report_id = $1
-        AND NOT EXISTS (
-          SELECT 1 FROM pdi_report_batches b WHERE b.batch_id = r.batch_id AND b.status = 'Completed'
-        )
+        AND r.batch_id IS NULL
         AND (r.status <> 'Completed' OR $2)
       RETURNING report_id, drive_file_id
     `, [_id, canForceDelete]);
@@ -871,18 +977,16 @@ class PdiReports {
         WHERE r.report_id = $1
       `, [_id]);
       if (check.rows.length === 0) throw new Error('Report not found');
-      const { status, batch_id, batch_status } = check.rows[0];
-      if (batch_id && batch_status === 'Completed') {
-        const err = new Error('This report belongs to a finalized batch lot and cannot be deleted.');
-        err.code = 'BATCH_MEMBER_LOCKED';
-        throw err;
+      const { status, batch_id } = check.rows[0];
+      if (batch_id != null) {
+        throw codedError('This report is part of a lot. Delete the whole lot from the lot page instead.', 'BATCH_MEMBER_LOCKED');
       }
-      // The only other way the guarded DELETE could have matched 0 rows,
-      // given the batch check above didn't fire, is status === 'Completed'
-      // && !canForceDelete.
-      const err = new Error('Deleting a finalized report requires PDI write permission.');
-      err.code = 'FINALIZED_REPORT_FORBIDDEN';
-      throw err;
+      if (status === 'Completed' && !canForceDelete) {
+        throw codedError('Deleting a finalized report requires PDI write permission.', 'FINALIZED_REPORT_FORBIDDEN');
+      }
+      // Neither guard explains the miss, so the row changed between the
+      // DELETE and this read (e.g. a concurrent delete). Ask for a retry.
+      throw codedError('This report changed while it was being deleted. Reload and try again.', 'REPORT_VERSION_CONFLICT');
     }
 
     await pdfCache.remove(_id);

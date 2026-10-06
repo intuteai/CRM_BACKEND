@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../../middleware/auth');
+const { requirePdiAccess } = require('../../middleware/pdiAccess');
 const controller = require('../../controllers/operations/pdiReports.controller');
 
-router.post('/', authenticateToken, controller.createReport);
-router.get('/', authenticateToken, controller.listReports);
-router.get('/:id', authenticateToken, controller.getReport);
-router.patch('/:id', authenticateToken, controller.patchReport);
-router.get('/:id/revisions', authenticateToken, controller.getRevisions);
-router.post('/:id/duplicate', authenticateToken, controller.duplicateReport);
-router.post('/:id/finalize', authenticateToken, controller.finalizeReport);
-router.get('/:id/pdf', authenticateToken, controller.downloadPdf);
-router.delete('/:id', authenticateToken, controller.deleteReport);
+router.use(authenticateToken, requirePdiAccess);
+
+router.post('/', controller.createReport);
+router.get('/', controller.listReports);
+router.get('/:id', controller.getReport);
+router.patch('/:id', controller.patchReport);
+router.get('/:id/revisions', controller.getRevisions);
+router.post('/:id/duplicate', controller.duplicateReport);
+router.post('/:id/finalize', controller.finalizeReport);
+router.get('/:id/pdf', controller.downloadPdf);
+router.delete('/:id', controller.deleteReport);
 
 module.exports = router;

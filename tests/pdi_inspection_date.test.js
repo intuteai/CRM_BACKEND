@@ -12,7 +12,7 @@ const mockQuery = jest.fn(async (sql, params) => {
   // 'Pending' keeps every one of them on the same normal-edit branch they
   // exercised before this query existed. Report 2 is the one exception,
   // kept Completed for the finalized-edit date-ignoring test below.
-  if (/SELECT status, revision_no, data FROM/.test(sql)) {
+  if (/SELECT status, revision_no, data,/.test(sql)) {
     const [id] = params || [];
     if (id === 2) return { rows: [{ status: 'Completed', revision_no: 5, data: { pdi_no: 'FINAL-1' } }] };
     return { rows: [{ status: 'Pending', revision_no: 1, data: {} }] };
@@ -61,7 +61,7 @@ describe('Inspection date parsing', () => {
     // actual UPDATE: exactly one query is sent, and it's the pre-read, not
     // a write.
     expect(mockQuery).toHaveBeenCalledTimes(1);
-    expect(mockQuery.mock.calls[0][0]).toMatch(/SELECT status, revision_no, data FROM/);
+    expect(mockQuery.mock.calls[0][0]).toMatch(/SELECT status, revision_no, data,/);
   });
 
   it('rejects the same bad date on report creation', async () => {

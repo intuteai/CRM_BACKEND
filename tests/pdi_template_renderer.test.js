@@ -550,5 +550,139 @@ describe('PDI template renderer', () => {
       const pageLabels = drawnTexts.filter((t) => /^Pg \d+ of \d+$/.test(t));
       expect(pageLabels).toEqual(['Pg 1 of 1', 'Pg 1 of 1']);
     });
+
+    it('applies each template\'s own pageNumberPad/endOfReport to its own range', async () => {
+      const doc = newA4();
+      const drawnTexts = spyTexts(doc);
+      const twoPage = { pageNumberPad: 2, endOfReport: true, pages: [{ sections: [] }, { sections: [] }] };
+      renderTemplate(doc, twoPage, {}, { numberPages: false });
+      numberPageRange(doc, 0, 2);
+      renderTemplate(doc, onePageTemplate('B'), {}, { numberPages: false });
+      numberPageRange(doc, 2, 1);
+      renderTemplate(doc, twoPage, {}, { numberPages: false });
+      numberPageRange(doc, 3, 2);
+      doc.end();
+      await bufferPdf(doc);
+
+      expect(drawnTexts.filter((t) => /^Pg /.test(t) || t === 'END OF REPORT')).toEqual([
+        'Pg 01 of 02', 'END OF REPORT', 'Pg 02 of 02',
+        'Pg 1 of 1',
+        'Pg 01 of 02', 'END OF REPORT', 'Pg 02 of 02',
+      ]);
+    });
+  });
+
+  describe('text section', () => {
+    const textTemplate = (def) => ({ pages: [{ sections: [{ type: 'text', label: 'Remarks:', dataKey: 'r', default: def }] }] });
+    function drawn(template, data) {
+      const doc = newA4();
+      const texts = spyTexts(doc);
+      renderTemplate(doc, template, data, { numberPages: false });
+      doc.end();
+      return texts;
+    }
+
+    it('falls back to a string default for missing or whitespace-only values', () => {
+      expect(drawn(textTemplate('ALL OK'), {})).toContain('ALL OK');
+      expect(drawn(textTemplate('ALL OK'), { r: '   ' })).toContain('ALL OK');
+      expect(drawn(textTemplate('ALL OK'), { r: 'Custom' })).not.toContain('ALL OK');
+    });
+
+    it('calls a function default with the report data', () => {
+      const def = jest.fn((d) => (d.bad ? '' : 'PASSED'));
+      expect(drawn(textTemplate(def), {})).toContain('PASSED');
+      expect(drawn(textTemplate(def), { bad: true })).not.toContain('PASSED');
+      expect(def).toHaveBeenCalledWith(expect.objectContaining({ bad: true }));
+    });
+
+    it('wraps multi-line remarks inside the existing box instead of one ellipsized line', () => {
+      const doc = newA4();
+      const calls = [];
+      const original = doc.text.bind(doc);
+      doc.text = (str, x, y, o) => { calls.push({ str, o }); return original(str, x, y, o); };
+      renderTemplate(doc, textTemplate(''), { r: 'line 1\nline 2' }, { numberPages: false });
+      doc.end();
+      const call = calls.find((c) => c.str === 'line 1\nline 2');
+      expect(call.o.lineBreak).toBe(true);
+      expect(call.o.height).toBeLessThanOrEqual(40);
+    });
+  });
+
+  describe('photo and signature layout', () => {
+    const PNG = TINY_PNG;
+    const slots = Array.from({ length: 6 }, (_, i) => ({ key: `s${i}`, label: `S${i}` }));
+    const slotData = Object.fromEntries(slots.map((s) => [s.key, PNG]));
+
+    function heights(section) {
+      const doc = newA4();
+      const hs = [];
+      const originalRect = doc.rect.bind(doc);
+      doc.rect = (x, y, w, h) => { hs.push(h); return originalRect(x, y, w, h); };
+      renderTemplate(doc, { pages: [{ sections: [section] }] }, { p: slotData }, { numberPages: false });
+      doc.end();
+      return hs;
+    }
+
+    it('uses the default photo height unless imgHeight is set', () => {
+      expect(heights({ type: 'photo', mode: 'fixed-slots', dataKey: 'p', slots })).toContain(150);
+      const custom = heights({ type: 'photo', mode: 'fixed-slots', dataKey: 'p', slots, imgHeight: 120 });
+      expect(custom).toContain(120);
+      expect(custom).not.toContain(150);
+    });
+
+    it('reserves footerHeight before the last photo row', () => {
+      const pages = (footerHeight) => {
+        const doc = newA4();
+        renderTemplate(doc, {
+          pages: [{ sections: [
+            { type: 'text', label: 'x', dataKey: 'x', gap: 150 },
+            { type: 'photo', mode: 'fixed-slots', dataKey: 'p', slots, footerHeight },
+          ] }],
+        }, { p: slotData }, { numberPages: false });
+        const n = doc.bufferedPageRange().count;
+        doc.end();
+        return n;
+      };
+      // Photos start at 10 + 40 + 150 + 24 = 224; three 174pt rows end at 746,
+      // inside the 805.89 bottom margin, but not with 100pt reserved after them.
+      expect(pages(0)).toBe(1);
+      expect(pages(100)).toBe(2);
+      expect(pages(() => 100)).toBe(2);
+    });
+
+    it('labels a photo that was provided but cannot be decoded', () => {
+      const doc = newA4();
+      const texts = spyTexts(doc);
+      renderTemplate(doc, {
+        pages: [{ sections: [{ type: 'photo', mode: 'fixed-slots', dataKey: 'p', slots: [{ key: 'a', label: 'A' }, { key: 'b', label: 'B' }] }] }],
+      }, { p: { a: 'data:image/png;base64,!!!!' } }, { numberPages: false });
+      doc.end();
+      expect(texts.filter((t) => t === 'Image could not be rendered')).toHaveLength(1);
+    });
+
+    it('moves a signature that would cross the bottom margin onto a new page', () => {
+      const doc = newA4();
+      renderTemplate(doc, {
+        pages: [{ sections: [
+          { type: 'image', dataKey: 'none', height: 760 },
+          { type: 'signature', roles: [{ key: 'a', label: 'A' }] },
+        ] }],
+      }, {}, { numberPages: false });
+      expect(doc.bufferedPageRange().count).toBe(2);
+      doc.end();
+    });
   });
 });
+
+function newA4() {
+  const doc = new PDFDocument({ size: 'A4', margins: { top: 10, bottom: 0, left: 36, right: 36 }, autoFirstPage: false, bufferPages: true });
+  registerFonts(doc);
+  return doc;
+}
+
+function spyTexts(doc) {
+  const texts = [];
+  const original = doc.text.bind(doc);
+  doc.text = (str, ...rest) => { texts.push(String(str)); return original(str, ...rest); };
+  return texts;
+}

@@ -17,6 +17,40 @@ async function invalidateCache() {
   }
 }
 
+// Every PDI error goes out as { error, code } so a client can show `error`
+// as-is and branch on `code`.
+const ERROR_STATUS = {
+  INVALID_STATUS: 400,
+  INVALID_INSPECTION_DATE: 400,
+  INVALID_DATA_PAYLOAD: 400,
+  PDI_NO_REQUIRED: 400,
+  FINALIZED_REPORT_FORBIDDEN: 403,
+  REPORT_LOCKED: 409,
+  REPORT_VERSION_CONFLICT: 409,
+  BATCH_MEMBER_LOCKED: 409,
+  BATCH_MEMBER_USE_LOT: 409,
+};
+
+// true when the error was a known one and a response has been sent.
+function sendKnownError(res, error) {
+  if (error.message === 'Report not found') {
+    res.status(404).json({ error: error.message, code: 'REPORT_NOT_FOUND' });
+    return true;
+  }
+  if (error.message && error.message.startsWith('Unknown PDI template')) {
+    res.status(400).json({ error: error.message, code: 'UNKNOWN_TEMPLATE' });
+    return true;
+  }
+  const status = ERROR_STATUS[error.code];
+  if (!status) return false;
+  res.status(status).json({ error: error.message, code: error.code });
+  return true;
+}
+
+function sendInternalError(res) {
+  res.status(500).json({ error: 'Internal Server Error', code: 'INTERNAL_ERROR' });
+}
+
 // One line per finalize / PDF request so a slow phone can be matched to what
 // the server actually spent: how long the report took to load, the photo
 // downscale, the whole render, and the size of the PDF that went out.
@@ -48,10 +82,9 @@ exports.createReport = async (req, res) => {
     logger.info(`PDI report draft created: ${report.report_id} by ${req.user.user_id}`);
     res.status(201).json(report);
   } catch (error) {
-    if (error.message.startsWith('Unknown PDI template')) return res.status(400).json({ error: error.message });
-    if (error.code === 'INVALID_INSPECTION_DATE') return res.status(400).json({ error: error.message, code: error.code });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error creating PDI report: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -62,9 +95,9 @@ exports.duplicateReport = async (req, res) => {
     logger.info(`PDI report duplicated: ${req.params.id} -> ${report.report_id} by ${req.user.user_id}`);
     res.status(201).json(report);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error duplicating PDI report ${req.params.id}: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -77,9 +110,9 @@ exports.getReport = async (req, res) => {
     const report = await PdiReports.getById(req.params.id, { photosSummary: wantsPhotosSummary(req) });
     res.json(report);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error fetching PDI report ${req.params.id}: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -104,14 +137,9 @@ exports.patchReport = async (req, res) => {
     if (ms > 5000) logger.warn(`Slow PDI report save: report ${req.params.id}, ${ms}ms, ${bytes} bytes`);
     res.json(report);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
-    if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
-    if (error.code === 'FINALIZED_REPORT_FORBIDDEN') return res.status(403).json({ error: error.message, code: error.code });
-    if (error.code === 'REPORT_VERSION_CONFLICT') return res.status(409).json({ error: error.message, code: error.code });
-    if (error.code === 'INVALID_INSPECTION_DATE') return res.status(400).json({ error: error.message, code: error.code });
-    if (error.code === 'INVALID_DATA_PAYLOAD') return res.status(400).json({ error: error.message, code: error.code });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error updating PDI report ${req.params.id} (${Date.now() - started}ms, ${bytes} bytes): ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -120,9 +148,9 @@ exports.getRevisions = async (req, res) => {
     const revisions = await PdiReports.getRevisions(req.params.id);
     res.json(revisions);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error fetching PDI report revisions ${req.params.id}: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -142,11 +170,9 @@ exports.finalizeReport = async (req, res) => {
     logger.info(`PDI report finalized: ${payload.report_id} by ${req.user.user_id}`);
     res.send(pdfBuffer);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
-    if (error.code === 'PDI_NO_REQUIRED') return res.status(400).json({ error: error.message });
-    if (error.code === 'REPORT_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error finalizing PDI report ${req.params.id}: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -156,8 +182,9 @@ exports.listReports = async (req, res) => {
     const result = await PdiReports.listReports({ limit, cursor, offset, status, template_id, search, sortBy, sortDir });
     res.json(result);
   } catch (error) {
+    if (sendKnownError(res, error)) return;
     logger.error(`Error listing PDI reports: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -172,10 +199,9 @@ exports.downloadPdf = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="PDI_${safeName}.pdf"`);
     res.send(buffer);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
-    if (error.code === 'PDI_NO_REQUIRED') return res.status(400).json({ error: error.message });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error generating PDI PDF ${req.params.id}: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
 
@@ -185,10 +211,8 @@ exports.deleteReport = async (req, res) => {
     await invalidateCache();
     res.json(result);
   } catch (error) {
-    if (error.message === 'Report not found') return res.status(404).json({ error: error.message });
-    if (error.code === 'BATCH_MEMBER_LOCKED') return res.status(409).json({ error: error.message, code: error.code });
-    if (error.code === 'FINALIZED_REPORT_FORBIDDEN') return res.status(403).json({ error: error.message, code: error.code });
+    if (sendKnownError(res, error)) return;
     logger.error(`Error deleting PDI report ${req.params.id}: ${error.message}`, error.stack);
-    res.status(500).json({ error: 'Internal Server Error' });
+    sendInternalError(res);
   }
 };
