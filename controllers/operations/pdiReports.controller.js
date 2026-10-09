@@ -25,6 +25,9 @@ const ERROR_STATUS = {
   INVALID_DATA_PAYLOAD: 400,
   PDI_NO_REQUIRED: 400,
   FINALIZED_REPORT_FORBIDDEN: 403,
+  INVALID_PHOTO_REF: 400,
+  INVALID_PHOTO_UPLOAD_STEP: 400,
+  PHOTO_REF_NOT_FOUND: 409,
   REPORT_LOCKED: 409,
   REPORT_VERSION_CONFLICT: 409,
   BATCH_MEMBER_LOCKED: 409,
@@ -75,7 +78,7 @@ exports.createReport = async (req, res) => {
     const { customer_id, order_id, inspected_by, inspection_date, data, photos, template_id } = req.body || {};
     const report = await PdiReports.createReport({
       customer_id, order_id, inspected_by: inspected_by || req.user.name, inspection_date, data, photos, template_id,
-    }, req.io);
+    }, req.io, { photoHashes: wantsPhotoHashes(req) });
 
     await invalidateCache();
 
@@ -104,10 +107,13 @@ exports.duplicateReport = async (req, res) => {
 // `?photos=summary` -- answer with [{ id, label, image_count }] instead of every
 // photo's Base64 (opt-in; app 1.0.8 and older still get the full report).
 const wantsPhotosSummary = (req) => req.query.photos === 'summary';
+// `?hashes=1` -- add `photo_hashes` to the response, so the client can send
+// 'ref:sha256:<hash>' instead of re-uploading a stored photo (pdi/photoRefs.js).
+const wantsPhotoHashes = (req) => req.query.hashes === '1';
 
 exports.getReport = async (req, res) => {
   try {
-    const report = await PdiReports.getById(req.params.id, { photosSummary: wantsPhotosSummary(req) });
+    const report = await PdiReports.getById(req.params.id, { photosSummary: wantsPhotosSummary(req), photoHashes: wantsPhotoHashes(req) });
     res.json(report);
   } catch (error) {
     if (sendKnownError(res, error)) return;
@@ -124,6 +130,7 @@ exports.patchReport = async (req, res) => {
   try {
     const report = await PdiReports.patchReport(req.params.id, req.body || {}, req.io, {
       photosSummary: wantsPhotosSummary(req),
+      photoHashes: wantsPhotoHashes(req),
       // Only meaningful when editing an already-Completed report. role_id
       // drives the permission check; edited_by (a different id space --
       // the actual user, not their role) is who the audit snapshot

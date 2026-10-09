@@ -7,6 +7,7 @@ const templates = require('./pdi/templates');
 const AuthoredTemplates = require('./pdi/authoredTemplates');
 const pdfCache = require('./pdi/pdfCache');
 const { getActiveBatchOverride } = require('./pdi/batchOverrides');
+const photoRefs = require('./pdi/photoRefs');
 
 // How many photos a report holds, for the finalize/PDF timing log: a freeform
 // list of { images: [...] } entries, or a fixed-slots map of slot -> uri | [uri].
@@ -177,7 +178,11 @@ class PdiReports {
     return { templateId: id, templateVersion: active.version };
   }
 
-  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id }, io) {
+  static async createReport({ customer_id, order_id, inspected_by, inspection_date, data, photos, template_id }, io, { photoHashes = false } = {}) {
+    // A new report stores nothing yet, so there is nothing a reference could name.
+    if (photoRefs.hasRefs(photos) || photoRefs.hasRefs(data)) {
+      throw codedError('A new report cannot reference stored photos. Send the photos themselves.', 'INVALID_PHOTO_REF');
+    }
     const { templateId, templateVersion } = await this.resolveTemplateVersion(template_id);
     const { prepared_by, approved_by } = extractSignerNames(data);
     const result = await pool.query(`
@@ -200,7 +205,7 @@ class PdiReports {
 
     const payload = this.#toPayload(result.rows[0]);
     if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
-    return payload;
+    return this.#attachPhotoHashes(payload, { photosSummary: false, photoHashes });
   }
 
   // "Duplicate as New PDI" — starts a new report from a completed/in-progress
@@ -265,19 +270,55 @@ class PdiReports {
 
   // { photosSummary: true } returns `photos` as [{ id, label, image_count }]
   // instead of the stored images -- see photosSummarySql.
-  static async getById(reportId, { photosSummary = false } = {}) {
+  // { photoHashes: true } adds `photo_hashes` (see #attachPhotoHashes).
+  static async getById(reportId, { photosSummary = false, photoHashes = false } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
     const result = await pool.query(`SELECT ${reportColumns('', { photosSummary })} FROM pre_dispatch_inspection_reports WHERE report_id = $1`, [_id]);
     if (result.rows.length === 0) throw new Error('Report not found');
-    return this.#toPayload(result.rows[0]);
+    return this.#attachPhotoHashes(this.#toPayload(result.rows[0]), { photosSummary, photoHashes });
+  }
+
+  // `?hashes=1`: adds `photo_hashes`, one { id, label, image_count,
+  // image_hashes } per photo entry in stored order, so a client can send
+  // 'ref:sha256:<hash>' for a photo instead of the photo (pdi/photoRefs.js).
+  // `photos` itself is left exactly as it was. Hashing needs the images:
+  // `savedPhotos` is what a save just stored, when it stored any; otherwise a
+  // summary response has none and the stored photos are read once.
+  static async #attachPhotoHashes(payload, { photosSummary, photoHashes, savedPhotos }) {
+    if (!photoHashes) return payload;
+    let photos = savedPhotos;
+    if (photos === undefined) {
+      if (photosSummary) {
+        const { rows } = await pool.query('SELECT photos FROM pre_dispatch_inspection_reports WHERE report_id = $1', [payload.report_id]);
+        photos = rows[0]?.photos;
+      } else {
+        photos = payload.photos;
+      }
+    }
+    payload.photo_hashes = photoRefs.summaryWithHashes(photos);
+    return payload;
   }
 
   // `options.photosSummary`: answer with photo counts instead of the photos
   // themselves (the save is unaffected -- `fields.photos` is still stored in full).
-  static async patchReport(reportId, fields, io, { photosSummary = false, role_id = null, edited_by = null, expected_revision } = {}) {
+  static async patchReport(reportId, fields, io, { photosSummary = false, photoHashes = false, role_id = null, edited_by = null, expected_revision } = {}) {
     const _id = Number(reportId);
     if (!Number.isFinite(_id)) throw new Error('Report not found');
+
+    // `photo_upload_step: true` -- one step of a save that uploads its new
+    // photos a few at a time (pdi/photoRefs.js). It stores `photos` and
+    // nothing else, and leaves revision_no alone: the report itself is saved,
+    // and its revision moved on, by the ordinary save that ends the upload.
+    // A step that bumped the revision would make an upload interrupted
+    // half-way look, to the same phone, like an edit from another device.
+    const isPhotoStep = fields.photo_upload_step === true;
+    if (isPhotoStep) {
+      if (fields.photos === undefined || fields.photos === null) {
+        throw codedError('A photo upload step must carry photos.', 'INVALID_PHOTO_UPLOAD_STEP');
+      }
+      fields = { photos: fields.photos };
+    }
 
     if (fields.status !== undefined && !ALLOWED_PATCH_STATUSES.includes(fields.status)) {
       throw codedError('status must be Pending, In Progress or Failed. A report is completed only by finalizing it.', 'INVALID_STATUS');
@@ -308,7 +349,8 @@ class PdiReports {
     // turning an ordinary save into an edit of the finalized PDF. If the
     // report is finalized after this read, the guarded UPDATE below (status
     // <> 'Completed') refuses it the same way.
-    if (isFinalizedEdit && fields.status !== undefined) {
+    // A photo step belongs to an open report's save, so it is refused the same way.
+    if (isFinalizedEdit && (fields.status !== undefined || isPhotoStep)) {
       throw codedError('This report was finalized while you were editing. Reopen it to see the finalized version.', 'REPORT_LOCKED');
     }
 
@@ -319,9 +361,23 @@ class PdiReports {
       throw codedError('This report has been edited since you last loaded it. Reload and try again.', 'REPORT_VERSION_CONFLICT');
     }
 
+    const assertFinalizedEditAllowed = async () => {
+      if (!(await hasPermission(role_id, 'PreDispatchInspectionReports', 'can_write'))) {
+        const forbidden = new Error('Editing a finalized report requires PDI write permission.');
+        forbidden.code = 'FINALIZED_REPORT_FORBIDDEN';
+        throw forbidden;
+      }
+      if (!hasExpectedRevision || Number(expected_revision) !== currentRevision) {
+        const conflict = new Error('This report has been edited since you last loaded it. Reload and try again.');
+        conflict.code = 'REPORT_VERSION_CONFLICT';
+        throw conflict;
+      }
+    };
+
     const sets = [];
     const values = [];
     let i = 1;
+    let savedPhotos;
 
     // status/inspected_by/customer_id/order_id/inspection_date are no-ops on
     // a finalized edit, not errors -- only data/photos are actually
@@ -358,6 +414,12 @@ class PdiReports {
         err.code = 'INVALID_DATA_PAYLOAD';
         throw err;
       }
+      // References are resolved in `photos` only. One inside `data` (an
+      // authored template may keep a photo section there) would be stored as
+      // if it were the photo.
+      if (photoRefs.hasRefs(fields.data)) {
+        throw codedError('A photo reference in this save is not valid. Send the photo itself.', 'INVALID_PHOTO_REF');
+      }
       const mergedData = { ...(currentData || {}), ...fields.data };
       sets.push(`data = $${i++}::jsonb`);
       values.push(JSON.stringify(mergedData));
@@ -373,15 +435,27 @@ class PdiReports {
       // incoming photos equal what's stored, keep the existing value: `photos`
       // in the THEN branch is the stored datum itself, so Postgres reuses its
       // TOAST pointer instead of rewriting it.
+      //
+      // A client may send 'ref:sha256:<hex>' in place of an image that is
+      // already stored (see pdi/photoRefs.js). Those are swapped for the
+      // stored images here, so what is written is always the complete set.
+      savedPhotos = fields.photos;
+      if (photoRefs.hasRefs(savedPhotos)) {
+        // Whether a hash is stored on a finalized report is only for someone
+        // allowed to edit it to find out.
+        if (isFinalizedEdit) await assertFinalizedEditAllowed();
+        const stored = await pool.query('SELECT photos FROM pre_dispatch_inspection_reports WHERE report_id = $1', [_id]);
+        savedPhotos = photoRefs.resolveRefs(savedPhotos, stored.rows[0]?.photos);
+      }
       sets.push(`photos = CASE WHEN photos = $${i}::jsonb THEN photos ELSE $${i}::jsonb END`);
-      values.push(JSON.stringify(fields.photos));
+      values.push(JSON.stringify(savedPhotos));
       i++;
     }
 
     // toIsoDateOrNull above can already have thrown INVALID_INSPECTION_DATE --
     // deliberately before any query, so a malformed date never even reaches
     // the database (this ordering predates this feature; keep it that way).
-    if (sets.length === 0) return this.getById(_id, { photosSummary });
+    if (sets.length === 0) return this.getById(_id, { photosSummary, photoHashes });
 
     if (currentStatus !== 'Completed') {
       // Unchanged from before this feature existed: a normal in-progress
@@ -396,7 +470,7 @@ class PdiReports {
       // rarer case of a concurrent finalize landing between the read above
       // and this UPDATE); a *permitted* edit to an already-Completed report
       // is a new, deliberate, gated path below, not a change to this guard.
-      sets.push('revision_no = revision_no + 1');
+      if (!isPhotoStep) sets.push('revision_no = revision_no + 1');
       values.push(_id);
       const idParam = i++;
       let revisionGuard = '';
@@ -424,22 +498,13 @@ class PdiReports {
 
       const payload = this.#toPayload(result.rows[0]);
       if (io?.emit) io.emit('pdiReportUpdate', { report_id: payload.report_id, status: payload.status });
-      return payload;
+      return this.#attachPhotoHashes(payload, { photosSummary, photoHashes, savedPhotos });
     }
 
     // Editing an already-Completed report -- gated by the permission this
     // module has always had in the `permissions` table but no PDI route has
     // ever checked until now, plus an optimistic-concurrency revision check.
-    if (!(await hasPermission(role_id, 'PreDispatchInspectionReports', 'can_write'))) {
-      const forbidden = new Error('Editing a finalized report requires PDI write permission.');
-      forbidden.code = 'FINALIZED_REPORT_FORBIDDEN';
-      throw forbidden;
-    }
-    if (!hasExpectedRevision || Number(expected_revision) !== currentRevision) {
-      const conflict = new Error('This report has been edited since you last loaded it. Reload and try again.');
-      conflict.code = 'REPORT_VERSION_CONFLICT';
-      throw conflict;
-    }
+    await assertFinalizedEditAllowed();
 
     // The guarded UPDATE and the audit snapshot must commit or fail together
     // -- two concurrent permitted edits both reading revision_no=N would
@@ -507,7 +572,7 @@ class PdiReports {
       value: this.#reRenderFinalizedReport(_id).catch(() => {}),
       enumerable: false,
     });
-    return payload;
+    return this.#attachPhotoHashes(payload, { photosSummary, photoHashes, savedPhotos });
   }
 
   // Explains why a guarded write matched no row. Only picks the error
