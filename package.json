@@ -7,7 +7,9 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "docs:pdf": "node scripts/docs/dump_routes.js && node scripts/docs/dump_schema.js && python scripts/docs/build_erp_pdf.py",
+    "docs:pdf:offline": "node scripts/docs/dump_routes.js && python scripts/docs/build_erp_pdf.py"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
