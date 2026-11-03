@@ -1,9 +1,9 @@
 # CRM_BACKEND research notes: Manufacturing, Service, HR, Operations, Chatbot, Jobs, Tests, Migrations
 
-All paths are relative to `CRM_BACKEND/`. Route mounts come from `server.js` (lines 168-213). Unless stated otherwise, every route runs `authenticateToken`. `checkPermission(module, action)` (`middleware/auth.js`) looks up the `permissions` table for `(role_id, module)` and checks `can_read`, `can_write` or `can_delete`. It returns 403 `PERM_DENIED`, or 500 `PERM_CHECK_FAILED` if the lookup fails.
+All paths are relative to `CRM_BACKEND/`. Route mounts come from `server.js` (lines 168-213). Unless stated otherwise, every route runs `authenticateToken`. `checkPermission(module, action)` (`middleware/auth.js`) looks up the `permissions` table for `(role_id, module)` and checks `can_read`, `can_write` or `can_delete`. It returns 403 `PERM_DENIED`, or 500 `PERM_CHECK_FAILED` if the lookup fails. `requireRoles(...ids)` (`middleware/roles.js`) is a fixed role allow-list that returns 403 `{error:'Permission denied', code:'PERM_DENIED'}` to any other role.
 
 Cross-cutting facts:
-- **Socket.IO**: `server.js` creates one `Server` and stores it with `app.set('io')` and `app.set('socketio')`. Global middleware also sets `req.io = io` on every request. Some routers (iptKits, payslip, invoice, invoiceRecords, activities) re-assign `req.io = req.app.get('io')` and attach `req.io.user = req.user`. Their models use `io.user` to fill `created_by`. **No code anywhere calls `socket.join(...)`**, so every emit is a global broadcast, and room-targeted emits (`io.to('user:<id>')`) reach nobody.
+- **Socket.IO**: `server.js` creates one `Server` and stores it with `app.set('io')` and `app.set('socketio')`, then calls `attachRealtime(io)` (`config/realtime.js`). Sockets must log in with the API JWT; each joins `user:<id>`, `user_<id>` and its organization room (`org:ia`, `org:compage`, `people:compage` for roles 9/10, or `customers`). Global middleware sets `req.io = scopedIo(io, req)` on every request: `req.io.emit()` reaches only the acting user's organization (`activities:*` and `attendanceMarked` go only to `people:compage` on the Compage side; Intute AI events go to `org:ia`), and `req.io.user` is a getter for this request's `req.user`. Models that use `io.user` to fill `created_by` (iptKits, payslip, invoice, invoiceRecords, activities) therefore always get the requesting user. The routers no longer re-assign `req.io = req.app.get('io')` or set `req.io.user`. Room-targeted emits (`io.to('user:<id>')`) are delivered to that user's sockets.
 - **Redis**: `config/redis.js` is a node-redis v4 client (`REDIS_URL`, default `redis://localhost:6379`). It adds a custom `delPattern(pattern)` method that runs `KEYS` then `DEL`. Most modules invalidate with `redis.keys(pattern)`, which blocks Redis (`KEYS` is O(N)). Only activities uses the non-blocking `scanIterator`.
 - **Global error handler** (`middleware/error.js`): returns `err.status || 500` and `{ error: err.message, code: err.code || 'INTERNAL_ERROR' }`.
 - **JSON body limit** is 40 MB (`express.json({ limit: '40mb' })`). The limit was raised for PDI photo uploads.
@@ -17,7 +17,7 @@ Files: `routes/manufacturing/bom.js`, `controllers/manufacturing/bom.controller.
 
 **Purpose:** defines which raw materials, and how much of each, make up one unit of a finished product.
 
-**Endpoints.** These use express-validator but have **no `checkPermission`**, so any authenticated user can call them.
+**Endpoints.** These use express-validator and `requireRoles` (matching the `/bom` pages) but **no `checkPermission`**. Read, create and update are open to admin, design, store and production; delete is admin and design only.
 
 | Method | Path | Notes |
 |---|---|---|
@@ -81,7 +81,7 @@ Files: `routes|controllers|models/manufacturing/partDrawings*.js`. The two modul
 
 **Purpose:** store a drawing link (URL) per finished product (`part_drawings` → `inventory`) or per raw material (`part_drawings_raw` → `raw_materials`).
 
-**Endpoints:** `GET /` (`limit`, `offset`, `search`, `force_refresh`), `POST /` `{drawing_link, product_id}`, `PUT /:srNo`, `DELETE /:srNo`. Only `authenticateToken` applies, with **no permission check**.
+**Endpoints:** `GET /` (`limit`, `offset`, `search`, `force_refresh`), `POST /` `{drawing_link, product_id}`, `PUT /:srNo`, `DELETE /:srNo`. Access uses `requireRoles`, with **no `checkPermission`**: `GET` is open to admin, design and production (production has a read-only page); writes are admin and design only.
 
 **Columns:** `sr_no` (PK), `drawing_id`, `item_name`, `drawing_link`, `product_id`, `updated_at`. Insert sets only `product_id` and `drawing_link`, so `drawing_id` and `item_name` must be filled by DB defaults or triggers.
 
@@ -125,7 +125,7 @@ Files: `routes/manufacturing/iptKits.js`, controller, `models/manufacturing/iptK
 
 **Purpose:** records the assembly of an "IPT kit". It ties together the serial numbers of the seven components shipped as one kit, and supports reverse lookup ("which kit holds motor X?").
 
-**Endpoints** (module `ipt_kits`): `GET /` (read), `GET /next-serial` (read), `GET /:id`, `POST /` (write), `PUT /next-serial` (write), `PUT /:id` (write), `DELETE /:id` (delete).
+**Endpoints** (router-level `requireRoles` admin, production, then module `ipt_kits`): `GET /` (read), `GET /next-serial` (read), `GET /:id`, `POST /` (write), `PUT /next-serial` (write), `PUT /:id` (write), `DELETE /:id` (delete).
 
 **Component fields:** `motor_serial`, `controller_serial`, `gearbox_serial`, `harness_serial`, `cluster_serial`, `vcu_serial`, `dcdc_serial`.
 - All seven are required.
@@ -137,7 +137,7 @@ Files: `routes/manufacturing/iptKits.js`, controller, `models/manufacturing/iptK
 - `GET /next-serial` previews the next value from the sequence's `last_value` and `is_called` without consuming it.
 - `PUT /next-serial {next}` is the admin re-point. `next` must be a positive integer. It is rejected if an existing kit already uses that `IPTnnn`. Otherwise it runs `setval('ipt_kit_serial_seq', n, false)`. Numbers freed by deletes can be reused.
 
-**Table:** `ipt_kits` (`kit_id`, `kit_serial`, the seven serials, `created_by`, `updated_by`, `created_at`, `updated_at`). `created_by` and `updated_by` come from `io.user.user_id`.
+**Table:** `ipt_kits` (`kit_id`, `kit_serial`, the seven serials, `created_by`, `updated_by`, `created_at`, `updated_at`). `created_by` and `updated_by` come from `io.user.user_id` (the requesting user, via the per-request `scopedIo`).
 
 **List pagination:**
 - Keyset cursor `"<kit_id>:<created_at text>"`, limit 1-100 (default 20).
@@ -304,7 +304,7 @@ Files: `routes/hr/attendance.js`, controller, `models/hr/attendance.js`; table `
 
 ### 3.3 Payslip PDF: `POST /api/payslip/generate`
 Files: `controllers/hr/payslip.controller.js`, `models/hr/payslip.js`.
-- **No permission check**; any authenticated user can call it.
+- **Access:** `requireRoles` ia_hr only (the `/hr-payslips` page); no `checkPermission`.
 - **Stateless.** Nothing is stored. The PDF is streamed back as `attachment; filename="PAYSLIP_<NAME>_<PERIOD>.pdf"`.
 - **Input:** `{ employee:{name, id}, period, payDate?, earnings:[{label, amount}], deductions:[{label, amount}] }`. Employee name and period are required.
 - **Calculation:**
@@ -323,7 +323,7 @@ Files: `controllers/hr/payslip.controller.js`, `models/hr/payslip.js`.
 - **Socket:** `payslip:generated` `{filename, generated_at, generated_by}`.
 
 ### 3.4 IA invoice PDF: `POST /api/invoice/generate`
-File: `models/hr/invoice.js`. **No permission check.**
+File: `models/hr/invoice.js`. **Access:** `requireRoles` ia_employee, ia_hr (Intute AI is the seller); no `checkPermission`.
 - **Seller is fixed:** INTUTE-AI TECHNOLOGIES (OPC) PVT. LTD., GST `09AAHCI7346B1ZK`, plus registered and office addresses, tagline "AI | EV | CLEANTECH". The RTGS block hardcodes the HDFC Bank account, branch, type and IFSC.
 - **Input:**
   - Required: `invoiceNumber`, `billing.name`, and `items:[{description, qty, rate}]` (at least one item with a description).
@@ -346,7 +346,7 @@ File: `models/hr/invoice.js`. **No permission check.**
 - **Socket:** `invoice:generated`.
 
 ### 3.5 Invoice records: `/api/invoice-records`
-File: `models/hr/invoiceRecords.js`. **No permission check** (authenticateToken only).
+File: `models/hr/invoiceRecords.js`. **Access:** router-level `requireRoles` ia_employee, ia_hr (the `/ia-invoices` page); no `checkPermission`.
 
 **Purpose:** the persisted register of IA invoices. It holds both system-generated invoices and uploaded legacy PDFs.
 
@@ -386,15 +386,19 @@ File: `models/hr/invoiceRecords.js`. **No permission check** (authenticateToken 
 ### 4.1 Activities (task manager): `/api/activities`
 Files: `routes/operations/activities.js`, controller, `models/operations/activities.js`.
 
-**Access:** a router-level allow-list `ALLOWED_ROLES = [9, 10, 11, 12]`. Any other role gets 403 "Not authorized to access activities". No `checkPermission` is used.
+**Access:** router-level `requireRoles(EMPLOYEE, HR, IA_EMPLOYEE, IA_HR)`, i.e. role ids 9, 10, 11, 12. Any other role gets 403 `{error:'Permission denied', code:'PERM_DENIED'}`. No `checkPermission` is used.
 
 **Org model:** each activity has `org` ∈ {`com`, `ia`}, derived from the creator's role (9/10 → `com`, 11/12 → `ia`). List queries are scoped by org.
 
+**Record-level check (`canAccess` in the controller):** `GET /:id`, `PUT /:id` and `DELETE /:id` first load `Activities.getAccess(id)` (the activity's `org` and assignee ids). If the activity belongs to the other organization, or the caller is a Compage employee (9) who is not assigned to it, the response is **404 "Activity not found"**, so the other organization's ids are not even confirmed to exist.
+
+**Assignees must be in the activity's organization:** on create and on update (when `assignee_ids` is supplied), every id must be a user with role 9 or 10 for a `com` activity, or 11 or 12 for an `ia` activity. Otherwise the request fails with 400 "Assignee not found in your organization" before anything is written.
+
 **Role rules (Compage employee, role 9):**
 - Cannot create (403) or delete (403).
-- The list shows only activities assigned to them.
+- The list shows only activities assigned to them, and they can open or update only those.
 - Update may change **only `status`**, which must be one of `todo`, `in_progress`, `done`.
-- Roles 10, 11 and 12 see and manage all activities in their org.
+- Roles 10, 11 and 12 see and manage all activities in their own org.
 
 **Tables:**
 - `activities`: `id`, `summary`, `status` (default `todo`), `due_date`, `priority` (default `medium`; templates know `low`, `medium`, `high`, `urgent`), `comments`, `org`, `created_by`, timestamps.
@@ -403,6 +407,7 @@ Files: `routes/operations/activities.js`, controller, `models/operations/activit
 **Behaviour:**
 - Create and update are transactional.
 - Update replaces the assignee set when `assignee_ids` is supplied.
+- Assignee rows are inserted with parameterized SQL (`($1, $2), ($1, $3), …`) on both create and update; non-integer ids are dropped first.
 - FK violation `23503` is mapped to "Assignee user not found".
 
 **Email:** on create, **for the IA org only**, each assignee receives a "New Task Assigned to You" email (`generateNewTaskAssignmentHtml`, link `https://intute.biz/activities/<id>`), sent asynchronously in `setImmediate`.
@@ -412,22 +417,20 @@ Files: `routes/operations/activities.js`, controller, `models/operations/activit
 - Item key `activities_<id>`. TTL 300 s.
 - Every write invalidates `activities_*` via `SCAN`.
 
-**Socket.IO:** `activities:created`, `activities:updated`, `activities:deleted`.
+**Socket.IO:** `activities:created`, `activities:updated`, `activities:deleted`. On the Compage side these go only to `people:compage` (roles 9, 10); Intute AI activity events go to `org:ia`.
 
 **Gaps:**
-- `GET /:id`, `PUT /:id` and `DELETE /:id` do **not** check org or assignment. A Compage employee can read, or status-update, any activity by id, including other-org activities.
 - The list cursor is built from `created_at` (an ISO string containing colons) and parsed with `cursor.split(':')`. The timestamp is truncated, so pages after the first are unreliable.
-- The create path builds the assignee INSERT by string interpolation, with ids filtered through `Number.isFinite`.
 
 ### 4.2 Customer queries (support tickets): `/api/queries`
 Files: `routes/operations/queries.js`, `controllers/operations/queries.controller.js`, **`services/queryService.js`** (the logic). `models/operations/query.js` is an older, unused model.
 
-**Endpoints** (authenticateToken only):
-- `GET /` (limit/offset)
-- `POST /` `{description}`
-- `PUT /:id/respond` `{response}`
-- `PUT /:id/in-progress`
-- `PUT /:id/close`
+**Endpoints** (`requireRoles`; "staff" = admin, sales, design, production, dispatch):
+- `GET /` (limit/offset): customer and staff
+- `POST /` `{description}`: customer only
+- `PUT /:id/respond` `{response}`: staff only
+- `PUT /:id/in-progress`: staff only
+- `PUT /:id/close`: customer and staff
 
 **State machine:** `Open` → `In Progress` (on any response, or explicit set-in-progress) → `Closed`.
 - Responding to, or setting in-progress, a Closed query gives 400.
@@ -447,7 +450,7 @@ Each mutation uses a transaction with `SELECT ... FOR UPDATE`. `closeQuery` runs
 
 **Redis:** key `queries:<user>:<limit>:<offset>`, TTL 3600 s. However, `getQueries` **deletes the key before reading it**, so caching is effectively disabled. Writes run `delPattern('queries:*')`.
 
-**Socket:** `newQuery` emitted to room `user:<id>` and `queryUpdate` to `user:<ownerId>`. Since no socket ever joins rooms, these are not delivered.
+**Socket:** `newQuery` emitted to room `user:<id>` and `queryUpdate` to `user:<ownerId>`. Every logged-in socket joins its `user:<id>` room (`config/realtime.js`), so these reach that user.
 
 **Other gap:** `getQueries` logs the full result set at info level.
 
@@ -478,7 +481,7 @@ Files: `routes/operations/problems.js`, controller, `models/operations/Problem.j
 - **`detectIntent`** (`chatbot/utils/*Intents.js`) trims and lower-cases the message, collapses whitespace, and looks it up in a fixed `INTENTS` dictionary. An unknown phrase returns `{success:false, response:"I didn't understand that. Try commands like …"}`.
 - **Formatters** (`chatbot/utils/*Formatter.js`) build plain-text, newline-separated answers (e.g. `Order 12 - Customer: X - Pending`).
 - **Response:** `{ success, response, data }`.
-- All routes are `POST` with body `{message}` and use authenticateToken only. There is **no role or permission filtering**, so any logged-in user can read company-wide order, invoice and stock figures.
+- All routes are `POST` with body `{message}` and run `authenticateToken` plus `requireRoles(ADMIN)`. The widget is shown to admin only, and every other role gets 403 `PERM_DENIED`, so company-wide order, invoice and stock figures are no longer readable by any logged-in user.
 - Results are typically capped at 10 rows.
 
 | Endpoint | Supported phrases (intents) |
@@ -536,17 +539,18 @@ Jobs are loaded only when `server.js` is run directly (`require.main === module`
 
 **Runner:** Jest 29 (`npm test` → `jest`), with Babel transform-ignore exceptions for htmlparser2 and related packages. Per project memory, `*.test.js` is gitignored but the files are tracked, so new tests need `git add -f`.
 
-There are 28 files and about 340 test cases, concentrated on the **PDI (pre-dispatch inspection) module and auth**:
+There are 32 files and about 375 test cases, concentrated on the **PDI (pre-dispatch inspection) module and auth**:
 
 | Area | Files (approx. # tests) | Style |
 |---|---|---|
 | Auth | `auth.test.js` (5: signup, login, password change/validation), `auth_permission.test.js` (8: `hasPermission`, `checkPermission`), `auth_token_lifetime.test.js` (2: PDI mobile app `X-App-Version` gets a 12 h token, others 1 h), `pdi_auth_unavailable.test.js` (3: DB failure must not look like an invalid token) | auth.test is integration (supertest); the others mock the DB |
+| Organization isolation | `roles.test.js` (7: `orgOf`, `requireRoles` 403 and fail-closed construction), `realtime.test.js` (18: `roomsFor`, `roomsForSocketUser`, `scopedIo` emit scoping and unoverwritable `user`, `socketAuth` handshake), `activities_org.test.js` (8: cross-organization 404 on get/update/delete, Compage employee limited to assigned activities) | DB mocked |
 | Sales enquiry | `enquiry_controller.test.js` (9), `enquiry_model.test.js` (18): representative role scoping, photo upload ownership | mocked |
 | Manufacturing | `iptKits.test.js` (9): create with auto serial, duplicate-serial field error, reverse search, cursor pagination with no gaps or overlaps, update, delete freeing serials, next-serial preview and set | **integration against a real DB** (inserts temporary admin role-1 and production role-5 users, cleans up afterwards) |
 | PDI reports and lots | `pdiReports`, `pdi_report_batches` (42), `pdi_lot_rules`, `pdi_finalize_pdf`, `pdi_finalized_edit`, `pdi_delete_report`, `pdi_photos_summary`, `pdi_inspection_date` | DB and Drive mocked |
 | PDI templates and PDF | `pdi_template_renderer` (30), `pdi_primitives`, `pdi_generator`, `pdi_generator_combined`, `pdi_general_v1_0_8`, `pdi_autonxt_tolerance`, `pdi_autonxt_controller` (20), `pdi_tolerance`, `pdi_photo_optimizer`, `pdi_pdf_cache_prefix`, `pdi_admin` (16), `pdi_authored_templates`, `pdi_authored_template_adapter` | unit |
 
-**Not covered by any test:** BOM, parts / part-code generation, part drawings, motor recipes, process / work orders, service repair, attendance, employee details, payslip, invoice / invoice records, activities, queries, problems, chatbot, cron jobs, email.
+**Not covered by any test:** BOM, parts / part-code generation, part drawings, motor recipes, process / work orders, service repair, attendance, employee details, payslip, invoice / invoice records, activities (other than the organization checks above), queries, problems, chatbot, cron jobs, email.
 
 ---
 
@@ -573,26 +577,22 @@ Related startup behaviour (`server.js` `initializeServer`): any `pdi_report_batc
 ## 9. Consolidated known gaps / risks (from code)
 
 1. **Parts code generation is not truly transactional**: it uses `pool.query('BEGIN')` instead of a dedicated client, so duplicate part codes are possible under concurrency.
-2. **Missing authorisation:**
-   - BOM, part drawings (both), payslip, invoice and invoice-records have no `checkPermission`.
-   - Chatbot endpoints expose company-wide data to any authenticated user.
-   - The activities `getById`, `update` and `delete` paths ignore org and assignment scope.
-3. **Socket rooms are never joined**, so query notifications sent to `user:<id>` rooms are never delivered.
-4. **Cache defects:**
+2. **Role guards instead of RBAC:** BOM, part drawings (both), payslip, invoice, invoice-records, queries and the chatbot are protected by fixed `requireRoles` lists, not `checkPermission`, so the `permissions` table does not control them.
+3. **Cache defects:**
    - The queries cache is deleted before every read.
    - The process cache key uses `req.user.userId` (undefined).
    - Problems invalidation is per-user only.
    - Wide use of blocking `KEYS`.
-5. **Status-code inaccuracies:**
+4. **Status-code inaccuracies:**
    - BOM not-found returns 500.
    - Part-drawing not-found returns 400.
    - Activities pagination cursor splits an ISO timestamp on `:`.
-6. **Drive hygiene in service repair:**
+5. **Drive hygiene in service repair:**
    - Uploads become public before the record is validated (orphan on 404).
    - Removing a photo does not trash the Drive file.
    - The `proxyImage` handler is unrouted.
-7. **Dead or unrouted code:** `Process.upsertProcessMaterialUsage` / `getProcessMaterialUsage`, `models/operations/query.js`.
-8. **Hard-coded operational data:** cron user ids (45, 69-73), manager name "Akshay", the invoice seller GST and bank details, and the payslip company address.
-9. **Emails are not HTML-escaped.** The "weekend" skip excludes Sunday only.
-10. **No automated tests** for manufacturing (except IPT kits), service, HR, operations, chatbot or jobs.
-11. **Seed script contains a default password** (`password123`) for a test representative account.
+6. **Dead or unrouted code:** `Process.upsertProcessMaterialUsage` / `getProcessMaterialUsage`, `models/operations/query.js`.
+7. **Hard-coded operational data:** cron user ids (45, 69-73), manager name "Akshay", the invoice seller GST and bank details, and the payslip company address.
+8. **Emails are not HTML-escaped.** The "weekend" skip excludes Sunday only.
+9. **No automated tests** for manufacturing (except IPT kits), service, HR, operations, chatbot or jobs.
+10. **Seed script contains a default password** (`password123`) for a test representative account.

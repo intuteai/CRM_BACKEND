@@ -4,8 +4,9 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 
 ## 0. Cross-cutting plumbing that these modules rely on
 
-- **Socket.IO**: `server.js` creates one `Server` (path `/socket.io`, CORS = `FRONTEND_URL`), stores it with `app.set('io')` / `app.set('socketio')`, and a global middleware sets `req.io = io` on every request. The connection handler only logs connect/disconnect. **No code joins sockets to rooms**, so the `io.to('user_<id>').emit('notification', …)` calls in the enquiry model reach no one unless a room join exists elsewhere (none found in `server.js` or `config/socket.js`). `config/socket.js` (`initSocket`) is a second, unused factory.
-- **Routers that override `req.io`**: `routes/sales/quotation.js`, `proforma.js`, `purchaseOrder.js`, `routes/dispatch/deliveryChallan.js` and `iaOrders.js` reset `req.io = req.app.get('io')` and then set `req.io.user = req.user`. Because `io` is a process-wide singleton, `io.user` is shared state. Concurrent requests can overwrite it, and the IA Orders model reads `io.user.user_id` as `created_by` (race condition).
+- **Socket.IO**: `server.js` creates one `Server` (path `/socket.io`, CORS = `FRONTEND_URL`), stores it with `app.set('io')` / `app.set('socketio')`, and calls `attachRealtime(io)` (`config/realtime.js`). Every socket must present the API JWT (handshake `auth.token` or `Authorization: Bearer`); `socketAuth` verifies it, reads `user_id`/`role_id` from the DB, and refuses the connection otherwise. A connected socket joins `user:<id>`, `user_<id>`, and its organization room (`org:ia`, `org:compage`, `people:compage` for roles 9/10, or `customers` for role 2). So the `io.to('user_<id>').emit('notification', …)` calls in the enquiry model now reach that user. `config/socket.js` (`initSocket`) is a second, unused factory.
+- **`req.io` is per request**: a global middleware sets `req.io = scopedIo(io, req)`. `req.io.emit()` sends only to the acting user's organization rooms (never to every connected browser), and `req.io.user` is a getter that returns this request's `req.user` (assignments are ignored). The routers that used to do `req.io = req.app.get('io'); req.io.user = req.user` (quotation, proforma, purchase order, delivery challan, IA orders and others) no longer do so, so the old shared-singleton race on `io.user` is gone. Models that read `io.user.user_id` as `created_by` (for example IA Orders) get the correct user.
+- **Role guards**: `requireRoles(...ids)` (`middleware/roles.js`) returns 403 `{error:'Permission denied', code:'PERM_DENIED'}` to any role not listed. The routes in this chapter that use it are noted per module.
 - **Auth middleware** (`middleware/auth.js`):
   - `authenticateToken` reads only `Authorization: Bearer <jwt>`. The README says cookies are also accepted, but the code does not do that.
   - It verifies with `JWT_SECRET`, then re-loads the user and `role_name` from `users`/`roles` on every request.
@@ -62,7 +63,7 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 **Purpose:** customer master. Each customer is a `users` row (role 2) plus a `customers` row (contact, GST, addresses).
 
 - **Endpoints:**
-  - `GET /api/customers/search?q=` (auth only, no permission check): `ILIKE` on `users.name`, limit 20.
+  - `GET /api/customers/search?q=` (`requireRoles` admin, service_repair; used by the service & repair page): `ILIKE` on `users.name`, limit 20.
   - `GET /api/customers` (`Customers.can_read`): paginated, with `limit` capped at 100 and a non-negative `offset`.
   - `POST /api/customers` (`Customers.can_create`).
 - **Validation** (route middleware `validateCustomerInput`):
@@ -78,10 +79,10 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 ### 2.2 Users (`routes/core/users.js`, `controllers/core/users.controller.js`)
 
 - `GET /api/users/customers` (`Customers.can_read`): all users with `role_id = 2`, as `user_id, name`.
-- `GET /api/users/employees-hr`: returns team members within the caller's organisation.
+- `GET /api/users/employees-hr` (`requireRoles` hr, ia_employee, ia_hr): returns team members within the caller's organisation.
   - IA roles [11, 12] see users with roles 11 and 12.
-  - Compage roles [9, 10] see users with roles 9 and 10.
-  - Any other role gets 403.
+  - Compage HR (10) sees users with roles 9 and 10. The Compage employee role (9) is stopped by the route guard.
+  - Any other role gets 403 `PERM_DENIED`.
 
 ### 2.3 Orders (`routes/core/orders.js`, `controllers/core/orders.controller.js`, `models/core/order.js`)
 
@@ -154,7 +155,7 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 - **Rate limit:** the router applies `express-rate-limit` at 100 requests per 15 minutes per IP to all inventory routes.
 - **Endpoints:**
   - `POST /` and `PUT /:id` (`Inventory.can_write`).
-  - `GET /available` and `GET /check-part-number` (auth only).
+  - `GET /available` (`requireRoles` admin, customer, sales, design, production, store, accounts; customers order from this list) and `GET /check-part-number` (`requireRoles` admin, sales, production, store).
   - `GET /` (`Inventory.can_read`).
   - `DELETE /:id`.
   - `POST /:id/hold` and `POST /hold/:hold_id/release`.
@@ -189,7 +190,7 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 - **Validation:**
   - `validateStockInput`: productName (string); productCode is a string of exactly 11 characters; price is a number of 0 or more; stockQuantity and qtyRequired are numbers of 0 or more if present; location and imageUrl are strings. Failures return 400 `INVALID_INPUT`.
   - `validateAdjustInput`: `quantity` must be a number and may be negative; `reason` must be a string.
-- **Part numbers:** same 4-digit prefix scheme as inventory, against `raw_materials.part_number` (constraints `raw_materials_part_number_unique` and `raw_materials_product_code_key`). Error codes `PART_NUMBER_TAKEN` and `DUPLICATE_CODE`.
+- **Part numbers:** same 4-digit prefix scheme as inventory, against `raw_materials.part_number` (constraints `raw_materials_part_number_unique` and `raw_materials_product_code_key`). Error codes `PART_NUMBER_TAKEN` and `DUPLICATE_CODE`. `GET /check-part-number` is limited by `requireRoles` to admin, sales, production, store and dispatch.
 - **Update:** `COALESCE` keeps the existing stock, image and returnable values when they are omitted, but `qty_required` defaults to 0 and `location` to NULL when omitted.
 - **Photo upload:** `POST /:productId/photo`.
   - multer memory storage, **8 MB** limit, field `photo`.
@@ -199,7 +200,7 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 - **Adjust:** `POST /:productId/adjust` runs `stock_quantity += quantity` and inserts into `stock_adjustments (product_id, quantity, reason, created_by, created_at)`.
   - **Bug:** `BEGIN`/`COMMIT`/`ROLLBACK` are issued with `pool.query`, so each statement may run on a different pooled connection. The adjustment and its log entry are therefore **not actually atomic**.
 - **Delete:** `DELETE /:productId` requires `Stock.can_delete`, has no guards, and returns 204.
-- **Caching:** none. **Socket:** `stockUpdate` (with `location` and `image_url`, or `status: 'deleted'`).
+- **Caching:** none. **Socket:** `stockUpdate` (with `location` and `image_url`, or `status: 'deleted'`). Like every `stockUpdate`, it goes to `org:compage` and `customers`.
 
 ### 2.6 Reports (`routes/core/reports.js`, `controllers/core/reports.controller.js`)
 
@@ -323,7 +324,7 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
 
 ### 3.4 Quotation, Proforma Invoice, Purchase Order: stateless PDF generators
 
-All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `checkPermission`**). They take the full document data in the JSON body, **persist nothing**, and stream a PDFKit A4 PDF back as an attachment. Fonts are Roboto Regular/Bold (Quotation also Medium) from `assets/fonts/`, falling back to Helvetica. Images come from `assets/` (`compage_header_left/right.png`, `compage_signature.png`; Quotation also falls back to `/mnt/data/`). None of them upload to Drive.
+All three are `POST /api/<doc>/generate` behind `authenticateToken` and `requireRoles` admin, sales (**no `checkPermission`**). They take the full document data in the JSON body, **persist nothing**, and stream a PDFKit A4 PDF back as an attachment. Fonts are Roboto Regular/Bold (Quotation also Medium) from `assets/fonts/`, falling back to Helvetica. Images come from `assets/` (`compage_header_left/right.png`, `compage_signature.png`; Quotation also falls back to `/mnt/data/`). None of them upload to Drive.
 
 | | Quotation (`models/sales/quotation.js`) | Proforma (`models/sales/proforma.js`) | Purchase Order (`models/sales/purchaseOrder.js`) |
 |---|---|---|---|
@@ -363,7 +364,7 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `
 
 **Purpose:** supplier invoices for raw materials (one line per invoice, tied to a `raw_materials.product_id`).
 
-- **Access:** routes use `authenticateToken` only, with **no permission check**.
+- **Access:** every route runs `authenticateToken` plus `requireRoles` admin, accounts (matching the `/purchase-invoices` page). There is no `checkPermission`.
 - **Validation:** `validateInvoiceInput` requires supplierCode, supplierName, invoiceNumber and description as strings; `issueDate` must parse as a date; unitPrice and quantity must be numbers of 0 or more (falsy 0 is rejected because of `!unitPrice`); `productId` must be an integer of 1 or more; `linkPdf` is an optional string.
 - **Table:** `purchase_invoices` (invoice_id, sr_no, supplier_code, supplier_name, invoice_number, issue_date, description, unit_price, quantity, link_pdf, product_id, created_at, updated_at).
 - **Stock side effect:** after create, update and delete, the controller reads back `raw_materials.stock_quantity` and logs it. No application code changes stock here, so any automatic stock-in would have to come from a DB trigger that is not in this repo. **The code does not show this; verify in the DB.**
@@ -389,7 +390,7 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `
 
 **Purpose:** generate a Delivery Challan PDF for goods leaving the factory, and record **returnable** goods (for example items sent for repair or trial) so they can later be accepted back into stock.
 
-- **Endpoint:** `POST /api/delivery-challan/generate` (auth only, no permission check).
+- **Endpoint:** `POST /api/delivery-challan/generate` (`requireRoles` admin only; no `checkPermission`). It is admin-only because it also changes returnable stock.
 - **Validation:** `challan_no` is required. `items` must be non-empty, and each item needs `productId`, `qty > 0`, and `source` of `'raw'` or `'inventory'`.
 - **Flow:**
   1. Render the PDF into a buffer (`generateBuffer`).
@@ -407,7 +408,7 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `
 
 **Purpose:** record Intute AI dispatches by device serial. Each order lists VCU units (serial, make, model) and optional paired HMI units (IMEI, make, model).
 
-- **Endpoints** (`ia_orders.can_*`): `GET /` (cursor pagination, limit 1–100, default 20), `GET /check-serials?serials=a,b,c` (returns the VCU serials already used), `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id`.
+- **Endpoints** (router-level `requireRoles` ia_employee, ia_hr, whatever the permissions table says; then `ia_orders.can_*`): `GET /` (cursor pagination, limit 1–100, default 20), `GET /check-serials?serials=a,b,c` (returns the VCU serials already used), `GET /:id`, `POST /`, `PUT /:id`, `DELETE /:id`.
 - **Validation:**
   - Order needs customer_name, invoice_number, dispatch_date and at least one item.
   - Each item needs a VCU serial, make and model.
@@ -417,7 +418,7 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `
   - Create inserts `ia_orders` and its items in one transaction.
   - Update patches only the supplied header fields. If `items` is supplied, it deletes all items and re-inserts them.
   - Delete removes `ia_orders` only, so item cleanup relies on an FK cascade in the DB.
-- **`created_by`** is taken from `io.user.user_id`, the shared singleton field described in section 0 (race-prone).
+- **`created_by`** is taken from `io.user.user_id`. `req.io` is the per-request `scopedIo` wrapper described in section 0, so this is always the requesting user.
 - **List query:** aggregates items with `JSON_AGG`. The cursor is formatted as `"<order_id>:<created_at>"` and parsed with `split(':')`. Because timestamps contain colons, the parsed timestamp is truncated, which is a likely pagination bug.
 - **Caching:** prefix `ia_orders_`, keys `ia_orders_list_<limit>_<cursor|initial>`, **TTL 120 s**, written asynchronously via `setImmediate`. Invalidation is the only place in these modules that uses `SCAN` (`scanIterator MATCH ia_orders_*`, batches of 500) rather than `KEYS`.
 - **Socket:** `ia_orders:created`, `ia_orders:updated`, `ia_orders:deleted`.
@@ -427,6 +428,8 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `
 ## 6. Summary tables
 
 ### Socket.IO events emitted by these modules
+
+All of these go through `req.io.emit()`, so they reach only the acting user's organization: `org:compage` for Compage staff (plus `customers` for `stockUpdate`), `org:ia` for Intute AI (for example `ia_orders:*`). `notification` is sent to the personal room `user_<id>` instead.
 
 | Event | Emitted by |
 |---|---|
@@ -466,11 +469,10 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` only (**no `
 2. Customer creation is not atomic across `users` and `customers`, because `User.create` uses its own connection.
 3. `PUT /api/inventory/:id` always runs the admin path and can null out stock if the fields are omitted.
 4. Cancelling a `Partially Delivered` order neither restocks nor takes the post-shipment path.
-5. `io.user` is a shared singleton; IA Orders `created_by` is race-prone.
-6. Literal-wildcard `redis.del` calls (purchase invoices, dispatch tracking, inventory→price_list) do not invalidate anything.
-7. Dispatch tracking update ignores `order_id` (parameter name mismatch).
-8. IA Orders cursor parsing splits on `:` inside an ISO timestamp.
-9. `Enquiry.checkOverdue` is never scheduled, and no socket room joins exist for `user_<id>` notifications.
-10. PDF generator routes and purchase-invoice routes have no `checkPermission` RBAC; any authenticated user can call them.
-11. The README says JWTs are accepted from a cookie, but `authenticateToken` only reads the `Authorization` header.
-12. DB-side objects referenced but not defined in this repo: `get_next_enquiry_id()`, the order/dispatch status-sync triggers, and any stock trigger on `purchase_invoices`.
+5. Literal-wildcard `redis.del` calls (purchase invoices, dispatch tracking, inventory→price_list) do not invalidate anything.
+6. Dispatch tracking update ignores `order_id` (parameter name mismatch).
+7. IA Orders cursor parsing splits on `:` inside an ISO timestamp.
+8. `Enquiry.checkOverdue` is never scheduled.
+9. PDF generator routes and purchase-invoice routes use `requireRoles` role guards but no `checkPermission` RBAC, so the `permissions` table does not control them.
+10. The README says JWTs are accepted from a cookie, but `authenticateToken` only reads the `Authorization` header.
+11. DB-side objects referenced but not defined in this repo: `get_next_enquiry_id()`, the order/dispatch status-sync triggers, and any stock trigger on `purchase_invoices`.

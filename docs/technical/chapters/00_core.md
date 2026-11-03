@@ -83,7 +83,7 @@ These steps run for every request, in order (see `server.js`):
 3. `cors({ origin: FRONTEND_URL, credentials: true })`.
 4. `cookieParser()` and `express.json({ limit: '40mb' })`. The large limit exists because the PDI generator sends base64 photos.
 5. The global rate limiter (`middleware/rateLimit.js`) allows 5,000 requests per 10 minutes, keyed by user id when known and by IP otherwise. When exceeded it returns `429` with `RATE_LIMIT_EXCEEDED`. The inventory router adds its own tighter limit of 100 requests per 15 minutes.
-6. `req.io` is attached so controllers can emit real-time events.
+6. `req.io` is attached so controllers can emit real-time events. It is a per-request `scopedIo(io, req)` wrapper (`config/realtime.js`), not the raw Socket.IO server (see "Organization isolation").
 7. The domain routers run.
 8. The global `errorHandler` returns `{ error, code }` with `err.status` or 500.
 
@@ -100,7 +100,7 @@ The cron jobs are loaded only when `server.js` is the main module. Tests can `re
 
 ## Real-time messaging
 
-A single Socket.IO server is created in `server.js` and exposed as `app.get('io')` and as `req.io`. Controllers broadcast mutation events, such as stock updates after an order dispatches and record changes for enquiries, queries and orders, so open dashboards refresh live. The web client connects with `auth: { token }`, uses WebSocket with polling fallback, and retries up to 5 times with a 2 s delay. Its connection status is kept in Redux (`socketStatus`).
+A single Socket.IO server is created in `server.js` and exposed as `app.get('io')`. `attachRealtime(io)` (`config/realtime.js`) makes every socket log in with the API JWT and joins it to its user and organization rooms. Requests see `req.io = scopedIo(io, req)`. Controllers broadcast mutation events through it, such as stock updates after an order dispatches and record changes for enquiries, queries and orders, so open dashboards in the same organization refresh live. The web client sends the token as `auth: (cb) => cb({ token: localStorage.getItem('token') })`, so every reconnect uses the current token. It uses WebSocket with polling fallback and retries up to 5 times with a 2 s delay. Its connection status is kept in Redux (`socketStatus`).
 
 ## Caching strategy
 
@@ -120,8 +120,41 @@ Redis caches read-heavy, expensive list queries, such as part drawings, inventor
 The backend enforces access in three ways:
 
 1. **Permission matrix (RBAC).** `checkPermission(module, action)` looks up the `permissions` table (`role_id`, `module`, `can_read`, `can_write`, `can_delete`); `can_create` maps to `can_write`. A denied request gets `403 PERM_DENIED`. `hasPermission()` offers the same check to model code, for example the rule for editing a finalized PDI report.
-2. **Role allow-lists.** `requirePdiAccess` (`middleware/pdiAccess.js`) admits only `admin` and `production`. It accepts either `roles.role_name` or the `ROLE_MAP` name, and is deliberately independent of the permissions table. The PDI template administration routes are admin-only (`role_id === 1`). Activities are limited to role ids 9, 10, 11 and 12 (Compage and IA people roles).
-3. **Authenticated-only routes.** Some document generators and utility routes need only a valid token. These are listed as "Any authenticated" in the API catalogue.
+2. **Role allow-lists.** `requireRoles(...ids)` (`middleware/roles.js`) admits only the listed role ids and answers anything else with `403 { error: 'Permission denied', code: 'PERM_DENIED' }`. It guards the routes that used to need only a login (see the table below). `requirePdiAccess` (`middleware/pdiAccess.js`) admits only `admin` and `production`. It accepts either `roles.role_name` or the `ROLE_MAP` name, and is deliberately independent of the permissions table. The PDI template administration routes are admin-only (`role_id === 1`).
+3. **Authenticated-only routes.** A few routes still need only a valid token (for example the `/api/auth` account routes such as `verify-token`, `user`, `logout` and `update-password`). These are listed as "Any authenticated" in the API catalogue. Note that the catalogue generator (`scripts/docs/dump_routes.js`) does not yet recognise `requireRoles`, so routes guarded only by it may still show as "Any authenticated" there; the table below is authoritative.
+
+| Route(s) | Allowed roles (`requireRoles`) |
+|---|---|
+| `/api/bom` read, create, update / delete | admin, design, store, production / admin, design |
+| `/api/purchase-invoices` | admin, accounts |
+| `/api/part-drawings`, `/api/part-drawings-raw` read / write | admin, design, production / admin, design |
+| `/api/queries` read and close / create / respond and in-progress | customer, admin, sales, design, production, dispatch / customer / admin, sales, design, production, dispatch |
+| `/api/quotation`, `/api/proforma`, `/api/purchase-order` `POST /generate` | admin, sales |
+| `/api/delivery-challan/generate` | admin |
+| `POST /api/invoice/generate` (Intute AI invoice) | ia_employee, ia_hr |
+| `POST /api/payslip/generate` | ia_hr |
+| `/api/invoice-records` | ia_employee, ia_hr |
+| `/api/ia-orders` | ia_employee, ia_hr (and `checkPermission('ia_orders', …)`) |
+| `/api/ipt-kits` | admin, production (and `checkPermission('ipt_kits', …)`) |
+| `/api/activities` | employee, hr, ia_employee, ia_hr (9, 10, 11, 12) |
+| `GET /api/users/employees-hr` | hr, ia_employee, ia_hr |
+| `GET /api/customers/search` | admin, service_repair |
+| `GET /api/inventory/available` | admin, customer, sales, design, production, store, accounts |
+| `GET /api/inventory/check-part-number` | admin, sales, production, store |
+| `GET /api/stock/check-part-number` | admin, sales, production, store, dispatch |
+| All `POST /api/*/chatbot` routes | admin |
+
+## Organization isolation
+
+Compage and Intute AI share one server and one database, and their data must never cross. Two files enforce this:
+
+- **`middleware/roles.js`** is the single source of role ids: `ROLES` (1 admin, 2 customer, 3 sales, 4 design, 5 production, 6 store, 7 dispatch, 8 accounts, 9 employee, 10 hr, 11 ia_employee, 12 ia_hr, 13 service_repair, 15 representative). `orgOf(roleId)` returns `'ia'` for 11 and 12, `'compage'` for every other known role, and `null` for an unknown id (callers must refuse). `requireRoles(...ids)` is the route guard described above; it throws at start-up if given an unknown id.
+- **`config/realtime.js`** keeps live updates inside one organization:
+  - `socketAuth` refuses any socket that does not present the API JWT, in the handshake `auth.token` or an `Authorization: Bearer` header. It verifies the token and reads the user's `role_id` from the database.
+  - On connect a socket joins `user:<id>` and `user_<id>` (both spellings are used by emitters), plus `org:ia` (roles 11, 12), `org:compage` (every Compage role except customer), `people:compage` (9, 10) or `customers` (2).
+  - `scopedIo(io, req)` is the `req.io` each request sees. `emit()` sends only to the acting user's organization: for Compage, `activities:*` and `attendanceMarked` go to `people:compage`, `stockUpdate` goes to `org:compage` and `customers`, and everything else goes to `org:compage`; for Intute AI every event goes to `org:ia`; with no or an unknown user it goes nowhere. `to(room)` and `in(room)` pass through for personal-room notifications.
+  - `req.io.user` is a getter that always returns this request's `req.user`; assigning to it is ignored. Models that read `io.user.user_id` for `created_by` therefore get the correct user. The old router pattern `req.io = req.app.get('io'); req.io.user = req.user`, which wrote the user onto the shared server object and could be overwritten by a concurrent request, has been removed everywhere.
+- Activities add a record-level check on top (see the Activities section in the operations chapter): another organization's activity answers 404, and assignees must belong to the activity's organization.
 
 The web CRM adds a client-side gate on top: `routeConfig.jsx` gives every route an `allowedRoles` list, and `App.jsx` redirects users to their role dashboard when they open a path their role does not allow. This gate only improves navigation. The API remains the source of truth.
 

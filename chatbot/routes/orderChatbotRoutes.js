@@ -3,10 +3,14 @@ const router = express.Router();
 
 const { OrderChatbotService } = require('../services/orderChatbotService');
 const { authenticateToken } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
+
+// The chatbot widget is shown to admin only.
+const adminOnly = requireRoles(ROLES.ADMIN);
 
 router.post(
   '/orders/chatbot',
-  authenticateToken,
+  authenticateToken, adminOnly,
   async (req, res) => {
     try {
       const { message } = req.body;

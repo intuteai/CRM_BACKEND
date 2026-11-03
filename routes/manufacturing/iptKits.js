@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const { authenticateToken, checkPermission } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/manufacturing/iptKits.controller');
 
-router.use(authenticateToken, (req, res, next) => {
-  req.io = req.app?.get?.('io') || { emit: () => {} };
-  req.io.user = req.user;
-  next();
-});
+// IPT kit assembly page: admin and production.
+router.use(authenticateToken, requireRoles(ROLES.ADMIN, ROLES.PRODUCTION));
 
 router.get('/', checkPermission('ipt_kits', 'can_read'), controller.getAll);
 router.get('/next-serial', checkPermission('ipt_kits', 'can_read'), controller.nextSerial);

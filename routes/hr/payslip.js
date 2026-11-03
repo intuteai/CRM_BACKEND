@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const { authenticateToken } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/hr/payslip.controller');
 
-router.use(authenticateToken, (req, res, next) => {
-  req.io = req.app?.get?.('io') || { emit: () => {} };
-  req.io.user = req.user;
-  next();
-});
+// Intute AI payslips: the /hr-payslips page is ia_hr only.
+router.use(authenticateToken, requireRoles(ROLES.IA_HR));
 
 router.post('/generate', controller.generate);
 

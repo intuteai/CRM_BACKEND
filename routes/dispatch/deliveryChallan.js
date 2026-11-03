@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/dispatch/deliveryChallan.controller');
 
-router.use(authenticateToken, (req, res, next) => {
-  req.io = req.app?.get?.('io') || { emit: () => {} };
-  req.io.user = req.user;
-  next();
-});
+// Delivery challan form: admin only. It also changes returnable stock.
+router.use(authenticateToken, requireRoles(ROLES.ADMIN));
 
 router.post('/generate', controller.generate);
 

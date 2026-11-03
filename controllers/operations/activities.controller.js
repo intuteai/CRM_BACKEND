@@ -34,6 +34,24 @@ async function invalidateActivitiesCache() {
   } catch (e) { logger.warn(`Cache invalidation skipped: ${e.message}`); }
 }
 
+// The activity's org code ('com' | 'ia') a role may touch.
+const ORG_BY_ROLE = { 9: 'com', 10: 'com', 11: 'ia', 12: 'ia' };
+
+// True when this user may see/touch activity `id`: same organization, and a
+// Compage employee only when assigned to it. Anything else answers 404 so
+// the other organization's activity ids are not even confirmed to exist.
+async function canAccess(req, id) {
+  const access = await Activities.getAccess(id);
+  if (!access) return false;
+  if (access.org !== ORG_BY_ROLE[req.user.role_id]) return false;
+  if (req.user.role_id === COM_EMPLOYEE_ROLE && !access.assignee_ids.includes(Number(req.user.user_id))) return false;
+  return true;
+}
+
+function notFound(res) {
+  return res.status(404).json({ error: 'Activity not found' });
+}
+
 async function cacheGetJSON(key) {
   try { const raw = await redis.get(key); return raw ? JSON.parse(raw) : null; } catch (e) { logger.warn(`Redis GET failed for ${key}: ${e.message}`); return null; }
 }
@@ -83,6 +101,7 @@ exports.getOne = async (req, res) => {
   const cacheKey = `${ACTIVITIES_PREFIX}${id}`;
   const forceRefresh = toBool(req.query.force_refresh);
   try {
+    if (!(await canAccess(req, id))) return notFound(res);
     if (!forceRefresh) {
       const cached = await cacheGetJSON(cacheKey);
       if (cached) return res.json(cached);
@@ -101,6 +120,12 @@ exports.getOne = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
+  try {
+    if (!(await canAccess(req, id))) return notFound(res);
+  } catch (error) {
+    logger.error(`Activity ${id} access check error: ${error.message}`);
+    return res.status(500).json({ error: 'Server error' });
+  }
   if (req.user.role_id === COM_EMPLOYEE_ROLE) {
     const { status } = req.body;
     if (!status) return res.status(400).json({ error: 'Only status updates are allowed' });
@@ -128,6 +153,7 @@ exports.delete = async (req, res) => {
   if (req.user.role_id === COM_EMPLOYEE_ROLE) return res.status(403).json({ error: 'Employees cannot delete activities' });
   const id = req.params.id;
   try {
+    if (!(await canAccess(req, id))) return notFound(res);
     const activity = await Activities.delete(id, req.io);
     setImmediate(() => invalidateActivitiesCache());
     return res.json({ message: 'Activity deleted', activity });

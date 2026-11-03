@@ -2,8 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { BOMChatbotService } = require('../services/bomChatbotService');
 const { authenticateToken } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 
-router.post('/bom/chatbot', authenticateToken, async (req, res) => {
+// The chatbot widget is shown to admin only.
+const adminOnly = requireRoles(ROLES.ADMIN);
+
+router.post('/bom/chatbot', authenticateToken, adminOnly, async (req, res) => {
   try {
     const { message } = req.body;
     const result = await BOMChatbotService.handle(message);

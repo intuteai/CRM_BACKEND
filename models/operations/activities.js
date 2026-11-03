@@ -15,6 +15,19 @@ function resolveOrg(roleId) {
   return null;
 }
 
+// Only people in the activity's own organization can be assigned to it.
+const ORG_ASSIGNEE_ROLES = { com: COM_ROLES, ia: IA_ROLES };
+
+async function assertAssigneesInOrg(client, org, ids) {
+  const unique = [...new Set(ids)];
+  if (unique.length === 0) return;
+  const { rows } = await client.query(
+    'SELECT user_id FROM users WHERE user_id = ANY($1::int[]) AND role_id = ANY($2::int[])',
+    [unique, ORG_ASSIGNEE_ROLES[org] || []]
+  );
+  if (rows.length !== unique.length) throw new Error('Assignee not found in your organization');
+}
+
 class Activities {
   static #toNumber(v) {
     const n = Number(v);
@@ -77,8 +90,13 @@ class Activities {
     const _comments = comments?.trim() || '';
     const createdById = io?.user?.user_id ?? null;
 
+    const validAssigneeIds = assignee_ids
+      .map(id => this.#toNumber(id))
+      .filter(n => Number.isInteger(n));
+
     const client = await pool.connect();
     try {
+      await assertAssigneesInOrg(client, org, validAssigneeIds);
       await client.query('BEGIN');
 
       const actRes = await client.query(
@@ -90,19 +108,14 @@ class Activities {
 
       const activityId = actRes.rows[0].id;
 
-      if (assignee_ids.length > 0) {
-        const values = assignee_ids
-          .filter(id => Number.isFinite(this.#toNumber(id)))
-          .map(id => `(${activityId}, ${id})`)
-          .join(', ');
-
-        if (values) {
-          await client.query(
-            `INSERT INTO activity_assignees (activity_id, user_id)
-             VALUES ${values}
-             ON CONFLICT DO NOTHING`
-          );
-        }
+      if (validAssigneeIds.length > 0) {
+        const placeholders = validAssigneeIds.map((_, i) => `($1, $${i + 2})`).join(', ');
+        await client.query(
+          `INSERT INTO activity_assignees (activity_id, user_id)
+           VALUES ${placeholders}
+           ON CONFLICT DO NOTHING`,
+          [activityId, ...validAssigneeIds]
+        );
       }
 
       const assigneesRes = await client.query(
@@ -222,20 +235,19 @@ class Activities {
       if (actRes.rows.length === 0) throw new Error('Activity not found');
 
       if (assignee_ids !== undefined) {
+        const validIds = Array.isArray(assignee_ids)
+          ? assignee_ids.map(id => this.#toNumber(id)).filter(n => Number.isInteger(n))
+          : [];
+        await assertAssigneesInOrg(client, actRes.rows[0].org, validIds);
         await client.query('DELETE FROM activity_assignees WHERE activity_id = $1', [_id]);
-        if (Array.isArray(assignee_ids) && assignee_ids.length > 0) {
-          const validIds = assignee_ids
-            .map(id => this.#toNumber(id))
-            .filter(n => Number.isFinite(n));
-          if (validIds.length > 0) {
-            const placeholders = validIds.map((_, i) => `($1, $${i + 2})`).join(', ');
-            await client.query(
-              `INSERT INTO activity_assignees (activity_id, user_id)
-               VALUES ${placeholders}
-               ON CONFLICT DO NOTHING`,
-              [_id, ...validIds]
-            );
-          }
+        if (validIds.length > 0) {
+          const placeholders = validIds.map((_, i) => `($1, $${i + 2})`).join(', ');
+          await client.query(
+            `INSERT INTO activity_assignees (activity_id, user_id)
+             VALUES ${placeholders}
+             ON CONFLICT DO NOTHING`,
+            [_id, ...validIds]
+          );
         }
       }
 
@@ -381,6 +393,22 @@ class Activities {
       : null;
 
     return { data, total: totalRes.rows[0].count, cursor: nextCursor };
+  }
+
+  // Who may touch an activity: its organization and assignee ids.
+  // null when it does not exist.
+  static async getAccess(id) {
+    const _id = this.#toNumber(id);
+    if (!Number.isFinite(_id)) return null;
+    const res = await pool.query(
+      `SELECT a.org,
+              COALESCE(ARRAY(SELECT aa.user_id FROM activity_assignees aa WHERE aa.activity_id = a.id), '{}') AS assignee_ids
+       FROM activities a
+       WHERE a.id = $1`,
+      [_id]
+    );
+    if (res.rows.length === 0) return null;
+    return { org: res.rows[0].org, assignee_ids: res.rows[0].assignee_ids.map(Number) };
   }
 
   // ==================== GET BY ID ====================

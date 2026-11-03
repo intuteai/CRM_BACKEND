@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
+const { attachRealtime, scopedIo } = require('./config/realtime');
 
 // ── Core routes ────────────────────────────────────────────────
 const authRoutes             = require('./routes/auth');
@@ -132,14 +133,12 @@ app.use(cookieParser());
 app.use(express.json({ limit: '40mb' }));
 app.use(limiter);
 
+// Sockets must log in and only hear their own organization's updates;
+// req.io.emit() sends to the acting user's organization only.
+attachRealtime(io);
 app.use((req, res, next) => {
-  req.io = io;
+  req.io = scopedIo(io, req);
   next();
-});
-
-io.on('connection', (socket) => {
-  logger.info('Socket.IO client connected:', socket.id);
-  socket.on('disconnect', () => logger.info('Socket.IO client disconnected:', socket.id));
 });
 
 app.get('/', (req, res) => res.json({ message: 'Welcome to the ERP Backend API' }));

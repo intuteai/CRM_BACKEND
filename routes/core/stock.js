@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const multer = require('multer');
 const { authenticateToken, checkPermission } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/core/stock.controller');
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
@@ -22,7 +23,7 @@ const validateAdjustInput = (req, res, next) => {
   next();
 };
 
-router.get('/check-part-number', authenticateToken, controller.checkPartNumber);
+router.get('/check-part-number', authenticateToken, requireRoles(ROLES.ADMIN, ROLES.SALES, ROLES.PRODUCTION, ROLES.STORE, ROLES.DISPATCH), controller.checkPartNumber);
 router.get('/', authenticateToken, checkPermission('Stock', 'can_read'), controller.getAll);
 router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, controller.create);
 router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, controller.update);

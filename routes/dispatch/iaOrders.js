@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const { authenticateToken, checkPermission } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/dispatch/iaOrders.controller');
 
-router.use(authenticateToken, (req, res, next) => {
-  req.io = req.app?.get?.('io') || { emit: () => {} };
-  req.io.user = req.user;
-  next();
-});
+// Intute AI orders: Intute AI roles only, whatever the permissions table says.
+router.use(authenticateToken, requireRoles(ROLES.IA_EMPLOYEE, ROLES.IA_HR));
 
 router.get('/', checkPermission('ia_orders', 'can_read'), controller.getAll);
 router.get('/check-serials', checkPermission('ia_orders', 'can_read'), controller.checkSerials);

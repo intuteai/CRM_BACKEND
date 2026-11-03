@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken, checkPermission } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/core/customers.controller');
 
 const validatePagination = (req, res, next) => {
@@ -22,7 +23,8 @@ const validateCustomerInput = (req, res, next) => {
   next();
 };
 
-router.get('/search', authenticateToken, controller.search);
+// Customer lookup on the service & repair page.
+router.get('/search', authenticateToken, requireRoles(ROLES.ADMIN, ROLES.SERVICE_REPAIR), controller.search);
 router.get('/', authenticateToken, checkPermission('Customers', 'can_read'), validatePagination, controller.getAll);
 router.post('/', authenticateToken, checkPermission('Customers', 'can_create'), validateCustomerInput, controller.create);
 

@@ -28,10 +28,28 @@ for (const m of server.matchAll(/app\.use\('([^']+)',\s*(\w+)\)/g)) {
   if (allowed) guards.push(`role_id in [${allowed[1]}]`);
   const routerAuth = /router\.use\(authenticateToken/.test(src);
 
+  // requireRoles(...) guards (middleware/roles.js): inline, router-wide, or
+  // held in a const (const canUse = requireRoles(...)), with ...ARRAY spreads.
+  const arrays = {};
+  for (const c of src.matchAll(/const\s+(\w+)\s*=\s*\[([^\]]*)\]/g)) arrays[c[1]] = c[2];
+  const roleList = (txt) => 'roles: ' + txt
+    .replace(/\.\.\.(\w+)/g, (_, n) => arrays[n] || n)
+    .split(',')
+    .map((s) => s.trim().replace(/^ROLES\./, '').toLowerCase())
+    .filter(Boolean)
+    .join(', ');
+  const guardConsts = {};
+  for (const c of src.matchAll(/const\s+(\w+)\s*=\s*requireRoles\(([^)]*)\)/g)) guardConsts[c[1]] = roleList(c[2]);
+  for (const u of src.matchAll(/router\.use\(authenticateToken,\s*requireRoles\(([^)]*)\)/g)) guards.push(roleList(u[1]));
+
   for (const r of src.matchAll(/router\.(get|post|put|patch|delete)\(\s*'([^']*)'([\s\S]*?)\)\s*;?\s*\n/g)) {
     const rest = r[3];
     const perms = [...rest.matchAll(/checkPermission\('([^']+)',\s*'([^']+)'\)/g)]
       .map((x) => `${x[1]}:${x[2].replace('can_', '')}`);
+    for (const x of rest.matchAll(/requireRoles\(([^)]*)\)/g)) perms.push(roleList(x[1]));
+    for (const [name, roles] of Object.entries(guardConsts)) {
+      if (new RegExp(`\\b${name}\\b`).test(rest)) perms.push(roles);
+    }
     const extra = [];
     if (/requirePdiAccess/.test(rest)) extra.push('PDI roles');
     if (/upload\.single/.test(rest)) extra.push('multipart upload');

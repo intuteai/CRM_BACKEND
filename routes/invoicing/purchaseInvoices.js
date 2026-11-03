@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 const { authenticateToken } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/invoicing/purchaseInvoices.controller');
 
 const validateInvoiceInput = (req, res, next) => {
@@ -11,9 +12,12 @@ const validateInvoiceInput = (req, res, next) => {
   next();
 };
 
-router.get('/', authenticateToken, controller.getAll);
-router.post('/', authenticateToken, validateInvoiceInput, controller.create);
-router.put('/:invoiceId', authenticateToken, validateInvoiceInput, controller.update);
-router.delete('/:invoiceId', authenticateToken, controller.delete);
+// The /purchase-invoices page is admin and accounts only.
+const canUse = requireRoles(ROLES.ADMIN, ROLES.ACCOUNTS);
+
+router.get('/', authenticateToken, canUse, controller.getAll);
+router.post('/', authenticateToken, canUse, validateInvoiceInput, controller.create);
+router.put('/:invoiceId', authenticateToken, canUse, validateInvoiceInput, controller.update);
+router.delete('/:invoiceId', authenticateToken, canUse, controller.delete);
 
 module.exports = router;

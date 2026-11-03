@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../../middleware/auth');
+const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/sales/quotation.controller');
 
-router.use(authenticateToken, (req, res, next) => {
-  req.io = req.app?.get?.('io') || { emit: () => {} };
-  req.io.user = req.user;
-  next();
-});
+// Quotation forms: admin and sales.
+router.use(authenticateToken, requireRoles(ROLES.ADMIN, ROLES.SALES));
 
 router.post('/generate', controller.generate);
 
