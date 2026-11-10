@@ -101,12 +101,7 @@ All development, automated tests, destructive tests (ERP-T08) and fake runs stay
 
 ## 9. Findings for the security review (CMP-04)
 
-1. The application connects to the database as `ERPadmin` (member of `rds_superuser`) — not least privilege. Test records are therefore protected by triggers, not only by permissions.
-2. The live backend (`config/db.js`) does not verify the database's TLS certificate. The new motor-test migration tools do (AWS RDS certificate bundle).
-3. No CloudWatch alarms existed (being added).
-4. Shared operator account (section 3); its temporary password must be changed before the tablets go to the shop floor.
-5. Expired token returns 403 instead of 401 — handled by the HMI as agreed.
-6. An independent code review of the new module found 6 input-handling bugs and an automated security review found 1 approval loophole; all 7 were fixed with tests before deployment.
+The findings and their status are kept in the CMP-04 security review report, which is held outside this repository (shared directly with Saatwik). For this plan: test records are protected by database triggers as well as by the API; the shared operator account (section 3) must get a new password before the tablets go to the shop floor; and the 7 issues found by code and security review of the new module were fixed with tests before deployment.
 
 ## 10. Open items
 

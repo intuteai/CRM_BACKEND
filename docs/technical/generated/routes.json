@@ -1,0 +1,1986 @@
+[
+ {
+  "method": "POST",
+  "path": "/api/auth/login",
+  "file": "routes/auth.js",
+  "handler": "login",
+  "auth": "Public",
+  "perm": "—"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/verify-token",
+  "file": "routes/auth.js",
+  "handler": "verifyToken",
+  "auth": "JWT",
+  "perm": "Any authenticated"
+ },
+ {
+  "method": "GET",
+  "path": "/api/auth/user",
+  "file": "routes/auth.js",
+  "handler": "getUser",
+  "auth": "JWT",
+  "perm": "Any authenticated"
+ },
+ {
+  "method": "POST",
+  "path": "/api/auth/logout",
+  "file": "routes/auth.js",
+  "handler": "logout",
+  "auth": "JWT",
+  "perm": "Any authenticated"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/auth/update-password",
+  "file": "routes/auth.js",
+  "handler": "updatePassword",
+  "auth": "JWT",
+  "perm": "Any authenticated"
+ },
+ {
+  "method": "GET",
+  "path": "/api/customers/search",
+  "file": "routes/core/customers.js",
+  "handler": "search",
+  "auth": "JWT",
+  "perm": "roles: admin, service_repair"
+ },
+ {
+  "method": "GET",
+  "path": "/api/customers",
+  "file": "routes/core/customers.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Customers:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/customers",
+  "file": "routes/core/customers.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Customers:create"
+ },
+ {
+  "method": "GET",
+  "path": "/api/orders",
+  "file": "routes/core/orders.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Orders:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/orders/export",
+  "file": "routes/core/orders.js",
+  "handler": "exportOrders",
+  "auth": "JWT",
+  "perm": "Orders:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/orders",
+  "file": "routes/core/orders.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Orders:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/orders/:id/update",
+  "file": "routes/core/orders.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "Orders:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/orders/:id/cancel",
+  "file": "routes/core/orders.js",
+  "handler": "cancel",
+  "auth": "JWT",
+  "perm": "Orders:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/inventory",
+  "file": "routes/core/inventory.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Inventory:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/inventory/available",
+  "file": "routes/core/inventory.js",
+  "handler": "getAvailable",
+  "auth": "JWT",
+  "perm": "roles: admin, customer, sales, design, production, store, accounts"
+ },
+ {
+  "method": "GET",
+  "path": "/api/inventory/check-part-number",
+  "file": "routes/core/inventory.js",
+  "handler": "checkPartNumber",
+  "auth": "JWT",
+  "perm": "roles: admin, sales, production, store"
+ },
+ {
+  "method": "GET",
+  "path": "/api/inventory",
+  "file": "routes/core/inventory.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Inventory:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/inventory/:id",
+  "file": "routes/core/inventory.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "Inventory:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/inventory/:id",
+  "file": "routes/core/inventory.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "Inventory:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/inventory/:id/hold",
+  "file": "routes/core/inventory.js",
+  "handler": "createHold",
+  "auth": "JWT",
+  "perm": "Inventory:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/inventory/hold/:hold_id/release",
+  "file": "routes/core/inventory.js",
+  "handler": "releaseHold",
+  "auth": "JWT",
+  "perm": "Inventory:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/inventory/:id/holds",
+  "file": "routes/core/inventory.js",
+  "handler": "getHolds",
+  "auth": "JWT",
+  "perm": "Inventory:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/inventory/:id/accept-return",
+  "file": "routes/core/inventory.js",
+  "handler": "acceptReturn",
+  "auth": "JWT",
+  "perm": "Inventory:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/stock/check-part-number",
+  "file": "routes/core/stock.js",
+  "handler": "checkPartNumber",
+  "auth": "JWT",
+  "perm": "roles: admin, sales, production, store, dispatch"
+ },
+ {
+  "method": "GET",
+  "path": "/api/stock",
+  "file": "routes/core/stock.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Stock:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/stock",
+  "file": "routes/core/stock.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Stock:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/stock/:productId",
+  "file": "routes/core/stock.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "Stock:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/stock/:productId/photo",
+  "file": "routes/core/stock.js",
+  "handler": "uploadPhoto",
+  "auth": "JWT",
+  "perm": "Stock:write, multipart upload"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/stock/:productId",
+  "file": "routes/core/stock.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "Stock:delete"
+ },
+ {
+  "method": "POST",
+  "path": "/api/stock/:productId/adjust",
+  "file": "routes/core/stock.js",
+  "handler": "adjust",
+  "auth": "JWT",
+  "perm": "Stock:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/users/customers",
+  "file": "routes/core/users.js",
+  "handler": "getCustomers",
+  "auth": "JWT",
+  "perm": "Customers:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/users/employees-hr",
+  "file": "routes/core/users.js",
+  "handler": "getEmployeesHr",
+  "auth": "JWT",
+  "perm": "roles: hr, ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/reports/order-summary",
+  "file": "routes/core/reports.js",
+  "handler": "orderSummary",
+  "auth": "JWT",
+  "perm": "Reports:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/reports/inventory-status",
+  "file": "routes/core/reports.js",
+  "handler": "inventoryStatus",
+  "auth": "JWT",
+  "perm": "Reports:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/sales-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "salesDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/customer-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "customerDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/admin-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "adminDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/design-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "designDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/production-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "productionDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/stores-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "storesDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/dispatch-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "dispatchDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/accounts-dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "accountsDashboard",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard/admin-stats",
+  "file": "routes/core/dashboard.js",
+  "handler": "adminStats",
+  "auth": "JWT",
+  "perm": "dashboard:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dashboard",
+  "file": "routes/core/dashboard.js",
+  "handler": "main",
+  "auth": "JWT",
+  "perm": "Any authenticated"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry/templates",
+  "file": "routes/sales/enquiry.js",
+  "handler": "getTemplates",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry/representatives",
+  "file": "routes/sales/enquiry.js",
+  "handler": "getRepresentatives",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/refresh",
+  "file": "routes/sales/enquiry.js",
+  "handler": "refreshCache",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry",
+  "file": "routes/sales/enquiry.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry",
+  "file": "routes/sales/enquiry.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry/:id",
+  "file": "routes/sales/enquiry.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/enquiry/:id",
+  "file": "routes/sales/enquiry.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/enquiry/:id",
+  "file": "routes/sales/enquiry.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "Enquiries:delete"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/:id/assign",
+  "file": "routes/sales/enquiry.js",
+  "handler": "assign",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/:id/mark-done",
+  "file": "routes/sales/enquiry.js",
+  "handler": "markDone",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/:id/comment",
+  "file": "routes/sales/enquiry.js",
+  "handler": "addComment",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/enquiry/:id/stage",
+  "file": "routes/sales/enquiry.js",
+  "handler": "changeStage",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/:id/follow",
+  "file": "routes/sales/enquiry.js",
+  "handler": "follow",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/enquiry/:id/follow",
+  "file": "routes/sales/enquiry.js",
+  "handler": "unfollow",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/:enquiryId/activity/:activityId/read",
+  "file": "routes/sales/enquiry.js",
+  "handler": "markActivityRead",
+  "auth": "JWT",
+  "perm": "Enquiries:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry/:id/photo",
+  "file": "routes/sales/enquiry.js",
+  "handler": "uploadPhoto",
+  "auth": "JWT",
+  "perm": "Enquiries:write, multipart upload"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/enquiry/:id/photo",
+  "file": "routes/sales/enquiry.js",
+  "handler": "deletePhoto",
+  "auth": "JWT",
+  "perm": "Enquiries:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry-requirements",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry-requirements/:id",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry-requirements",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/enquiry-requirements/:id",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/enquiry-requirements/:id",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:delete"
+ },
+ {
+  "method": "GET",
+  "path": "/api/enquiry-requirements/:requirementId/motors",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "listMotors",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/enquiry-requirements/:requirementId/motors",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "addMotor",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/enquiry-requirements/motors/:motorId",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "updateMotor",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/enquiry-requirements/motors/:motorId",
+  "file": "routes/sales/enquiryRequirements.js",
+  "handler": "deleteMotor",
+  "auth": "JWT",
+  "perm": "EnquiryRequirements:delete"
+ },
+ {
+  "method": "POST",
+  "path": "/api/quotation/generate",
+  "file": "routes/sales/quotation.js",
+  "handler": "generate",
+  "auth": "JWT",
+  "perm": "roles: admin, sales"
+ },
+ {
+  "method": "POST",
+  "path": "/api/proforma/generate",
+  "file": "routes/sales/proforma.js",
+  "handler": "generate",
+  "auth": "JWT",
+  "perm": "roles: admin, sales"
+ },
+ {
+  "method": "POST",
+  "path": "/api/purchase-order/generate",
+  "file": "routes/sales/purchaseOrder.js",
+  "handler": "generate",
+  "auth": "JWT",
+  "perm": "roles: admin, sales"
+ },
+ {
+  "method": "GET",
+  "path": "/api/price-list",
+  "file": "routes/sales/priceList.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "PriceList:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/price-list",
+  "file": "routes/sales/priceList.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "PriceList:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/price-list/:priceId",
+  "file": "routes/sales/priceList.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "PriceList:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/price-list/:priceId",
+  "file": "routes/sales/priceList.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "PriceList:delete"
+ },
+ {
+  "method": "GET",
+  "path": "/api/bom",
+  "file": "routes/manufacturing/bom.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: admin, design, store, production"
+ },
+ {
+  "method": "GET",
+  "path": "/api/bom/:id",
+  "file": "routes/manufacturing/bom.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "roles: admin, design, store, production"
+ },
+ {
+  "method": "POST",
+  "path": "/api/bom",
+  "file": "routes/manufacturing/bom.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: admin, design, store, production"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/bom/:id",
+  "file": "routes/manufacturing/bom.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "roles: admin, design, store, production"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/bom/:id",
+  "file": "routes/manufacturing/bom.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "GET",
+  "path": "/api/ipt-kits",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "ipt_kits:read, roles: admin, production"
+ },
+ {
+  "method": "GET",
+  "path": "/api/ipt-kits/next-serial",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "nextSerial",
+  "auth": "JWT",
+  "perm": "ipt_kits:read, roles: admin, production"
+ },
+ {
+  "method": "GET",
+  "path": "/api/ipt-kits/:id",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "ipt_kits:read, roles: admin, production"
+ },
+ {
+  "method": "POST",
+  "path": "/api/ipt-kits",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "ipt_kits:write, roles: admin, production"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/ipt-kits/next-serial",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "setNextSerial",
+  "auth": "JWT",
+  "perm": "ipt_kits:write, roles: admin, production"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/ipt-kits/:id",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "ipt_kits:write, roles: admin, production"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/ipt-kits/:id",
+  "file": "routes/manufacturing/iptKits.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "ipt_kits:delete, roles: admin, production"
+ },
+ {
+  "method": "GET",
+  "path": "/api/parts",
+  "file": "routes/manufacturing/parts.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Parts:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/parts/types",
+  "file": "routes/manufacturing/parts.js",
+  "handler": "getPartTypes",
+  "auth": "JWT",
+  "perm": "Parts:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/parts/next-code",
+  "file": "routes/manufacturing/parts.js",
+  "handler": "previewNextCode",
+  "auth": "JWT",
+  "perm": "Parts:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/parts",
+  "file": "routes/manufacturing/parts.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Parts:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/parts/:id",
+  "file": "routes/manufacturing/parts.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "Parts:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/parts/:id",
+  "file": "routes/manufacturing/parts.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "Parts:delete"
+ },
+ {
+  "method": "GET",
+  "path": "/api/part-drawings",
+  "file": "routes/manufacturing/partDrawings.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: admin, design, production"
+ },
+ {
+  "method": "POST",
+  "path": "/api/part-drawings",
+  "file": "routes/manufacturing/partDrawings.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/part-drawings/:srNo",
+  "file": "routes/manufacturing/partDrawings.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/part-drawings/:srNo",
+  "file": "routes/manufacturing/partDrawings.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "GET",
+  "path": "/api/part-drawings-raw",
+  "file": "routes/manufacturing/partDrawingsRaw.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: admin, design, production"
+ },
+ {
+  "method": "POST",
+  "path": "/api/part-drawings-raw",
+  "file": "routes/manufacturing/partDrawingsRaw.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/part-drawings-raw/:srNo",
+  "file": "routes/manufacturing/partDrawingsRaw.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/part-drawings-raw/:srNo",
+  "file": "routes/manufacturing/partDrawingsRaw.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "roles: admin, design"
+ },
+ {
+  "method": "GET",
+  "path": "/api/motor-recipes",
+  "file": "routes/manufacturing/motorRecipes.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "MotorRecipes:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/motor-recipes/dropdown-data",
+  "file": "routes/manufacturing/motorRecipes.js",
+  "handler": "getDropdownData",
+  "auth": "JWT",
+  "perm": "MotorRecipes:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/motor-recipes/customer/:customerId",
+  "file": "routes/manufacturing/motorRecipes.js",
+  "handler": "getByCustomer",
+  "auth": "JWT",
+  "perm": "MotorRecipes:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/motor-recipes/:customerId/:productId",
+  "file": "routes/manufacturing/motorRecipes.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "MotorRecipes:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/motor-recipes",
+  "file": "routes/manufacturing/motorRecipes.js",
+  "handler": "upsert",
+  "auth": "JWT",
+  "perm": "MotorRecipes:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/motor-recipes/:customerId/:productId",
+  "file": "routes/manufacturing/motorRecipes.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "MotorRecipes:delete"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/orders",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getOrders",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/components",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getComponents",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/process/components",
+  "file": "routes/manufacturing/process.js",
+  "handler": "createComponent",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/process/components/:componentId/processes",
+  "file": "routes/manufacturing/process.js",
+  "handler": "createComponentProcess",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/process/work-orders/:workOrderId/components",
+  "file": "routes/manufacturing/process.js",
+  "handler": "createWorkOrderComponent",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/components/:workOrderComponentId/processes",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getComponentProcesses",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/process/components/:workOrderComponentId/process-status",
+  "file": "routes/manufacturing/process.js",
+  "handler": "updateProcessStatus",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/components/:workOrderComponentId/materials",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getComponentMaterials",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/process/components/:workOrderComponentId/materials",
+  "file": "routes/manufacturing/process.js",
+  "handler": "createWorkOrderMaterial",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/process/components/:workOrderComponentId/materials/:materialId",
+  "file": "routes/manufacturing/process.js",
+  "handler": "updateMaterial",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/process/components/:workOrderComponentId/materials/:materialId",
+  "file": "routes/manufacturing/process.js",
+  "handler": "deleteMaterial",
+  "auth": "JWT",
+  "perm": "Processes:delete"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/work-orders/:workOrderId/stages",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getWorkOrderStages",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/process/work-orders/:workOrderId/stages",
+  "file": "routes/manufacturing/process.js",
+  "handler": "updateWorkOrderStage",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/work-orders/:workOrderId/testing",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getTestingResults",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/process/work-orders/:workOrderId/testing",
+  "file": "routes/manufacturing/process.js",
+  "handler": "upsertTestingResult",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/process/:orderId/work-orders",
+  "file": "routes/manufacturing/process.js",
+  "handler": "createWorkOrder",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/:orderId/instance-groups",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getInstanceGroups",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/process/:orderId/instance-groups",
+  "file": "routes/manufacturing/process.js",
+  "handler": "createInstanceGroup",
+  "auth": "JWT",
+  "perm": "Processes:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/process/:orderId",
+  "file": "routes/manufacturing/process.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Processes:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/customer-invoices",
+  "file": "routes/invoicing/customerInvoices.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "CustomerInvoices:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/customer-invoices",
+  "file": "routes/invoicing/customerInvoices.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "CustomerInvoices:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/customer-invoices/:id",
+  "file": "routes/invoicing/customerInvoices.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "CustomerInvoices:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/customer-invoices/:id",
+  "file": "routes/invoicing/customerInvoices.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "CustomerInvoices:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/customer-invoices/:id",
+  "file": "routes/invoicing/customerInvoices.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "CustomerInvoices:delete"
+ },
+ {
+  "method": "GET",
+  "path": "/api/purchase-invoices",
+  "file": "routes/invoicing/purchaseInvoices.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: admin, accounts"
+ },
+ {
+  "method": "POST",
+  "path": "/api/purchase-invoices",
+  "file": "routes/invoicing/purchaseInvoices.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: admin, accounts"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/purchase-invoices/:invoiceId",
+  "file": "routes/invoicing/purchaseInvoices.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "roles: admin, accounts"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/purchase-invoices/:invoiceId",
+  "file": "routes/invoicing/purchaseInvoices.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "roles: admin, accounts"
+ },
+ {
+  "method": "GET",
+  "path": "/api/dispatch-tracking",
+  "file": "routes/dispatch/dispatchTracking.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "DispatchTracking:read"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/dispatch-tracking/:trackingId",
+  "file": "routes/dispatch/dispatchTracking.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "DispatchTracking:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/dispatch-tracking/:trackingId",
+  "file": "routes/dispatch/dispatchTracking.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "DispatchTracking:delete"
+ },
+ {
+  "method": "POST",
+  "path": "/api/delivery-challan/generate",
+  "file": "routes/dispatch/deliveryChallan.js",
+  "handler": "generate",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/ia-orders",
+  "file": "routes/dispatch/iaOrders.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "ia_orders:read, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/ia-orders/check-serials",
+  "file": "routes/dispatch/iaOrders.js",
+  "handler": "checkSerials",
+  "auth": "JWT",
+  "perm": "ia_orders:read, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/ia-orders/:id",
+  "file": "routes/dispatch/iaOrders.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "ia_orders:read, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "POST",
+  "path": "/api/ia-orders",
+  "file": "routes/dispatch/iaOrders.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "ia_orders:write, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/ia-orders/:id",
+  "file": "routes/dispatch/iaOrders.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "ia_orders:write, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/ia-orders/:id",
+  "file": "routes/dispatch/iaOrders.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "ia_orders:delete, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/attendance",
+  "file": "routes/hr/attendance.js",
+  "handler": "getPersonal",
+  "auth": "JWT",
+  "perm": "attendance_history:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/attendance",
+  "file": "routes/hr/attendance.js",
+  "handler": "markAttendance",
+  "auth": "JWT",
+  "perm": "mark_attendance:write"
+ },
+ {
+  "method": "GET",
+  "path": "/api/attendance/summary",
+  "file": "routes/hr/attendance.js",
+  "handler": "getHRSummary",
+  "auth": "JWT",
+  "perm": "attendance_summary:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/employee-details",
+  "file": "routes/hr/employeeDetails.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "employee_details:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/employee-details/:employee_id",
+  "file": "routes/hr/employeeDetails.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "employee_details:read"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/employee-details/:employee_id",
+  "file": "routes/hr/employeeDetails.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "employee_details:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/payslip/generate",
+  "file": "routes/hr/payslip.js",
+  "handler": "generate",
+  "auth": "JWT",
+  "perm": "roles: ia_hr"
+ },
+ {
+  "method": "POST",
+  "path": "/api/invoice/generate",
+  "file": "routes/hr/invoice.js",
+  "handler": "generate",
+  "auth": "JWT",
+  "perm": "roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/invoice-records",
+  "file": "routes/hr/invoiceRecords.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "POST",
+  "path": "/api/invoice-records",
+  "file": "routes/hr/invoiceRecords.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "POST",
+  "path": "/api/invoice-records/upload",
+  "file": "routes/hr/invoiceRecords.js",
+  "handler": "uploadOld",
+  "auth": "JWT",
+  "perm": "multipart upload, roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/invoice-records/:id/pdf",
+  "file": "routes/hr/invoiceRecords.js",
+  "handler": "downloadPdf",
+  "auth": "JWT",
+  "perm": "roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/invoice-records/:id",
+  "file": "routes/hr/invoiceRecords.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/invoice-records/:id",
+  "file": "routes/hr/invoiceRecords.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "roles: ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/queries",
+  "file": "routes/operations/queries.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: customer, admin, sales, design, production, dispatch"
+ },
+ {
+  "method": "POST",
+  "path": "/api/queries",
+  "file": "routes/operations/queries.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: customer"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/queries/:id/respond",
+  "file": "routes/operations/queries.js",
+  "handler": "respond",
+  "auth": "JWT",
+  "perm": "roles: admin, sales, design, production, dispatch"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/queries/:id/in-progress",
+  "file": "routes/operations/queries.js",
+  "handler": "setInProgress",
+  "auth": "JWT",
+  "perm": "roles: admin, sales, design, production, dispatch"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/queries/:id/close",
+  "file": "routes/operations/queries.js",
+  "handler": "close",
+  "auth": "JWT",
+  "perm": "roles: customer, admin, sales, design, production, dispatch"
+ },
+ {
+  "method": "POST",
+  "path": "/api/activities",
+  "file": "routes/operations/activities.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "roles: employee, hr, ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/activities",
+  "file": "routes/operations/activities.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "roles: employee, hr, ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/activities/:id",
+  "file": "routes/operations/activities.js",
+  "handler": "getOne",
+  "auth": "JWT",
+  "perm": "roles: employee, hr, ia_employee, ia_hr"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/activities/:id",
+  "file": "routes/operations/activities.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "roles: employee, hr, ia_employee, ia_hr"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/activities/:id",
+  "file": "routes/operations/activities.js",
+  "handler": "delete",
+  "auth": "JWT",
+  "perm": "roles: employee, hr, ia_employee, ia_hr"
+ },
+ {
+  "method": "GET",
+  "path": "/api/problems",
+  "file": "routes/operations/problems.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "Problems:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/problems",
+  "file": "routes/operations/problems.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "Problems:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/problems/:id/solutions",
+  "file": "routes/operations/problems.js",
+  "handler": "addSolution",
+  "auth": "JWT",
+  "perm": "Problems:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/reports",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "createReport",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/reports",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "listReports",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/reports/:id",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "getReport",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/pdi/reports/:id",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "patchReport",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/reports/:id/revisions",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "getRevisions",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/reports/:id/duplicate",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "duplicateReport",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/reports/:id/finalize",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "finalizeReport",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/reports/:id/pdf",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "downloadPdf",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/pdi/reports/:id",
+  "file": "routes/operations/pdiReports.js",
+  "handler": "deleteReport",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/report-batches",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "listBatches",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/report-batches",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "createBatch",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/report-batches/:batchId",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "getBatch",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/pdi/report-batches/:batchId",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "updateBatch",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/pdi/report-batches/:batchId",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "deleteBatch",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/report-batches/:batchId/finalize",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "finalizeBatch",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/report-batches/:batchId/pdf",
+  "file": "routes/operations/pdiReportBatches.js",
+  "handler": "downloadBatchPdf",
+  "auth": "JWT",
+  "perm": "PDI roles (admin, production)"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/admin/templates",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "listTemplates",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/admin/templates/:id",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "getTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/admin/templates",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "createTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/pdi/admin/templates/:id",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "saveTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/admin/templates/:id/publish",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "publishTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/admin/templates/:id/archive",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "archiveTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "POST",
+  "path": "/api/pdi/admin/templates/:id/preview",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "previewTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/pdi/admin/templates/:id",
+  "file": "routes/operations/pdiAdmin.js",
+  "handler": "deleteTemplate",
+  "auth": "JWT",
+  "perm": "Admin only"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/templates",
+  "file": "routes/operations/pdi.js",
+  "handler": "getTemplates",
+  "auth": "JWT",
+  "perm": "PDI roles"
+ },
+ {
+  "method": "GET",
+  "path": "/api/pdi/templates/:id/definition",
+  "file": "routes/operations/pdi.js",
+  "handler": "getTemplateDefinition",
+  "auth": "JWT",
+  "perm": "PDI roles"
+ },
+ {
+  "method": "GET",
+  "path": "/api/service-repair",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "getAll",
+  "auth": "JWT",
+  "perm": "ServiceRepair:read"
+ },
+ {
+  "method": "GET",
+  "path": "/api/service-repair/:id",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "getById",
+  "auth": "JWT",
+  "perm": "ServiceRepair:read"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "create",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/service-repair/:id",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "update",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/service-repair/:id",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "remove",
+  "auth": "JWT",
+  "perm": "ServiceRepair:delete"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/service-repair/:id/photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "deletePhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair/:id/photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "uploadPhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write, multipart upload"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair/:id/chalan-photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "uploadChalanPhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write, multipart upload"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair/:id/delivery-challan-photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "uploadDeliveryChallanPhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write, multipart upload"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair/:id/fault-photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "uploadFaultPhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write, multipart upload"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair/:id/actual-issue-photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "uploadActualIssuePhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write, multipart upload"
+ },
+ {
+  "method": "POST",
+  "path": "/api/service-repair/:id/repaired-photo",
+  "file": "routes/service/serviceRepair.js",
+  "handler": "uploadRepairedPhoto",
+  "auth": "JWT",
+  "perm": "ServiceRepair:write, multipart upload"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/me",
+  "file": "routes/testing/index.js",
+  "handler": "me",
+  "auth": "JWT",
+  "perm": "Any authenticated"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/operators",
+  "file": "routes/testing/index.js",
+  "handler": "listOperators",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/variants",
+  "file": "routes/testing/index.js",
+  "handler": "listVariants",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/variants/:id",
+  "file": "routes/testing/index.js",
+  "handler": "getVariant",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/criteria/:id",
+  "file": "routes/testing/index.js",
+  "handler": "getCriteria",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/results",
+  "file": "routes/testing/index.js",
+  "handler": "postResult",
+  "auth": "JWT",
+  "perm": "testing roles: operator"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/results",
+  "file": "routes/testing/index.js",
+  "handler": "listResults",
+  "auth": "JWT",
+  "perm": "testing roles: operator, viewer, testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/results/:testId",
+  "file": "routes/testing/index.js",
+  "handler": "getResult",
+  "auth": "JWT",
+  "perm": "testing roles: operator, viewer, testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/results/:testId/export.csv",
+  "file": "routes/testing/index.js",
+  "handler": "exportCsv",
+  "auth": "JWT",
+  "perm": "testing roles: viewer, testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/results/:testId/corrections",
+  "file": "routes/testing/index.js",
+  "handler": "listCorrectionsForRun",
+  "auth": "JWT",
+  "perm": "testing roles: operator, viewer, testing_head, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/results/:testId/corrections",
+  "file": "routes/testing/index.js",
+  "handler": "addCorrection",
+  "auth": "JWT",
+  "perm": "testing roles: operator"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/corrections/:id/decide",
+  "file": "routes/testing/index.js",
+  "handler": "decideCorrection",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/products",
+  "file": "routes/testing/index.js",
+  "handler": "listProducts",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/variants",
+  "file": "routes/testing/index.js",
+  "handler": "listVariants",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/admin/variants",
+  "file": "routes/testing/index.js",
+  "handler": "createVariant",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/variants/:id",
+  "file": "routes/testing/index.js",
+  "handler": "getVariant",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/testing/admin/variants/:id",
+  "file": "routes/testing/index.js",
+  "handler": "updateVariant",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/variants/:id/{kind}",
+  "file": "routes/testing/index.js",
+  "handler": "listVersions",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/admin/variants/:id/{kind}",
+  "file": "routes/testing/index.js",
+  "handler": "createVersion",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/{kind}/:id",
+  "file": "routes/testing/index.js",
+  "handler": "getVersion",
+  "auth": "JWT",
+  "perm": "testing roles: operator, testing_head, viewer, testing_admin"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/testing/admin/{kind}/:id",
+  "file": "routes/testing/index.js",
+  "handler": "updateDraft",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/testing/admin/{kind}/:id",
+  "file": "routes/testing/index.js",
+  "handler": "deleteDraft",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/admin/{kind}/:id/{action}",
+  "file": "routes/testing/index.js",
+  "handler": "transition",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/operators",
+  "file": "routes/testing/index.js",
+  "handler": "listOperatorsAdmin",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/testing/admin/operators",
+  "file": "routes/testing/index.js",
+  "handler": "createOperator",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "PATCH",
+  "path": "/api/testing/admin/operators/:ref",
+  "file": "routes/testing/index.js",
+  "handler": "updateOperator",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/users",
+  "file": "routes/testing/index.js",
+  "handler": "listUsers",
+  "auth": "JWT",
+  "perm": "testing roles: testing_admin"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/testing/admin/users/:userId/testing-roles",
+  "file": "routes/testing/index.js",
+  "handler": "setUserRoles",
+  "auth": "JWT",
+  "perm": "testing roles: testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/corrections",
+  "file": "routes/testing/index.js",
+  "handler": "listCorrectionsAdmin",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/testing/admin/audit",
+  "file": "routes/testing/index.js",
+  "handler": "listAudit",
+  "auth": "JWT",
+  "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/orders/chatbot",
+  "file": "chatbot/routes/orderChatbotRoutes.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/customer-invoices/chatbot",
+  "file": "chatbot/routes/customerInvoiceChatbotRoutes.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/customers/chatbot",
+  "file": "chatbot/routes/customerChatbotRoutes.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/inventory/chatbot",
+  "file": "chatbot/routes/inventoryChatbotRoutes.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/stock/chatbot",
+  "file": "chatbot/routes/rawMaterialChatbotRoutes.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ },
+ {
+  "method": "POST",
+  "path": "/api/bom/chatbot",
+  "file": "chatbot/routes/bomChatbotRoutes.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: admin"
+ }
+]

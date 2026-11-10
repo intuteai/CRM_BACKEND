@@ -317,7 +317,7 @@ for r in routes:
     key = r['file'].split('/')[1] if r['file'].startswith('routes/') and '/' in r['file'][7:] else ('chatbot' if 'chatbot' in r['file'] else 'auth')
     groups.setdefault(key, []).append(r)
 names = {'auth': 'Authentication', 'core': 'Core', 'sales': 'Sales', 'manufacturing': 'Manufacturing', 'invoicing': 'Invoicing',
-         'dispatch': 'Dispatch', 'hr': 'HR', 'operations': 'Operations (incl. PDI)', 'service': 'Service & Repair', 'chatbot': 'Chatbot'}
+         'dispatch': 'Dispatch', 'hr': 'HR', 'operations': 'Operations (incl. PDI)', 'service': 'Service & Repair', 'chatbot': 'Chatbot', 'testing': 'Motor Test'}
 for k, rs in groups.items():
     story.append(heading('A.%d %s (%d)' % (list(groups).index(k)+1, names.get(k, k), len(rs)), 1))
     rows = [['Method', 'Path', 'Access', 'Handler']] + [[r['method'], '`%s`' % r['path'], r['perm'], r['handler']] for r in rs]

@@ -31,7 +31,7 @@ If the database is unreachable, run `npm run docs:pdf:offline` instead. It reuse
 
 - **New or changed endpoint, or a permission change in code:** nothing to write for the appendices; just rebuild. Still describe any new behaviour in the relevant chapter.
 - **New table, column, role or permission row in the DB:** rebuild (the appendices pick it up). Mention it in the chapter if it matters for the business logic.
-- **New feature or changed business rule:** edit the matching `chapters/*.md` file. `30_pdi.md` covers PDI; `10_sales.md` covers orders, sales, invoicing and dispatch; `20_mfg_hr_ops.md` covers manufacturing, HR, operations, jobs and the chatbot; `40_clients.md` covers the web CRM and mobile app; `00_core.md` covers the overview, architecture, security and deployment.
+- **New feature or changed business rule:** edit the matching `chapters/*.md` file. `30_pdi.md` covers PDI; `35_motor_test.md` covers the motor-test module (`/api/testing`, `mt_*` tables); `10_sales.md` covers orders, sales, invoicing and dispatch; `20_mfg_hr_ops.md` covers manufacturing, HR, operations, jobs and the chatbot; `40_clients.md` covers the web CRM and mobile app; `00_core.md` covers the overview, architecture, security and deployment.
 - **A bug listed under "known gaps" gets fixed:** remove it from that chapter's gaps list.
 - **New chapter:** add a `.md` file in `chapters/` and add an entry to `meta.json` → `chapters`.
 - **Each documentation release:** bump `version` in `meta.json` and add a line to `history`.
