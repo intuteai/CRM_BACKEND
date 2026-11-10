@@ -5,21 +5,23 @@
 | Task | T011 · Inventory ERP stack, users/roles and motor master data (D6, D7) |
 | Owner | Rahul (ERP) |
 | Approver | Saatwik — exit criterion: "Saatwik agrees reuse approach" |
-| Date | 2026-11-07 · status: **for approval** |
+| Date | 2026-11-10 (first issued 2026-11-07) · status: **for approval** |
 | Sources | Live read-only inspection of the code (CRM_BACKEND, CRM) and the database (2026-11-04/05), RDS console, team answers 2026-11-05/07 |
 
 ## 1. Summary
 
 The ERP can host the motor-test module **without changing anything that exists today**. We reuse the existing login, user accounts and product list; everything else is new tables and new `/api/testing` routes. Development and tests run on a separate staging database; production only receives reviewed migrations.
 
-**Decision asked of Saatwik:** approve the reuse / extend / new plan in section 5.
+**Status on 2026-11-10:** the plan below has been implemented, tested on staging (79 automated tests, 24 database rule checks) and deployed: backend live at `api.intute.biz/api/testing`, database migrated after an RDS snapshot, CRM screens live (shown only to users with a testing role). No testing roles granted and no real test runs yet.
+
+**Decision asked of Saatwik:** approve the reuse / extend / new plan in section 5 (closes task T011).
 
 ## 2. Existing ERP stack
 
 | Item | Finding |
 |---|---|
 | Backend | Node.js + Express 4.19, raw SQL with `pg` (no ORM), `express-validator`, JWT auth, helmet, rate limit (5,000 req / 10 min) |
-| Frontend | React 19 + Vite (CRM). No chart library yet — one is needed for result graphs (T048) |
+| Frontend | React 19 + Vite (CRM). recharts 2.15.4 added for the result graphs (T048) |
 | Database | PostgreSQL **17.9** on AWS RDS, `db.t4g.micro`, single AZ (ap-south-1b), 20 GB with autoscaling (being enabled) |
 | Same RDS instance | `erp_migrated` (production ERP, 140 MB), `erp_staging` (new), `PLC_DB_Migrated`, `3W_DB_Migrated` (other apps — not touched) |
 | Extensions | `pgcrypto` installed (UUIDs, SHA-256); `pg_partman` available |
@@ -62,7 +64,7 @@ So the motor variant is a **new table linked to `inventory.product_id`** (no cop
 | Operator pick-list | **New** | `mt_operator` | Names shown on the tablet while the account is shared |
 | motor_variant | **Extend (link)** | `mt_motor_variant` → `inventory.product_id` | Test fields: code, max RPM limit, ratings, serial pattern, active |
 | test_profile_version | **New** | `mt_profile_version` | Immutable once published, sha256 frozen |
-| criteria_version | **New** | `mt_criteria_version` | DRAFT → IN_REVIEW → PUBLISHED → SUPERSEDED / WITHDRAWN; second approver |
+| criteria_version | **New** | `mt_criteria_version` | DRAFT → IN_REVIEW → PUBLISHED → SUPERSEDED / WITHDRAWN; approver must not be the author, last editor or submitter |
 | test_run | **New** | `mt_test_run` | Never updated or deleted (enforced by database triggers) |
 | test_sample | **New** | `mt_test_sample` | **One row per reading (D7 approved)**; float32 columns so the digest can be recomputed exactly |
 | test_event | **New** | `mt_test_event` | |
@@ -71,20 +73,21 @@ So the motor variant is a **new table linked to `inventory.product_id`** (no cop
 | audit_event | **New** | `mt_audit_event` | Append-only |
 | Migration tracking | **New** | `schema_migrations` | Each new migration runs in one transaction |
 
-Names are indicative and are finalised in the T042 design. Nothing in the existing schema is altered.
+These are the final names (T042 design, migrations 001–003). Nothing in the existing schema is altered. ERP Admins act as `testing_admin`, so roles can be granted from the CRM without a database script. Operators work only on the tablet: they upload results and request corrections there; the web screens are for the testing head, viewers and admins.
 
 ## 6. Storage and volume (D7)
 
 - **Approved:** relational rows, one per reading.
 - Volume: up to 10 tests/day now, 30+ later; ~1,200 readings per test; **8-year retention** → about 88,000 tests and 105 million reading rows (~13 GB) over 8 years.
-- The database server has little memory: readings are always fetched by test, through the primary key, in pages — never all at once. The readings table will be split by period so it stays fast (detail in T042).
+- The database server has little memory: readings are always fetched by test, through the primary key, in pages — never all at once. At this volume one table stays fast; splitting it by period is deferred until it grows large.
+- Each upload is limited to 5 MB (about 40,000 readings); a 120 s run at 10 Hz is about 1,200.
 
 ## 7. Environments
 
 | Environment | Database | Backend |
 |---|---|---|
 | Staging | `erp_staging` (created 2026-11-05: full production structure + roles, permissions, users, products only; 15-connection cap) | Same EC2 as production, port 8001, ~150 MB memory cap, own image tag, `.env` and database user limited to staging; stopped when idle; swap added by Saatwik first |
-| Production | `erp_migrated` | Existing backend; new routes under `/api/testing` |
+| Production | `erp_migrated` (migrated 2026-11-10 after an RDS snapshot) | Existing backend; new routes under `/api/testing` (live) |
 
 All development, automated tests, destructive tests (ERP-T08) and fake runs stay on staging.
 
@@ -98,10 +101,12 @@ All development, automated tests, destructive tests (ERP-T08) and fake runs stay
 
 ## 9. Findings for the security review (CMP-04)
 
-1. The application connects to the database as `ERPadmin` (member of `rds_superuser`) — not least privilege. Test records will therefore be protected by triggers, not only by permissions.
-2. No CloudWatch alarms existed (being added).
-3. Shared operator account (section 3).
-4. Expired token returns 403 instead of 401 — handled by the HMI as agreed.
+1. The application connects to the database as `ERPadmin` (member of `rds_superuser`) — not least privilege. Test records are therefore protected by triggers, not only by permissions.
+2. The live backend (`config/db.js`) does not verify the database's TLS certificate. The new motor-test migration tools do (AWS RDS certificate bundle).
+3. No CloudWatch alarms existed (being added).
+4. Shared operator account (section 3); its temporary password must be changed before the tablets go to the shop floor.
+5. Expired token returns 403 instead of 401 — handled by the HMI as agreed.
+6. An independent code review of the new module found 6 input-handling bugs and an automated security review found 1 approval loophole; all 7 were fixed with tests before deployment.
 
 ## 10. Open items
 
@@ -110,7 +115,8 @@ All development, automated tests, destructive tests (ERP-T08) and fake runs stay
 | Pilot motor, signed criteria v1, test method, outcome rules, serial format, operator names, viewers | Testing head | T045–T047 data, T046 |
 | 8-year long-term backup copy | Saatwik | Go-live |
 | Swap on EC2 before staging deploy | Saatwik | T049 |
-| Chart library for result graphs | Rahul | T048 |
+| Grant testing roles (operator account, testing head, viewers) | Rahul (ERP Admin) | First real use |
+| Change the shared operator password | Saatwik / Rahul | Tablets on the shop floor |
 
 ## 11. Approval
 
