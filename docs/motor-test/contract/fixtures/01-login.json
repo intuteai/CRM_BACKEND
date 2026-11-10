@@ -1,0 +1,36 @@
+{
+  "note": "Existing ERP login. Send X-App-Version on every call to get a 12 h token.",
+  "request": {
+    "method": "POST",
+    "path": "/api/auth/login",
+    "headers": {
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0"
+    },
+    "body": {
+      "email": "testing@compageauto.com",
+      "password": "<password>"
+    }
+  },
+  "responses": {
+    "200": {
+      "role": "employee",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4NDMsInJvbGVfaWQiOjksIm5hbWUiOiJUZXN0aW5nIEJlbmNoIiwiaWF0IjoxNzk2MTE2ODAwLCJleHAiOjE3OTYxNjAwMDB9.EXAMPLE_SIGNATURE_NOT_VALID",
+      "name": "Testing Bench",
+      "user_id": 843
+    },
+    "400": {
+      "error": "Email and password are required",
+      "code": "AUTH_MISSING_FIELDS"
+    },
+    "401": {
+      "error": "Invalid credentials",
+      "code": "AUTH_INVALID_CREDENTIALS"
+    },
+    "429": {
+      "error": "Too many requests, please wait and try again",
+      "code": "RATE_LIMIT_EXCEEDED"
+    }
+  },
+  "token_notes": "JWT (HS256). Decoded payload: {user_id, role_id, name, iat, exp}; exp is seconds since 1970-01-01 UTC. Shared account testing@compageauto.com, role employee (approved by Saatwik)."
+}

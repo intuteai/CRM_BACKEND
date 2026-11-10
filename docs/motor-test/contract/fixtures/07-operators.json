@@ -1,0 +1,27 @@
+{
+  "note": "NEW in v0.2. Operator pick-list, maintained in the ERP by the testing head. Show active names on the tablet; send the picked operator_ref and its name with each result. Names are examples.",
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/operators",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "X-App-Version": "1.0.0"
+    }
+  },
+  "responses": {
+    "200": {
+      "items": [
+        {
+          "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "name": "Example Operator A",
+          "active": true
+        },
+        {
+          "operator_ref": "1f3a5c7e-9b0d-4e2f-a4c6-e8a0c2e4a6c8",
+          "name": "Example Operator B",
+          "active": true
+        }
+      ]
+    }
+  }
+}

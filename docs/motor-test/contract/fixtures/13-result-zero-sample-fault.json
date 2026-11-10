@@ -1,0 +1,72 @@
+{
+  "note": "FAULT before the first sample. Valid record. Expected: 201; visible in serial lookup with outcome INCOMPLETE.",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0",
+      "Idempotency-Key": "c2a4e6f8-1b3d-4f5a-8c7e-9d0b1a2c3e4f"
+    },
+    "body": {
+      "test_id": "c2a4e6f8-1b3d-4f5a-8c7e-9d0b1a2c3e4f",
+      "motor_serial": "EXAMPLE-SERIAL-0001",
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "profile_id": "9a1c3e5f-7b2d-4f6a-8e0c-2b4d6f8a0c1e",
+      "profile_sha256": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+      "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+      "criteria_sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6",
+      "operator_id": 843,
+      "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+      "operator_name": "Example Operator A",
+      "vcu": {
+        "vcu_id": "VCU-01",
+        "fw_version": "1.0.3",
+        "boot_id": "b00t-0042"
+      },
+      "hmi_version": "1.0.0",
+      "started_at": "2026-12-01T09:14:03Z",
+      "ended_at": "2026-12-01T09:14:04Z",
+      "final_state": "FAULT",
+      "stop_reason": "FAULT",
+      "fault_code": "F_OVERCURRENT",
+      "outcome": "INCOMPLETE",
+      "outcome_reasons": [
+        {
+          "criterion": null,
+          "reason": "FAULT_BEFORE_FIRST_SAMPLE",
+          "detail": "F_OVERCURRENT from CONTROLLER"
+        }
+      ],
+      "sample_count": 0,
+      "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "STATE",
+          "code": "RUNNING",
+          "detail": null
+        },
+        {
+          "t_ms": 40,
+          "type": "FAULT",
+          "code": "F_OVERCURRENT",
+          "detail": "source=CONTROLLER latched=true"
+        }
+      ],
+      "samples": []
+    }
+  },
+  "responses": {
+    "201": {
+      "receipt_id": "a7b8c9d0-e1f2-4a3b-9c4d-5e6f7a8b9c0d",
+      "test_id": "c2a4e6f8-1b3d-4f5a-8c7e-9d0b1a2c3e4f",
+      "stored_sample_count": 0,
+      "payload_hash": "sha256:43359d16f64eeadebc7b149852ede7063666fcf6faf6d047c4f81380dcea18e5",
+      "samples_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_digest_match": true,
+      "stored_at": "2026-12-01T09:14:06Z"
+    }
+  }
+}

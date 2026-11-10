@@ -1,0 +1,223 @@
+{
+  "rule": "D13 (Proposed, ready for joint review): SHA-256 over 30-byte little-endian records in ascending sample_seq: u32 sample_seq, u32 t_ms, i32 rpm_cmd, i32 rpm_actual, f32 current_a, f32 voltage_v, f32 bemf_v, u16 status_flags. Invalid float (bit b1/b2/b3 = 0) = quiet NaN 00 00 C0 7F and must be null in JSON. -0.0 -> +0.0. Reserved bits b8-b15 must be 0. Digest string \"sha256:\" + 64 lowercase hex.",
+  "vectors": [
+    {
+      "id": "V1",
+      "description": "Mayank's 3-sample example",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": 0,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 1,
+          "t_ms": 100,
+          "rpm_cmd": 10,
+          "rpm_actual": 8,
+          "current_a": 1.25,
+          "voltage_v": 47.5,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 2,
+          "t_ms": 200,
+          "rpm_cmd": 20,
+          "rpm_actual": 18,
+          "current_a": 2.5,
+          "voltage_v": 47,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ],
+      "expected_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+      "expected_bytes_hex": "0000000000000000000000000000000000000000000040420000c07f070001000000640000000a000000080000000000a03f00003e420000c07f070002000000c800000014000000120000000000204000003c420000c07f0700"
+    },
+    {
+      "id": "V2",
+      "description": "zero-sample FAULT/ABORTED run",
+      "samples": [],
+      "expected_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "V3",
+      "description": "negative zero current is normalised (equals V1)",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": 0,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 1,
+          "t_ms": 100,
+          "rpm_cmd": 10,
+          "rpm_actual": 8,
+          "current_a": 1.25,
+          "voltage_v": 47.5,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 2,
+          "t_ms": 200,
+          "rpm_cmd": 20,
+          "rpm_actual": 18,
+          "current_a": 2.5,
+          "voltage_v": 47,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ],
+      "expected_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+    },
+    {
+      "id": "V4",
+      "description": "BEMF invalid (b3=0) but a number was sent",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": 0,
+          "voltage_v": 48,
+          "bemf_v": 12.5,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 1,
+          "t_ms": 100,
+          "rpm_cmd": 10,
+          "rpm_actual": 8,
+          "current_a": 1.25,
+          "voltage_v": 47.5,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 2,
+          "t_ms": 200,
+          "rpm_cmd": 20,
+          "rpm_actual": 18,
+          "current_a": 2.5,
+          "voltage_v": 47,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ],
+      "expected_rejection": {
+        "status": 422,
+        "code": "INCONSISTENT_RUN",
+        "path": "samples[0].bemf_v",
+        "note": "Upload rejected before the database transaction; nothing is stored."
+      }
+    },
+    {
+      "id": "V5",
+      "description": "current invalid (b1=0) is encoded as quiet NaN",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": null,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 5
+        }
+      ],
+      "expected_digest": "sha256:45f5f293b3a860a955073b0c807c4819ad3fc1559f8be8a51dff5415237350e8"
+    },
+    {
+      "id": "V6",
+      "description": "non-exact decimals, BEMF valid (flags 15)",
+      "samples": [
+        {
+          "sample_seq": 611,
+          "t_ms": 61100,
+          "rpm_cmd": 1520,
+          "rpm_actual": 1508,
+          "current_a": 4.82,
+          "voltage_v": 47.9,
+          "bemf_v": 3.1,
+          "status_flags": 15
+        }
+      ],
+      "expected_digest": "sha256:2fd7e06e4312214d4acd68de6f032aac6ecfd650e1d92bc17e21ab3c844be315"
+    },
+    {
+      "id": "V7",
+      "description": "negative rpm_actual (int32)",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": -3,
+          "current_a": 0,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ],
+      "expected_digest": "sha256:7cda0eb89de5a74293773e7a6a76c675c19bc68303c2f052c206a589c162de76"
+    },
+    {
+      "id": "V8",
+      "description": "reserved status_flags bit set",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": 0,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 263
+        }
+      ],
+      "expected_rejection": {
+        "status": 400,
+        "code": "VALIDATION_ERROR",
+        "path": "samples[0].status_flags",
+        "note": "Upload rejected before the database transaction; nothing is stored."
+      }
+    },
+    {
+      "id": "V9",
+      "description": "validity bit set (b1=1) but value is null",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": null,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ],
+      "expected_rejection": {
+        "status": 422,
+        "code": "INCONSISTENT_RUN",
+        "path": "samples[0].current_a",
+        "note": "Upload rejected before the database transaction; nothing is stored."
+      }
+    }
+  ]
+}

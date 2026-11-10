@@ -1,0 +1,19 @@
+{
+  "note": "Database unavailable; nothing was committed. HMI retries with backoff, same body. Nothing is stored.",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0",
+      "Idempotency-Key": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55"
+    }
+  },
+  "responses": {
+    "503": {
+      "error": "The server is temporarily unavailable. Please try again.",
+      "code": "SERVER_UNAVAILABLE"
+    }
+  }
+}

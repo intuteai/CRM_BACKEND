@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/variants?q=B-125&page=1&page_size=20"
+  },
+  "responses": {
+    "200": {
+      "items": [
+        {
+          "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+          "code": "B-125-M-5D-ES11-E04",
+          "name": "B-125-M-5D-ES11-E04",
+          "product_id": 2,
+          "active": true,
+          "has_published_config": true
+        }
+      ],
+      "page": 1,
+      "page_size": 20,
+      "total": 1
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "note": "Operator STOP after 8 samples. Expected: 201 with outcome INCOMPLETE.",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0",
+      "Idempotency-Key": "5e8d2c1b-7a6f-4e3d-9b2a-1c0f8e7d6a5b"
+    },
+    "body": {
+      "test_id": "5e8d2c1b-7a6f-4e3d-9b2a-1c0f8e7d6a5b",
+      "motor_serial": "EXAMPLE-SERIAL-0001",
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "profile_id": "9a1c3e5f-7b2d-4f6a-8e0c-2b4d6f8a0c1e",
+      "profile_sha256": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+      "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+      "criteria_sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6",
+      "operator_id": 843,
+      "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+      "operator_name": "Example Operator A",
+      "vcu": {
+        "vcu_id": "VCU-01",
+        "fw_version": "1.0.3",
+        "boot_id": "b00t-0042"
+      },
+      "hmi_version": "1.0.0",
+      "started_at": "2026-12-01T09:14:03Z",
+      "ended_at": "2026-12-01T09:15:10Z",
+      "final_state": "ABORTED",
+      "stop_reason": "OPERATOR_STOP",
+      "fault_code": null,
+      "outcome": "INCOMPLETE",
+      "outcome_reasons": [
+        {
+          "criterion": null,
+          "reason": "OPERATOR_STOP",
+          "detail": "Stopped by operator at t_ms 700"
+        }
+      ],
+      "sample_count": 8,
+      "run_digest": "sha256:bc1eb817b1c1ccbed18d6a1adfb3cbe953e8cf545c6ca60392e6f4681bd579f9",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "STATE",
+          "code": "RUNNING",
+          "detail": null
+        },
+        {
+          "t_ms": 700,
+          "type": "STATE",
+          "code": "STOPPING",
+          "detail": "OPERATOR_STOP"
+        },
+        {
+          "t_ms": 900,
+          "type": "STATE",
+          "code": "ABORTED",
+          "detail": null
+        }
+      ],
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 0,
+          "current_a": 0.12,
+          "voltage_v": 48.1,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 1,
+          "t_ms": 100,
+          "rpm_cmd": 10,
+          "rpm_actual": 8,
+          "current_a": 0.47,
+          "voltage_v": 48.05,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 2,
+          "t_ms": 200,
+          "rpm_cmd": 20,
+          "rpm_actual": 18,
+          "current_a": 0.82,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 3,
+          "t_ms": 300,
+          "rpm_cmd": 30,
+          "rpm_actual": 28,
+          "current_a": 1.17,
+          "voltage_v": 47.95,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 4,
+          "t_ms": 400,
+          "rpm_cmd": 40,
+          "rpm_actual": 38,
+          "current_a": 1.52,
+          "voltage_v": 47.9,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 5,
+          "t_ms": 500,
+          "rpm_cmd": 50,
+          "rpm_actual": 48,
+          "current_a": 1.87,
+          "voltage_v": 47.85,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 6,
+          "t_ms": 600,
+          "rpm_cmd": 60,
+          "rpm_actual": 58,
+          "current_a": 2.22,
+          "voltage_v": 47.8,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 7,
+          "t_ms": 700,
+          "rpm_cmd": 70,
+          "rpm_actual": 68,
+          "current_a": 2.57,
+          "voltage_v": 47.75,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ]
+    }
+  },
+  "responses": {
+    "201": {
+      "receipt_id": "b3c4d5e6-f7a8-4b9c-8d0e-1f2a3b4c5d6e",
+      "test_id": "5e8d2c1b-7a6f-4e3d-9b2a-1c0f8e7d6a5b",
+      "stored_sample_count": 8,
+      "payload_hash": "sha256:86fdd0eba43066a412eeb15a3111996f1d5eeb25c6a06b96d9e304fefb3a510e",
+      "samples_digest": "sha256:bc1eb817b1c1ccbed18d6a1adfb3cbe953e8cf545c6ca60392e6f4681bd579f9",
+      "run_digest_match": true,
+      "stored_at": "2026-12-01T09:15:12Z"
+    }
+  }
+}

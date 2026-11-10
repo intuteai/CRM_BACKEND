@@ -1,0 +1,21 @@
+{
+  "note": "NEW endpoint. Who am I, my testing roles, and when my token expires.",
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/me",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "X-App-Version": "1.0.0"
+    }
+  },
+  "responses": {
+    "200": {
+      "user_id": 843,
+      "name": "Testing Bench",
+      "testing_roles": [
+        "operator"
+      ],
+      "token_expires_at": "2026-12-01T21:20:00Z"
+    }
+  }
+}

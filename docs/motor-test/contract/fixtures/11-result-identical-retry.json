@@ -1,0 +1,25 @@
+{
+  "note": "Exactly the same body again (e.g. the 201 was lost). Any user with the operator role may send it. Expected: 200 with the ORIGINAL receipt, byte-for-byte.",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0",
+      "Idempotency-Key": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55"
+    },
+    "body_ref": "10-result-valid-completed.json"
+  },
+  "responses": {
+    "200": {
+      "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+      "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+      "stored_sample_count": 13,
+      "payload_hash": "sha256:0a1c71ed6698d69a0f5d78ee4a0fe852d315cdf93da43de8e309fda69f831e17",
+      "samples_digest": "sha256:f74b2021e8d790c90033f038b3cff6f02df795b34fa0748da5f304a050dbe371",
+      "run_digest_match": true,
+      "stored_at": "2026-12-01T09:16:07Z"
+    }
+  }
+}

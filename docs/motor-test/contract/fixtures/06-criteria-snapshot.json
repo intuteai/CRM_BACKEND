@@ -1,0 +1,51 @@
+{
+  "note": "Any version that was ever published, including SUPERSEDED and WITHDRAWN.",
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/criteria/4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2"
+  },
+  "responses": {
+    "200": {
+      "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "version": 1,
+      "sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6",
+      "status": "PUBLISHED",
+      "definition": {
+        "schema": 1,
+        "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+        "version": 1,
+        "units": {
+          "current": "A",
+          "voltage": "V",
+          "speed": "rpm"
+        },
+        "rules": [
+          {
+            "id": "I_MAX",
+            "type": "max",
+            "signal": "current_a",
+            "limit": null,
+            "filter": {
+              "kind": "none",
+              "window_ms": null
+            },
+            "exclude_first_ms": null
+          },
+          {
+            "id": "V_SUPPLY",
+            "type": "range",
+            "signal": "voltage_v",
+            "min": null,
+            "max": null,
+            "on_violation": "INVALID"
+          }
+        ]
+      }
+    },
+    "404": {
+      "error": "Criteria version not found",
+      "code": "NOT_FOUND"
+    }
+  }
+}

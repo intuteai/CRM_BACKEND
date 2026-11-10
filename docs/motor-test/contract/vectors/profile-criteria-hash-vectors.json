@@ -1,0 +1,48 @@
+{
+  "rule": "profile sha256 and criteria sha256 = \"sha256:\" + SHA-256 of the JCS canonical JSON of the definition object, frozen at publish. VCU recomputes the profile hash from CONFIG.",
+  "profile": {
+    "definition": {
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "version": 1,
+      "max_rpm": 3000,
+      "step_rpm": 10,
+      "duration_s": 120,
+      "sample_hz": 10
+    },
+    "expected_sha256": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e"
+  },
+  "criteria": {
+    "definition": {
+      "schema": 1,
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "version": 1,
+      "units": {
+        "current": "A",
+        "voltage": "V",
+        "speed": "rpm"
+      },
+      "rules": [
+        {
+          "id": "I_MAX",
+          "type": "max",
+          "signal": "current_a",
+          "limit": null,
+          "filter": {
+            "kind": "none",
+            "window_ms": null
+          },
+          "exclude_first_ms": null
+        },
+        {
+          "id": "V_SUPPLY",
+          "type": "range",
+          "signal": "voltage_v",
+          "min": null,
+          "max": null,
+          "on_violation": "INVALID"
+        }
+      ]
+    },
+    "expected_sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6"
+  }
+}

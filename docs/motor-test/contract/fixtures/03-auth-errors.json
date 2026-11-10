@@ -1,0 +1,26 @@
+{
+  "note": "Returned by ANY authenticated endpoint. Only AUTH_INVALID_TOKEN / AUTH_INVALID_USER mean \"log in again\".",
+  "responses": {
+    "401 no token": {
+      "error": "No token provided",
+      "code": "AUTH_NO_TOKEN"
+    },
+    "403 expired or invalid token -> log in again": {
+      "error": "Invalid token",
+      "code": "AUTH_INVALID_TOKEN"
+    },
+    "403 account no longer exists -> log in again": {
+      "error": "User not found",
+      "code": "AUTH_INVALID_USER"
+    },
+    "403 logged in but no testing role for this action -> NEEDS_REVIEW, do not re-login": {
+      "error": "Your account has no testing permission for this action",
+      "code": "TESTING_ROLE_REQUIRED",
+      "required_role": "operator"
+    },
+    "503 auth database unavailable -> retry with backoff": {
+      "error": "The server is temporarily unavailable. Please try again.",
+      "code": "AUTH_UNAVAILABLE"
+    }
+  }
+}

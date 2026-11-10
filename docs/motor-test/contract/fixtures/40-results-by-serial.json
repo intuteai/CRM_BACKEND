@@ -1,0 +1,47 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/results?serial=EXAMPLE-SERIAL-0001"
+  },
+  "responses": {
+    "200": {
+      "motor_serial": "EXAMPLE-SERIAL-0001",
+      "runs": [
+        {
+          "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+          "started_at": "2026-12-01T09:14:03Z",
+          "ended_at": "2026-12-01T09:16:05Z",
+          "final_state": "COMPLETED",
+          "outcome": "PASS",
+          "operator_id": 843,
+          "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "operator_name": "Example Operator A",
+          "uploaded_by": 843,
+          "variant_code": "B-125-M-5D-ES11-E04",
+          "profile_version": 1,
+          "criteria_version": 1,
+          "sample_count": 13,
+          "stored_sample_count": 13,
+          "received_at": "2026-12-01T09:16:07Z"
+        },
+        {
+          "test_id": "5e8d2c1b-7a6f-4e3d-9b2a-1c0f8e7d6a5b",
+          "started_at": "2026-12-01T09:14:03Z",
+          "ended_at": "2026-12-01T09:15:10Z",
+          "final_state": "ABORTED",
+          "outcome": "INCOMPLETE",
+          "operator_id": 843,
+          "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "operator_name": "Example Operator A",
+          "uploaded_by": 843,
+          "variant_code": "B-125-M-5D-ES11-E04",
+          "profile_version": 1,
+          "criteria_version": 1,
+          "sample_count": 8,
+          "stored_sample_count": 8,
+          "received_at": "2026-12-01T09:16:07Z"
+        }
+      ]
+    }
+  }
+}
