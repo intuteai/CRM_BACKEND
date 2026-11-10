@@ -61,6 +61,9 @@ const pdiAdminRoutes         = require('./routes/operations/pdiAdmin');
 // ── Service & Repair routes ───────────────────────────────────
 const serviceRepairRoutes    = require('./routes/service/serviceRepair');
 
+// ── Motor test automation (HMI <-> ERP) ───────────────────────
+const testingRoutes          = require('./routes/testing');
+
 // ── Chatbot routes ────────────────────────────────────────────
 const chatbotOrderRoutes          = require('./chatbot/routes/orderChatbotRoutes');
 const chatbotCustomerInvoiceRoutes= require('./chatbot/routes/customerInvoiceChatbotRoutes');
@@ -130,6 +133,8 @@ app.use(cookieParser());
 // Un-compressed uploads (e.g. a mobile client without client-side resizing)
 // can still exceed this and should fix compression at the source rather than
 // leaning on a larger limit here.
+// Motor-test API has its own 5 MB limit (parsed first; the 40 MB parser then skips an already-parsed body).
+app.use('/api/testing', express.json({ limit: '5mb' }));
 app.use(express.json({ limit: '40mb' }));
 app.use(limiter);
 
@@ -203,6 +208,9 @@ app.use('/api/pdi',         pdiRoutes);
 // Service & Repair
 app.use('/api/service-repair', serviceRepairRoutes);
 
+// Motor test automation
+app.use('/api/testing', testingRoutes);
+
 // Chatbot
 app.use('/api',             chatbotOrderRoutes);
 app.use('/api',             chatbotCustomerInvoiceRoutes);
@@ -212,6 +220,7 @@ app.use('/api',             chatbotRawMaterialRoutes);
 app.use('/api',             chatbotBOMRoutes);
 
 // ==================== GLOBAL ERROR HANDLER ====================
+app.use('/api/testing', testingRoutes.errorHandler); // contract-format body errors for /api/testing only
 app.use(errorHandler);
 
 // ==================== START SERVER ====================
