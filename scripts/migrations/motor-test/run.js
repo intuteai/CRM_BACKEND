@@ -31,9 +31,13 @@ const files = fs.readdirSync(__dirname).filter((f) => /^\d{3}_.+\.sql$/.test(f))
 (async () => {
   const client = new Client(connectionConfig(db));
   await client.connect();
-  await client.query(`CREATE TABLE IF NOT EXISTS schema_migrations (
-    name text PRIMARY KEY, sha256 text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now(), applied_by text NOT NULL DEFAULT current_user)`);
-  const done = new Map((await client.query('SELECT name, sha256 FROM schema_migrations')).rows.map((r) => [r.name, r.sha256]));
+  if (dryRun) await client.query('SET default_transaction_read_only = on'); // a dry run never writes
+  const { rows: [{ exists }] } = await client.query(`SELECT to_regclass('public.schema_migrations') IS NOT NULL AS exists`);
+  if (!exists && !dryRun) {
+    await client.query(`CREATE TABLE schema_migrations (
+      name text PRIMARY KEY, sha256 text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now(), applied_by text NOT NULL DEFAULT current_user)`);
+  }
+  const done = new Map(exists || !dryRun ? (await client.query('SELECT name, sha256 FROM schema_migrations')).rows.map((r) => [r.name, r.sha256]) : []);
 
   for (const file of files) {
     const sql = fs.readFileSync(path.join(__dirname, file), 'utf8');
