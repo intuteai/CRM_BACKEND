@@ -394,7 +394,31 @@ for (const [name, note, body, status, response, headerOverride] of errorCases) {
   put(name, { note: `${note} Nothing is stored.`, request, responses: { [status]: response } });
 }
 
+// ---- v0.3: corrections from the tablet (operators never need the web CRM)
+const CORRECTION_ID = 'd4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f70';
+const correctionBody = { corrected_fields: { motor_serial: 'EXAMPLE-SERIAL-0010' }, reason: 'Serial mistyped at the bench; label reads 0010', operator_ref: OPERATOR_REF };
+const correction = {
+  correction_id: CORRECTION_ID, test_id: IDS.test, corrected_fields: correctionBody.corrected_fields, reason: correctionBody.reason,
+  added_by: 843, added_by_name: 'Testing Bench', added_operator_ref: OPERATOR_REF, added_operator_name: 'Example Operator A',
+  added_at: '2026-12-01T10:02:11Z', status: 'PENDING', decided_by: null, decided_by_name: null, decided_at: null, decision_note: null,
+};
+put('50-correction-add.json', {
+  note: 'NEW in v0.3. Operator asks to correct a stored run (only motor_serial, operator_ref or a remark; readings and verdicts never change). The original run stays as it was; the testing head approves or rejects it in the ERP. operator_ref = who is asking (pick-list).',
+  request: { method: 'POST', path: `/api/testing/results/${IDS.test}/corrections`, headers: { Authorization: 'Bearer <token>', 'Content-Type': 'application/json', 'X-App-Version': '1.0.0' }, body: correctionBody },
+  responses: {
+    201: correction,
+    400: { error: 'Request failed validation', code: 'VALIDATION_ERROR', fields: [{ path: 'corrected_fields.outcome', msg: 'cannot be corrected (verdicts and readings never change)' }] },
+    404: { error: 'Test run not found', code: 'NOT_FOUND' },
+  },
+});
+put('51-corrections-list.json', {
+  note: 'NEW in v0.3. Corrections for one run, newest first, with their status (PENDING / APPROVED / REJECTED). An APPROVED motor_serial correction also makes the run findable under the corrected serial.',
+  request: { method: 'GET', path: `/api/testing/results/${IDS.test}/corrections`, headers: { Authorization: 'Bearer <token>', 'X-App-Version': '1.0.0' } },
+  responses: { 200: { items: [{ ...correction, status: 'APPROVED', decided_by: 12, decided_by_name: 'Testing Head', decided_at: '2026-12-01T11:30:00Z', decision_note: 'Checked against the motor label' }] } },
+});
+
 put('40-results-by-serial.json', {
+  note: 'Operators may call this too (v0.3), to find the run they want to correct.',
   request: { method: 'GET', path: '/api/testing/results?serial=EXAMPLE-SERIAL-0001' },
   responses: {
     200: {

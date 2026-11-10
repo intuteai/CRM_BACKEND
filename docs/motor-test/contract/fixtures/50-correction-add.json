@@ -1,0 +1,53 @@
+{
+  "note": "NEW in v0.3. Operator asks to correct a stored run (only motor_serial, operator_ref or a remark; readings and verdicts never change). The original run stays as it was; the testing head approves or rejects it in the ERP. operator_ref = who is asking (pick-list).",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results/7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55/corrections",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0"
+    },
+    "body": {
+      "corrected_fields": {
+        "motor_serial": "EXAMPLE-SERIAL-0010"
+      },
+      "reason": "Serial mistyped at the bench; label reads 0010",
+      "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a"
+    }
+  },
+  "responses": {
+    "201": {
+      "correction_id": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f70",
+      "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+      "corrected_fields": {
+        "motor_serial": "EXAMPLE-SERIAL-0010"
+      },
+      "reason": "Serial mistyped at the bench; label reads 0010",
+      "added_by": 843,
+      "added_by_name": "Testing Bench",
+      "added_operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+      "added_operator_name": "Example Operator A",
+      "added_at": "2026-12-01T10:02:11Z",
+      "status": "PENDING",
+      "decided_by": null,
+      "decided_by_name": null,
+      "decided_at": null,
+      "decision_note": null
+    },
+    "400": {
+      "error": "Request failed validation",
+      "code": "VALIDATION_ERROR",
+      "fields": [
+        {
+          "path": "corrected_fields.outcome",
+          "msg": "cannot be corrected (verdicts and readings never change)"
+        }
+      ]
+    },
+    "404": {
+      "error": "Test run not found",
+      "code": "NOT_FOUND"
+    }
+  }
+}

@@ -1,4 +1,6 @@
-# Motor Test ERP API — early draft v0.2 (2026-11-07)
+# Motor Test ERP API — early draft v0.3 (2026-11-10)
+
+**Changes in v0.3:** corrections move to the tablet, so operators never need the web CRM. Operators can look up runs by serial (`GET /api/testing/results?serial=`) and request a correction of a stored run (`POST /api/testing/results/{test_id}/corrections`, fixture 50: motor_serial, operator_ref or a remark only; readings and verdicts never change), and see its status (`GET …/corrections`, fixture 51). The testing head approves or rejects in the ERP. These endpoints are already live on the ERP.
 
 **Changes in v0.2:** operator pick-list. New `GET /api/testing/operators` (fixture 07). Uploads now carry `operator_ref` (picked from the list) + `operator_name` (snapshot) instead of free text; unknown or inactive `operator_ref` → 400 `UNKNOWN_REFERENCE` (fixture 31). Shared account is real: `testing@compageauto.com`, user 843, role employee.
 

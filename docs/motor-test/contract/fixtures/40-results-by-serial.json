@@ -1,4 +1,5 @@
 {
+  "note": "Operators may call this too (v0.3), to find the run they want to correct.",
   "request": {
     "method": "GET",
     "path": "/api/testing/results?serial=EXAMPLE-SERIAL-0001"

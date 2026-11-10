@@ -1,0 +1,35 @@
+{
+  "note": "NEW in v0.3. Corrections for one run, newest first, with their status (PENDING / APPROVED / REJECTED). An APPROVED motor_serial correction also makes the run findable under the corrected serial.",
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/results/7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55/corrections",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "X-App-Version": "1.0.0"
+    }
+  },
+  "responses": {
+    "200": {
+      "items": [
+        {
+          "correction_id": "d4e5f6a7-b8c9-4d0e-9f1a-2b3c4d5e6f70",
+          "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+          "corrected_fields": {
+            "motor_serial": "EXAMPLE-SERIAL-0010"
+          },
+          "reason": "Serial mistyped at the bench; label reads 0010",
+          "added_by": 843,
+          "added_by_name": "Testing Bench",
+          "added_operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "added_operator_name": "Example Operator A",
+          "added_at": "2026-12-01T10:02:11Z",
+          "status": "APPROVED",
+          "decided_by": 12,
+          "decided_by_name": "Testing Head",
+          "decided_at": "2026-12-01T11:30:00Z",
+          "decision_note": "Checked against the motor label"
+        }
+      ]
+    }
+  }
+}
