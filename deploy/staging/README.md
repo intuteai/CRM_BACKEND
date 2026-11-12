@@ -58,8 +58,11 @@ Start again with `up -d`. The staging database keeps its data while the containe
 
 ## Staging data
 
-`erp_staging` holds the production structure, users, roles and products (copied 2026-11-05) plus test
-data for the HMI: `testing@compageauto.com` has the `operator` testing role; operators "Test Operator A/B";
+`erp_staging` holds the production structure, roles and products (copied 2026-11-05). **All copied users
+are anonymised** (2026-11-12: `user<id>@staging.invalid`, unknown password); only three staging-only logins
+work, with passwords that differ from production: `testing@compageauto.com` (tablet, `operator` testing role),
+`staging-admin@staging.invalid` and `staging-approver@staging.invalid` (ERP Admins, for two-person approvals).
+nginx requires the `X-Staging-Key` header on `/staging/` (key held by Saatwik, Rahul and Pratham). Test data: operators "Test Operator A/B";
 motor type `STAGING-TEST-B125` with published profile and criteria v1 (limits deliberately empty);
 designated run `3a7c1e9b-5d2f-4b8a-9c6e-1f0a2b3c4d5e` (serial `STG-TEST-0001`) for correction tests.
 Migrations: `node scripts/migrations/motor-test/run.js --db erp_staging`.
