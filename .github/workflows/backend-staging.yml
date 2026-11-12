@@ -33,8 +33,16 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true   # fail on the first error (otherwise a failed `cd` still ends green)
           script: |
+            set -e
             cd ~/erp-staging
             docker-compose -p erp-staging -f docker-compose.staging.yml pull erp-backend-staging
             docker-compose -p erp-staging -f docker-compose.staging.yml up -d
+            # Prove it really answers before calling the deploy a success.
+            for i in $(seq 1 20); do
+              if docker exec erp-backend-staging wget -qO- http://127.0.0.1:8000/ >/dev/null 2>&1; then echo "staging is up"; break; fi
+              if [ "$i" = 20 ]; then echo "staging did not answer"; docker logs --tail 50 erp-backend-staging; exit 1; fi
+              sleep 3
+            done
             docker image prune -f
