@@ -1,0 +1,30 @@
+# Motor-test STAGING backend (T049). Runs next to production on the same EC2 host.
+#   - own image tag (:staging), own env file, own database login (erp_staging_app -> erp_staging only)
+#   - memory capped (~150 MB) so it can never starve production; its own small Redis
+#   - listens on 127.0.0.1:8001 only; nginx publishes it as https://api.intute.biz/staging/
+# Start: docker-compose -p erp-staging -f docker-compose.staging.yml up -d
+# Stop when idle: docker-compose -p erp-staging -f docker-compose.staging.yml down
+version: "2.4"
+
+services:
+  erp-backend-staging:
+    image: intuteai/erp-backend:staging
+    restart: unless-stopped
+    env_file: .env.staging          # real values only on the server, never in git
+    environment:
+      NODE_OPTIONS: "--max-old-space-size=110"
+      PORT: "8000"
+      DISABLE_CRON: "true"
+      REDIS_URL: "redis://redis-staging:6379"
+    ports:
+      - "127.0.0.1:8001:8000"
+    mem_limit: 150m
+    memswap_limit: 150m
+    depends_on:
+      - redis-staging
+
+  redis-staging:
+    image: redis:7.2.5-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "16mb", "--maxmemory-policy", "allkeys-lru"]
+    mem_limit: 32m

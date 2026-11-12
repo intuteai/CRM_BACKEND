@@ -235,9 +235,14 @@ app.use(errorHandler);
 // timers running in the background.
 if (require.main === module) {
   // ==================== CRON JOBS ====================
-  require('./jobs/daily-due-reminders');
-  require('./jobs/daily-task-summaries');
-  require('./jobs/attendanceSummary');
+  // DISABLE_CRON=true (staging) keeps a second copy of the backend from sending the daily emails twice.
+  if (String(process.env.DISABLE_CRON || '').trim().toLowerCase() === 'true') {
+    logger.warn('DISABLE_CRON=true: daily reminder, task-summary and attendance-summary jobs are not scheduled');
+  } else {
+    require('./jobs/daily-due-reminders');
+    require('./jobs/daily-task-summaries');
+    require('./jobs/attendanceSummary');
+  }
 
   const PORT = process.env.PORT || 8000;
 
