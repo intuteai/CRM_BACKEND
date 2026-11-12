@@ -1,7 +1,8 @@
 name: Deploy CRM Backend STAGING to EC2
 
 # Manual only. Builds the current branch as intuteai/erp-backend:staging and restarts the
-# staging containers (port 8001, ~150 MB cap). Production (:latest) is not touched.
+# staging containers (erp-backend-staging:8000 on the erp-backend_default network, reached only
+# through nginx at /staging/, ~150 MB cap). Production (:latest) is not touched.
 # Actions are pinned to commit SHAs (tag in the comment): they receive the EC2 SSH key and Docker Hub login.
 on:
   workflow_dispatch:
@@ -39,9 +40,10 @@ jobs:
             cd ~/erp-staging
             docker-compose -p erp-staging -f docker-compose.staging.yml pull erp-backend-staging
             docker-compose -p erp-staging -f docker-compose.staging.yml up -d
-            # Prove it really answers before calling the deploy a success.
+            # Prove it really answers before calling the deploy a success. Any HTTP response counts
+            # (/api/testing/me answers 401 without a token); only "no answer" fails.
             for i in $(seq 1 20); do
-              if docker exec erp-backend-staging wget -qO- http://127.0.0.1:8000/ >/dev/null 2>&1; then echo "staging is up"; break; fi
+              if docker exec erp-backend-staging node -e "require('http').get('http://127.0.0.1:8000/api/testing/me',()=>process.exit(0)).on('error',()=>process.exit(1))" >/dev/null 2>&1; then echo "staging is up"; break; fi
               if [ "$i" = 20 ]; then echo "staging did not answer"; docker logs --tail 50 erp-backend-staging; exit 1; fi
               sleep 3
             done

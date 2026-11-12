@@ -35,12 +35,9 @@ jobs:
           script: |
             cd ~/erp-backend
 
-            # Stop running containers first so the image can be removed
-            docker-compose down
-
-            # Remove existing image from the server
-            docker image rm intuteai/erp-backend:latest || true
-
-            # Pull fresh image and start containers
+            # No `docker-compose down`: the staging backend shares the erp-backend_default network,
+            # so `down` would fail to remove it while staging runs. `up -d` recreates only the
+            # containers whose image changed; the old image is pruned afterwards.
             docker-compose pull erp-backend
             docker-compose up -d
+            docker image prune -f
