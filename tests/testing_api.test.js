@@ -68,6 +68,11 @@ beforeAll(async () => {
     ids.operator = (await c.query(`INSERT INTO mt_operator (name, created_by) VALUES ($1, 1) RETURNING operator_ref`, [`Jest Operator ${tag}`])).rows[0].operator_ref;
     // 843 is also the tablet's staging login: remember its real roles and put them back afterwards.
     ids.savedRoles = (await c.query('SELECT * FROM mt_user_role WHERE user_id = $1', [OPERATOR_USER])).rows;
+    // A view-only account: any non-Admin staging user with no testing role yet, given only 'viewer' (removed afterwards).
+    ids.viewer = (await c.query(`SELECT u.user_id FROM users u WHERE u.role_id <> 1 AND u.user_id <> $1
+      AND NOT EXISTS (SELECT 1 FROM mt_user_role r WHERE r.user_id = u.user_id) ORDER BY u.user_id LIMIT 1`, [OPERATOR_USER])).rows[0].user_id;
+    await c.query(`INSERT INTO mt_user_role (user_id, testing_role, granted_by) VALUES ($1,'viewer',1)`, [ids.viewer]);
+    T.viewer = token(ids.viewer);
     await c.query(`INSERT INTO mt_user_role (user_id, testing_role, granted_by) VALUES ($1,'operator',1), ($1,'viewer',1) ON CONFLICT DO NOTHING`, [OPERATOR_USER]);
     await c.query('COMMIT');
   } catch (e) { await c.query('ROLLBACK'); throw e; } finally { c.release(); }
@@ -94,6 +99,7 @@ afterAll(async () => {
     await c.query('DELETE FROM mt_operator WHERE operator_ref = $1', [ids.operator]);
     await c.query(`DELETE FROM mt_user_role WHERE user_id = $1`, [OPERATOR_USER]);
     await c.query('INSERT INTO mt_user_role SELECT * FROM jsonb_populate_recordset(NULL::mt_user_role, $1)', [JSON.stringify(ids.savedRoles || [])]);
+    if (ids.viewer) await c.query('DELETE FROM mt_user_role WHERE user_id = $1', [ids.viewer]); // it had no testing role before
     await c.query('DELETE FROM inventory WHERE product_id = $1', [ids.product]);
     await c.query('COMMIT');
   } finally { c.release(); await pool.end(); }
@@ -112,6 +118,17 @@ describe('auth and roles (ERP-T01)', () => {
     const r = await post(newRun(), undefined, T.none);
     expect(r.status).toBe(403);
     expect(r.body.code).toBe('TESTING_ROLE_REQUIRED');
+  });
+  it('view-only account cannot upload a result: 403, nothing stored; it can still read results', async () => {
+    const b = newRun();
+    const r = await post(b, undefined, T.viewer);
+    expect(r.status).toBe(403);
+    expect(r.body.code).toBe('TESTING_ROLE_REQUIRED');
+    expect(await countRows(b.test_id)).toEqual({ runs: 0, samples: 0, receipts: 0 });
+    const me = await request(app).get('/api/testing/me').set('Authorization', `Bearer ${T.viewer}`);
+    expect(me.body.testing_roles).toEqual(['viewer']);
+    const read = await request(app).get(`/api/testing/results?serial=${encodeURIComponent(base.motor_serial)}`).set('Authorization', `Bearer ${T.viewer}`);
+    expect(read.status).toBe(200);
   });
   it('/me reports testing roles and token expiry', async () => {
     const r = await request(app).get('/api/testing/me').set('Authorization', `Bearer ${T.op}`);
