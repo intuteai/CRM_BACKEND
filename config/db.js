@@ -31,7 +31,14 @@ const pool = new Pool({
   connectionTimeoutMillis: 10000,
 });
 
-pool.on('connect', () => logger.info('Connected to PostgreSQL'));
+// pool.on('error') only covers IDLE clients. A client that is checked out when its connection dies
+// (RDS restart/failover, pg_terminate_backend) emits 'error' itself; with no listener Node treats it
+// as an uncaught exception and the whole backend exits. This listener stays for the client's life;
+// the query in flight still rejects and the caller's normal error handling runs (ERP-T08, 2026-11-17).
+pool.on('connect', (client) => {
+  logger.info('Connected to PostgreSQL');
+  client.on('error', (err) => logger.error(`PostgreSQL client error (connection lost): ${err.message}`));
+});
 pool.on('error', (err) => logger.error('PostgreSQL pool error:', err.stack));
 
 module.exports = pool;
