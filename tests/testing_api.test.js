@@ -66,6 +66,8 @@ beforeAll(async () => {
       await c.query(`UPDATE ${t} SET status='PUBLISHED', sha256=$2, approved_by=$3, published_at=now() WHERE ${col}=$1`, [id, sha, OPERATOR_USER]);
     }
     ids.operator = (await c.query(`INSERT INTO mt_operator (name, created_by) VALUES ($1, 1) RETURNING operator_ref`, [`Jest Operator ${tag}`])).rows[0].operator_ref;
+    // 843 is also the tablet's staging login: remember its real roles and put them back afterwards.
+    ids.savedRoles = (await c.query('SELECT * FROM mt_user_role WHERE user_id = $1', [OPERATOR_USER])).rows;
     await c.query(`INSERT INTO mt_user_role (user_id, testing_role, granted_by) VALUES ($1,'operator',1), ($1,'viewer',1) ON CONFLICT DO NOTHING`, [OPERATOR_USER]);
     await c.query('COMMIT');
   } catch (e) { await c.query('ROLLBACK'); throw e; } finally { c.release(); }
@@ -91,6 +93,7 @@ afterAll(async () => {
     await c.query('DELETE FROM mt_motor_variant WHERE variant_id = $1', [ids.variant]);
     await c.query('DELETE FROM mt_operator WHERE operator_ref = $1', [ids.operator]);
     await c.query(`DELETE FROM mt_user_role WHERE user_id = $1`, [OPERATOR_USER]);
+    await c.query('INSERT INTO mt_user_role SELECT * FROM jsonb_populate_recordset(NULL::mt_user_role, $1)', [JSON.stringify(ids.savedRoles || [])]);
     await c.query('DELETE FROM inventory WHERE product_id = $1', [ids.product]);
     await c.query('COMMIT');
   } finally { c.release(); await pool.end(); }

@@ -29,7 +29,7 @@ const api = (method, url, who, body) => {
 };
 const started = new Date();
 const ids = { entities: [], tests: [] };
-let productId; let variant; const tag = crypto.randomBytes(3).toString('hex');
+let productId; let variant; let savedRoles = []; const tag = crypto.randomBytes(3).toString('hex');
 
 beforeAll(async () => {
   const { rows: [{ db }] } = await pool.query('SELECT current_database() AS db');
@@ -41,6 +41,8 @@ beforeAll(async () => {
     productId = (await c.query(`INSERT INTO inventory (product_name, product_code) VALUES ($1, $2) RETURNING product_id`, [`JEST-ADM-${tag}`, `JSTAD${tag}`])).rows[0].product_id;
     await c.query('COMMIT');
   } finally { c.release(); }
+  // 843 is also the tablet's staging login: remember its real roles and put them back afterwards.
+  savedRoles = (await pool.query('SELECT * FROM mt_user_role WHERE user_id = $1', [HEAD])).rows;
   await pool.query(`INSERT INTO mt_user_role (user_id, testing_role, granted_by) VALUES ($1,'testing_head',1),($1,'operator',1),($1,'viewer',1) ON CONFLICT DO NOTHING`, [HEAD]);
 });
 
@@ -60,6 +62,7 @@ afterAll(async () => {
     }
     await c.query(`DELETE FROM mt_operator WHERE name LIKE $1`, [`Jest Adm ${tag}%`]);
     await c.query('DELETE FROM mt_user_role WHERE user_id = $1', [HEAD]);
+    await c.query('INSERT INTO mt_user_role SELECT * FROM jsonb_populate_recordset(NULL::mt_user_role, $1)', [JSON.stringify(savedRoles)]);
     await c.query('DELETE FROM inventory WHERE product_id = $1', [productId]);
     await c.query('COMMIT');
   } finally { c.release(); await pool.end(); }
