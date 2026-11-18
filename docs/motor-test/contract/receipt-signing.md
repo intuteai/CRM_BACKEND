@@ -32,19 +32,19 @@ The VCU keeps boot-scoped uptime, not UTC. Nothing may invent a timestamp.
 | `started` (bool) | The VCU's own field: durable START intent and acquisition clock established (not proof of motor movement) |
 | `origin_boot_id` | The VCU boot the run started in (immutable; not the current reconnect/recovery boot) |
 | `start_uptime_ms` | VCU uptime at START in `origin_boot_id`; `null` when `started = false` |
-| `started_at` | UTC from the **tablet** clock (see sources below); `null` = no UTC known |
-| `started_at_source` | enum `HMI` \| `HMI_DERIVED`; `null` exactly when `started_at` is `null` |
+| `started_at` | UTC from the **tablet** clock: the moment the tablet received the matching accepted START ACK; `null` = never captured |
+| `started_at_source` | `"HMI"` when `started_at` is set; `null` exactly when `started_at` is `null` |
 | `ended_at`, `ended_at_source` | same rules as `started_at` / `started_at_source` |
-| `hmi_clock_auto` (bool) | the tablet's automatic network time setting was on when the stamp was taken |
+| `hmi_auto_time` (bool) | the tablet's automatic network time **setting** when the stamp was taken; not proof of a recent successful sync |
 
-Sources:
-- **`HMI`**: the tablet's UTC when the START ACK arrived, saved at once to the tablet database with the tablet's
-  monotonic clock and the VCU boot_id. Attached to the run only after the matching STATE confirms the start; if
-  the start never takes effect, no `started_at` is sent.
-- **`HMI_DERIVED`**: the tablet missed the moment but the VCU has not rebooted:
-  `started_at = tablet_now − (current_uptime_ms − start_uptime_ms)`, only when `origin_boot_id` equals the VCU's
-  current boot. Never across two boots. (Needs the VCU to report current uptime; question to Mayank.)
-- **`null`**: the VCU rebooted since the run started and the tablet has no saved stamp.
+`HMI` (confirmed by Pratham 2026-11-18): the tablet's UTC at receipt of the matching accepted START ACK, persisted
+at once against the `test_id` (with the tablet's monotonic clock and the VCU boot_id) and kept through recovery.
+It includes communication delay and does **not** confirm motor movement; RUNNING confirmation stays separate (the
+`started` field and STATE). If the tablet never captured the START moment, it sends `started: true`,
+`started_at: null`, `started_at_source: null`. **No time is ever reconstructed** from recovery time or VCU uptime.
+
+(Considered and dropped for v0.4: deriving the time from the VCU's `STATE.ms` uptime. Mayank confirmed the uptime
+is available, but Pratham will not reconstruct times; can be revisited later.)
 
 Accuracy: about one second (Bluetooth delay and ACK retries), not milliseconds. The ERP treats these times as
 approximate and never computes test results from them.
@@ -55,7 +55,7 @@ Rules (422 `INCONSISTENT_RUN` otherwise): `started = false` → `sample_count = 
 `*_source` must be `null` exactly when its time is `null`.
 
 ERP sanity check (PROPOSAL): a run is never rejected for its clock (that would lose evidence). The ERP stores a
-`clock_note` when `hmi_clock_auto = false`, or `started_at` is later than the ERP receive time, or
+`clock_note` when `hmi_auto_time = false`, or `started_at` is later than the ERP receive time, or
 `ended_at < started_at`; the lookup shows these times as "unverified".
 
 ## 3. Completeness (PROPOSAL)
@@ -166,8 +166,8 @@ decisions, and re-signs every untampered message byte for byte).
 
 ## 10. Open
 
-- Pratham: result of the auto_time / network check on the bench tablet (`hmi_clock_auto`).
-- Mayank: does the VCU report its current uptime (HELLO or heartbeat ACK)? Needed for `HMI_DERIVED`.
+- Mayank: review of the 37 receipt vectors and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
+- Pratham: check automatic time on the bench tablet (informational only; the ERP never treats it as a verified sync).
 - Mayank: `held_count` and `origin_boot_id` in the manifest; ESP32-C3 heap, stack and verify-time measurements
   (Ed25519 verify libraries need roughly 10–20 KB of flash; 299 KB free); b4–b7 definitions.
 - ERP (after agreement): migration for `CONFIG_CANCELLED`, `started`, `held_count`, origin boot and start fields, the
