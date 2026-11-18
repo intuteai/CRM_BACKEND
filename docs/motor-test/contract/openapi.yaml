@@ -22,8 +22,8 @@ servers:
   - url: https://{host}
     variables:
       host:
-        default: staging-host-TBD
-        description: Staging URL to be shared with Pratham (T049); production later.
+        default: api.intute.biz/staging
+        description: 'Staging (live since 2026-11-12; every request also needs the X-Staging-Key header). Production: api.intute.biz'
 security:
   - bearerAuth: []
 tags:

@@ -1,6 +1,6 @@
 # Motor Test Module: Technical Notes
 
-Paths are relative to `CRM_BACKEND/` unless they start with `CRM/` (the web frontend). This describes the code as it is at commit `4d9a543b` (2026-11-10). The design sources are `docs/motor-test/T011-erp-inventory.md` (architecture and reuse plan), `docs/motor-test/admin-api.md` (governance API) and `docs/motor-test/contract/` (the HMI interface contract, draft v0.3). Where those documents and the code differ, these notes follow the code and say so.
+Paths are relative to `CRM_BACKEND/` unless they start with `CRM/` (the web frontend). This describes the code as it is at commit `93779bdc` (2026-11-18). The design sources are `docs/motor-test/T011-erp-inventory.md` (architecture and reuse plan), `docs/motor-test/admin-api.md` (governance API), `docs/motor-test/contract/` (the HMI interface contract, draft v0.3, plus the v0.4 draft in `receipt-signing.md`) and `deploy/staging/README.md` (staging runbook). Where those documents and the code differ, these notes follow the code and say so.
 
 ---
 
@@ -37,7 +37,11 @@ Design rules that run through the whole module:
 - **Verdicts need full evidence.** PASS, FAIL and INVALID are accepted only for a completed run whose readings are all present and whose digest matches.
 - **Two people.** A profile or criteria version is approved by someone who did not create, edit or submit it. A correction is decided by someone other than who added it.
 
-**Status on 2026-11-10:** deployed. The backend serves `api.intute.biz/api/testing`, the production database was migrated after an RDS snapshot, and the CRM screens are live (shown only to users with a testing role). No testing roles have been granted and no real runs exist yet.
+**Status on 2026-11-18:**
+
+- **Production** (deployed 2026-11-10). The backend serves `api.intute.biz/api/testing`, the production database was migrated after an RDS snapshot, and the CRM screens are live (shown only to users with a testing role). At deployment no testing roles were granted and no real runs existed.
+- **Staging** (live since 2026-11-12). A second backend serves `https://api.intute.biz/staging` against the `erp_staging` database. The tablet HMI tests against it, and the acceptance tests in section 9.3 ran there.
+- The lost-connection fix in `config/db.js` (section 4.1, from commit `a5fbbd57`) runs on staging. It is not yet deployed to production.
 
 ### 1.1 Module layout
 
@@ -49,9 +53,11 @@ Design rules that run through the whole module:
 | Controllers | `controllers/testing/testing.controller.js` (HMI API, upload), `controllers/testing/admin.controller.js` (governance, corrections, audit, CSV) |
 | Models | `models/testing/testingModel.js` (configuration reads, `storeRun`, lookups), `models/testing/adminModel.js` (governance writes, every one audited) |
 | Services | `services/testing/validateRun.js` (`checkSchema`, `checkConsistency`), `services/testing/digest.js` (RFC 8785 canonical JSON, payload hash, D13 run digest) |
-| Schema and tools | `scripts/migrations/motor-test/001_mt_schema.sql`, `002_version_second_person.sql`, `003_default_last_modified.sql`, `run.js`, `check_rules.js`, `db.js` |
-| Contract | `docs/motor-test/contract/openapi.yaml`, `fixtures/` (27 request/response cases), `vectors/` (hash test vectors), `tools/generate-fixtures.js` |
+| Database pool | `config/db.js` (shared with the whole ERP; lost-connection handling in section 4.1) |
+| Schema and tools | `scripts/migrations/motor-test/001_mt_schema.sql`, `002_version_second_person.sql`, `003_default_last_modified.sql`, `run.js`, `check_rules.js`, `evidence_check.js`, `db.js` |
+| Contract | `docs/motor-test/contract/openapi.yaml`, `fixtures/` (27 request/response cases), `vectors/` (hash and receipt test vectors), `tools/generate-fixtures.js`; v0.4 draft: `receipt-signing.md`, `tools/receipt.js`, `tools/generate-receipt-vectors.js`, `tools/check_receipt_vectors.py` |
 | Tests | `tests/testing_digest.test.js`, `testing_validate.test.js`, `testing_api.test.js`, `testing_admin_api.test.js` |
+| Deployment | `.github/workflows/backend-erp.yml` (production), `.github/workflows/backend-staging.yml` (staging), `deploy/staging/` (compose file, env template, runbook) |
 | Web | `CRM/src/components/testing/` (route `/motor-testing/*`) |
 
 ### 1.2 Request flow
@@ -120,7 +126,7 @@ Note that only the `operator` role may upload or add corrections. A testing head
 
 ## 3. HMI API (tablet)
 
-All paths are under `/api/testing` and need `Authorization: Bearer <JWT>`. The tablet logs in with the existing `POST /api/auth/login` and sends `X-App-Version` on every call, which gives it a 12 h token. Token expiry is the JWT `exp` claim, or `token_expires_at` from `/me`. Only `AUTH_INVALID_TOKEN` and `AUTH_INVALID_USER` mean "log in again". In the tables, "all four" means every testing role, "head" is `testing_head`, "admin" is `testing_admin`, and `:id` in a `/results/...` path is the run's `test_id`. The contract is `docs/motor-test/contract/openapi.yaml` (v0.3, not frozen; it becomes Interface Contract v1 after sign-off at T012).
+All paths are under `/api/testing` and need `Authorization: Bearer <JWT>`. The tablet logs in with the existing `POST /api/auth/login` and sends `X-App-Version` on every call, which gives it a 12 h token. Token expiry is the JWT `exp` claim, or `token_expires_at` from `/me`. Only `AUTH_INVALID_TOKEN` and `AUTH_INVALID_USER` mean "log in again". In the tables, "all four" means every testing role, "head" is `testing_head`, "admin" is `testing_admin`, and `:id` in a `/results/...` path is the run's `test_id`. The contract is `docs/motor-test/contract/openapi.yaml` (v0.3, not frozen; it becomes Interface Contract v1 after sign-off at T012). A v0.4 draft (section 5.4) is under review and is not implemented in this API. The tablet's staging base URL is `https://api.intute.biz/staging` (section 9.1), as in the `servers` entry of `openapi.yaml`.
 
 | Method | Path | Roles | Notes |
 |---|---|---|---|
@@ -160,6 +166,8 @@ The upload is atomic and idempotent. Every check that does not need the database
    6. Insert `mt_test_run` (with `uploaded_by` = the authenticated user, `samples_digest` and `run_digest_match`), all readings in one `unnest` insert into `mt_test_sample`, all events into `mt_test_event` (`event_seq` = position in the upload), the `mt_upload_receipt` row, and a `RESULT_STORED` audit event. `COMMIT`, answer **201 with the receipt**.
 6. **Any database error** rolls back, discards the connection (`client.release(err)`) and answers **503** `SERVER_UNAVAILABLE`. Nothing was committed, so the tablet retries the same body with backoff.
 
+**Lost connection.** A pooled client whose connection dies while it is checked out (RDS restart or failover, `pg_terminate_backend`) emits an `error` event. `pool.on('error')` covers only idle clients, so before commit `a5fbbd57` that event was unhandled and Node exited, dropping every request in flight. `config/db.js` now adds an `error` listener to every client on `connect`. The query in flight still rejects, the normal handling above runs (503, nothing stored), and the backend keeps serving. ERP-T08 found the problem (section 9.3). The listener is in the shared pool, so it applies to the whole ERP, not only `/api/testing`.
+
 Readings are inserted as exactly the float32 value that was hashed: each value is rounded once in JS with `Math.fround`, and `-0.0` is stored as `+0.0`. `operator_id` and `operator_name` in the body are never changed; the uploader is recorded separately in `uploaded_by` and is not part of the payload hash, so any operator account can upload a queued run.
 
 | Answer | When | Stored |
@@ -172,7 +180,7 @@ Readings are inserted as exactly the float32 value that was hashed: each value i
 | 422 `INCONSISTENT_RUN` | Consistency rule broken | Nothing |
 | 503 `SERVER_UNAVAILABLE` | Database error | Nothing; retry the same body |
 
-Receipt: `{receipt_id, test_id, stored_sample_count, payload_hash, samples_digest, run_digest_match, stored_at}`. `stored_at` is the time of the original commit and does not change on retries. Only a 201 or 200 receipt allows the bench and tablet to archive the run (`ACK_ARCHIVED`).
+Receipt: `{receipt_id, test_id, stored_sample_count, payload_hash, samples_digest, run_digest_match, stored_at}`. `stored_at` is the time of the original commit and does not change on retries. Only a 201 or 200 receipt allows the bench and tablet to archive the run (`ACK_ARCHIVED`). `ACK_ARCHIVED` stays disabled on the VCU until the signed receipt of the v0.4 draft (section 5.4) is agreed and implemented.
 
 ### 4.2 Consistency rules (422 INCONSISTENT_RUN)
 
@@ -219,7 +227,8 @@ The VCU and the ERP compute the same digest over the readings. Each sample becom
 - An invalid reading is `null` in JSON and quiet NaN in the record. A valid reading must be a number.
 - `-0.0` is written as `+0.0`.
 - `status_flags` bits: b0 rpm valid, b1 current valid, b2 voltage valid, b3 BEMF valid, b4 CAN stale, b5 setpoint changed, b6 protective warning, b7 storage lag.
-- Vectors: `run-digest-vectors.json` (V1 to V9, each checked in Python and JavaScript).
+- **b0 = 0 (rpm invalid):** `rpm_actual` keeps the raw int32 in the record and in JSON (no `null`, no sentinel), so the digest bytes do not change. The value is treated as unavailable: the CRM does not plot it (section 6.8) and it is never used for criteria. Agreed with the VCU owner on 2026-11-18 (vector V10). The current upload checks already accept it.
+- Vectors: `run-digest-vectors.json` (V1 to V10, each checked in Python and JavaScript).
 
 Readings are stored in `real` (IEEE binary32) columns. PostgreSQL 12 and later return `real` as the shortest exact text, so a run read back from `GET /results/:testId` rebuilds the same digest.
 
@@ -231,6 +240,29 @@ Frozen when a version is approved (`adminModel.sha256Of`), using the same canoni
 - **Criteria:** hash of the stored `definition`, which always contains `variant_id` and `version` (the server sets both; values sent by the client are dropped).
 
 The tablet caches the published profile and criteria with their `sha256` and sends both hashes with every upload; the ERP refuses an upload whose hashes do not match the versions it names. Vectors: `profile-criteria-hash-vectors.json`.
+
+### 5.4 Contract v0.4 draft: signed archive receipt (not implemented)
+
+**Status: DRAFT, under review by the VCU and HMI owners (2026-11-18). Nothing in the ERP API implements it yet.** The specification is `docs/motor-test/contract/receipt-signing.md`. It becomes part of Interface Contract v1 at T012. `ACK_ARCHIVED` stays disabled on the VCU until it is agreed and verification is implemented.
+
+| Topic | Draft rule |
+|---|---|
+| Signed receipt | The receipt gains `signed_receipt {alg: "Ed25519", key_id, message, signature}` (base64url). The message is a fixed little-endian binary layout of 172 to 234 bytes (magic `MTRCPT1`, key id, `test_id`, `receipt_id`, `stored_at`, counts, state codes, flags, `run_digest`, `samples_digest`, `payload_hash`, `vcu_id`, `origin_boot_id`). It is signed once at the original commit; a 200 retry returns the same bytes. |
+| VCU release | The VCU decides only from the signed message bytes, with checks in a fixed order (encoding, version and layout, known key, signature, flag consistency, test, VCU and boot identity, manifest match, shortfall, digest match). It releases data only when every check passes; a valid signature alone never releases data. |
+| Keys | The ERP holds the private keys outside the code and the Docker image. The VCU holds only public keys, in two slots (current and next). An ERP key registry keeps `key_id`, public key, `valid_from`, `retired_at` and `revoked_at`; retired keys stay listed so old receipts can still be checked. |
+| Completeness | New field `held_count`: the samples the VCU durably holds (at most `sample_count`). `run_digest` covers exactly the held samples. The VCU releases only when the ERP stored all `held_count` samples with the same digest. |
+| CANCEL | A run cancelled before start is a zero-sample `ABORTED` run with `stop_reason` `CONFIG_CANCELLED`, outcome INCOMPLETE and `started = false`. It never counts as an executed motor test. |
+| Start time | The VCU keeps boot-scoped uptime, not UTC. `started_at` comes from the tablet clock. `started_at_source` is `HMI` (tablet time when the accepted START ACK arrived), `HMI_DERIVED` (rebuilt from the VCU's recorded start uptime, only when no `HMI` stamp exists and every listed check holds) or `null` when the time is unknown. The ERP never computes results from these times. |
+| b0 = 0 | D13 vector V10 (section 5.2): raw `rpm_actual` kept, digest unchanged, value treated as unavailable. |
+
+Vectors: `vectors/receipt-vectors.json` holds 37 receipt vectors (7 accepted, 30 rejected) with test-only keys. `tools/receipt.js` is the reference implementation and `tools/generate-receipt-vectors.js` regenerates the vectors. `tools/check_receipt_vectors.py` is an independent Python implementation (Ed25519 from RFC 8032, no shared code); it checks RFC 8032 test 1 first, agrees on all 37 decisions and re-signs every untampered message byte for byte.
+
+```
+node docs/motor-test/contract/tools/generate-receipt-vectors.js
+python docs/motor-test/contract/tools/check_receipt_vectors.py
+```
+
+After agreement the ERP needs a migration (`CONFIG_CANCELLED`, `started`, `held_count`, origin boot and start-time fields, the key registry, stored signatures) and a signing key kept outside the image.
 
 ---
 
@@ -326,6 +358,14 @@ The original run never changes. A correction is a new `mt_correction` record lin
 
 `CRM/src/components/testing/` is mounted at `/motor-testing/*` (`CRM/src/routeConfig.jsx`). The route is open to Compage ERP roles; the module reads `GET /api/testing/me` and shows only what the user's testing roles allow, and the API enforces the same rules. Screens: serial lookup, run detail with charts (recharts), motor types (variants) with the versions panel and criteria editor, operators, testing roles, and pending corrections. Operators do not use the web screens.
 
+The run page (`RunDetailPage.jsx`, data preparation in `runData.js`) follows these rules:
+
+- The variant code comes from `GET /results/:id` (`variant_code`), so it also shows when the page is opened by a link rather than from the serial lookup.
+- A missing `sample_seq` range is drawn as a break in the lines, never interpolated, and a note gives the number of missing samples and gaps.
+- Readings the VCU marked invalid are left out of the graphs: `rpm_actual` when status bit 0 is clear (section 5.2), and `null` current, voltage or BEMF. A note counts the invalid rpm, current and voltage readings and says that the raw values stay in the CSV export.
+- Receipt: green "Digest matches" when `run_digest_match` is true. An INCOMPLETE run that stored fewer readings than `sample_count` shows amber "Digest differs (readings missing)". Any other mismatch shows red "Digest mismatch".
+- A run with no stored readings (for example a zero-sample FAULT) shows "nothing to plot" instead of empty graphs. Criteria limits that are `null` draw no line and are shown as "—".
+
 ---
 
 ## 7. Database
@@ -416,6 +456,20 @@ node scripts/migrations/motor-test/run.js --db erp_migrated --production
 
 Recovery agreement (2026-11-07): a manual snapshot before every migration, deleted once verified; at most about 5 minutes of changes lost on a server failure and a 30 to 60 minute restore. Migrations 001 to 003 were applied to `erp_staging` first and to `erp_migrated` on 2026-11-10 after a snapshot.
 
+**Restore check (ERP-T11).** `evidence_check.js` proves that a restored copy holds the same evidence as its source. It is read-only: everything runs in one `REPEATABLE READ READ ONLY` transaction, so it sees one consistent snapshot and cannot write.
+
+- Per table (`mt_*` and `schema_migrations`): the row count and an order-independent hash (SHA-256 over the sorted MD5 of each row's text).
+- Per run: the D13 digest is recomputed from the stored readings (read in pages of 5,000) and must equal `samples_digest`; the number of readings found must equal `stored_sample_count`.
+- The result is written to a JSON file. `--compare` reads two such files and prints `RESTORE CHECK PASSED` when every table is identical and every run verifies on both sides, otherwise `RESTORE CHECK FAILED` with the differences (exit code 1).
+
+```
+node scripts/migrations/motor-test/evidence_check.js --db erp_staging --out source.json
+node scripts/migrations/motor-test/evidence_check.js --db erp_staging --host <restored-instance-endpoint> --out restored.json
+node scripts/migrations/motor-test/evidence_check.js --compare source.json restored.json
+```
+
+Credentials come from the repo `.env` or the environment, and TLS is verified as in `run.js`. The script was tried on `erp_staging` (10 runs verified). The restore drill itself is still pending: it needs a restored RDS instance.
+
 ---
 
 ## 9. Environments and tests
@@ -424,27 +478,59 @@ Recovery agreement (2026-11-07): a manual snapshot before every migration, delet
 
 | Environment | Database | Backend |
 |---|---|---|
-| Staging | `erp_staging` on the same RDS instance (created 2026-11-05: full production structure plus roles, permissions, users and products only; 15-connection cap) | **Planned:** same EC2 host as production on port 8001, about 150 MB memory cap, its own image tag, `.env` and a database user limited to staging; stopped when idle (needs swap on the EC2 host first) |
+| Staging | `erp_staging` on the same RDS instance (created 2026-11-05: full production structure plus roles, permissions, users and products only; 15-connection cap), reached through the `erp_staging_app` login | Live since 2026-11-12 at `https://api.intute.biz/staging`: container `erp-backend-staging` on the production EC2 host |
 | Production | `erp_migrated` (migrated 2026-11-10) | The existing backend; the routes are live under `/api/testing` |
 
-All development, automated tests, destructive tests (ERP-T08) and fake runs stay on staging. The RDS instance is PostgreSQL 17.9 (`db.t4g.micro`, single AZ). Until the staging backend exists, the OpenAPI server URL is a placeholder (`staging-host-TBD`).
+All development, automated tests, destructive tests (ERP-T08) and fake runs stay on staging. The RDS instance is PostgreSQL 17.9 (`db.t4g.micro`, single AZ).
+
+**Staging backend.** The runbook is `deploy/staging/README.md`; the compose file is `deploy/staging/docker-compose.staging.yml`.
+
+| Item | Value |
+|---|---|
+| URL | `https://api.intute.biz/staging`; the app's own paths follow, e.g. `/staging/api/auth/login`, `/staging/api/testing/...` |
+| Proxy | nginx in the Docker container `erp-nginx-https` routes `/staging/` to `http://erp-backend-staging:8000`, strips the `/staging` prefix, and allows bodies up to 6 MB. Requests must carry the `X-Staging-Key` header (the key is held outside the repository). nginx resolves the container name per request, so a stopped staging only makes `/staging/` answer 502; production is unaffected. |
+| Containers | `erp-backend-staging` (image `intuteai/erp-backend:staging`, port 8000 inside, no host port) on the external Docker network `erp-backend_default` shared with nginx; its own Redis (`erp-redis-staging`, 16 MB, no persistence) on a private network |
+| Limits | 150 MB memory cap (Node heap 110 MB); Redis container 32 MB |
+| Settings | `DISABLE_CRON=true`, so the daily reminder and summary email jobs are not scheduled twice; mail settings left empty; its own `JWT_SECRET`, different from production; env file `~/erp-staging/.env.staging` on the host, never in git |
+| Database | `erp_staging` through the `erp_staging_app` login, which has no access to production data and cannot bypass the evidence triggers |
+| Users | Every copied user is anonymised (`user<id>@staging.invalid`, unknown password). Three staging-only logins work, with passwords that differ from production: the tablet account `testing@compageauto.com` (user 843, `operator` role) and two ERP Admins for two-person approvals. |
+| Test data | Operators "Test Operator A/B"; motor type `STAGING-TEST-B125` with published profile and criteria v1 (limits deliberately empty); a designated run (serial `STG-TEST-0001`) for correction tests |
+| Stop when idle | `docker-compose -p erp-staging -f docker-compose.staging.yml down` in `~/erp-staging`; the database keeps its data |
+
+**Deployment.** Both backends are deployed by hand from GitHub Actions (`workflow_dispatch`).
+
+- **Staging:** `.github/workflows/backend-staging.yml` builds the current branch as `intuteai/erp-backend:staging`, pushes it, and on the EC2 host pulls and restarts only the staging containers. Its third-party actions are pinned to commit SHAs. The deploy fails on the first error and succeeds only when the container answers `GET /api/testing/me`; any HTTP answer counts (401 without a token), only no answer within 20 tries fails. It then prunes old images.
+- **Production:** `.github/workflows/backend-erp.yml` runs `docker-compose pull erp-backend`, `docker-compose up -d` and `docker image prune -f`. It no longer runs `docker-compose down`, because the staging container shares the `erp-backend_default` network and `down` would try to remove it. `up -d` recreates only containers whose image changed.
 
 ### 9.2 Tests
 
 | File | Database | Covers |
 |---|---|---|
-| `testing_digest.test.js` | none | Every D13 run-digest vector, every payload-hash vector (key order and whitespace do not matter, a changed reading does), profile and criteria hash vectors |
+| `testing_digest.test.js` | none | Every D13 run-digest vector (V1 to V10), every payload-hash vector (key order and whitespace do not matter, a changed reading does), profile and criteria hash vectors |
 | `testing_validate.test.js` | none | Every contract fixture gets its documented answer from `checkSchema` / `checkConsistency`; unknown fields; non-v4 ids; non-UTC timestamps; out-of-range `sample_seq`; leap day and millisecond timestamps; D11 gap handling |
-| `testing_api.test.js` | `erp_staging` | HMI end to end: 401 and 403 codes, `/me`, variant detail, pick-list, 201 receipt (ERP-T03), identical retry x5 and two concurrent identical uploads (ERP-T04), conflict 409 with audit (ERP-T05), zero-sample FAULT (ERP-T06), key mismatch, 413, malformed JSON, readings read back exactly |
+| `testing_api.test.js` | `erp_staging` | HMI end to end: 401 and 403 codes, a view-only account cannot upload (403, nothing stored) but can still read results (ERP-T01), `/me`, variant detail, pick-list, 201 receipt (ERP-T03), identical retry x5 and two concurrent identical uploads (ERP-T04), conflict 409 with audit (ERP-T05), zero-sample FAULT (ERP-T06), key mismatch, 413, malformed JSON, readings read back exactly |
 | `testing_admin_api.test.js` | `erp_staging` | Governance end to end: variants, drafts, variant RPM limit, second-person approval (author, editor and submitter), frozen published versions, supersede, return, withdraw, criteria validation, pick-list, roles, corrections, CSV export |
 
-The two database suites set `DB_NAME=erp_staging` before loading `config/db` and refuse to run if `current_database()` is anything else. They create their own throwaway product, variant, versions and operator, grant testing roles to staging user 843 (user 1, an ERP Admin, acts as `testing_admin`), and remove everything afterwards (cleanup bypasses the immutability triggers with `session_replication_role = replica`, which is acceptable on staging test data only). Because both suites grant and revoke roles for the same user, they must run **serially**:
+The two database suites set `DB_NAME=erp_staging` before loading `config/db` and refuse to run if `current_database()` is anything else. They create their own throwaway product, variant, versions and operator, grant testing roles to staging user 843 (user 1, an ERP Admin, acts as `testing_admin`), and remove everything afterwards (cleanup bypasses the immutability triggers with `session_replication_role = replica`, which is acceptable on staging test data only). User 843 is also the tablet's staging login, so both suites save its testing roles first and put them back in `afterAll`; otherwise a test run would leave the tablet with 403 `TESTING_ROLE_REQUIRED` on upload. The view-only test grants `viewer` to one staging user without testing roles and removes it again. Because both suites grant and revoke roles for the same user, they must run **serially**:
 
 ```
 npx jest --runInBand tests/testing_digest.test.js tests/testing_validate.test.js tests/testing_api.test.js tests/testing_admin_api.test.js
 ```
 
-`*.test.js` files are gitignored but tracked, so a new test file must be added with `git add -f`. The contract fixtures and vectors are regenerated with `node docs/motor-test/contract/tools/generate-fixtures.js`. T011 records 79 automated tests and 24 database rule checks passing on staging before deployment.
+`*.test.js` files are gitignored but tracked, so a new test file must be added with `git add -f`. The contract fixtures and vectors are regenerated with `node docs/motor-test/contract/tools/generate-fixtures.js`. T011 records 79 automated tests and 24 database rule checks passing on staging before deployment. Since then the view-only upload test and vector V10 were added, so the four suites now hold 81 tests (45 in the two suites without a database, 23 in `testing_api.test.js`, 13 in `testing_admin_api.test.js`).
+
+### 9.3 Acceptance tests on staging
+
+Results of the ERP acceptance tests run against the staging backend, 2026-11-12 to 2026-11-18. Tests not listed here are covered by the automated suites in 9.2.
+
+| Test | Result | What was checked |
+|---|---|---|
+| ERP-T01 roles | Pass | Testing roles and their 403 answers; a view-only account cannot upload (403 `TESTING_ROLE_REQUIRED`, nothing stored) and can still read results |
+| ERP-T03 full run | Pass | A 1,214-sample run uploaded to the deployed staging server: 201, ERP digest equal to the VCU digest |
+| ERP-T08 lost database connection | Pass, 13/13 checks | A second database session holds a SHARE lock so the upload blocks at a known INSERT; the upload's connection is then killed with `pg_terminate_backend`. Killed during the sample insert and just before commit: 503 `SERVER_UNAVAILABLE`, zero rows stored, the server keeps serving, a retry gives 201 and a second retry 200 with the same receipt. The first run of this test found the crash fixed in `config/db.js` (section 4.1). |
+| ERP-T09 serial lookup and graphs | Pass | In a browser against real staging runs: gaps drawn as breaks, rpm with b0 = 0 not plotted, invalid readings counted in a note, zero-sample FAULT shows the empty state, `null` limits shown as "—" (section 6.8) |
+| ERP-T10 load | Pass (scaled) | 2,500 synthetic runs × 1,200 samples (3.0 million rows, 25 % of the 10,000-run target; the RDS instance is shared with production). Over HTTP, median / 95th percentile: serial lookup 32 / 81 ms, run detail 47 / 110 ms, CSV export 46 / 136 ms, the same as with 10 runs. Both queries use index scans (under 1 ms in the database). About 164 bytes per sample including the index, so 10,000 runs ≈ 2 GB. Load data removed afterwards |
+| ERP-T11 restore | Pending | Check script ready (`evidence_check.js`, section 8); the drill needs a restored instance |
 
 ---
 
@@ -482,11 +568,13 @@ npx jest --runInBand tests/testing_digest.test.js tests/testing_validate.test.js
 | D11: COMPLETED run with unrecoverable gaps (proposed: accepted as INCOMPLETE, as the code does now) | Testing head |
 | `max_rpm` and criteria limits: example values are not approved (D4, D5, D9) | Testing head |
 | 8-year long-term backup copy (35-day RDS backups do not cover the retention period) | Saatwik |
-| Swap on the EC2 host, then the staging backend on port 8001 and a staging URL for the HMI (T049) | Saatwik |
+| Deploy the lost-connection fix (`config/db.js`, commit `a5fbbd57`) to production | Rahul |
+| ERP-T11 restore drill on a restored RDS instance, compared with `evidence_check.js` | Rahul / Saatwik |
 | Grant the first testing roles (operator account, testing head, viewers) | Rahul (ERP Admin) |
 | Change the shared operator password | Saatwik / Rahul |
 | Certificate pinning and renewal process for the tablet | Pratham and IT |
-| Contract sign-off: draft v0.3 becomes Interface Contract v1 at T012 | Mayank, Pratham, Rahul |
+| Contract v0.4 draft review: 37 receipt vectors, `held_count`, `origin_boot_id` in the VCU manifest, VCU verify-time measurements; then the ERP migration and key registry (section 5.4) | Mayank, Pratham, Rahul |
+| Contract sign-off: draft v0.3 (with the agreed v0.4 parts) becomes Interface Contract v1 at T012 | Mayank, Pratham, Rahul |
 
 **Technical limits:**
 

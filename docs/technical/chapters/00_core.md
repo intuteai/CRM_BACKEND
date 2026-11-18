@@ -205,8 +205,8 @@ The web CRM adds a client-side gate on top: `routeConfig.jsx` gives every route 
 ## Backend build and release
 
 - **Container:** `Dockerfile` starts from `node:22.17.0-alpine`, runs `npm ci --omit=dev`, copies the source and `.env`, exposes 8000, and starts with `node server.js`.
-- **CI/CD:** `.github/workflows/backend-erp.yml` runs **only on manual trigger** (`workflow_dispatch`). It builds and pushes `intuteai/erp-backend:latest` to Docker Hub, then connects to the EC2 host over SSH and runs `docker-compose down`, removes the old image, runs `docker-compose pull erp-backend`, and runs `docker-compose up -d`.
-- Only one container runs at a time; the old one stops before the new one starts. This is why the PDI startup recovery can safely reset lots stuck in `Finalizing`.
+- **CI/CD:** `.github/workflows/backend-erp.yml` runs **only on manual trigger** (`workflow_dispatch`). It builds and pushes `intuteai/erp-backend:latest` to Docker Hub, then connects to the EC2 host over SSH and runs `docker-compose pull erp-backend`, `docker-compose up -d` (which recreates only the backend container whose image changed) and `docker image prune -f`. It no longer runs `docker-compose down`, because the motor-test staging backend shares the `erp-backend_default` network (chapter 35, section 9.1).
+- Only one backend container runs at a time; `up -d` stops the old one before the new one starts. This is why the PDI startup recovery can safely reset lots stuck in `Finalizing`.
 - **Web CRM:** every push to `main` triggers a GitHub Actions workflow in the CRM repository. It runs the Vite build to `dist/`, syncs the output to S3 and serves it through CloudFront. `railway.json` and the Railway dev proxy in `vite.config.js` are left over from the old hosting.
 - **PDI mobile app:** a plain React Native (non-Expo) Android build, signed with Gradle using `keystore.properties` and distributed as an APK.
 
