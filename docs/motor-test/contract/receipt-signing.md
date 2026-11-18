@@ -32,7 +32,7 @@ The VCU keeps boot-scoped uptime, not UTC. Nothing may invent a timestamp.
 | `started` (bool) | The VCU's own field: durable START intent and acquisition clock established (not proof of motor movement) |
 | `origin_boot_id` | The VCU boot the run started in (immutable; not the current reconnect/recovery boot) |
 | `start_uptime_ms` | VCU uptime at START in `origin_boot_id`; `null` when `started = false` |
-| `started_at` | UTC from the **tablet** clock: the moment the tablet received the matching accepted START ACK; `null` = never captured |
+| `started_at` | Approximate UTC from the **tablet**: either the receipt time of the matching accepted START ACK (`HMI`) or a time derived from VCU uptime (`HMI_DERIVED`); `null` = UTC unknown |
 | `started_at_source` | enum `HMI` \| `HMI_DERIVED`; `null` exactly when `started_at` is `null` |
 | `ended_at`, `ended_at_source` | same rules as `started_at` / `started_at_source` |
 | `hmi_auto_time` (bool) | the tablet's automatic network time **setting** when the stamp was taken; not proof of a recent successful sync |
@@ -48,17 +48,20 @@ its `STATE` message (`boot`, `ms`: uint32 boot-scoped uptime in ms) that accompa
 (no firmware change). Every condition must hold, otherwise the time stays `null`:
 - a **fresh** STATE from the current connection, with `STATE.boot == origin_boot_id` (never across two boots);
 - `start_uptime_ms` = the run's durably recorded start uptime from the VCU manifest, not the START ACK arrival time;
-- `elapsed = (STATE.ms − start_uptime_ms) mod 2^32`; `started_at = tablet_now_at_STATE − elapsed`;
-- wraparound: uint32 ms wraps every ~49.7 days, so one value cannot rule out a full wrap. The tablet created the
-  `test_id` and saved the UTC when it sent CONFIG (`config_sent_at`); derive only if `tablet_now − config_sent_at <
-  2^32 ms` (exactly one candidate) and the result is not earlier than `config_sent_at` (allowing ~1 s link uncertainty);
+- `elapsed = (STATE.ms − start_uptime_ms) mod 2^32`; `started_at = tablet_utc_at_STATE − elapsed`;
+- wraparound (Mayank 2026-11-18): uint32 ms wraps every ~49.7 days, so one value cannot rule out a full wrap, and
+  UTC subtraction alone cannot bound it because the tablet's wall clock may change. When it sends CONFIG, the tablet
+  persists a **monotonic-clock anchor** with the `test_id`: its monotonic time (e.g. Android `elapsedRealtime`) and an
+  identifier of the tablet boot. Derive only if the tablet boot is still the same (clock/boot continuity verified)
+  and `mono_now − mono_at_CONFIG < 2^32 ms`, which establishes `0 ≤ elapsed < 2^32 ms` (exactly one candidate). If
+  continuity cannot be verified (for example after a tablet reboot), `started_at` and `started_at_source` stay `null`;
 - the result is approximate tablet-derived UTC (BLE processing, queueing, transport); it never affects control timing
   or evaluation.
 
 If neither applies: `started: true`, `started_at: null`, `started_at_source: null`.
 
-Accuracy: about one second (Bluetooth delay and ACK retries), not milliseconds. The ERP treats these times as
-approximate and never computes test results from them.
+Accuracy: estimated at about one second (Bluetooth delay and ACK retries), not milliseconds. **This estimate still
+needs validation on the bench.** The ERP treats these times as approximate and never computes test results from them.
 
 Rules (422 `INCONSISTENT_RUN` otherwise): `started = false` → `sample_count = 0`, `started_at = null`,
 `stop_reason = CONFIG_CANCELLED`, `final_state = ABORTED`, `outcome = INCOMPLETE`. `started = true` with
