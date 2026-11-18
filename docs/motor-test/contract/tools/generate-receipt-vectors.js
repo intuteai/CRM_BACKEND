@@ -28,7 +28,8 @@ const base = {
   sample_count: 3, held_count: 3, stored_sample_count: 3, final_state: 'COMPLETED', outcome: 'PASS', stop_reason: 'RAMP_COMPLETE', started: true,
   run_digest: D_V1, samples_digest: D_V1, payload_hash: PAYLOAD, vcu_id: 'VCU-01', origin_boot_id: 'b00t-0042',
 };
-const manifestOf = (f) => ({ test_id: f.test_id, vcu_id: f.vcu_id, origin_boot_id: f.origin_boot_id, started: f.started, final_state: f.final_state,
+const manifestOf = (f) => ({ test_id: f.test_id, vcu_id: f.vcu_id, origin_boot_id: f.origin_boot_id, started: f.started,
+  recording_complete: f.recording_complete ?? f.held_count === f.sample_count, final_state: f.final_state,
   stop_reason: f.stop_reason, sample_count: f.sample_count, held_count: f.held_count, run_digest: f.run_digest });
 
 // Each case: fields (signed), optional manifest override, optional raw tampering of the encoded strings.
@@ -85,6 +86,14 @@ const cases = [
   ['RR35', 'PASS although the VCU recording is incomplete (held 3 of 5)', { sample_count: 5 }, {}, 'LIFECYCLE_INCONSISTENT'],
   ['RR36', 'consistent ABORTED receipt, but the VCU manifest says FAULT', { final_state: 'ABORTED', stop_reason: 'OPERATOR_STOP', outcome: 'INCOMPLETE' }, { manifest: { final_state: 'FAULT', stop_reason: 'FAULT' } }, 'MANIFEST_MISMATCH'],
   ['RR37', 'stop_reason HB_LOSS in the receipt, OPERATOR_STOP in the VCU manifest', { final_state: 'ABORTED', stop_reason: 'HB_LOSS', outcome: 'INCOMPLETE' }, { manifest: { stop_reason: 'OPERATOR_STOP' } }, 'MANIFEST_MISMATCH'],
+  // ---------------------------------------------------------------- b2 = VCU recording_complete (VCU-ERP-04-R1, Mayank 2026-11-18)
+  ['RA9', 'equal counts but recording_complete=false (VCU not certain): archivable as INCOMPLETE, never treated as complete', { recording_complete: false, outcome: 'INCOMPLETE' }],
+  ['RR38', 'equal counts, recording_complete=false, outcome PASS: verdict rejected', { recording_complete: false }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR39', 'recording_complete=true with unequal counts (held 3 of 5)', { sample_count: 5, recording_complete: true, final_state: 'FAULT', stop_reason: 'FAULT', outcome: 'INCOMPLETE' }, {}, 'FLAGS_INCONSISTENT'],
+  ['RR40', 'signed b2 (complete) differs from the VCU manifest (not complete)', { outcome: 'INCOMPLETE' }, { manifest: { recording_complete: false } }, 'MANIFEST_MISMATCH'],
+  ['RR41', 'signed b2 (not complete) differs from the VCU manifest (complete)', { recording_complete: false, outcome: 'INCOMPLETE' }, { manifest: { recording_complete: true } }, 'MANIFEST_MISMATCH'],
+  ['RR42', 'CANCEL with recording_complete=false (a cancel holds nothing and must be a complete, empty recording)', { sample_count: 0, held_count: 0, stored_sample_count: 0, final_state: 'ABORTED', outcome: 'INCOMPLETE', stop_reason: 'CONFIG_CANCELLED', started: false, recording_complete: false, run_digest: D_EMPTY, samples_digest: D_EMPTY }, {}, 'FLAGS_INCONSISTENT'],
+  ['RR43', 'CANCEL with outcome PASS (a cancel is never an executed test)', { sample_count: 0, held_count: 0, stored_sample_count: 0, final_state: 'ABORTED', outcome: 'PASS', stop_reason: 'CONFIG_CANCELLED', started: false, run_digest: D_EMPTY, samples_digest: D_EMPTY }, {}, 'FLAGS_INCONSISTENT'],
 ];
 
 // 64-byte signature -> 86 base64url chars; the last char carries 4 data bits + 2 unused bits. Set an unused bit.

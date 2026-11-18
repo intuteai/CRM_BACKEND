@@ -128,9 +128,9 @@ def decide(signed, keyring, man):
     if not verify(b64url_strict(key['public_key']), msg_b, sig): return 'BAD_SIGNATURE'
     f, started = m['flags'], bool(m['flags'] & 8)
     if (bool(f & 1) != (m['samples_digest'] == m['run_digest']) or bool(f & 2) != (m['stored_sample_count'] == m['held_count'])
-            or bool(f & 4) != (m['held_count'] == m['sample_count']) or m['held_count'] > m['sample_count']
+            or (f & 4 and m['held_count'] != m['sample_count']) or m['held_count'] > m['sample_count']
             or m['stored_sample_count'] > m['held_count']
-            or (not started and (m['sample_count'] != 0 or m['stop_reason'] != 'CONFIG_CANCELLED'
+            or (not started and (not f & 4 or m['sample_count'] != 0 or m['stop_reason'] != 'CONFIG_CANCELLED'
                                  or m['final_state'] != 'ABORTED' or m['outcome'] != 'INCOMPLETE'))
             or (started and m['stop_reason'] == 'CONFIG_CANCELLED')):
         return 'FLAGS_INCONSISTENT'
@@ -144,7 +144,7 @@ def decide(signed, keyring, man):
     if m['vcu_id'] != man['vcu_id']: return 'VCU_ID_MISMATCH'
     if m['origin_boot_id'] != man['origin_boot_id']: return 'BOOT_ID_MISMATCH'
     if (m['run_digest'] != man['run_digest'] or m['sample_count'] != man['sample_count']
-            or m['held_count'] != man['held_count'] or started != man['started']
+            or m['held_count'] != man['held_count'] or started != man['started'] or bool(f & 4) != man['recording_complete']
             or m['final_state'] != man['final_state'] or m['stop_reason'] != man['stop_reason']): return 'MANIFEST_MISMATCH'
     if m['stored_sample_count'] != m['held_count']: return 'SHORTFALL'
     if m['samples_digest'] != m['run_digest']: return 'DIGEST_MISMATCH'

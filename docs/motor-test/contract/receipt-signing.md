@@ -7,7 +7,7 @@ this is agreed and verification is implemented.
 | File | What |
 |---|---|
 | `receipt-signing.md` | This specification |
-| `vectors/receipt-vectors.json` | 45 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
+| `vectors/receipt-vectors.json` | 52 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
 | `vectors/run-digest-vectors.json` | D13 vectors, now with V10 (b0 = 0) |
 | `tools/receipt.js` | Reference implementation, both sides (Node, no dependencies) |
 | `tools/generate-receipt-vectors.js` | Regenerates the receipt vectors |
@@ -72,12 +72,30 @@ ERP sanity check (PROPOSAL): a run is never rejected for its clock (that would l
 `clock_note` when `hmi_auto_time = false`, or `started_at` is later than the ERP receive time, or
 `ended_at < started_at`; the lookup shows these times as "unverified".
 
-## 3. Completeness (PROPOSAL)
+## 3. Completeness (definitions accepted by ERP and VCU, 2026-11-18, VCU-ERP-04-R1; app renames pending Pratham)
 
-New manifest/upload field **`held_count`**: the samples the VCU durably holds. `sample_count` stays the declared count.
-`run_digest` is D13 over exactly the held samples in `sample_seq` order. `held_count ≤ sample_count`.
+Exact uint32 values with `0 ≤ held_count ≤ sample_count`; an unknown count is never replaced by 0 or by `held_count`.
 
-- `recording_complete` = `held_count == sample_count` (the VCU knows whether it lost samples).
+- **`sample_count`**: the VCU's authoritative declared number of acquisition slots required during the run's **actual**
+  capture window, including known missed slots. Not the planned or admitted maximum, never inferred from the profile
+  or from ERP counts.
+- **`held_count`**: exact number of validated D13 records durably retained by the VCU and covered by `run_digest`.
+  On detected recording loss the VCU keeps the **contiguous validated prefix** and terminates acquisition, so held
+  readings are `sample_seq` 0 … held_count − 1.
+- **`recording_complete`**: the VCU's own flag: true only when the stream is coherent with no known loss **and** the
+  counts are equal. Equal counts alone never prove completeness. Signed as flag b2 (section 5).
+- `run_digest`: D13 over all held records in ascending `sample_seq`; never over absent or invented samples.
+  `stored_sample_count` / `samples_digest` are ERP fields, not aliases of either VCU count.
+- **Unfinalized runs:** unknown-count, uncertain-reset or corrupt histories have no final manifest and get **no
+  receipt**. They stay retained on the VCU (never deleted). How such evidence eventually reaches the ERP is an
+  **open requirement**, to be agreed separately.
+- Names (external, no implicit aliasing): `vcu_id` (e.g. `esp32c3-` + 12 lowercase hex), `origin_boot_id` (16 lowercase
+  hex; replaces the upload's `vcu.boot_id`), `start_uptime_ms`, `held_count`, `sample_count`, `recording_complete`,
+  `run_kind`, `config_hash`, `run_digest` (was the manifest `digest`). The VCU keeps a versioned durable format;
+  legacy files are never rewritten.
+- **`run_kind`:** the ERP stores it. Staging accepts explicitly marked synthetic runs (e.g. `host_simulation`);
+  production rejects every kind except a real bench run.
+- Retention/release policy is a **separate agreement**.
 - A **complete recording uploaded with missing samples**: ERP stores fewer than `held_count` → receipt shows a
   shortfall → the VCU keeps the data; the tablet re-uploads the missing samples under the same `test_id`.
 - A **recording already incomplete at the VCU**: the ERP must hold all `held_count` samples with the same digest;
@@ -116,7 +134,7 @@ The tablet forwards `message` and `signature` to the VCU unchanged.
 | 68 | 1 | final_state | 1 COMPLETED, 2 ABORTED, 3 FAULT |
 | 69 | 1 | outcome | 1 PASS, 2 FAIL, 3 INCOMPLETE, 4 INVALID |
 | 70 | 1 | stop_reason | 1 RAMP_COMPLETE, 2 OPERATOR_STOP, 3 HB_LOSS, 4 FAULT, 5 POWER_LOSS, 6 CONFIG_CANCELLED |
-| 71 | 1 | flags | b0 run_digest_match, b1 held_count_match, b2 recording_complete, b3 started; b4–b7 = 0 |
+| 71 | 1 | flags | b0 run_digest_match, b1 held_count_match, b2 recording_complete (the VCU's uploaded flag), b3 started; b4–b7 = 0 |
 | 72 | 32 | run_digest | raw SHA-256 bytes, as uploaded (from the VCU manifest) |
 | 104 | 32 | samples_digest | raw SHA-256 bytes, computed by the ERP over the stored samples |
 | 136 | 32 | payload_hash | raw SHA-256 bytes; signed for the record only (the VCU cannot recompute it) |
@@ -138,13 +156,14 @@ Checks in this order; the first failure is the reason (vectors use these names).
 2. `BAD_VERSION` (magic) / `MALFORMED_MESSAGE` (length, unknown enum code, reserved flag bits, identifier length or characters).
 3. `UNKNOWN_KEY`: key_id not in the VCU's provisioned, non-revoked keys.
 4. `BAD_SIGNATURE`: Ed25519 verification fails (including S ≥ L).
-5. `FLAGS_INCONSISTENT`: flags disagree with the values; `held > sample_count`; `stored > held`; `started = 0` but not
-   a zero-sample `ABORTED/CONFIG_CANCELLED/INCOMPLETE`; `CONFIG_CANCELLED` on a started run.
+5. `FLAGS_INCONSISTENT`: b0 or b1 disagree with the values; b2 set with `held ≠ sample_count` (b2 clear with equal
+   counts is allowed: equal counts never prove completeness); `held > sample_count`; `stored > held`; `started = 0`
+   but not a zero-sample, recording-complete `ABORTED/CONFIG_CANCELLED/INCOMPLETE`; `CONFIG_CANCELLED` on a started run.
 6. `LIFECYCLE_INCONSISTENT` (added after Mayank's review, 2026-11-18): stop_reason not permitted for final_state (table
    below); or a verdict (PASS/FAIL/INVALID) without final_state COMPLETED and complete evidence (flags b0, b1, b2 all set).
    ABORTED and FAULT are always INCOMPLETE.
 7. `TEST_ID_MISMATCH`, `VCU_ID_MISMATCH`, `BOOT_ID_MISMATCH`: against the VCU's own manifest (origin boot).
-8. `MANIFEST_MISMATCH`: run_digest, sample_count, held_count, started, **final_state or stop_reason** differ from the manifest.
+8. `MANIFEST_MISMATCH`: run_digest, sample_count, held_count, started, **recording_complete (b2), final_state or stop_reason** differ from the manifest.
 9. `SHORTFALL`: stored_sample_count ≠ held_count.
 10. `DIGEST_MISMATCH`: samples_digest ≠ run_digest.
 11. `RELEASE`.
@@ -196,15 +215,20 @@ message (magic, reserved bits, enum, truncated, trailing byte, identifier length
 malformed encoding (padding, `+ /`, trailing bits, whitespace, 63-byte signature) · RR31–RR37 lifecycle (added after
 Mayank's review: FAULT + PASS, COMPLETED + HB_LOSS, ABORTED + FAIL, ABORTED + POWER_LOSS, PASS on a VCU-incomplete
 recording, final_state and stop_reason differing from the manifest). RR9–RR12 now use outcome INCOMPLETE so they
-still test the shortfall, digest and manifest checks (a PASS there is caught earlier by step 6).
+still test the shortfall, digest and manifest checks (a PASS there is caught earlier by step 6) · b2 = VCU
+`recording_complete` (VCU-ERP-04-R1): RA9 equal counts but not complete, archivable as INCOMPLETE · RR38 the same with
+PASS · RR39 complete with unequal counts · RR40–RR41 b2 differs from the manifest (both directions) · RR42 CANCEL not
+complete · RR43 CANCEL with PASS. The 45 earlier vectors keep identical bytes, signatures and decisions.
 
 Regenerate: `node docs/motor-test/contract/tools/generate-receipt-vectors.js` · Check independently:
-`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 45
+`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 52
 decisions, and re-signs every untampered message byte for byte).
 
 ## 10. Open
 
-- Mayank: all 45 vectors and the lifecycle table verified 2026-11-18; still to review: held_count, b4–b7, production limits, firmware verifier and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
+- Mayank: 45 vectors and the lifecycle table verified 2026-11-18; to re-verify: the b2 amendment (52 vectors). Still open:
+  b4–b7, production limits, firmware verifier, key provisioning, retention/release policy, the unfinalized-run ingestion path.
+- Pratham: app renames `digest` → `run_digest`, `vcu.boot_id` → `origin_boot_id`; new fields `held_count`, `recording_complete`, `run_kind`.
 - Bench tablet (Redmi Pad 2) checked by Pratham 2026-11-18: automatic time and time zone on (`auto_time=1`,
   `auto_time_zone=1`, Asia/Calcutta). Settings only, not proof of a recent sync; the app records `hmi_auto_time` at
   each stamp. Times are still sent in UTC (`Z`); the tablet's time zone never appears in the upload.

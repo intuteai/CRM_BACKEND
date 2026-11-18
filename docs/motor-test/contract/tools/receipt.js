@@ -91,7 +91,8 @@ function encodeMessage(f) {
 function deriveFlags(f) {
   return (f.samples_digest === f.run_digest ? FLAG.RUN_DIGEST_MATCH : 0)
     | (f.stored_sample_count === f.held_count ? FLAG.HELD_COUNT_MATCH : 0)
-    | (f.held_count === f.sample_count ? FLAG.RECORDING_COMPLETE : 0)
+    // b2 = the VCU's own recording_complete (VCU-ERP-04-R1): equal counts alone never prove completeness
+    | ((f.recording_complete ?? f.held_count === f.sample_count) ? FLAG.RECORDING_COMPLETE : 0)
     | (f.started ? FLAG.STARTED : 0);
 }
 
@@ -141,9 +142,9 @@ function decide(signed, keyring, manifest) {
   // Signed flags must agree with the signed values (never trust one without the other).
   if (((msg.flags & FLAG.RUN_DIGEST_MATCH) !== 0) !== (msg.samples_digest === msg.run_digest)
     || ((msg.flags & FLAG.HELD_COUNT_MATCH) !== 0) !== (msg.stored_sample_count === msg.held_count)
-    || ((msg.flags & FLAG.RECORDING_COMPLETE) !== 0) !== (msg.held_count === msg.sample_count)
+    || ((msg.flags & FLAG.RECORDING_COMPLETE) && msg.held_count !== msg.sample_count) // complete => equal counts (not the reverse)
     || msg.held_count > msg.sample_count || msg.stored_sample_count > msg.held_count
-    || (!(msg.flags & FLAG.STARTED) && (msg.sample_count !== 0 || msg.stop_reason !== 'CONFIG_CANCELLED' || msg.final_state !== 'ABORTED' || msg.outcome !== 'INCOMPLETE'))
+    || (!(msg.flags & FLAG.STARTED) && (!(msg.flags & FLAG.RECORDING_COMPLETE) || msg.sample_count !== 0 || msg.stop_reason !== 'CONFIG_CANCELLED' || msg.final_state !== 'ABORTED' || msg.outcome !== 'INCOMPLETE'))
     || ((msg.flags & FLAG.STARTED) && msg.stop_reason === 'CONFIG_CANCELLED')) return { release: false, reason: 'FLAGS_INCONSISTENT' };
   // Lifecycle combinations: stop_reason must fit final_state; a verdict (PASS/FAIL/INVALID) needs COMPLETED with
   // complete, matching evidence; ABORTED and FAULT are always INCOMPLETE (D11).
@@ -157,6 +158,7 @@ function decide(signed, keyring, manifest) {
   // outcome is the HMI's verdict (D10), so the VCU checks it only through the combination rules above.
   if (msg.run_digest !== manifest.run_digest || msg.sample_count !== manifest.sample_count || msg.held_count !== manifest.held_count
     || ((msg.flags & FLAG.STARTED) !== 0) !== manifest.started
+    || ((msg.flags & FLAG.RECORDING_COMPLETE) !== 0) !== manifest.recording_complete
     || msg.final_state !== manifest.final_state || msg.stop_reason !== manifest.stop_reason) return { release: false, reason: 'MANIFEST_MISMATCH' };
   if (msg.stored_sample_count !== msg.held_count) return { release: false, reason: 'SHORTFALL' };
   if (msg.samples_digest !== msg.run_digest) return { release: false, reason: 'DIGEST_MISMATCH' };
