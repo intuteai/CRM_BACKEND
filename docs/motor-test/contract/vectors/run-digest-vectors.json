@@ -218,6 +218,23 @@
         "path": "samples[0].current_a",
         "note": "Upload rejected before the database transaction; nothing is stored."
       }
+    },
+    {
+      "id": "V10",
+      "description": "rpm invalid (b0=0): raw rpm_actual 1234 kept, digest unchanged; value unavailable for graphs/criteria",
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 0,
+          "rpm_actual": 1234,
+          "current_a": 0,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 6
+        }
+      ],
+      "expected_digest": "sha256:611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16"
     }
   ]
 }

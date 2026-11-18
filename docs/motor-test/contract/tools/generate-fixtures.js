@@ -114,6 +114,10 @@ const digestVectors = [
   ['V7', 'negative rpm_actual (int32)', [S(0, 0, 0, -3, 0.0, 48.0, null, 7)], 'sha256:7cda0eb89de5a74293773e7a6a76c675c19bc68303c2f052c206a589c162de76'],
   ['V8', 'reserved status_flags bit set', [S(0, 0, 0, 0, 0.0, 48.0, null, 0x0107)], { status: 400, code: 'VALIDATION_ERROR', path: 'samples[0].status_flags' }],
   ['V9', 'validity bit set (b1=1) but value is null', [S(0, 0, 0, 0, null, 48.0, null, 7)], { status: 422, code: 'INCONSISTENT_RUN', path: 'samples[0].current_a' }],
+  // v0.4 (agreed with Mayank 2026-11-18): b0 = 0 keeps the raw int32 rpm_actual in the record and the JSON (no null, no
+  // sentinel); the digest bytes are unchanged. The app/ERP treat that rpm_actual as unavailable for graphs and criteria.
+  // Expected value computed independently in Python (struct, 2026-11-18).
+  ['V10', 'rpm invalid (b0=0): raw rpm_actual 1234 kept, digest unchanged; value unavailable for graphs/criteria', [S(0, 0, 0, 1234, 0.0, 48.0, null, 6)], 'sha256:611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16'],
 ];
 
 let failures = 0;

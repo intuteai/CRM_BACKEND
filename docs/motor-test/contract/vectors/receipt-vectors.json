@@ -1,0 +1,1455 @@
+{
+  "title": "Signed archive receipt vectors - contract v0.4 DRAFT (not frozen)",
+  "spec": "docs/motor-test/contract/receipt-signing.md",
+  "warning": "TEST KEYS ONLY. Seeds are SHA-256 of the labels below and are public; never provision them on a real VCU.",
+  "test_keys": {
+    "A": {
+      "seed_label": "motor-test receipt TEST key A",
+      "seed_hex": "5fa438b731a73894d2c8fb03e07416d1ecbeed4b63c05adbd6d8847bcb57adb5",
+      "key_id": "1405073224d4d609",
+      "public_key": "PwNsJsNYxtgU6LzEmWez4yhLFIWJAmKFUEmBQMQn2A8",
+      "public_key_hex": "3f036c26c358c6d814e8bcc49967b3e3284b14858902628550498140c427d80f"
+    },
+    "B": {
+      "seed_label": "motor-test receipt TEST key B",
+      "seed_hex": "4c0bf0825714fb66c5fc5a0a4c000e349ebb2cfdd89b80a04718616944ed6d64",
+      "key_id": "8112cc1e57b2ba7a",
+      "public_key": "n-MGxbQ_Mp2hLfoU9nwseMg3ZrL56Sz4bYG-ZMoYI4A",
+      "public_key_hex": "9fe306c5b43f329da12dfa14f67c2c78c83766b2f9e92cf86d81be64ca182380"
+    },
+    "C": {
+      "seed_label": "motor-test receipt TEST key C",
+      "seed_hex": "c4abc9392a7d501cefa0a898c4a403b4b8be9f2ef0f0fb03a5bb8f721354179c",
+      "key_id": "5f78f578f8e41c20",
+      "public_key": "xeAcsd0Rp5rdGaB7TyDfyHBS7qS6dLLwe5CB01PxJVs",
+      "public_key_hex": "c5e01cb1dd11a79add19a07b4f20dfc87052eea4ba74b2f07b9081d353f1255b"
+    }
+  },
+  "vcu_keyring": [
+    {
+      "key_id": "1405073224d4d609",
+      "public_key": "PwNsJsNYxtgU6LzEmWez4yhLFIWJAmKFUEmBQMQn2A8"
+    },
+    {
+      "key_id": "8112cc1e57b2ba7a",
+      "public_key": "n-MGxbQ_Mp2hLfoU9nwseMg3ZrL56Sz4bYG-ZMoYI4A"
+    }
+  ],
+  "decision_order": [
+    "MALFORMED_ENCODING",
+    "BAD_VERSION / MALFORMED_MESSAGE",
+    "UNKNOWN_KEY",
+    "BAD_SIGNATURE",
+    "FLAGS_INCONSISTENT",
+    "TEST_ID_MISMATCH",
+    "VCU_ID_MISMATCH",
+    "BOOT_ID_MISMATCH",
+    "MANIFEST_MISMATCH",
+    "SHORTFALL",
+    "DIGEST_MISMATCH",
+    "RELEASE"
+  ],
+  "vectors": [
+    {
+      "id": "RA1",
+      "description": "complete COMPLETED/PASS run, ERP holds all 3 samples",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RA2",
+      "description": "VCU-known incomplete recording (holds 3 of 5), ERP holds all 3 -> release; stays INCOMPLETE",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAFAAAAAwAAAAMAAAACAwILvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "tPibsFENYxKHfiKduKk1XP8Z0JwgopKUGw46HTBvpJ9MB0vfCTGCE4ks3CT5cNpKifGp1snmj2fLIsTBJI5lDw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000500000003000000030000000203020bbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 5,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "ABORTED",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "OPERATOR_STOP",
+        "flags": 11,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 5,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RA3",
+      "description": "CANCEL before start: zero-sample ABORTED/CONFIG_CANCELLED, started=0",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAAAAAAAAAAAAAAAAACAwYH47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXjsMRCmPwcFJr79MiZb7kkJ65B5GSbk0yklZkbeFK4VeorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "F5uaQOw1XGYdk4vUNG5DL03h3nnvCsHglu_eYyWGxcZcFXFiQQ47xmsVBL_minkI8IXPtOlUvRTb0QeWyivhAw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a201000000000000000000000000000002030607e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 0,
+        "held_count": 0,
+        "stored_sample_count": 0,
+        "final_state": "ABORTED",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "CONFIG_CANCELLED",
+        "flags": 7,
+        "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "samples_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": false,
+        "sample_count": 0,
+        "held_count": 0,
+        "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RA4",
+      "description": "started run that recorded nothing (FAULT, 0 samples)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAAAAAAAAAAAAAAAAADAwQP47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXjsMRCmPwcFJr79MiZb7kkJ65B5GSbk0yklZkbeFK4VeorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "jJCe2VHaCSLih09dA8IdSpY3Kef9f9SVftC0i373fOiaciadJ0VTC5DMdD0dbcDgUarje5AZeW39xQzdxZN1BQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000000000000000000000000000303040fe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 0,
+        "held_count": 0,
+        "stored_sample_count": 0,
+        "final_state": "FAULT",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "FAULT",
+        "flags": 15,
+        "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "samples_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 0,
+        "held_count": 0,
+        "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RA5",
+      "description": "b0 = 0 (rpm_actual unavailable, raw int32 kept): digest = run-digest vector V10",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAABAAAAAQAAAAEAAAABAQEPYRkEyjXlF5tRukqMZOKJXftOnGtx--Z2Dri2LzgozRZhGQTKNeUXm1G6Soxk4old-06ca3H75nYOuLYvOCjNFuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "_SDSVpI62oMRSIxsw-MW1c9lfvVuk3ECcowGak15ni14GVntxwfuIbMytk_ITGBpYXBlRHM_IuWmX-Dyj5aOCA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000100000001000000010000000101010f611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 1,
+        "held_count": 1,
+        "stored_sample_count": 1,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16",
+        "samples_digest": "sha256:611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 1,
+        "held_count": 1,
+        "run_digest": "sha256:611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RA6",
+      "description": "identifier length boundaries: vcu_id 1 byte, origin_boot_id 32 bytes",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-AVYgYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmI",
+        "signature": "raOfHE-j8nafG9ujjzzjdTB91aiXqQMtAPEuu5DuFlCF1ULGTKhY7nygWUTxlZUFiR9QHj8S_lDQp-UZj3LTAw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe0156206262626262626262626262626262626262626262626262626262626262626262",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "V",
+        "origin_boot_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "V",
+        "origin_boot_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RA7",
+      "description": "signed with key B (rotation: B is in the second slot)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "8112cc1e57b2ba7a",
+        "message": "TVRSQ1BUMQCBEsweV7K6ensdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "D7X8tqXTkcwAKnZEp5jsC7Xbtl9g_-0gxn-947xJGGEftyiukkoz-MU6NzJemNdD5z3Crso70ail07trGfoIDg"
+      },
+      "message_hex": "4d545243505431008112cc1e57b2ba7a7b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "8112cc1e57b2ba7a",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RR1",
+      "description": "one message byte changed after signing (stored_at)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXiMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e230a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:15:01.876Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "BAD_SIGNATURE"
+      }
+    },
+    {
+      "id": "RR2",
+      "description": "one signature byte changed",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcucpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "BAD_SIGNATURE"
+      }
+    },
+    {
+      "id": "RR3",
+      "description": "non-canonical signature: S + L (same signature otherwise valid)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zaR-AC9ZhwgvkQsc-JFYJPLzE93zF0D8q94--t758LHHA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "BAD_SIGNATURE"
+      }
+    },
+    {
+      "id": "RR4",
+      "description": "key_id of a key the VCU does not hold (key C)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "5f78f578f8e41c20",
+        "message": "TVRSQ1BUMQBfePV4-OQcIHsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "0ZSDhaJ2kLji5xbll5HvozlpUBRLfwxzqqnOjHfLSzBkkKU_JvxAQp3QXAMsBR80myffr6GKO-dXhYGnDojDCA"
+      },
+      "message_hex": "4d545243505431005f78f578f8e41c207b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "5f78f578f8e41c20",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "UNKNOWN_KEY"
+      }
+    },
+    {
+      "id": "RR5",
+      "description": "key_id says key A but signed with key B",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "l9UL6AlJpQUQuQ5GlkkHKhOEGF7EtFpMPgVjYWpb1oLFCbcs_t-AgRXeaowfaUZzb8sJkR4PXEPyaG4iW744Cw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "BAD_SIGNATURE"
+      }
+    },
+    {
+      "id": "RR6",
+      "description": "validly signed receipt for another test_id",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "5e8d2c1b-7a6f-4e3d-9b2a-1c0f8e7d6a5b",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "TEST_ID_MISMATCH"
+      }
+    },
+    {
+      "id": "RR7",
+      "description": "validly signed, other vcu_id",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-02",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "VCU_ID_MISMATCH"
+      }
+    },
+    {
+      "id": "RR8",
+      "description": "validly signed with the reconnect boot id instead of the origin boot",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDM",
+        "signature": "ozxPXQq6OGoWMG6JI6ls1Dt3wx9r9uKd9r3hVi5H1PHf8HwYelUuptjik7-jpO_3wWugZstzoS0czY557gKiDQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303433",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0043"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "BOOT_ID_MISMATCH"
+      }
+    },
+    {
+      "id": "RR9",
+      "description": "complete recording uploaded with a missing sample: ERP stored 2 of the 3 held",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAIAAAABAQEMvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "DOg1Yo2c5MwwR9-s4oIxFzPPD_IZccvefnlLXWQXzAEF3wV910JEVPO1fWlQY6IbBADDVUtrsM3Kuk262xoPAA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000020000000101010cbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf64220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 2,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 12,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "SHORTFALL"
+      }
+    },
+    {
+      "id": "RR10",
+      "description": "counts equal but the stored samples differ (digest mismatch)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEOvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPb-amMfZvSOvWacVoAwsl7BMQ4hSiERG62AMj91KykICuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "2NHofwMfWAmR2q-dfO_ZxaquLQ5KAOrOD0pN9LM9cc-_0eud-SM0Vr_iqX9vUJicCjL5DLG3908kaUiAd8jjDw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010ebea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6fe6a631f66f48ebd669c568030b25ec1310e214a21111bad80323f752b29080aea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 14,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:fe6a631f66f48ebd669c568030b25ec1310e214a21111bad80323f752b29080a",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "DIGEST_MISMATCH"
+      }
+    },
+    {
+      "id": "RR11",
+      "description": "prefix trap: receipt claims held_count 2 and the 2-sample digest, VCU holds 3",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAgAAAAIAAAABAQELQiDTIOfTfmHNQXnOPbvLrV4CUOtq9zsTb8spcZ7DsjZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "AZM_IOrjJB2JWgLJRD1ZjG4LdkQmEZ4FbcDlTYOEjhRHAQjUWSTVLmUe8QGmKc8OcpoJKRRNmAg6cGALkriiBw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000002000000020000000101010b4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b2364220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 2,
+        "stored_sample_count": 2,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 11,
+        "run_digest": "sha256:4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236",
+        "samples_digest": "sha256:4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MANIFEST_MISMATCH"
+      }
+    },
+    {
+      "id": "RR12",
+      "description": "sample_count differs from the VCU manifest",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAEAAAAAwAAAAMAAAABAQELvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ljO7OpDbhIwnVX-Y4m5eGnK9JMxoOs4jhvDEkBHzGINfA4Ee6KhaChLSAnjuShb1S2meW0I4-qw1YxtIyBKcDw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000400000003000000030000000101010bbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 4,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 11,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MANIFEST_MISMATCH"
+      }
+    },
+    {
+      "id": "RR13",
+      "description": "started bit differs from the VCU manifest (VCU never started)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": false,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MANIFEST_MISMATCH"
+      }
+    },
+    {
+      "id": "RR14",
+      "description": "signed flags claim HELD_COUNT_MATCH but stored < held",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAIAAAABAQEOvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "--9dcjl1IkmeMoZTO0G41eq1KGVOzndY52ZSiQhlNxdG3Xo4Zcvl3wVM4-nabZsojaanfSCCBUJ_se1l7AQ4AA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000020000000101010ebea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf64220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 2,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 14,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "FLAGS_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR15",
+      "description": "started = 0 but samples are held",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEHvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "EJv779Pl4iqtahihO_d_ihrus02I71tNmOs-vBPKR3hHmg1qvSZsHXfnwnQ0Ty5HqK_w0DhVEAsyLlTh3wMCBA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a201000003000000030000000300000001010107bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 7,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": false,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "FLAGS_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR16",
+      "description": "CONFIG_CANCELLED on a started run",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAACAwYPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "Oar-gksmpKWaQp3dpnSq1XpUR-dmpYjxRumqkzvSmuIQYtLXZh9jsyZOVcDs6HcU9L5bqXIKuM6LjC9dYAAsAA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000203060fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "ABORTED",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "CONFIG_CANCELLED",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "FLAGS_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR17",
+      "description": "wrong magic / version (MTRCPT2)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMgAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "R7tkj-c2PnNGix6guC6ZHSBNqzMg9abgewkSCuyoCHlu3AQVDL_bqa9oDOMKEJlvwU_3rBMa34vQiqOPN-0yDA"
+      },
+      "message_hex": "4d545243505432001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "BAD_VERSION"
+      }
+    },
+    {
+      "id": "RR18",
+      "description": "reserved flag bit b4 set",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEfvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "-1O2CyOxUXTw4-M5KBEmXZ882jxLfhmH4rkzx4CrH6_ATgCWgJmIxVfXpEWKS1S5QUZLgvB9Vd7ktlkeYHOEAw"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101011fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR19",
+      "description": "final_state code 9 (unknown)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAAJAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "v92AS3ZaAgCpflSOoH__20nKpE4MJbhDXYH0UpT0VWGRbEuu-ZLdu5tyGrZq-x4BkJYdx4ukrnUfHnBqSCZwBg"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000901010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR20",
+      "description": "message truncated by one byte (signature over the truncated bytes)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNA",
+        "signature": "Hw2c-CrfgLY2FF55onakywn3xZ-MKmj3fRIjlxN53GjJ-sDmNUBljbfaqgG4AVetfLaXpS6J19_jOTBoUa9tDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d303034",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR21",
+      "description": "one extra trailing byte (signature over the longer bytes)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDIA",
+        "signature": "xD60pbrl458UykbW_K5YUB3vYMy-imNTMIMQgePY5SB1qRvvuGpruFrd_UexYpfbreV2ZPYDZ2WYrYyDGs2iCg"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d3030343200",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR22",
+      "description": "vcu_id length 0",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-AAliMDB0LTAwNDI",
+        "signature": "wWlpmm0m69KUwJH446ufG4vz85ytij2v82m0YVK6aJVEYa3YfevT_M1qcT-kSwvskdnWqiPCr2LANvSJeRmQAQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe0009623030742d30303432",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR23",
+      "description": "vcu_id length 33",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-IVZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVgliMDB0LTAwNDI",
+        "signature": "G9H4HNzNJGcivql8n30zZHpfrqURq5n-9AnDW4TlvOcMXy0eirJ6gf6zjxAAFl1mpSjI1ZBoqNMNaTLQncMRBA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe2156565656565656565656565656565656565656565656565656565656565656565609623030742d30303432",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR24",
+      "description": "vcu_id with a character outside [A-Za-z0-9._-] (space)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVSAwMQliMDB0LTAwNDI",
+        "signature": "PcMPdO8Hdrmt9mDnztB7eUbbM74E4aU2RgaQIDisdvj7bvu4RXGLBxCbAOkgq7E7MVEqoejoprCzh6eFxDTkDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe0656435520303109623030742d30303432",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU 01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR25",
+      "description": "origin_boot_id length 33",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMSFiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmI",
+        "signature": "U6DPr-jOfybKqIEEnY29OeSDMeelL89PA6AQ7Wjpfo2SqcsmbR1atGywIIBO0Y-rBnTxmfYsRwj1ujWEZbSqDg"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303121626262626262626262626262626262626262626262626262626262626262626262",
+      "decoded_message": null,
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_MESSAGE"
+      }
+    },
+    {
+      "id": "RR26",
+      "description": "base64url with \"=\" padding on the signature",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA=="
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_ENCODING"
+      }
+    },
+    {
+      "id": "RR27",
+      "description": "standard base64 characters (+ /) instead of base64url",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t+ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa+p81bFUocuphPBZRG3LkFIaT0ArBm+MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z+m0gTBaO2zZQG3anXv+BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_ENCODING"
+      }
+    },
+    {
+      "id": "RR28",
+      "description": "non-canonical trailing bits in the signature text",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDB"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_ENCODING"
+      }
+    },
+    {
+      "id": "RR29",
+      "description": "whitespace inside the message text",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQ AUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_ENCODING"
+      }
+    },
+    {
+      "id": "RR30",
+      "description": "signature 63 bytes",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LH"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MALFORMED_ENCODING"
+      }
+    }
+  ]
+}
