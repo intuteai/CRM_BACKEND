@@ -360,6 +360,50 @@
       }
     },
     {
+      "id": "RA8",
+      "description": "evidenced power interruption: FAULT / POWER_LOSS / INCOMPLETE, VCU holds 3 of 5, ERP holds all 3 (Mayank 2026-11-18)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAFAAAAAwAAAAMAAAADAwULvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "6N1dAjm16Ac0UgJC1MvZuQi6t3NW2nezC9k__vtovVdIDnZSYsZqEtcnai7u69Ik014twsk_jJ7iue93VpvRBQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000500000003000000030000000303050bbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 5,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "FAULT",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "POWER_LOSS",
+        "flags": 11,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "FAULT",
+        "stop_reason": "POWER_LOSS",
+        "sample_count": 5,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
       "id": "RR1",
       "description": "one message byte changed after signing (stored_at)",
       "signed_receipt": {
@@ -1660,14 +1704,14 @@
     },
     {
       "id": "RR34",
-      "description": "FAULT with stop_reason POWER_LOSS (not permitted for FAULT)",
+      "description": "ABORTED with stop_reason POWER_LOSS (power loss is FAULT; ABORTED is a controlled abort)",
       "signed_receipt": {
         "alg": "Ed25519",
         "key_id": "1405073224d4d609",
-        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAADAwUPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
-        "signature": "qJbMoKuJEAydzM-OAxJf9CdWH0cGJW88DrQwIMGBff2TUKbHbp_Fpq4lJqvRFg_uJTLgPWRgaYLdxLlmxI9RAA"
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAACAwUPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "FlGIu4nLHDK7cEGO2_3MU8eUldIrWqibQh2DJ2CjzDsxuTPaygNBh8YE-_AHI1TSP3WO6nuWbUy0A_neRZNbBQ"
       },
-      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000303050fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000203050fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
       "decoded_message": {
         "key_id": "1405073224d4d609",
         "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
@@ -1676,7 +1720,7 @@
         "sample_count": 3,
         "held_count": 3,
         "stored_sample_count": 3,
-        "final_state": "FAULT",
+        "final_state": "ABORTED",
         "outcome": "INCOMPLETE",
         "stop_reason": "POWER_LOSS",
         "flags": 15,
@@ -1691,7 +1735,7 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
-        "final_state": "FAULT",
+        "final_state": "ABORTED",
         "stop_reason": "POWER_LOSS",
         "sample_count": 3,
         "held_count": 3,

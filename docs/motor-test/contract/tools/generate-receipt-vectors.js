@@ -41,6 +41,7 @@ const cases = [
   ['RA5', 'b0 = 0 (rpm_actual unavailable, raw int32 kept): digest = run-digest vector V10', { sample_count: 1, held_count: 1, stored_sample_count: 1, run_digest: D_V10, samples_digest: D_V10 }],
   ['RA6', 'identifier length boundaries: vcu_id 1 byte, origin_boot_id 32 bytes', { vcu_id: 'V', origin_boot_id: 'b'.repeat(32) }],
   ['RA7', 'signed with key B (rotation: B is in the second slot)', { key: 'B' }],
+  ['RA8', 'evidenced power interruption: FAULT / POWER_LOSS / INCOMPLETE, VCU holds 3 of 5, ERP holds all 3 (Mayank 2026-11-18)', { sample_count: 5, final_state: 'FAULT', stop_reason: 'POWER_LOSS', outcome: 'INCOMPLETE' }],
   // ---------------------------------------------------------------- signature / key
   ['RR1', 'one message byte changed after signing (stored_at)', {}, { flipMessageByte: 50 }, 'BAD_SIGNATURE'],
   ['RR2', 'one signature byte changed', {}, { flipSignatureByte: 5 }, 'BAD_SIGNATURE'],
@@ -80,7 +81,7 @@ const cases = [
   ['RR31', 'Mayank probe 1: final_state FAULT with outcome PASS (RA1 otherwise)', { final_state: 'FAULT' }, {}, 'LIFECYCLE_INCONSISTENT'],
   ['RR32', 'Mayank probe 2: final_state COMPLETED with stop_reason HB_LOSS', { stop_reason: 'HB_LOSS' }, {}, 'LIFECYCLE_INCONSISTENT'],
   ['RR33', 'ABORTED / OPERATOR_STOP with outcome FAIL (a verdict on an aborted run)', { final_state: 'ABORTED', stop_reason: 'OPERATOR_STOP', outcome: 'FAIL' }, {}, 'LIFECYCLE_INCONSISTENT'],
-  ['RR34', 'FAULT with stop_reason POWER_LOSS (not permitted for FAULT)', { final_state: 'FAULT', stop_reason: 'POWER_LOSS', outcome: 'INCOMPLETE' }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR34', 'ABORTED with stop_reason POWER_LOSS (power loss is FAULT; ABORTED is a controlled abort)', { final_state: 'ABORTED', stop_reason: 'POWER_LOSS', outcome: 'INCOMPLETE' }, {}, 'LIFECYCLE_INCONSISTENT'],
   ['RR35', 'PASS although the VCU recording is incomplete (held 3 of 5)', { sample_count: 5 }, {}, 'LIFECYCLE_INCONSISTENT'],
   ['RR36', 'consistent ABORTED receipt, but the VCU manifest says FAULT', { final_state: 'ABORTED', stop_reason: 'OPERATOR_STOP', outcome: 'INCOMPLETE' }, { manifest: { final_state: 'FAULT', stop_reason: 'FAULT' } }, 'MANIFEST_MISMATCH'],
   ['RR37', 'stop_reason HB_LOSS in the receipt, OPERATOR_STOP in the VCU manifest', { final_state: 'ABORTED', stop_reason: 'HB_LOSS', outcome: 'INCOMPLETE' }, { manifest: { stop_reason: 'OPERATOR_STOP' } }, 'MANIFEST_MISMATCH'],

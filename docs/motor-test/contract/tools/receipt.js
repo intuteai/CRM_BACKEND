@@ -13,11 +13,12 @@ const OUTCOME = { PASS: 1, FAIL: 2, INCOMPLETE: 3, INVALID: 4 };
 const STOP_REASON = { RAMP_COMPLETE: 1, OPERATOR_STOP: 2, HB_LOSS: 3, FAULT: 4, POWER_LOSS: 5, CONFIG_CANCELLED: 6 };
 const FLAG = { RUN_DIGEST_MATCH: 1, HELD_COUNT_MATCH: 2, RECORDING_COMPLETE: 4, STARTED: 8 };
 const ED25519_L = (1n << 252n) + 27742317777372353535851937790883648493n;
-// Permitted stop_reason per final_state (PROPOSAL, review finding by Mayank 2026-11-18).
+// Permitted stop_reason per final_state (review by Mayank 2026-11-18): ABORTED = controlled abort; an evidenced power
+// interruption during an unfinished run is FAULT / POWER_LOSS; SAMPLE_LOSS is FAULT / FAULT with fault_code SAMPLE_LOSS.
 const STOP_FOR_STATE = {
   COMPLETED: ['RAMP_COMPLETE'],
-  ABORTED: ['OPERATOR_STOP', 'HB_LOSS', 'POWER_LOSS', 'CONFIG_CANCELLED'],
-  FAULT: ['FAULT'],
+  ABORTED: ['OPERATOR_STOP', 'HB_LOSS', 'CONFIG_CANCELLED'],
+  FAULT: ['FAULT', 'POWER_LOSS'],
 };
 const name = (map, v) => Object.keys(map).find((k) => map[k] === v);
 

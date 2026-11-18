@@ -135,8 +135,8 @@ def decide(signed, keyring, man):
             or (started and m['stop_reason'] == 'CONFIG_CANCELLED')):
         return 'FLAGS_INCONSISTENT'
     # lifecycle combinations (spec section 6, step 6)
-    allowed_stop = {'COMPLETED': {'RAMP_COMPLETE'}, 'ABORTED': {'OPERATOR_STOP', 'HB_LOSS', 'POWER_LOSS', 'CONFIG_CANCELLED'},
-                    'FAULT': {'FAULT'}}
+    allowed_stop = {'COMPLETED': {'RAMP_COMPLETE'}, 'ABORTED': {'OPERATOR_STOP', 'HB_LOSS', 'CONFIG_CANCELLED'},
+                    'FAULT': {'FAULT', 'POWER_LOSS'}}
     verdict = m['outcome'] != 'INCOMPLETE'
     if m['stop_reason'] not in allowed_stop[m['final_state']] or (verdict and (m['final_state'] != 'COMPLETED' or f & 7 != 7)):
         return 'LIFECYCLE_INCONSISTENT'

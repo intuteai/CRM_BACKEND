@@ -7,7 +7,7 @@ this is agreed and verification is implemented.
 | File | What |
 |---|---|
 | `receipt-signing.md` | This specification |
-| `vectors/receipt-vectors.json` | 44 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
+| `vectors/receipt-vectors.json` | 45 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
 | `vectors/run-digest-vectors.json` | D13 vectors, now with V10 (b0 = 0) |
 | `tools/receipt.js` | Reference implementation, both sides (Node, no dependencies) |
 | `tools/generate-receipt-vectors.js` | Regenerates the receipt vectors |
@@ -149,13 +149,18 @@ Checks in this order; the first failure is the reason (vectors use these names).
 10. `DIGEST_MISMATCH`: samples_digest ≠ run_digest.
 11. `RELEASE`.
 
-Permitted combinations (PROPOSAL, to agree with Mayank):
+Permitted combinations (agreed with Mayank 2026-11-18):
 
 | final_state | stop_reason | outcome |
 |---|---|---|
 | COMPLETED | RAMP_COMPLETE | PASS, FAIL or INVALID with complete matching evidence; otherwise INCOMPLETE |
-| ABORTED | OPERATOR_STOP, HB_LOSS, POWER_LOSS; CONFIG_CANCELLED only when started = 0 | INCOMPLETE |
-| FAULT | FAULT (fault_code in the upload) | INCOMPLETE |
+| ABORTED | OPERATOR_STOP, HB_LOSS; CONFIG_CANCELLED only when started = 0 (a controlled abort) | INCOMPLETE |
+| FAULT | FAULT (fault_code in the upload, e.g. `SAMPLE_LOSS`); POWER_LOSS (an evidenced power interruption during an unfinished run) | INCOMPLETE |
+
+Notes from the VCU (Mayank): an unexplained reset is **not** automatically POWER_LOSS; VCU_RESET / reset-cause
+diagnostics are kept until the cause is established. A run already finalised and verified keeps its original outcome
+after a reboot. VCU_RESET recovery is not finalised yet (no recovered terminal-manifest transaction), so it is outside
+this receipt version.
 
 Which signed lifecycle fields the VCU checks against its own manifest: **final_state and stop_reason** (the VCU is
 authoritative for how its run ended) and started. **outcome** is the tablet's verdict (D10), which the VCU does not
@@ -183,23 +188,23 @@ stored state; the VCU only acts on one that passes section 6.
 ## 9. Vectors (`vectors/receipt-vectors.json`)
 
 Test keys A, B (VCU slots) and C (unknown), from public seeds: **never provision them on a real VCU.**
-Accepted: RA1 complete run · RA2 VCU-known incomplete · RA3 CANCEL · RA4 started, zero samples (FAULT) · RA5 b0 = 0 (V10)
+Accepted: RA8 FAULT / POWER_LOSS (VCU holds 3 of 5, ERP holds all 3) · RA1 complete run · RA2 VCU-known incomplete · RA3 CANCEL · RA4 started, zero samples (FAULT) · RA5 b0 = 0 (V10)
 · RA6 identifier lengths 1 and 32 · RA7 key B (rotation). Rejected: RR1–RR5 signature/key (including S + L and
 key_id/key mismatch) · RR6–RR8 wrong run (test_id, vcu_id, reconnect boot) · RR9–RR13 validly signed shortfall,
 digest mismatch, prefix trap, manifest mismatch · RR14–RR16 inconsistent flags/started · RR17–RR25 malformed
 message (magic, reserved bits, enum, truncated, trailing byte, identifier lengths 0/33 and characters) · RR26–RR30
 malformed encoding (padding, `+ /`, trailing bits, whitespace, 63-byte signature) · RR31–RR37 lifecycle (added after
-Mayank's review: FAULT + PASS, COMPLETED + HB_LOSS, ABORTED + FAIL, FAULT + POWER_LOSS, PASS on a VCU-incomplete
+Mayank's review: FAULT + PASS, COMPLETED + HB_LOSS, ABORTED + FAIL, ABORTED + POWER_LOSS, PASS on a VCU-incomplete
 recording, final_state and stop_reason differing from the manifest). RR9–RR12 now use outcome INCOMPLETE so they
 still test the shortfall, digest and manifest checks (a PASS there is caught earlier by step 6).
 
 Regenerate: `node docs/motor-test/contract/tools/generate-receipt-vectors.js` · Check independently:
-`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 44
+`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 45
 decisions, and re-signs every untampered message byte for byte).
 
 ## 10. Open
 
-- Mayank: review of the 44 receipt vectors (incl. the lifecycle table and manifest binding) and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
+- Mayank: all 45 vectors and the lifecycle table verified 2026-11-18; still to review: held_count, b4–b7, production limits, firmware verifier and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
 - Bench tablet (Redmi Pad 2) checked by Pratham 2026-11-18: automatic time and time zone on (`auto_time=1`,
   `auto_time_zone=1`, Asia/Calcutta). Settings only, not proof of a recent sync; the app records `hmi_auto_time` at
   each stamp. Times are still sent in UTC (`Z`); the tablet's time zone never appears in the upload.
