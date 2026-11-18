@@ -28,7 +28,8 @@ const base = {
   sample_count: 3, held_count: 3, stored_sample_count: 3, final_state: 'COMPLETED', outcome: 'PASS', stop_reason: 'RAMP_COMPLETE', started: true,
   run_digest: D_V1, samples_digest: D_V1, payload_hash: PAYLOAD, vcu_id: 'VCU-01', origin_boot_id: 'b00t-0042',
 };
-const manifestOf = (f) => ({ test_id: f.test_id, vcu_id: f.vcu_id, origin_boot_id: f.origin_boot_id, started: f.started, sample_count: f.sample_count, held_count: f.held_count, run_digest: f.run_digest });
+const manifestOf = (f) => ({ test_id: f.test_id, vcu_id: f.vcu_id, origin_boot_id: f.origin_boot_id, started: f.started, final_state: f.final_state,
+  stop_reason: f.stop_reason, sample_count: f.sample_count, held_count: f.held_count, run_digest: f.run_digest });
 
 // Each case: fields (signed), optional manifest override, optional raw tampering of the encoded strings.
 const cases = [
@@ -51,10 +52,10 @@ const cases = [
   ['RR7', 'validly signed, other vcu_id', {}, { manifest: { vcu_id: 'VCU-02' } }, 'VCU_ID_MISMATCH'],
   ['RR8', 'validly signed with the reconnect boot id instead of the origin boot', { origin_boot_id: 'b00t-0043' }, { manifest: { origin_boot_id: 'b00t-0042' } }, 'BOOT_ID_MISMATCH'],
   // ---------------------------------------------------------------- validly signed shortfall / mismatch
-  ['RR9', 'complete recording uploaded with a missing sample: ERP stored 2 of the 3 held', { stored_sample_count: 2, samples_digest: D_TWO }, {}, 'SHORTFALL'],
-  ['RR10', 'counts equal but the stored samples differ (digest mismatch)', { samples_digest: D_OTHER }, {}, 'DIGEST_MISMATCH'],
-  ['RR11', 'prefix trap: receipt claims held_count 2 and the 2-sample digest, VCU holds 3', { held_count: 2, stored_sample_count: 2, run_digest: D_TWO, samples_digest: D_TWO }, { manifest: { held_count: 3, run_digest: D_V1 } }, 'MANIFEST_MISMATCH'],
-  ['RR12', 'sample_count differs from the VCU manifest', { sample_count: 4 }, { manifest: { sample_count: 3 } }, 'MANIFEST_MISMATCH'],
+  ['RR9', 'complete recording uploaded with a missing sample: ERP stored 2 of the 3 held', { stored_sample_count: 2, samples_digest: D_TWO, outcome: 'INCOMPLETE' }, {}, 'SHORTFALL'],
+  ['RR10', 'counts equal but the stored samples differ (digest mismatch)', { samples_digest: D_OTHER, outcome: 'INCOMPLETE' }, {}, 'DIGEST_MISMATCH'],
+  ['RR11', 'prefix trap: receipt claims held_count 2 and the 2-sample digest, VCU holds 3', { held_count: 2, stored_sample_count: 2, run_digest: D_TWO, samples_digest: D_TWO, outcome: 'INCOMPLETE' }, { manifest: { held_count: 3, run_digest: D_V1 } }, 'MANIFEST_MISMATCH'],
+  ['RR12', 'sample_count differs from the VCU manifest', { sample_count: 4, outcome: 'INCOMPLETE' }, { manifest: { sample_count: 3 } }, 'MANIFEST_MISMATCH'],
   ['RR13', 'started bit differs from the VCU manifest (VCU never started)', {}, { manifest: { started: false } }, 'MANIFEST_MISMATCH'],
   ['RR14', 'signed flags claim HELD_COUNT_MATCH but stored < held', { stored_sample_count: 2, samples_digest: D_TWO, flags: R.FLAG.HELD_COUNT_MATCH | R.FLAG.RECORDING_COMPLETE | R.FLAG.STARTED }, {}, 'FLAGS_INCONSISTENT'],
   ['RR15', 'started = 0 but samples are held', { started: false }, {}, 'FLAGS_INCONSISTENT'],
@@ -75,6 +76,14 @@ const cases = [
   ['RR28', 'non-canonical trailing bits in the signature text', {}, { sigText: (s) => s.slice(0, -1) + nextTrailing(s) }, 'MALFORMED_ENCODING'],
   ['RR29', 'whitespace inside the message text', {}, { msgText: (s) => s.slice(0, 10) + ' ' + s.slice(10) }, 'MALFORMED_ENCODING'],
   ['RR30', 'signature 63 bytes', {}, { sigBytes: (b) => b.subarray(0, 63) }, 'MALFORMED_ENCODING'],
+  // ---------------------------------------------------------------- lifecycle (review findings by Mayank, 2026-11-18)
+  ['RR31', 'Mayank probe 1: final_state FAULT with outcome PASS (RA1 otherwise)', { final_state: 'FAULT' }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR32', 'Mayank probe 2: final_state COMPLETED with stop_reason HB_LOSS', { stop_reason: 'HB_LOSS' }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR33', 'ABORTED / OPERATOR_STOP with outcome FAIL (a verdict on an aborted run)', { final_state: 'ABORTED', stop_reason: 'OPERATOR_STOP', outcome: 'FAIL' }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR34', 'FAULT with stop_reason POWER_LOSS (not permitted for FAULT)', { final_state: 'FAULT', stop_reason: 'POWER_LOSS', outcome: 'INCOMPLETE' }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR35', 'PASS although the VCU recording is incomplete (held 3 of 5)', { sample_count: 5 }, {}, 'LIFECYCLE_INCONSISTENT'],
+  ['RR36', 'consistent ABORTED receipt, but the VCU manifest says FAULT', { final_state: 'ABORTED', stop_reason: 'OPERATOR_STOP', outcome: 'INCOMPLETE' }, { manifest: { final_state: 'FAULT', stop_reason: 'FAULT' } }, 'MANIFEST_MISMATCH'],
+  ['RR37', 'stop_reason HB_LOSS in the receipt, OPERATOR_STOP in the VCU manifest', { final_state: 'ABORTED', stop_reason: 'HB_LOSS', outcome: 'INCOMPLETE' }, { manifest: { stop_reason: 'OPERATOR_STOP' } }, 'MANIFEST_MISMATCH'],
 ];
 
 // 64-byte signature -> 86 base64url chars; the last char carries 4 data bits + 2 unused bits. Set an unused bit.
@@ -125,7 +134,7 @@ fs.writeFileSync(OUT, JSON.stringify({
     key_id: v.keyId.toString('hex'), public_key: R.b64urlEncode(v.publicRaw), public_key_hex: v.publicRaw.toString('hex'),
   }])),
   vcu_keyring: KEYRING,
-  decision_order: ['MALFORMED_ENCODING', 'BAD_VERSION / MALFORMED_MESSAGE', 'UNKNOWN_KEY', 'BAD_SIGNATURE', 'FLAGS_INCONSISTENT', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'RELEASE'],
+  decision_order: ['MALFORMED_ENCODING', 'BAD_VERSION / MALFORMED_MESSAGE', 'UNKNOWN_KEY', 'BAD_SIGNATURE', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'RELEASE'],
   vectors,
 }, null, 2) + '\n');
 console.log(`wrote ${vectors.length} vectors to ${path.relative(process.cwd(), OUT)}`);

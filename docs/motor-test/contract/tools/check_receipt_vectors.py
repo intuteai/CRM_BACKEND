@@ -134,11 +134,18 @@ def decide(signed, keyring, man):
                                  or m['final_state'] != 'ABORTED' or m['outcome'] != 'INCOMPLETE'))
             or (started and m['stop_reason'] == 'CONFIG_CANCELLED')):
         return 'FLAGS_INCONSISTENT'
+    # lifecycle combinations (spec section 6, step 6)
+    allowed_stop = {'COMPLETED': {'RAMP_COMPLETE'}, 'ABORTED': {'OPERATOR_STOP', 'HB_LOSS', 'POWER_LOSS', 'CONFIG_CANCELLED'},
+                    'FAULT': {'FAULT'}}
+    verdict = m['outcome'] != 'INCOMPLETE'
+    if m['stop_reason'] not in allowed_stop[m['final_state']] or (verdict and (m['final_state'] != 'COMPLETED' or f & 7 != 7)):
+        return 'LIFECYCLE_INCONSISTENT'
     if m['test_id'] != man['test_id']: return 'TEST_ID_MISMATCH'
     if m['vcu_id'] != man['vcu_id']: return 'VCU_ID_MISMATCH'
     if m['origin_boot_id'] != man['origin_boot_id']: return 'BOOT_ID_MISMATCH'
     if (m['run_digest'] != man['run_digest'] or m['sample_count'] != man['sample_count']
-            or m['held_count'] != man['held_count'] or started != man['started']): return 'MANIFEST_MISMATCH'
+            or m['held_count'] != man['held_count'] or started != man['started']
+            or m['final_state'] != man['final_state'] or m['stop_reason'] != man['stop_reason']): return 'MANIFEST_MISMATCH'
     if m['stored_sample_count'] != m['held_count']: return 'SHORTFALL'
     if m['samples_digest'] != m['run_digest']: return 'DIGEST_MISMATCH'
     return 'RELEASE'
@@ -160,7 +167,7 @@ def main():
         ok = got == v['expected']['reason'] and (got == 'RELEASE') == v['expected']['release']
         # Re-sign untampered messages: the signature bytes must be identical (deterministic Ed25519).
         msg = bytes.fromhex(v['message_hex']); sig = b64url_strict(v['signed_receipt']['signature'])
-        if v['expected']['reason'] in ('RELEASE', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'FLAGS_INCONSISTENT'):
+        if v['expected']['reason'] in ('RELEASE', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT'):
             ok = ok and sig == sign(seeds[msg[8:16].hex()], msg)
         fails += not ok
         print(('PASS' if ok else 'FAIL'), v['id'], got)

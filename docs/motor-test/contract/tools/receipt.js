@@ -13,6 +13,12 @@ const OUTCOME = { PASS: 1, FAIL: 2, INCOMPLETE: 3, INVALID: 4 };
 const STOP_REASON = { RAMP_COMPLETE: 1, OPERATOR_STOP: 2, HB_LOSS: 3, FAULT: 4, POWER_LOSS: 5, CONFIG_CANCELLED: 6 };
 const FLAG = { RUN_DIGEST_MATCH: 1, HELD_COUNT_MATCH: 2, RECORDING_COMPLETE: 4, STARTED: 8 };
 const ED25519_L = (1n << 252n) + 27742317777372353535851937790883648493n;
+// Permitted stop_reason per final_state (PROPOSAL, review finding by Mayank 2026-11-18).
+const STOP_FOR_STATE = {
+  COMPLETED: ['RAMP_COMPLETE'],
+  ABORTED: ['OPERATOR_STOP', 'HB_LOSS', 'POWER_LOSS', 'CONFIG_CANCELLED'],
+  FAULT: ['FAULT'],
+};
 const name = (map, v) => Object.keys(map).find((k) => map[k] === v);
 
 // ------------------------------------------------------------------ encodings
@@ -138,17 +144,25 @@ function decide(signed, keyring, manifest) {
     || msg.held_count > msg.sample_count || msg.stored_sample_count > msg.held_count
     || (!(msg.flags & FLAG.STARTED) && (msg.sample_count !== 0 || msg.stop_reason !== 'CONFIG_CANCELLED' || msg.final_state !== 'ABORTED' || msg.outcome !== 'INCOMPLETE'))
     || ((msg.flags & FLAG.STARTED) && msg.stop_reason === 'CONFIG_CANCELLED')) return { release: false, reason: 'FLAGS_INCONSISTENT' };
+  // Lifecycle combinations: stop_reason must fit final_state; a verdict (PASS/FAIL/INVALID) needs COMPLETED with
+  // complete, matching evidence; ABORTED and FAULT are always INCOMPLETE (D11).
+  const verdict = msg.outcome !== 'INCOMPLETE';
+  if (!STOP_FOR_STATE[msg.final_state].includes(msg.stop_reason)
+    || (verdict && (msg.final_state !== 'COMPLETED' || (msg.flags & 0x07) !== 0x07))) return { release: false, reason: 'LIFECYCLE_INCONSISTENT' };
   if (msg.test_id !== manifest.test_id) return { release: false, reason: 'TEST_ID_MISMATCH' };
   if (msg.vcu_id !== manifest.vcu_id) return { release: false, reason: 'VCU_ID_MISMATCH' };
   if (msg.origin_boot_id !== manifest.origin_boot_id) return { release: false, reason: 'BOOT_ID_MISMATCH' };
+  // The VCU is authoritative for how its run ended: final_state and stop_reason must equal its manifest.
+  // outcome is the HMI's verdict (D10), so the VCU checks it only through the combination rules above.
   if (msg.run_digest !== manifest.run_digest || msg.sample_count !== manifest.sample_count || msg.held_count !== manifest.held_count
-    || ((msg.flags & FLAG.STARTED) !== 0) !== manifest.started) return { release: false, reason: 'MANIFEST_MISMATCH' };
+    || ((msg.flags & FLAG.STARTED) !== 0) !== manifest.started
+    || msg.final_state !== manifest.final_state || msg.stop_reason !== manifest.stop_reason) return { release: false, reason: 'MANIFEST_MISMATCH' };
   if (msg.stored_sample_count !== msg.held_count) return { release: false, reason: 'SHORTFALL' };
   if (msg.samples_digest !== msg.run_digest) return { release: false, reason: 'DIGEST_MISMATCH' };
   return { release: true, reason: 'RELEASE' };
 }
 
 module.exports = {
-  MAGIC, FINAL_STATE, OUTCOME, STOP_REASON, FLAG, ED25519_L,
+  MAGIC, FINAL_STATE, OUTCOME, STOP_REASON, FLAG, ED25519_L, STOP_FOR_STATE,
   b64urlEncode, b64urlDecodeStrict, keyFromSeed, keyIdOf, encodeMessage, decodeMessage, deriveFlags, signMessage, decide,
 };

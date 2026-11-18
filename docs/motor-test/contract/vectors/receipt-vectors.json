@@ -41,6 +41,7 @@
     "UNKNOWN_KEY",
     "BAD_SIGNATURE",
     "FLAGS_INCONSISTENT",
+    "LIFECYCLE_INCONSISTENT",
     "TEST_ID_MISMATCH",
     "VCU_ID_MISMATCH",
     "BOOT_ID_MISMATCH",
@@ -83,6 +84,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -125,6 +128,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "ABORTED",
+        "stop_reason": "OPERATOR_STOP",
         "sample_count": 5,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -167,6 +172,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": false,
+        "final_state": "ABORTED",
+        "stop_reason": "CONFIG_CANCELLED",
         "sample_count": 0,
         "held_count": 0,
         "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -209,6 +216,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "FAULT",
+        "stop_reason": "FAULT",
         "sample_count": 0,
         "held_count": 0,
         "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -251,6 +260,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 1,
         "held_count": 1,
         "run_digest": "sha256:611904ca35e5179b51ba4a8c64e2895dfb4e9c6b71fbe6760eb8b62f3828cd16"
@@ -293,6 +304,8 @@
         "vcu_id": "V",
         "origin_boot_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -335,6 +348,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -377,6 +392,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -419,6 +436,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -461,6 +480,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -503,6 +524,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -545,6 +568,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -587,6 +612,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -629,6 +656,8 @@
         "vcu_id": "VCU-02",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -671,6 +700,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -686,10 +717,10 @@
       "signed_receipt": {
         "alg": "Ed25519",
         "key_id": "1405073224d4d609",
-        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAIAAAABAQEMvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
-        "signature": "DOg1Yo2c5MwwR9-s4oIxFzPPD_IZccvefnlLXWQXzAEF3wV910JEVPO1fWlQY6IbBADDVUtrsM3Kuk262xoPAA"
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAIAAAABAwEMvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "tsRXlAIDQO1AzgYjlZK-EwVzjTjvORxq5O0nCDIcZDuV5sxOUgYDcsYeDChf_ulde4SNhQFWIwJ-0F78AQauAA"
       },
-      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000020000000101010cbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf64220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000020000000103010cbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf64220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
       "decoded_message": {
         "key_id": "1405073224d4d609",
         "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
@@ -699,7 +730,7 @@
         "held_count": 3,
         "stored_sample_count": 2,
         "final_state": "COMPLETED",
-        "outcome": "PASS",
+        "outcome": "INCOMPLETE",
         "stop_reason": "RAMP_COMPLETE",
         "flags": 12,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
@@ -713,6 +744,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -728,10 +761,10 @@
       "signed_receipt": {
         "alg": "Ed25519",
         "key_id": "1405073224d4d609",
-        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEOvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPb-amMfZvSOvWacVoAwsl7BMQ4hSiERG62AMj91KykICuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
-        "signature": "2NHofwMfWAmR2q-dfO_ZxaquLQ5KAOrOD0pN9LM9cc-_0eud-SM0Vr_iqX9vUJicCjL5DLG3908kaUiAd8jjDw"
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAwEOvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPb-amMfZvSOvWacVoAwsl7BMQ4hSiERG62AMj91KykICuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "dKf5LDLFDH9y11dFmIgn6a8UxenNq3njRO0AJAvoZ6ldpljHk_6JHUDeayFiPcq6I2JYADvKku4BWX9RGtj4CQ"
       },
-      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010ebea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6fe6a631f66f48ebd669c568030b25ec1310e214a21111bad80323f752b29080aea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000103010ebea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6fe6a631f66f48ebd669c568030b25ec1310e214a21111bad80323f752b29080aea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
       "decoded_message": {
         "key_id": "1405073224d4d609",
         "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
@@ -741,7 +774,7 @@
         "held_count": 3,
         "stored_sample_count": 3,
         "final_state": "COMPLETED",
-        "outcome": "PASS",
+        "outcome": "INCOMPLETE",
         "stop_reason": "RAMP_COMPLETE",
         "flags": 14,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
@@ -755,6 +788,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -770,10 +805,10 @@
       "signed_receipt": {
         "alg": "Ed25519",
         "key_id": "1405073224d4d609",
-        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAgAAAAIAAAABAQELQiDTIOfTfmHNQXnOPbvLrV4CUOtq9zsTb8spcZ7DsjZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
-        "signature": "AZM_IOrjJB2JWgLJRD1ZjG4LdkQmEZ4FbcDlTYOEjhRHAQjUWSTVLmUe8QGmKc8OcpoJKRRNmAg6cGALkriiBw"
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAgAAAAIAAAABAwELQiDTIOfTfmHNQXnOPbvLrV4CUOtq9zsTb8spcZ7DsjZCINMg59N-Yc1Bec49u8utXgJQ62r3OxNvyylxnsOyNuorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "oyESjVPxGHQcullGaC3FkzQsZ-DsShKrt8REr9rOdnTbGCosmjpeJZenHhXy5BQy6hJl2c8D42moCWOMJRhEDA"
       },
-      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000002000000020000000101010b4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b2364220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000002000000020000000103010b4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b2364220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
       "decoded_message": {
         "key_id": "1405073224d4d609",
         "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
@@ -783,7 +818,7 @@
         "held_count": 2,
         "stored_sample_count": 2,
         "final_state": "COMPLETED",
-        "outcome": "PASS",
+        "outcome": "INCOMPLETE",
         "stop_reason": "RAMP_COMPLETE",
         "flags": 11,
         "run_digest": "sha256:4220d320e7d37e61cd4179ce3dbbcbad5e0250eb6af73b136fcb29719ec3b236",
@@ -797,6 +832,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -812,10 +849,10 @@
       "signed_receipt": {
         "alg": "Ed25519",
         "key_id": "1405073224d4d609",
-        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAEAAAAAwAAAAMAAAABAQELvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
-        "signature": "ljO7OpDbhIwnVX-Y4m5eGnK9JMxoOs4jhvDEkBHzGINfA4Ee6KhaChLSAnjuShb1S2meW0I4-qw1YxtIyBKcDw"
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAEAAAAAwAAAAMAAAABAwELvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "rbSVbZE1C04KNxS5SKnUacyaRF4uuk8iGHvgdJjG_CxkJXgdbtPNUmTxP7xNUaUUuO2povQUMI3c0MnNoaLbCg"
       },
-      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000400000003000000030000000101010bbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000400000003000000030000000103010bbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
       "decoded_message": {
         "key_id": "1405073224d4d609",
         "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
@@ -825,7 +862,7 @@
         "held_count": 3,
         "stored_sample_count": 3,
         "final_state": "COMPLETED",
-        "outcome": "PASS",
+        "outcome": "INCOMPLETE",
         "stop_reason": "RAMP_COMPLETE",
         "flags": 11,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
@@ -839,6 +876,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -881,6 +920,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": false,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -923,6 +964,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -965,6 +1008,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": false,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1007,6 +1052,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "ABORTED",
+        "stop_reason": "CONFIG_CANCELLED",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1032,6 +1079,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1057,6 +1106,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1082,6 +1133,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": 9,
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1107,6 +1160,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1132,6 +1187,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1157,6 +1214,8 @@
         "vcu_id": "",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1182,6 +1241,8 @@
         "vcu_id": "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1207,6 +1268,8 @@
         "vcu_id": "VCU 01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1232,6 +1295,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1274,6 +1339,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1316,6 +1383,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1358,6 +1427,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1400,6 +1471,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1442,6 +1515,8 @@
         "vcu_id": "VCU-01",
         "origin_boot_id": "b00t-0042",
         "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
         "sample_count": 3,
         "held_count": 3,
         "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
@@ -1449,6 +1524,314 @@
       "expected": {
         "release": false,
         "reason": "MALFORMED_ENCODING"
+      }
+    },
+    {
+      "id": "RR31",
+      "description": "Mayank probe 1: final_state FAULT with outcome PASS (RA1 otherwise)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAADAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "1yVGonlNoaKCIhvsK35sKpFlXmfAc_A2nIcei5M05HXKsIbh6pYlfgWKjhCu0RVtDRGJDr5AQcBm7mhxqY4jDQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000301010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "FAULT",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "FAULT",
+        "stop_reason": "RAMP_COMPLETE",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "LIFECYCLE_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR32",
+      "description": "Mayank probe 2: final_state COMPLETED with stop_reason HB_LOSS",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQMPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "sJ7W6Xm49QiPYIyBsmBlzDELfCgWaa0iuEK1KiFFbHMp5_-xgh8a6ORPNdwKzG0psGfjuu8-PQB_sHT4hXIhCQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101030fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "HB_LOSS",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "HB_LOSS",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "LIFECYCLE_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR33",
+      "description": "ABORTED / OPERATOR_STOP with outcome FAIL (a verdict on an aborted run)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAACAgIPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "TvlOuC9QHWf8Fz0SRVF8Q62uby8j3bUv5Do4AFvJZXuYWigyEufrO-PayLVVS1J357n4DNiKpGRpL0EM4oytDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000202020fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "ABORTED",
+        "outcome": "FAIL",
+        "stop_reason": "OPERATOR_STOP",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "ABORTED",
+        "stop_reason": "OPERATOR_STOP",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "LIFECYCLE_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR34",
+      "description": "FAULT with stop_reason POWER_LOSS (not permitted for FAULT)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAADAwUPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "qJbMoKuJEAydzM-OAxJf9CdWH0cGJW88DrQwIMGBff2TUKbHbp_Fpq4lJqvRFg_uJTLgPWRgaYLdxLlmxI9RAA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000303050fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "FAULT",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "POWER_LOSS",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "FAULT",
+        "stop_reason": "POWER_LOSS",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "LIFECYCLE_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR35",
+      "description": "PASS although the VCU recording is incomplete (held 3 of 5)",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAAFAAAAAwAAAAMAAAABAQELvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "utNy4oVAL7bQ3FCrqf3pMrwTBs6TNCoDT6HmMgTSTfvZYgVOM5-CmsHckqo45ZqfOOvuITFovaBxn_abueqxCg"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000500000003000000030000000101010bbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 5,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 11,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
+        "sample_count": 5,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "LIFECYCLE_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RR36",
+      "description": "consistent ABORTED receipt, but the VCU manifest says FAULT",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAACAwIPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "SsyO0NKoc9k0SZGBQfdYulVK4LfgcAcVpF5vt92Dz8iD-EoOSmjEk114PHmRXqpwOOlT1TqbbqTu07NqoAKVDQ"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000203020fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "ABORTED",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "OPERATOR_STOP",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "FAULT",
+        "stop_reason": "FAULT",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MANIFEST_MISMATCH"
+      }
+    },
+    {
+      "id": "RR37",
+      "description": "stop_reason HB_LOSS in the receipt, OPERATOR_STOP in the VCU manifest",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAACAwMPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "bVnAy6W93CVDom57pNbJXlB-f6lq0c-xmobH-2r6i-wuSR-XclnJp2etvo0bgj-opNzWZfG__Y0v3wz2WnWnAg"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000203030fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "ABORTED",
+        "outcome": "INCOMPLETE",
+        "stop_reason": "HB_LOSS",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "final_state": "ABORTED",
+        "stop_reason": "OPERATOR_STOP",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6"
+      },
+      "expected": {
+        "release": false,
+        "reason": "MANIFEST_MISMATCH"
       }
     }
   ]

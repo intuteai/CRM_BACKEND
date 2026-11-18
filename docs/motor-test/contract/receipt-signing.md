@@ -7,7 +7,7 @@ this is agreed and verification is implemented.
 | File | What |
 |---|---|
 | `receipt-signing.md` | This specification |
-| `vectors/receipt-vectors.json` | 37 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
+| `vectors/receipt-vectors.json` | 44 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
 | `vectors/run-digest-vectors.json` | D13 vectors, now with V10 (b0 = 0) |
 | `tools/receipt.js` | Reference implementation, both sides (Node, no dependencies) |
 | `tools/generate-receipt-vectors.js` | Regenerates the receipt vectors |
@@ -140,11 +140,27 @@ Checks in this order; the first failure is the reason (vectors use these names).
 4. `BAD_SIGNATURE`: Ed25519 verification fails (including S ≥ L).
 5. `FLAGS_INCONSISTENT`: flags disagree with the values; `held > sample_count`; `stored > held`; `started = 0` but not
    a zero-sample `ABORTED/CONFIG_CANCELLED/INCOMPLETE`; `CONFIG_CANCELLED` on a started run.
-6. `TEST_ID_MISMATCH`, `VCU_ID_MISMATCH`, `BOOT_ID_MISMATCH`: against the VCU's own manifest (origin boot).
-7. `MANIFEST_MISMATCH`: run_digest, sample_count, held_count or started differ from the manifest.
-8. `SHORTFALL`: stored_sample_count ≠ held_count.
-9. `DIGEST_MISMATCH`: samples_digest ≠ run_digest.
-10. `RELEASE`.
+6. `LIFECYCLE_INCONSISTENT` (added after Mayank's review, 2026-11-18): stop_reason not permitted for final_state (table
+   below); or a verdict (PASS/FAIL/INVALID) without final_state COMPLETED and complete evidence (flags b0, b1, b2 all set).
+   ABORTED and FAULT are always INCOMPLETE.
+7. `TEST_ID_MISMATCH`, `VCU_ID_MISMATCH`, `BOOT_ID_MISMATCH`: against the VCU's own manifest (origin boot).
+8. `MANIFEST_MISMATCH`: run_digest, sample_count, held_count, started, **final_state or stop_reason** differ from the manifest.
+9. `SHORTFALL`: stored_sample_count ≠ held_count.
+10. `DIGEST_MISMATCH`: samples_digest ≠ run_digest.
+11. `RELEASE`.
+
+Permitted combinations (PROPOSAL, to agree with Mayank):
+
+| final_state | stop_reason | outcome |
+|---|---|---|
+| COMPLETED | RAMP_COMPLETE | PASS, FAIL or INVALID with complete matching evidence; otherwise INCOMPLETE |
+| ABORTED | OPERATOR_STOP, HB_LOSS, POWER_LOSS; CONFIG_CANCELLED only when started = 0 | INCOMPLETE |
+| FAULT | FAULT (fault_code in the upload) | INCOMPLETE |
+
+Which signed lifecycle fields the VCU checks against its own manifest: **final_state and stop_reason** (the VCU is
+authoritative for how its run ended) and started. **outcome** is the tablet's verdict (D10), which the VCU does not
+hold, so the VCU checks it only through the combination rules. The ERP upload validation will enforce the same table
+(today it enforces only "verdict ⇒ COMPLETED"; v0.4 implementation work).
 
 ## 7. Keys
 
@@ -172,15 +188,18 @@ Accepted: RA1 complete run · RA2 VCU-known incomplete · RA3 CANCEL · RA4 star
 key_id/key mismatch) · RR6–RR8 wrong run (test_id, vcu_id, reconnect boot) · RR9–RR13 validly signed shortfall,
 digest mismatch, prefix trap, manifest mismatch · RR14–RR16 inconsistent flags/started · RR17–RR25 malformed
 message (magic, reserved bits, enum, truncated, trailing byte, identifier lengths 0/33 and characters) · RR26–RR30
-malformed encoding (padding, `+ /`, trailing bits, whitespace, 63-byte signature).
+malformed encoding (padding, `+ /`, trailing bits, whitespace, 63-byte signature) · RR31–RR37 lifecycle (added after
+Mayank's review: FAULT + PASS, COMPLETED + HB_LOSS, ABORTED + FAIL, FAULT + POWER_LOSS, PASS on a VCU-incomplete
+recording, final_state and stop_reason differing from the manifest). RR9–RR12 now use outcome INCOMPLETE so they
+still test the shortfall, digest and manifest checks (a PASS there is caught earlier by step 6).
 
 Regenerate: `node docs/motor-test/contract/tools/generate-receipt-vectors.js` · Check independently:
-`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 37
+`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 44
 decisions, and re-signs every untampered message byte for byte).
 
 ## 10. Open
 
-- Mayank: review of the 37 receipt vectors and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
+- Mayank: review of the 44 receipt vectors (incl. the lifecycle table and manifest binding) and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
 - Bench tablet (Redmi Pad 2) checked by Pratham 2026-11-18: automatic time and time zone on (`auto_time=1`,
   `auto_time_zone=1`, Asia/Calcutta). Settings only, not proof of a recent sync; the app records `hmi_auto_time` at
   each stamp. Times are still sent in UTC (`Z`); the tablet's time zone never appears in the upload.

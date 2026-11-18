@@ -255,7 +255,7 @@ The tablet caches the published profile and criteria with their `sha256` and sen
 | Start time | The VCU keeps boot-scoped uptime, not UTC. `started_at` comes from the tablet clock. `started_at_source` is `HMI` (tablet time when the accepted START ACK arrived), `HMI_DERIVED` (rebuilt from the VCU's recorded start uptime, only when no `HMI` stamp exists and every listed check holds) or `null` when the time is unknown. The ERP never computes results from these times. |
 | b0 = 0 | D13 vector V10 (section 5.2): raw `rpm_actual` kept, digest unchanged, value treated as unavailable. |
 
-Vectors: `vectors/receipt-vectors.json` holds 37 receipt vectors (7 accepted, 30 rejected) with test-only keys. `tools/receipt.js` is the reference implementation and `tools/generate-receipt-vectors.js` regenerates the vectors. `tools/check_receipt_vectors.py` is an independent Python implementation (Ed25519 from RFC 8032, no shared code); it checks RFC 8032 test 1 first, agrees on all 37 decisions and re-signs every untampered message byte for byte.
+Vectors: `vectors/receipt-vectors.json` holds 44 receipt vectors (7 accepted, 37 rejected, including lifecycle combinations and manifest binding of final_state / stop_reason added after review) with test-only keys. `tools/receipt.js` is the reference implementation and `tools/generate-receipt-vectors.js` regenerates the vectors. `tools/check_receipt_vectors.py` is an independent Python implementation (Ed25519 from RFC 8032, no shared code); it checks RFC 8032 test 1 first, agrees on all 44 decisions and re-signs every untampered message byte for byte.
 
 ```
 node docs/motor-test/contract/tools/generate-receipt-vectors.js
@@ -573,7 +573,7 @@ Results of the ERP acceptance tests run against the staging backend, 2026-11-12 
 | Grant the first testing roles (operator account, testing head, viewers) | Rahul (ERP Admin) |
 | Change the shared operator password | Saatwik / Rahul |
 | Certificate pinning and renewal process for the tablet | Pratham and IT |
-| Contract v0.4 draft review: 37 receipt vectors, `held_count`, `origin_boot_id` in the VCU manifest, VCU verify-time measurements; then the ERP migration and key registry (section 5.4) | Mayank, Pratham, Rahul |
+| Contract v0.4 draft review: 44 receipt vectors, `held_count`, `origin_boot_id` in the VCU manifest, VCU verify-time measurements; then the ERP migration and key registry (section 5.4) | Mayank, Pratham, Rahul |
 | Contract sign-off: draft v0.3 (with the agreed v0.4 parts) becomes Interface Contract v1 at T012 | Mayank, Pratham, Rahul |
 
 **Technical limits:**

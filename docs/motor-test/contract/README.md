@@ -3,7 +3,7 @@
 **v0.4 DRAFT (2026-11-18, for review, not implemented):** signed archive receipt (Ed25519) so the VCU can trust
 the ERP's receipt before ACK_ARCHIVED, completeness rule (`held_count`), CANCEL before start, run start without UTC,
 and b0 = 0 (vector V10). See [`receipt-signing.md`](receipt-signing.md) and `vectors/receipt-vectors.json`
-(37 vectors, checked independently by `tools/check_receipt_vectors.py`).
+(44 vectors, checked independently by `tools/check_receipt_vectors.py`).
 
 **Changes in v0.3:** corrections move to the tablet, so operators never need the web CRM. Operators can look up runs by serial (`GET /api/testing/results?serial=`) and request a correction of a stored run (`POST /api/testing/results/{test_id}/corrections`, fixture 50: motor_serial, operator_ref or a remark only; readings and verdicts never change), and see its status (`GET …/corrections`, fixture 51). The testing head approves or rejects in the ERP. These endpoints are already live on the ERP.
 
