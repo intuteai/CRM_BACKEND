@@ -178,7 +178,9 @@ decisions, and re-signs every untampered message byte for byte).
 ## 10. Open
 
 - Mayank: review of the 37 receipt vectors and of `held_count` / completeness (current uptime: answered, `STATE.ms`).
-- Pratham: check automatic time on the bench tablet (informational only; the ERP never treats it as a verified sync).
+- Bench tablet (Redmi Pad 2) checked by Pratham 2026-11-18: automatic time and time zone on (`auto_time=1`,
+  `auto_time_zone=1`, Asia/Calcutta). Settings only, not proof of a recent sync; the app records `hmi_auto_time` at
+  each stamp. Times are still sent in UTC (`Z`); the tablet's time zone never appears in the upload.
 - Mayank: `held_count` and `origin_boot_id` in the manifest; ESP32-C3 heap, stack and verify-time measurements
   (Ed25519 verify libraries need roughly 10–20 KB of flash; 299 KB free); b4–b7 definitions.
 - ERP (after agreement): migration for `CONFIG_CANCELLED`, `started`, `held_count`, origin boot and start fields, the
