@@ -33,18 +33,29 @@ The VCU keeps boot-scoped uptime, not UTC. Nothing may invent a timestamp.
 | `origin_boot_id` | The VCU boot the run started in (immutable; not the current reconnect/recovery boot) |
 | `start_uptime_ms` | VCU uptime at START in `origin_boot_id`; `null` when `started = false` |
 | `started_at` | UTC from the **tablet** clock: the moment the tablet received the matching accepted START ACK; `null` = never captured |
-| `started_at_source` | `"HMI"` when `started_at` is set; `null` exactly when `started_at` is `null` |
+| `started_at_source` | enum `HMI` \| `HMI_DERIVED`; `null` exactly when `started_at` is `null` |
 | `ended_at`, `ended_at_source` | same rules as `started_at` / `started_at_source` |
 | `hmi_auto_time` (bool) | the tablet's automatic network time **setting** when the stamp was taken; not proof of a recent successful sync |
 
 `HMI` (confirmed by Pratham 2026-11-18): the tablet's UTC at receipt of the matching accepted START ACK, persisted
 at once against the `test_id` (with the tablet's monotonic clock and the VCU boot_id) and kept through recovery.
 It includes communication delay and does **not** confirm motor movement; RUNNING confirmation stays separate (the
-`started` field and STATE). If the tablet never captured the START moment, it sends `started: true`,
-`started_at: null`, `started_at_source: null`. **No time is ever reconstructed** from recovery time or VCU uptime.
+`started` field and STATE). A captured `HMI` stamp is never replaced during recovery.
 
-(Considered and dropped for v0.4: deriving the time from the VCU's `STATE.ms` uptime. Mayank confirmed the uptime
-is available, but Pratham will not reconstruct times; can be revisited later.)
+`HMI_DERIVED` (agreed by Pratham and Mayank 2026-11-18; only when no `HMI` stamp was captured): the time is
+reconstructed from the VCU's own recorded uptime, never from the recovery time. The VCU's current uptime comes from
+its `STATE` message (`boot`, `ms`: uint32 boot-scoped uptime in ms) that accompanies HELLO and heartbeat responses
+(no firmware change). Every condition must hold, otherwise the time stays `null`:
+- a **fresh** STATE from the current connection, with `STATE.boot == origin_boot_id` (never across two boots);
+- `start_uptime_ms` = the run's durably recorded start uptime from the VCU manifest, not the START ACK arrival time;
+- `elapsed = (STATE.ms − start_uptime_ms) mod 2^32`; `started_at = tablet_now_at_STATE − elapsed`;
+- wraparound: uint32 ms wraps every ~49.7 days, so one value cannot rule out a full wrap. The tablet created the
+  `test_id` and saved the UTC when it sent CONFIG (`config_sent_at`); derive only if `tablet_now − config_sent_at <
+  2^32 ms` (exactly one candidate) and the result is not earlier than `config_sent_at` (allowing ~1 s link uncertainty);
+- the result is approximate tablet-derived UTC (BLE processing, queueing, transport); it never affects control timing
+  or evaluation.
+
+If neither applies: `started: true`, `started_at: null`, `started_at_source: null`.
 
 Accuracy: about one second (Bluetooth delay and ACK retries), not milliseconds. The ERP treats these times as
 approximate and never computes test results from them.
