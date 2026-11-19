@@ -1,14 +1,20 @@
-# Motor Test ERP API — early draft v0.3 (2026-11-10)
+# Motor Test ERP API — contract v0.4 (draft text; live in the ERP)
 
-**v0.4 DRAFT (2026-11-18, for review, not implemented):** signed archive receipt (Ed25519) so the VCU can trust
+**Deployment status (2026-11-19, authoritative):** v0.4 is **live on staging and production** (backend commit 69aacd0c,
+migration 004 on both databases). Uploads opt in with `contract_version: "0.4"`; v0.3 uploads stay accepted.
+Receipt signing: **staging active** (key_id `70e57bbf84ae97cc`); **production key loaded** (key_id `61322efab675c04c`) and
+will sign from the first real bench upload, which needs the published pilot criteria (T046). `run_kind`: staging accepts
+`bench`, `host_simulation`, `synthetic`; production only `bench`. The contract text is still a draft until the T012
+sign-off. No key is provisioned in any VCU yet; ACK_ARCHIVED stays disabled.
+
+**v0.4 (agreed with VCU and HMI 2026-11-18/19):** signed archive receipt (Ed25519) so the VCU can trust
 the ERP's receipt before ACK_ARCHIVED, completeness rule (`held_count`), CANCEL before start, run start without UTC,
 and b0 = 0 (vector V10). See [`receipt-signing.md`](receipt-signing.md) and `vectors/receipt-vectors.json`
 (52 vectors, checked independently by `tools/check_receipt_vectors.py`).
 
 ## v0.4 in the API (`openapi.yaml` 0.4.0-draft, 2026-11-19)
 
-**Status: implemented on staging only** (`https://api.intute.biz/staging`, header `X-Staging-Key`); production after
-the signing-key setup.
+**Status:** see the deployment status at the top of this file. Staging: `https://api.intute.biz/staging` (header `X-Staging-Key`).
 
 - **Opt-in per upload:** send `contract_version: "0.4"` (schema `RunUploadV04`). Without it the upload is v0.3
   (schema `RunUpload`, what the deployed app sends) and stays accepted, except that the **lifecycle table now applies

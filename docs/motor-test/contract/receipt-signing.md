@@ -1,8 +1,15 @@
-# Contract v0.4 DRAFT: signed archive receipt, completeness, CANCEL and b0
+# Contract v0.4: signed archive receipt, completeness, CANCEL and b0
 
-Status: **draft for review by Mayank (VCU) and Pratham (HMI), 2026-11-18. Not frozen; nothing implemented in
-the ERP API yet.** Becomes part of Interface Contract v1 at T012. ACK_ARCHIVED stays disabled on the VCU until
-this is agreed and verification is implemented.
+**Deployment status (2026-11-19, authoritative):** v0.4 is **live on staging and production** (backend commit 69aacd0c,
+migration 004 on both databases). Uploads opt in with `contract_version: "0.4"`; v0.3 uploads stay accepted.
+Receipt signing: **staging active** (key_id `70e57bbf84ae97cc`); **production key loaded** (key_id `61322efab675c04c`) and
+will sign from the first real bench upload, which needs the published pilot criteria (T046). `run_kind`: staging accepts
+`bench`, `host_simulation`, `synthetic`; production only `bench`. The contract text is still a draft until the T012
+sign-off. No key is provisioned in any VCU yet; ACK_ARCHIVED stays disabled.
+
+The rules below are agreed with Mayank (VCU) and Pratham (HMI) unless marked PROPOSAL; the text becomes part of
+Interface Contract v1 at the T012 sign-off. ACK_ARCHIVED stays disabled on the VCU until device verification is
+implemented and the retention/release agreement is in place.
 
 | File | What |
 |---|---|

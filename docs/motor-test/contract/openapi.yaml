@@ -3,7 +3,7 @@ info:
   title: Motor Test ERP API (HMI <-> ERP)
   version: 0.4.0-draft
   description: |
-    DRAFT v0.4 (2026-11-19). v0.4 is implemented on staging only; production after the signing-key setup.
+    v0.4 (2026-11-19): live on staging and production (commit 69aacd0c). Receipts signed on staging (key 70e57bbf84ae97cc); production key 61322efab675c04c loaded, signing from the first real bench upload. Contract text is a draft until T012.
 
     What changed in v0.4 (spec: receipt-signing.md, sections 2-6):
     - Opt-in per upload: a body with `contract_version: "0.4"` is a v0.4 upload (schema RunUploadV04). A body
@@ -198,7 +198,7 @@ paths:
         - Only a 201/200 receipt allows ACK_ARCHIVED (with the manifest run_digest and receipt_id).
 
         Versions: body without `contract_version` = v0.3 (RunUpload); `contract_version: "0.4"` = v0.4 (RunUploadV04,
-        staging only for now). v0.3 and v0.4 field sets are exclusive: `vcu.boot_id` in a v0.4 body is 400 (fixture 67).
+        live on staging and production). v0.3 and v0.4 field sets are exclusive: `vcu.boot_id` in a v0.4 body is 400 (fixture 67).
 
         Consistency rules (422 INCONSISTENT_RUN, violations[] with the rule name):
         - LIFECYCLE_STOP_REASON (v0.3 and v0.4): COMPLETED -> RAMP_COMPLETE; ABORTED -> OPERATOR_STOP | HB_LOSS |
@@ -558,7 +558,7 @@ components:
         signature: { type: string, pattern: '^[A-Za-z0-9_-]{86}$', description: Strict base64url of the 64-byte signature (R||S) }
     RunUploadV04:
       description: |
-        v0.4 upload (opt-in with contract_version "0.4"; staging only until the signing-key setup). The v0.3 fields
+        v0.4 upload (opt-in with contract_version "0.4"; live on staging and production). The v0.3 fields
         with these changes: vcu.boot_id -> vcu.origin_boot_id; new run_kind, started, start_uptime_ms,
         started_at_source, ended_at_source, hmi_auto_time, held_count, recording_complete, config_hash;
         stop_reason adds CONFIG_CANCELLED; run_digest = D13 over the held samples 0..held_count-1.
