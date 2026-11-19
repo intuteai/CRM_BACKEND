@@ -1,7 +1,9 @@
 // Database access for the motor-test API (tables mt_*; see scripts/migrations/motor-test/001_mt_schema.sql).
 // Readings are always read per test through the primary key, never all at once (small RDS instance).
 'use strict';
+const crypto = require('crypto');
 const pool = require('../../config/db');
+const { signReceipt, signedReceiptJson } = require('../../services/testing/receiptSigner');
 
 const iso = (d) => (d ? new Date(d).toISOString() : null);
 
@@ -57,6 +59,8 @@ async function getCriteriaSnapshot(id) {
 const receiptJson = (r) => ({
   receipt_id: r.receipt_id, test_id: r.test_id, stored_sample_count: r.stored_sample_count, payload_hash: r.payload_hash,
   samples_digest: r.samples_digest, run_digest_match: r.run_digest_match, stored_at: iso(r.first_received_at),
+  // v0.4 only: the signed archive receipt (null when the server has no signing key); v0.3 receipts never carry it.
+  ...(r.contract_version === '0.4' ? { signed_receipt: signedReceiptJson(r) } : {}),
 });
 
 async function checkReferences(client, b) {
@@ -86,6 +90,7 @@ async function checkReferences(client, b) {
 // Atomic, idempotent store. Returns {status, body}.
 //   200 identical retry (original receipt) | 201 stored | 409 conflict | 400 unknown reference | 422 inconsistent
 async function storeRun({ body: b, payloadHash, samplesDigest, violations, uploadedBy }) {
+  const v04 = b.contract_version === '0.4';
   const client = await pool.connect();
   let failed;
   try {
@@ -95,7 +100,8 @@ async function storeRun({ body: b, payloadHash, samplesDigest, violations, uploa
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 7319))', [b.test_id]);
 
     const { rows: [existing] } = await client.query(`
-      SELECT r.receipt_id, r.test_id, r.payload_hash, r.first_received_at, t.stored_sample_count, t.samples_digest, t.run_digest_match
+      SELECT r.receipt_id, r.test_id, r.payload_hash, r.first_received_at, r.signing_key_id, r.signed_message, r.signature,
+             t.stored_sample_count, t.samples_digest, t.run_digest_match, t.contract_version
       FROM mt_upload_receipt r JOIN mt_test_run t ON t.test_id = r.test_id WHERE r.test_id = $1`, [b.test_id]);
     if (existing) {
       if (existing.payload_hash === payloadHash) {
@@ -122,12 +128,15 @@ async function storeRun({ body: b, payloadHash, samplesDigest, violations, uploa
 
     await client.query(`INSERT INTO mt_test_run (test_id, motor_serial, variant_id, profile_id, criteria_version_id, operator_id, operator_ref,
         operator_name, uploaded_by, vcu_id, vcu_fw_version, vcu_boot_id, hmi_version, started_at, ended_at, final_state, stop_reason, fault_code,
-        outcome, outcome_reasons, sample_count, stored_sample_count, run_digest, samples_digest, run_digest_match)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25)`,
+        outcome, outcome_reasons, sample_count, stored_sample_count, run_digest, samples_digest, run_digest_match,
+        contract_version, run_kind, started, start_uptime_ms, started_at_source, ended_at_source, hmi_auto_time, held_count, recording_complete, config_hash)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33,$34,$35)`,
       [b.test_id, b.motor_serial, b.variant_id, b.profile_id, b.criteria_version_id, b.operator_id, b.operator_ref, b.operator_name.trim(),
-        uploadedBy, b.vcu.vcu_id, b.vcu.fw_version, b.vcu.boot_id, b.hmi_version, b.started_at, b.ended_at, b.final_state, b.stop_reason,
+        uploadedBy, b.vcu.vcu_id, b.vcu.fw_version, v04 ? b.vcu.origin_boot_id : b.vcu.boot_id, b.hmi_version, b.started_at, b.ended_at, b.final_state, b.stop_reason,
         b.fault_code, b.outcome, JSON.stringify(b.outcome_reasons), b.sample_count, b.samples.length, b.run_digest, samplesDigest,
-        samplesDigest === b.run_digest]);
+        samplesDigest === b.run_digest, v04 ? '0.4' : '0.3', v04 ? b.run_kind : null, v04 ? b.started : null, v04 ? b.start_uptime_ms : null,
+        v04 ? b.started_at_source : null, v04 ? b.ended_at_source : null, v04 ? b.hmi_auto_time : null, v04 ? b.held_count : null,
+        v04 ? b.recording_complete : null, v04 ? b.config_hash : null]);
 
     if (b.samples.length) {
       const col = (k, f = (x) => x) => b.samples.map((s) => f(s[k]));
@@ -142,13 +151,31 @@ async function storeRun({ body: b, payloadHash, samplesDigest, violations, uploa
         SELECT $1, * FROM unnest($2::int[], $3::bigint[], $4::text[], $5::text[], $6::text[])`,
         [b.test_id, b.events.map((_, i) => i), b.events.map((e) => e.t_ms), b.events.map((e) => e.type), b.events.map((e) => e.code), b.events.map((e) => e.detail ?? null)]);
     }
-    const { rows: [rc] } = await client.query(`INSERT INTO mt_upload_receipt (test_id, payload_hash) VALUES ($1, $2)
-      RETURNING receipt_id, test_id, payload_hash, first_received_at`, [b.test_id, payloadHash]);
+    // v0.4: sign the receipt now and store message + signature with it (never changed afterwards). The signed
+    // stored_at has millisecond precision, so first_received_at is set explicitly to the same instant.
+    const receiptId = crypto.randomUUID();
+    const storedAt = new Date();
+    const signed = v04 ? signReceipt({
+      test_id: b.test_id, receipt_id: receiptId, stored_at: storedAt, sample_count: b.sample_count, held_count: b.held_count,
+      stored_sample_count: b.samples.length, final_state: b.final_state, outcome: b.outcome, stop_reason: b.stop_reason,
+      run_digest: b.run_digest, samples_digest: samplesDigest, payload_hash: payloadHash, recording_complete: b.recording_complete,
+      started: b.started, vcu_id: b.vcu.vcu_id, origin_boot_id: b.vcu.origin_boot_id,
+    }) : null;
+    if (signed) {
+      await client.query(`INSERT INTO mt_receipt_key (key_id, public_key, note) VALUES ($1, $2, 'registered automatically on first use')
+        ON CONFLICT (key_id) DO NOTHING`, [signed.key_id, signed.public_key]);
+      const { rows: [k] } = await client.query('SELECT revoked_at, retired_at FROM mt_receipt_key WHERE key_id = $1', [signed.key_id]);
+      if (k.revoked_at || k.retired_at) throw new Error(`receipt signing key ${signed.key_id} is retired or revoked`);
+    }
+    const { rows: [rc] } = await client.query(`INSERT INTO mt_upload_receipt (test_id, receipt_id, payload_hash, first_received_at, last_attempt_at,
+        signing_key_id, signed_message, signature) VALUES ($1, $2, $3, $4, $4, $5, $6, $7)
+      RETURNING receipt_id, test_id, payload_hash, first_received_at, signing_key_id, signed_message, signature`,
+      [b.test_id, receiptId, payloadHash, storedAt, signed?.key_id ?? null, signed?.signed_message ?? null, signed?.signature ?? null]);
     await client.query(`INSERT INTO mt_audit_event (actor_user_id, actor_operator_ref, action, entity, entity_id, detail)
       VALUES ($1, $2, 'RESULT_STORED', 'mt_test_run', $3, $4)`,
       [uploadedBy, b.operator_ref, b.test_id, { outcome: b.outcome, final_state: b.final_state, stored_sample_count: b.samples.length }]);
     await client.query('COMMIT');
-    return { status: 201, body: receiptJson({ ...rc, stored_sample_count: b.samples.length, samples_digest: samplesDigest, run_digest_match: samplesDigest === b.run_digest }) };
+    return { status: 201, body: receiptJson({ ...rc, stored_sample_count: b.samples.length, samples_digest: samplesDigest, run_digest_match: samplesDigest === b.run_digest, contract_version: v04 ? '0.4' : '0.3' }) };
   } catch (e) {
     await client.query('ROLLBACK').catch(() => {});
     failed = e;
@@ -163,7 +190,8 @@ async function storeRun({ body: b, payloadHash, samplesDigest, violations, uploa
 async function listRunsBySerial(serial) {
   const { rows } = await pool.query(`
     SELECT t.test_id, t.started_at, t.ended_at, t.final_state, t.outcome, t.operator_id, t.operator_ref, t.operator_name, t.uploaded_by,
-           v.code AS variant_code, p.version AS profile_version, c.version AS criteria_version, t.sample_count, t.stored_sample_count, t.received_at
+           v.code AS variant_code, p.version AS profile_version, c.version AS criteria_version, t.sample_count, t.stored_sample_count, t.received_at,
+           t.stop_reason, t.contract_version, t.run_kind, t.held_count, t.recording_complete
     FROM mt_test_run t
     JOIN mt_motor_variant v ON v.variant_id = t.variant_id
     JOIN mt_profile_version p ON p.profile_id = t.profile_id
@@ -183,16 +211,23 @@ async function getRun(testId, { offset, limit }) {
   const samples = await pool.query(`SELECT sample_seq::float8 AS sample_seq, t_ms::float8 AS t_ms, rpm_cmd, rpm_actual, current_a, voltage_v, bemf_v, status_flags
                 FROM mt_test_sample WHERE test_id = $1 ORDER BY sample_seq OFFSET $2 LIMIT $3`, [testId, offset, limit]);
   const events = await pool.query('SELECT t_ms::float8 AS t_ms, type, code, detail FROM mt_test_event WHERE test_id = $1 ORDER BY event_seq', [testId]);
-  const receipt = await pool.query('SELECT receipt_id, test_id, payload_hash, first_received_at FROM mt_upload_receipt WHERE test_id = $1', [testId]);
+  const receipt = await pool.query('SELECT receipt_id, test_id, payload_hash, first_received_at, signing_key_id, signed_message, signature FROM mt_upload_receipt WHERE test_id = $1', [testId]);
   const profile = await pool.query('SELECT * FROM mt_profile_version WHERE profile_id = $1', [t.profile_id]);
   const criteria = await pool.query('SELECT * FROM mt_criteria_version WHERE criteria_version_id = $1', [t.criteria_version_id]);
   return {
     test_id: t.test_id, motor_serial: t.motor_serial, variant_id: t.variant_id, variant_code: t.variant_code, profile_id: t.profile_id, criteria_version_id: t.criteria_version_id,
     operator_id: t.operator_id, operator_ref: t.operator_ref, operator_name: t.operator_name, uploaded_by: t.uploaded_by,
-    vcu: { vcu_id: t.vcu_id, fw_version: t.vcu_fw_version, boot_id: t.vcu_boot_id }, hmi_version: t.hmi_version,
+    vcu: t.contract_version === '0.4'
+      ? { vcu_id: t.vcu_id, fw_version: t.vcu_fw_version, origin_boot_id: t.vcu_boot_id }
+      : { vcu_id: t.vcu_id, fw_version: t.vcu_fw_version, boot_id: t.vcu_boot_id },
+    hmi_version: t.hmi_version,
+    contract_version: t.contract_version, run_kind: t.run_kind, started: t.started, start_uptime_ms: t.start_uptime_ms === null ? null : Number(t.start_uptime_ms),
+    started_at_source: t.started_at_source, ended_at_source: t.ended_at_source, hmi_auto_time: t.hmi_auto_time,
+    held_count: t.held_count, recording_complete: t.recording_complete, config_hash: t.config_hash,
+    origin_boot_id: t.contract_version === '0.4' ? t.vcu_boot_id : null,
     started_at: iso(t.started_at), ended_at: iso(t.ended_at), final_state: t.final_state, stop_reason: t.stop_reason, fault_code: t.fault_code,
     outcome: t.outcome, outcome_reasons: t.outcome_reasons, sample_count: t.sample_count, run_digest: t.run_digest, received_at: iso(t.received_at),
-    receipt: receipt.rows[0] && receiptJson({ ...receipt.rows[0], stored_sample_count: t.stored_sample_count, samples_digest: t.samples_digest, run_digest_match: t.run_digest_match }),
+    receipt: receipt.rows[0] && receiptJson({ ...receipt.rows[0], stored_sample_count: t.stored_sample_count, samples_digest: t.samples_digest, run_digest_match: t.run_digest_match, contract_version: t.contract_version }),
     profile: profileJson(profile.rows[0]), criteria: criteriaJson(criteria.rows[0]),
     events: events.rows,
     samples: samples.rows,

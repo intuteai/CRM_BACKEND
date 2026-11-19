@@ -126,7 +126,7 @@ Note that only the `operator` role may upload or add corrections. A testing head
 
 ## 3. HMI API (tablet)
 
-All paths are under `/api/testing` and need `Authorization: Bearer <JWT>`. The tablet logs in with the existing `POST /api/auth/login` and sends `X-App-Version` on every call, which gives it a 12 h token. Token expiry is the JWT `exp` claim, or `token_expires_at` from `/me`. Only `AUTH_INVALID_TOKEN` and `AUTH_INVALID_USER` mean "log in again". In the tables, "all four" means every testing role, "head" is `testing_head`, "admin" is `testing_admin`, and `:id` in a `/results/...` path is the run's `test_id`. The contract is `docs/motor-test/contract/openapi.yaml` (v0.3, not frozen; it becomes Interface Contract v1 after sign-off at T012). A v0.4 draft (section 5.4) is under review and is not implemented in this API. The tablet's staging base URL is `https://api.intute.biz/staging` (section 9.1), as in the `servers` entry of `openapi.yaml`.
+All paths are under `/api/testing` and need `Authorization: Bearer <JWT>`. The tablet logs in with the existing `POST /api/auth/login` and sends `X-App-Version` on every call, which gives it a 12 h token. Token expiry is the JWT `exp` claim, or `token_expires_at` from `/me`. Only `AUTH_INVALID_TOKEN` and `AUTH_INVALID_USER` mean "log in again". In the tables, "all four" means every testing role, "head" is `testing_head`, "admin" is `testing_admin`, and `:id` in a `/results/...` path is the run's `test_id`. The contract is `docs/motor-test/contract/openapi.yaml` (v0.3, not frozen; it becomes Interface Contract v1 after sign-off at T012). Contract v0.4 (section 5.4) is implemented **on staging** (uploads opt in with `contract_version: "0.4"`; v0.3 uploads stay accepted unchanged, except that the agreed lifecycle table now applies to every upload); production needs migration 004 and a signing key first. The tablet's staging base URL is `https://api.intute.biz/staging` (section 9.1), as in the `servers` entry of `openapi.yaml`.
 
 | Method | Path | Roles | Notes |
 |---|---|---|---|
@@ -241,7 +241,11 @@ Frozen when a version is approved (`adminModel.sha256Of`), using the same canoni
 
 The tablet caches the published profile and criteria with their `sha256` and sends both hashes with every upload; the ERP refuses an upload whose hashes do not match the versions it names. Vectors: `profile-criteria-hash-vectors.json`.
 
-### 5.4 Contract v0.4 draft: signed archive receipt (not implemented)
+### 5.4 Contract v0.4: signed archive receipt (implemented on staging, 2026-11-19)
+
+Implementation: `services/testing/validateRun.js` (v0.4 schema and rules CANCEL_SHAPE, START_UPTIME_REQUIRED, HELD_COUNT_RANGE, RECORDING_COMPLETE_COUNTS, RECORDING_COMPLETE_REQUIRED, TIME_SOURCE, and LIFECYCLE_STOP_REASON for every upload), `services/testing/receiptSigner.js` (message encoder and Ed25519 signing from `RECEIPT_SIGNING_SEED`), `models/testing/testingModel.js` (new columns; the receipt is signed inside the upload transaction and stored, so a retry returns the byte-identical signature), `controllers/testing/testing.controller.js` (`run_kind` gate: 422 `RUN_KIND_NOT_ALLOWED`; staging accepts `bench`, `host_simulation`, `synthetic`, production only `bench`), migration `004_contract_v04.sql` (columns, lifecycle and v0.4 CHECKs, `mt_receipt_key` registry with retire/revoke-once guard, stored signatures that can never change). Tests: `tests/testing_v04_api.test.js` (22, signs with the published test key A and checks every receipt with the reference VCU decision); `check_rules.js` now proves 38 database rules. Fixtures 60–68 in the contract folder.
+
+The agreed design:
 
 **Status: DRAFT, under review by the VCU and HMI owners (2026-11-18). Nothing in the ERP API implements it yet.** The specification is `docs/motor-test/contract/receipt-signing.md`. It becomes part of Interface Contract v1 at T012. `ACK_ARCHIVED` stays disabled on the VCU until it is agreed and verification is implemented.
 

@@ -63,8 +63,9 @@ If neither applies: `started: true`, `started_at: null`, `started_at_source: nul
 Accuracy: estimated at about one second (Bluetooth delay and ACK retries), not milliseconds. **This estimate still
 needs validation on the bench.** The ERP treats these times as approximate and never computes test results from them.
 
-Rules (422 `INCONSISTENT_RUN` otherwise): `started = false` → `sample_count = 0`, `started_at = null`,
-`stop_reason = CONFIG_CANCELLED`, `final_state = ABORTED`, `outcome = INCOMPLETE`. `started = true` with
+Rules (422 `INCONSISTENT_RUN` otherwise): `started = false` → `sample_count = 0`, `held_count = 0`, no samples,
+`started_at = null`, `start_uptime_ms = null`, `recording_complete = true`, `stop_reason = CONFIG_CANCELLED`,
+`final_state = ABORTED`, `outcome = INCOMPLETE` (rule CANCEL_SHAPE). `started = true` with
 `started_at = null` means "started, UTC unknown". `CONFIG_CANCELLED` only when `started = false`.
 `*_source` must be `null` exactly when its time is `null`.
 
@@ -141,8 +142,10 @@ The tablet forwards `message` and `signature` to the VCU unchanged.
 | 168 | 1+n | vcu_id | u8 length n (1–32) + ASCII `[A-Za-z0-9._-]`; equals the manifest field `vcu_id` |
 | 169+n | 1+m | origin_boot_id | u8 length m (1–32) + ASCII `[A-Za-z0-9._-]` |
 
-No trailing bytes. Flags must agree with the values they summarise (b0 ⇔ samples_digest = run_digest,
-b1 ⇔ stored = held, b2 ⇔ held = sample_count); a disagreement is rejected even with a valid signature.
+No trailing bytes. b0 and b1 must agree with the values they summarise (b0 ⇔ samples_digest = run_digest,
+b1 ⇔ stored = held). b2 is the VCU's uploaded `recording_complete`, not derived from the counts: b2 set requires
+held = sample_count, but equal counts with b2 clear are valid (equal counts never prove completeness). A disagreement
+is rejected even with a valid signature (section 6, step 5).
 
 **Ed25519:** pure Ed25519 (RFC 8032 section 5.1): no prehash, no context. Public key 32 bytes, signature 64 bytes (R‖S).
 Reject S ≥ L (non-canonical). **base64url:** RFC 4648 section 5 alphabet, no padding, no whitespace; unused trailing bits

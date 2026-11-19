@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Proves the database-level safety rules of 001_mt_schema.sql on a NON-production database.
+// Proves the database-level safety rules of the motor-test migrations (001-004) on a NON-production database.
 // Everything runs in one transaction that is rolled back: nothing is left behind.
 //   node scripts/migrations/motor-test/check_rules.js --db erp_staging
 
@@ -34,7 +34,7 @@ const D = (c) => 'sha256:' + c.repeat(64);
   try {
     const head = 1, other = 843; // admin creates, a different user approves
     const op = (await q(`INSERT INTO mt_operator (name, created_by) VALUES ('Check Operator', $1) RETURNING operator_ref`, [head])).rows[0].operator_ref;
-    const v = (await q(`INSERT INTO mt_motor_variant (product_id, code, created_by) VALUES (2, 'CHECK-VARIANT', $1) RETURNING variant_id`, [head])).rows[0].variant_id;
+    const v = (await q(`INSERT INTO mt_motor_variant (product_id, code, created_by) VALUES ((SELECT min(product_id) FROM inventory WHERE product_id NOT IN (SELECT product_id FROM mt_motor_variant)), 'CHECK-VARIANT', $1) RETURNING variant_id`, [head])).rows[0].variant_id;
     const prof = (await q(`INSERT INTO mt_profile_version (variant_id, version, max_rpm, step_rpm, duration_s, sample_hz, created_by)
                            VALUES ($1, 1, 3000, 10, 120, 10, $2) RETURNING profile_id`, [v, head])).rows[0].profile_id;
     const crit = (await q(`INSERT INTO mt_criteria_version (variant_id, version, definition, created_by) VALUES ($1, 1, '{"rules":[]}', $2) RETURNING criteria_version_id`, [v, head])).rows[0].criteria_version_id;
@@ -88,6 +88,34 @@ const D = (c) => 'sha256:' + c.repeat(64);
     await expect('correction cannot be decided twice', true, `UPDATE mt_correction SET status='REJECTED' WHERE correction_id=$1`, [corr], /MT_IMMUTABLE/);
     await q(`INSERT INTO mt_audit_event (actor_user_id, action, entity, entity_id) VALUES (1,'CHECK','mt_test_run',$1)`, [T1]);
     await expect('audit events cannot be edited', true, `UPDATE mt_audit_event SET action='X' WHERE entity_id=$1`, [T1], /MT_IMMUTABLE/);
+
+    // ---- 004: lifecycle table, v0.4 facts, receipt keys and signatures
+    await tryRun('COMPLETED + HB_LOSS is refused (lifecycle table)', '77777777-7777-4777-8777-777777777777', { state: 'COMPLETED', stop: 'HB_LOSS', outcome: 'INCOMPLETE', count: 2 }, /lifecycle_check/);
+    await tryRun('ABORTED + POWER_LOSS is refused (power loss is FAULT)', '88888888-8888-4888-8888-888888888888', { state: 'ABORTED', stop: 'POWER_LOSS', outcome: 'INCOMPLETE', count: 0 }, /lifecycle_check/);
+    const v04 = (id, o) => q(`INSERT INTO mt_test_run (test_id, motor_serial, variant_id, profile_id, criteria_version_id, operator_id, operator_ref, operator_name,
+        uploaded_by, vcu_id, vcu_fw_version, vcu_boot_id, hmi_version, final_state, stop_reason, fault_code, outcome, sample_count, stored_sample_count,
+        run_digest, samples_digest, run_digest_match, contract_version, run_kind, started, start_uptime_ms, held_count, recording_complete)
+      VALUES ($1,'CHECK-SN4',$2,$3,$4,843,$5,'Check Operator',843,'VCU-01','1.0.3','b1','1.0.0',$6,$7,$8,$9,$10,$11,$12,$12,$13,'0.4','synthetic',$14,$15,$16,$17)`,
+      [id, v, prof, crit, op, o.state, o.stop, o.fault ?? null, o.outcome, o.count, o.stored ?? o.held, o.rd ?? D('b'), o.match ?? true, o.started ?? true, o.started === false ? null : 1000, o.held, o.complete]);
+    const tryV04 = async (name, id, o, shouldFail, pattern) => {
+      await q('SAVEPOINT t');
+      try { await v04(id, o); await q('RELEASE SAVEPOINT t'); if (shouldFail) { fail++; console.log(`FAIL ${name}: was allowed`); } else { pass++; console.log(`PASS ${name}`); } }
+      catch (e) { await q('ROLLBACK TO SAVEPOINT t'); if (shouldFail && (!pattern || pattern.test(e.message))) { pass++; console.log(`PASS ${name} (blocked: ${e.message.slice(0, 80)})`); } else { fail++; console.log(`FAIL ${name}: ${e.message}`); } }
+    };
+    await tryV04('v0.4 known loss (held 3 of 5, not complete, FAULT) is stored', 'a0000000-0000-4000-8000-000000000001', { state: 'FAULT', stop: 'FAULT', fault: 'SAMPLE_LOSS', outcome: 'INCOMPLETE', count: 5, held: 3, complete: false }, false);
+    await tryV04('v0.4 CANCEL (started=false, empty, complete) is stored', 'a0000000-0000-4000-8000-000000000002', { state: 'ABORTED', stop: 'CONFIG_CANCELLED', outcome: 'INCOMPLETE', count: 0, held: 0, complete: true, started: false }, false);
+    await tryV04('v0.4 PASS without recording_complete is refused', 'a0000000-0000-4000-8000-000000000003', { state: 'COMPLETED', stop: 'RAMP_COMPLETE', outcome: 'PASS', count: 2, held: 2, complete: false }, true, /v04_check/);
+    await tryV04('v0.4 recording_complete with unequal counts is refused', 'a0000000-0000-4000-8000-000000000004', { state: 'FAULT', stop: 'FAULT', fault: 'X', outcome: 'INCOMPLETE', count: 5, held: 3, complete: true }, true, /v04_check/);
+    await tryV04('v0.4 held_count above sample_count is refused', 'a0000000-0000-4000-8000-000000000005', { state: 'FAULT', stop: 'FAULT', fault: 'X', outcome: 'INCOMPLETE', count: 3, held: 4, stored: 3, complete: false }, true, /v04_check/);
+    await tryV04('v0.4 CONFIG_CANCELLED on a started run is refused', 'a0000000-0000-4000-8000-000000000006', { state: 'ABORTED', stop: 'CONFIG_CANCELLED', outcome: 'INCOMPLETE', count: 0, held: 0, complete: true }, true, /v04_check/);
+    await expect('v0.3 row carrying v0.4 facts is refused', true, `UPDATE mt_test_run SET held_count = 2 WHERE test_id=$1`, [T1], /MT_IMMUTABLE|v04_check/);
+    const pk = Buffer.alloc(32, 7);
+    await q(`INSERT INTO mt_receipt_key (key_id, public_key, note) VALUES ('00112233445566aa', $1, 'check')`, [pk]);
+    await expect('receipt key can be retired once', false, `UPDATE mt_receipt_key SET retired_at = now() WHERE key_id = '00112233445566aa'`);
+    await expect('receipt key public key cannot change', true, `UPDATE mt_receipt_key SET public_key = $1 WHERE key_id = '00112233445566aa'`, [Buffer.alloc(32, 8)], /MT_IMMUTABLE/);
+    await expect('receipt key cannot be deleted', true, `DELETE FROM mt_receipt_key WHERE key_id = '00112233445566aa'`, [], /MT_IMMUTABLE/);
+    await expect('receipt signature cannot be added later', true, `UPDATE mt_upload_receipt SET signing_key_id='00112233445566aa', signed_message=$2, signature=$3 WHERE test_id=$1`, [T1, Buffer.alloc(180), Buffer.alloc(64)], /MT_IMMUTABLE/);
+    await expect('receipt with a partial signature is refused', true, `INSERT INTO mt_upload_receipt (test_id, payload_hash, signing_key_id) VALUES ('a0000000-0000-4000-8000-000000000001', $1, '00112233445566aa')`, [D('c')], /check constraint/);
   } finally {
     await q('ROLLBACK');
     const left = (await q(`SELECT (SELECT count(*) FROM mt_test_run) + (SELECT count(*) FROM mt_motor_variant) + (SELECT count(*) FROM mt_audit_event) AS n`)).rows[0].n;

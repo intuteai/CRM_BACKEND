@@ -49,6 +49,18 @@ docker stats --no-stream erp-backend-staging            # memory well under 150 
 docker logs --tail 20 erp-backend-staging               # "DISABLE_CRON=true" warning, "Connected to PostgreSQL"
 ```
 
+## Contract v0.4 (staging)
+
+- Database: migration `004_contract_v04.sql` (new run fields, lifecycle table, receipt key registry, stored signatures)
+  is applied to `erp_staging` (2026-11-19). **Production (`erp_migrated`) must get 004 before the next production
+  backend deploy**: the new code writes the new columns on every upload, so without 004 every upload would fail.
+  Snapshot first, then `node scripts/migrations/motor-test/run.js --db erp_migrated --production`.
+- Signing key: add `RECEIPT_SIGNING_SEED=<staging seed>` to `~/erp-staging/.env.staging` (handed over separately),
+  then re-run the staging workflow. Without it v0.4 receipts carry `signed_receipt: null`. The public key registers
+  itself in `mt_receipt_key` on first use; the private seed never enters the database, git or the image.
+- `run_kind`: staging accepts `bench`, `host_simulation`, `synthetic`; production only `bench`
+  (`TESTING_ALLOWED_RUN_KINDS` overrides).
+
 ## Stop when idle (agreed with Saatwik)
 
 ```

@@ -6,7 +6,15 @@ const logger = require('../../utils/logger');
 const model = require('../../models/testing/testingModel');
 const { loadTestingRoles } = require('../../middleware/testingRoles');
 const { payloadHash } = require('../../services/testing/digest');
-const { checkSchema, checkConsistency } = require('../../services/testing/validateRun');
+const { checkSchema, checkConsistency, isV04, RUN_KINDS } = require('../../services/testing/validateRun');
+
+// v0.4 run_kind: production accepts only real bench runs; staging also accepts runs marked as simulated/synthetic.
+// TESTING_ALLOWED_RUN_KINDS (comma list) overrides; otherwise erp_staging allows every kind and any other database only 'bench'.
+function allowedRunKinds() {
+  const env = String(process.env.TESTING_ALLOWED_RUN_KINDS || '').split(',').map((x) => x.trim()).filter(Boolean);
+  if (env.length) return env;
+  return String(process.env.DB_NAME || '').trim() === 'erp_staging' ? RUN_KINDS : ['bench'];
+}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const MAX_BODY_BYTES = 5 * 1024 * 1024;
@@ -64,6 +72,9 @@ exports.postResult = async (req, res) => {
   else if (b && key !== b.test_id) schemaErrors.unshift({ path: 'header:Idempotency-Key', msg: 'must equal body.test_id' });
   if (schemaErrors.length) return fail(res, 400, 'VALIDATION_ERROR', 'Request body failed validation', { fields: schemaErrors });
 
+  if (isV04(b) && !allowedRunKinds().includes(b.run_kind)) {
+    return fail(res, 422, 'RUN_KIND_NOT_ALLOWED', `run_kind ${b.run_kind} is not accepted on this server`, { allowed: allowedRunKinds() });
+  }
   const consistency = checkConsistency(b);
   if (consistency.badRequest) return fail(res, 400, 'VALIDATION_ERROR', 'Request body failed validation', { fields: consistency.badRequest });
   let hash;

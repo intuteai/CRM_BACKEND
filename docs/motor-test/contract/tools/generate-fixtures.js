@@ -436,6 +436,180 @@ put('40-results-by-serial.json', {
   },
 });
 
+// ---------------------------------------------------------------- v0.4 (opt-in: contract_version "0.4")
+// Spec: receipt-signing.md sections 2-6. Implemented on staging only until the production signing key is set up.
+// Signed receipts here use TEST key A from vectors/receipt-vectors.json (seed = SHA-256 of its public label);
+// a real server signs with its own key. Every signed fixture must pass the VCU decision (asserted below).
+
+const R = require('./receipt');
+const TEST_KEY_A = R.keyFromSeed(crypto.createHash('sha256').update('motor-test receipt TEST key A').digest());
+const KEYRING_A = [{ key_id: TEST_KEY_A.keyId.toString('hex'), public_key: R.b64urlEncode(TEST_KEY_A.publicRaw) }];
+const V4 = {
+  test: '3f6a9c2e-8b1d-4e7a-9c5f-0a2b4c6d8e10', receipt: 'c9e1a3b5-d7f2-4c4e-8a6b-0d2f4b6c8e55',
+  testCancel: '8d2f4a6c-0e1b-4c3d-a5e7-9f1b3d5c7e92', receiptCancel: '2b4d6f8a-0c1e-4e3a-b5c7-d9e1f3a5b766',
+  testLoss: '1a3c5e7f-9b2d-4f6a-8c0e-2b4d6f8a1c33', receiptLoss: '9f1b3d5c-7e2a-4b4c-8d6e-0f2a4c6e8a77',
+  testPower: '6e8a0c2d-4f1b-4a3c-9e5d-7f9b1d3e5a44', receiptPower: '4a6c8e0b-2d3f-4f5a-9b7c-1e3a5c7e9b88',
+};
+const STAGING = 'https://api.intute.biz/staging';
+const stagingHeaders = (testId) => ({ ...headers(testId), 'X-Staging-Key': '<staging key>' });
+
+function runBodyV04({ testId, started = true, startUptimeMs = 812345, startedAt = '2026-12-01T09:14:03Z', startedAtSource = 'HMI',
+  endedAt, endedAtSource = 'HMI', finalState, stopReason, faultCode, outcome, reasons, samples, sampleCount, heldCount,
+  recordingComplete, events }) {
+  return {
+    contract_version: '0.4',
+    test_id: testId,
+    motor_serial: 'EXAMPLE-SERIAL-0001',
+    variant_id: IDS.variant,
+    profile_id: IDS.profile,
+    profile_sha256: profileSha,
+    criteria_version_id: IDS.criteria,
+    criteria_sha256: criteriaSha,
+    ...OPERATOR,
+    vcu: { vcu_id: 'esp32c3-001122334455', fw_version: '1.0.3', origin_boot_id: '1122334455667788' },
+    hmi_version: '1.1.0',
+    run_kind: 'bench',
+    started,
+    start_uptime_ms: started ? startUptimeMs : null,
+    started_at: startedAt,
+    started_at_source: startedAt === null ? null : startedAtSource,
+    ended_at: endedAt,
+    ended_at_source: endedAt === null ? null : endedAtSource,
+    hmi_auto_time: true,
+    final_state: finalState,
+    stop_reason: stopReason,
+    fault_code: faultCode,
+    outcome,
+    outcome_reasons: reasons,
+    sample_count: sampleCount,
+    held_count: heldCount,
+    recording_complete: recordingComplete,
+    config_hash: payloadHash(profileDefinition), // example: the CONFIG hash the VCU reported in CONFIG_ACK
+    run_digest: runDigest(samples.slice(0, heldCount)), // D13 over the held samples 0..held_count-1
+    events,
+    samples,
+  };
+}
+
+// The VCU's own durable record of the run (what decide() compares the signed message with).
+const vcuManifestOf = (b) => ({
+  test_id: b.test_id, vcu_id: b.vcu.vcu_id, origin_boot_id: b.vcu.origin_boot_id, started: b.started,
+  recording_complete: b.recording_complete, final_state: b.final_state, stop_reason: b.stop_reason,
+  sample_count: b.sample_count, held_count: b.held_count, run_digest: b.run_digest,
+});
+
+function receiptV04(body, receiptId, storedAt) {
+  const r = receipt(body, receiptId, storedAt);
+  const message = R.encodeMessage({
+    key_id: TEST_KEY_A.keyId, test_id: r.test_id, receipt_id: r.receipt_id, stored_at: r.stored_at,
+    sample_count: body.sample_count, held_count: body.held_count, stored_sample_count: r.stored_sample_count,
+    final_state: body.final_state, outcome: body.outcome, stop_reason: body.stop_reason,
+    started: body.started, recording_complete: body.recording_complete,
+    run_digest: body.run_digest, samples_digest: r.samples_digest, payload_hash: r.payload_hash,
+    vcu_id: body.vcu.vcu_id, origin_boot_id: body.vcu.origin_boot_id,
+  });
+  r.signed_receipt = {
+    alg: 'Ed25519', key_id: TEST_KEY_A.keyId.toString('hex'),
+    message: R.b64urlEncode(message), signature: R.b64urlEncode(R.signMessage(message, TEST_KEY_A.privateKey)),
+  };
+  const got = R.decide(r.signed_receipt, KEYRING_A, vcuManifestOf(body));
+  if (!got.release) throw new Error(`v0.4 fixture ${body.test_id}: signed receipt fails the VCU decision (${got.reason})`);
+  console.log(`PASS v0.4 signed receipt ${body.test_id}: ${got.reason}`);
+  return r;
+}
+
+const signingNote = 'signed_receipt is signed with TEST key A from vectors/receipt-vectors.json (public seed; never on a real VCU). '
+  + 'A real server signs with its own key, so key_id and signature differ; signed_receipt is null when the server has no signing key configured.';
+const verifyWith = (body) => ({ vcu_keyring: KEYRING_A, vcu_manifest: vcuManifestOf(body), expected_decision: 'RELEASE' });
+
+const v4Valid = runBodyV04({
+  testId: V4.test, endedAt: '2026-12-01T09:16:05Z', finalState: 'COMPLETED', stopReason: 'RAMP_COMPLETE', faultCode: null,
+  outcome: 'PASS', reasons: [], samples: rampSamples(13), sampleCount: 13, heldCount: 13, recordingComplete: true,
+  events: valid.events,
+});
+const v4ValidReceipt = receiptV04(v4Valid, V4.receipt, '2026-12-01T09:16:07Z');
+
+const v4Cancel = runBodyV04({
+  testId: V4.testCancel, started: false, startedAt: null, endedAt: '2026-12-01T09:20:11Z',
+  finalState: 'ABORTED', stopReason: 'CONFIG_CANCELLED', faultCode: null, outcome: 'INCOMPLETE',
+  reasons: [{ criterion: null, reason: 'CONFIG_CANCELLED', detail: 'Cancelled by operator before START' }],
+  samples: [], sampleCount: 0, heldCount: 0, recordingComplete: true,
+  events: [{ t_ms: 0, type: 'STATE', code: 'ABORTED', detail: 'CONFIG_CANCELLED' }],
+});
+
+const v4Loss = runBodyV04({
+  testId: V4.testLoss, startedAtSource: 'HMI_DERIVED', endedAt: '2026-12-01T09:14:04Z', endedAtSource: 'HMI_DERIVED',
+  finalState: 'FAULT', stopReason: 'FAULT', faultCode: 'SAMPLE_LOSS', outcome: 'INCOMPLETE',
+  reasons: [{ criterion: null, reason: 'SAMPLE_LOSS', detail: 'VCU detected recording loss at sample_seq 3; holds 3 of 5' }],
+  samples: rampSamples(3), sampleCount: 5, heldCount: 3, recordingComplete: false,
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }, { t_ms: 400, type: 'FAULT', code: 'SAMPLE_LOSS', detail: null }],
+});
+
+// Power loss: the VCU rebooted, so ended_at could not be stamped or derived (UTC unknown -> null, source null).
+const v4Power = runBodyV04({
+  testId: V4.testPower, endedAt: null, finalState: 'FAULT', stopReason: 'POWER_LOSS', faultCode: 'POWER_LOSS', outcome: 'INCOMPLETE',
+  reasons: [{ criterion: null, reason: 'POWER_LOSS', detail: 'Evidenced power interruption during the run; holds 6 of 7' }],
+  samples: rampSamples(6), sampleCount: 7, heldCount: 6, recordingComplete: false,
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }],
+});
+
+put('60-v04-result-valid-completed.json', {
+  note: `v0.4 (staging only). Complete COMPLETED/PASS run, recording_complete=true, held_count = sample_count = 13. Expected: 201 with signed_receipt; an identical retry gets 200 with the byte-identical receipt (signature included). ${signingNote}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V4.test), body: v4Valid },
+  responses: { 201: v4ValidReceipt, 200: v4ValidReceipt },
+  verify: verifyWith(v4Valid),
+});
+put('61-v04-result-cancel.json', {
+  note: `v0.4 CANCEL before start: started=false, zero samples, ABORTED/CONFIG_CANCELLED/INCOMPLETE, recording_complete=true, start_uptime_ms and started_at null. Never counted as an executed motor test. Expected: 201. ${signingNote}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V4.testCancel), body: v4Cancel },
+  responses: { 201: receiptV04(v4Cancel, V4.receiptCancel, '2026-12-01T09:20:13Z') },
+  verify: verifyWith(v4Cancel),
+});
+put('62-v04-result-known-loss.json', {
+  note: `v0.4 recording already incomplete at the VCU: FAULT/FAULT, fault_code SAMPLE_LOSS, held_count 3 of sample_count 5, recording_complete=false; the ERP stores all 3 held samples (run_digest covers samples 0..2). Times derived from VCU uptime (HMI_DERIVED). Expected: 201, INCOMPLETE; the VCU may release. ${signingNote}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V4.testLoss), body: v4Loss },
+  responses: { 201: receiptV04(v4Loss, V4.receiptLoss, '2026-12-01T09:14:08Z') },
+  verify: verifyWith(v4Loss),
+});
+put('63-v04-result-power-loss.json', {
+  note: `v0.4 evidenced power interruption: FAULT/POWER_LOSS, held_count 6 of sample_count 7, recording_complete=false, ended_at unknown (null, source null). Expected: 201, INCOMPLETE. ${signingNote}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V4.testPower), body: v4Power },
+  responses: { 201: receiptV04(v4Power, V4.receiptPower, '2026-12-01T09:31:40Z') },
+  verify: verifyWith(v4Power),
+});
+
+const v4VariantOf = (mutate) => { const b = JSON.parse(JSON.stringify(v4Valid)); mutate(b); return b; };
+const v4ErrorCases = [
+  ['64-v04-error-run-kind-not-allowed.json', 'v0.4 run_kind host_simulation sent to PRODUCTION (production accepts only bench; staging accepts bench, host_simulation and synthetic).',
+    'https://api.intute.biz', v4VariantOf((b) => { b.run_kind = 'host_simulation'; }),
+    422, { error: 'run_kind host_simulation is not accepted on this server', code: 'RUN_KIND_NOT_ALLOWED' }],
+  ['65-v04-error-completed-hb-loss.json', 'v0.4 final_state COMPLETED with stop_reason HB_LOSS (lifecycle table).', STAGING,
+    v4VariantOf((b) => { b.stop_reason = 'HB_LOSS'; }),
+    422, { error: 'The run is internally inconsistent', code: 'INCONSISTENT_RUN', violations: [{ path: 'stop_reason', rule: 'LIFECYCLE_STOP_REASON', msg: 'final_state COMPLETED permits stop_reason RAMP_COMPLETE only (got HB_LOSS)' }] }],
+  ['66-v04-error-pass-not-recording-complete.json', 'v0.4 outcome PASS with recording_complete=false (equal counts never imply completeness).', STAGING,
+    v4VariantOf((b) => { b.recording_complete = false; }),
+    422, { error: 'The run is internally inconsistent', code: 'INCONSISTENT_RUN', violations: [{ path: 'recording_complete', rule: 'RECORDING_COMPLETE_REQUIRED', msg: 'outcome PASS/FAIL/INVALID needs recording_complete=true' }] }],
+  ['67-v04-error-boot-id.json', 'v0.4 body still sends vcu.boot_id (renamed to vcu.origin_boot_id in v0.4).', STAGING,
+    v4VariantOf((b) => { b.vcu = { vcu_id: b.vcu.vcu_id, fw_version: b.vcu.fw_version, boot_id: b.vcu.origin_boot_id }; }),
+    400, { error: 'Request body failed validation', code: 'VALIDATION_ERROR', fields: [{ path: 'vcu.boot_id', msg: 'is not allowed in contract_version 0.4 (use vcu.origin_boot_id)' }, { path: 'vcu.origin_boot_id', msg: 'is required' }] }],
+];
+for (const [name, note, server, body, status, response] of v4ErrorCases) {
+  const h = server === STAGING ? stagingHeaders(body.test_id) : headers(body.test_id);
+  put(name, { note: `${note} Nothing is stored; no signed_receipt on any error.`, server, request: { method: 'POST', path: '/api/testing/results', headers: h, body }, responses: { [status]: response } });
+}
+// The lifecycle table also applies to v0.3 uploads (no contract_version): ABORTED + POWER_LOSS is now rejected.
+const abortedPowerLoss = JSON.parse(JSON.stringify(aborted));
+abortedPowerLoss.stop_reason = 'POWER_LOSS';
+put('68-error-v03-aborted-power-loss.json', {
+  note: 'v0.3 body (no contract_version, the deployed app format): final_state ABORTED with stop_reason POWER_LOSS. Accepted before v0.4; now rejected because the lifecycle table applies to all uploads (power loss is FAULT/POWER_LOSS). Nothing is stored.',
+  request: { method: 'POST', path: '/api/testing/results', headers: headers(IDS.testAborted), body: abortedPowerLoss },
+  responses: { 422: { error: 'The run is internally inconsistent', code: 'INCONSISTENT_RUN', violations: [{ path: 'stop_reason', rule: 'LIFECYCLE_STOP_REASON', msg: 'final_state ABORTED permits stop_reason OPERATOR_STOP, HB_LOSS or CONFIG_CANCELLED (got POWER_LOSS)' }] } },
+});
+
 fs.mkdirSync(FIX, { recursive: true });
 fs.mkdirSync(VEC, { recursive: true });
 for (const [name, obj] of Object.entries(files)) fs.writeFileSync(path.join(FIX, name), JSON.stringify(obj, null, 2) + '\n');

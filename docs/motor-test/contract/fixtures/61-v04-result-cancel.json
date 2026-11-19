@@ -1,0 +1,105 @@
+{
+  "note": "v0.4 CANCEL before start: started=false, zero samples, ABORTED/CONFIG_CANCELLED/INCOMPLETE, recording_complete=true, start_uptime_ms and started_at null. Never counted as an executed motor test. Expected: 201. signed_receipt is signed with TEST key A from vectors/receipt-vectors.json (public seed; never on a real VCU). A real server signs with its own key, so key_id and signature differ; signed_receipt is null when the server has no signing key configured.",
+  "server": "https://api.intute.biz/staging",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0",
+      "Idempotency-Key": "8d2f4a6c-0e1b-4c3d-a5e7-9f1b3d5c7e92",
+      "X-Staging-Key": "<staging key>"
+    },
+    "body": {
+      "contract_version": "0.4",
+      "test_id": "8d2f4a6c-0e1b-4c3d-a5e7-9f1b3d5c7e92",
+      "motor_serial": "EXAMPLE-SERIAL-0001",
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "profile_id": "9a1c3e5f-7b2d-4f6a-8e0c-2b4d6f8a0c1e",
+      "profile_sha256": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+      "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+      "criteria_sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6",
+      "operator_id": 843,
+      "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+      "operator_name": "Example Operator A",
+      "vcu": {
+        "vcu_id": "esp32c3-001122334455",
+        "fw_version": "1.0.3",
+        "origin_boot_id": "1122334455667788"
+      },
+      "hmi_version": "1.1.0",
+      "run_kind": "bench",
+      "started": false,
+      "start_uptime_ms": null,
+      "started_at": null,
+      "started_at_source": null,
+      "ended_at": "2026-12-01T09:20:11Z",
+      "ended_at_source": "HMI",
+      "hmi_auto_time": true,
+      "final_state": "ABORTED",
+      "stop_reason": "CONFIG_CANCELLED",
+      "fault_code": null,
+      "outcome": "INCOMPLETE",
+      "outcome_reasons": [
+        {
+          "criterion": null,
+          "reason": "CONFIG_CANCELLED",
+          "detail": "Cancelled by operator before START"
+        }
+      ],
+      "sample_count": 0,
+      "held_count": 0,
+      "recording_complete": true,
+      "config_hash": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+      "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "STATE",
+          "code": "ABORTED",
+          "detail": "CONFIG_CANCELLED"
+        }
+      ],
+      "samples": []
+    }
+  },
+  "responses": {
+    "201": {
+      "receipt_id": "2b4d6f8a-0c1e-4e3a-b5c7-d9e1f3a5b766",
+      "test_id": "8d2f4a6c-0e1b-4c3d-a5e7-9f1b3d5c7e92",
+      "stored_sample_count": 0,
+      "payload_hash": "sha256:f725e8b2c9261739a474b83bed97c6c52cd69b9c24feca30f284aeaf715f0051",
+      "samples_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run_digest_match": true,
+      "stored_at": "2026-12-01T09:20:13Z",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCY0vSmwOG0w9peefGz1cfpIrTW-KDB5OOrXH2eHzpbdmyJTnMKIBAAAAAAAAAAAAAAAAAAACAwYH47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFXjsMRCmPwcFJr79MiZb7kkJ65B5GSbk0yklZkbeFK4Vfcl6LLJJhc5pHS4O-2XxsUs1pucJP7KMPKErq9xXwBRFGVzcDMyYzMtMDAxMTIyMzM0NDU1EDExMjIzMzQ0NTU2Njc3ODg",
+        "signature": "AbHnGxBtpZfgDtGRahYza38dLgoHlwf7H5HCBnlNoxoZTMMkR4XWgu8XSajkbFbxYTCJzMX3YM4jmk1NuviqBA"
+      }
+    }
+  },
+  "verify": {
+    "vcu_keyring": [
+      {
+        "key_id": "1405073224d4d609",
+        "public_key": "PwNsJsNYxtgU6LzEmWez4yhLFIWJAmKFUEmBQMQn2A8"
+      }
+    ],
+    "vcu_manifest": {
+      "test_id": "8d2f4a6c-0e1b-4c3d-a5e7-9f1b3d5c7e92",
+      "vcu_id": "esp32c3-001122334455",
+      "origin_boot_id": "1122334455667788",
+      "started": false,
+      "recording_complete": true,
+      "final_state": "ABORTED",
+      "stop_reason": "CONFIG_CANCELLED",
+      "sample_count": 0,
+      "held_count": 0,
+      "run_digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "expected_decision": "RELEASE"
+  }
+}

@@ -16,6 +16,14 @@ const BAD_CHARS = /[\u0000]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBF
 
 const FINAL_STATES = ['COMPLETED', 'ABORTED', 'FAULT'];
 const STOP_REASONS = ['RAMP_COMPLETE', 'OPERATOR_STOP', 'HB_LOSS', 'FAULT', 'POWER_LOSS'];
+const STOP_REASONS_V04 = [...STOP_REASONS, 'CONFIG_CANCELLED'];
+// Permitted stop_reason per final_state (agreed with the VCU 2026-11-18; contract v0.4 section 6). Applies to every upload.
+const STOP_FOR_STATE = { COMPLETED: ['RAMP_COMPLETE'], ABORTED: ['OPERATOR_STOP', 'HB_LOSS', 'CONFIG_CANCELLED'], FAULT: ['FAULT', 'POWER_LOSS'] };
+const RUN_KINDS = ['bench', 'host_simulation', 'synthetic'];
+const TIME_SOURCES = ['HMI', 'HMI_DERIVED'];
+const RECEIPT_ID = /^[A-Za-z0-9._-]{1,32}$/; // identifiers that go into the signed receipt
+const V04_FIELDS = ['contract_version', 'run_kind', 'started', 'start_uptime_ms', 'started_at_source', 'ended_at_source',
+  'hmi_auto_time', 'held_count', 'recording_complete', 'config_hash'];
 const OUTCOMES = ['PASS', 'FAIL', 'INCOMPLETE', 'INVALID'];
 const EVENT_TYPES = ['STATE', 'FAULT', 'COMMAND', 'INFO'];
 const TOP_FIELDS = ['test_id', 'motor_serial', 'variant_id', 'profile_id', 'profile_sha256', 'criteria_version_id', 'criteria_sha256',
@@ -53,13 +61,20 @@ function safeJson(v, depth = 0) {
   return false;
 }
 
+const isV04 = (b) => isObj(b) && b.contract_version === '0.4';
+
 function checkSchema(b) {
   const f = [];
   const add = (path, msg) => f.push({ path, msg });
   if (!isObj(b)) return [{ path: '', msg: 'body must be a JSON object' }];
+  if ('contract_version' in b && b.contract_version !== '0.4') add('contract_version', 'must be "0.4" (omit it for a v0.3 upload)');
+  const v04 = isV04(b);
+  const fields = v04 ? [...TOP_FIELDS, ...V04_FIELDS] : TOP_FIELDS;
 
-  for (const k of Object.keys(b)) if (!TOP_FIELDS.includes(k)) add(k, 'is not an allowed field');
-  for (const k of TOP_FIELDS) if (!(k in b)) add(k, 'is required');
+  for (const k of Object.keys(b)) {
+    if (!fields.includes(k) && !(k === 'contract_version' && !v04)) add(k, v04 || !V04_FIELDS.includes(k) ? 'is not an allowed field' : 'is a v0.4 field: send contract_version "0.4"');
+  }
+  for (const k of fields) if (!(k in b)) add(k, 'is required');
 
   const need = (k, ok, msg) => { if (k in b && !ok(b[k])) add(k, msg); };
   need('test_id', (v) => typeof v === 'string' && UUID_V4.test(v), 'must be a lowercase UUID v4');
@@ -71,7 +86,17 @@ function checkSchema(b) {
   need('hmi_version', (v) => isStr(v, 1, 50), 'must be 1-50 characters');
   for (const k of ['started_at', 'ended_at']) need(k, (v) => v === null || (typeof v === 'string' && validDate(v)), 'must be null or ISO 8601 UTC like 2026-12-01T09:14:03Z');
   need('final_state', (v) => FINAL_STATES.includes(v), `must be one of ${FINAL_STATES.join(', ')}`);
-  need('stop_reason', (v) => STOP_REASONS.includes(v), `must be one of ${STOP_REASONS.join(', ')}`);
+  const stops = v04 ? STOP_REASONS_V04 : STOP_REASONS;
+  need('stop_reason', (v) => stops.includes(v), `must be one of ${stops.join(', ')}`);
+  if (v04) {
+    need('run_kind', (v) => RUN_KINDS.includes(v), `must be one of ${RUN_KINDS.join(', ')}`);
+    for (const k of ['started', 'recording_complete']) need(k, (v) => typeof v === 'boolean', 'must be true or false');
+    need('hmi_auto_time', (v) => v === null || typeof v === 'boolean', 'must be null, true or false');
+    need('start_uptime_ms', (v) => v === null || isInt(v, 0, U32), 'must be null or an integer 0..4294967295');
+    for (const k of ['started_at_source', 'ended_at_source']) need(k, (v) => v === null || TIME_SOURCES.includes(v), `must be null or one of ${TIME_SOURCES.join(', ')}`);
+    need('held_count', (v) => isInt(v, 0, I32), 'must be an integer 0..2147483647');
+    need('config_hash', (v) => v === null || isStr(v, 1, 128), 'must be null or 1-128 characters');
+  }
   need('fault_code', (v) => v === null || isStr(v, 1, 64), 'must be null or 1-64 characters');
   need('outcome', (v) => OUTCOMES.includes(v), `must be one of ${OUTCOMES.join(', ')}`);
   need('outcome_reasons', (v) => Array.isArray(v) && v.length <= 200 && v.every((x) => isObj(x) && safeJson(x) && JSON.stringify(x).length <= 2000),
@@ -81,8 +106,10 @@ function checkSchema(b) {
   if ('vcu' in b) {
     if (!isObj(b.vcu)) add('vcu', 'must be an object');
     else {
-      for (const k of Object.keys(b.vcu)) if (!['vcu_id', 'fw_version', 'boot_id'].includes(k)) add(`vcu.${k}`, 'is not an allowed field');
-      for (const k of ['vcu_id', 'fw_version', 'boot_id']) if (!isStr(b.vcu[k], 1, 64)) add(`vcu.${k}`, 'is required, 1-64 characters');
+      const vcuFields = v04 ? ['vcu_id', 'fw_version', 'origin_boot_id'] : ['vcu_id', 'fw_version', 'boot_id'];
+      for (const k of Object.keys(b.vcu)) if (!vcuFields.includes(k)) add(`vcu.${k}`, k === 'boot_id' && v04 ? 'is replaced by vcu.origin_boot_id in v0.4' : 'is not an allowed field');
+      for (const k of vcuFields) if (!isStr(b.vcu[k], 1, 64)) add(`vcu.${k}`, 'is required, 1-64 characters');
+      if (v04) for (const k of ['vcu_id', 'origin_boot_id']) if (typeof b.vcu[k] === 'string' && !RECEIPT_ID.test(b.vcu[k])) add(`vcu.${k}`, 'must be 1-32 characters from A-Z a-z 0-9 . _ -');
     }
   }
 
@@ -128,8 +155,29 @@ function checkConsistency(b) {
   if (b.final_state === 'COMPLETED' && b.sample_count === 0) add('sample_count', 'COMPLETED_NEEDS_SAMPLES', 'a COMPLETED run must have sample_count > 0');
   if (b.final_state === 'FAULT' && !b.fault_code) add('fault_code', 'FAULT_CODE_REQUIRED', 'fault_code is required when final_state is FAULT');
   if (b.started_at && b.ended_at && Date.parse(b.ended_at) < Date.parse(b.started_at)) add('ended_at', 'TIME_ORDER', 'ended_at is before started_at'); // both ms precision
-  if (b.samples.length > b.sample_count) add('samples', 'TOO_MANY_SAMPLES', `${b.samples.length} samples uploaded but sample_count is ${b.sample_count}`);
-  b.samples.forEach((s, i) => { if (s.sample_seq >= b.sample_count) add(`samples[${i}].sample_seq`, 'SEQ_OUT_OF_RANGE', `sample_seq ${s.sample_seq} is not below sample_count ${b.sample_count}`); });
+  if (!STOP_FOR_STATE[b.final_state].includes(b.stop_reason)) add('stop_reason', 'LIFECYCLE_STOP_REASON', `stop_reason ${b.stop_reason} is not allowed for final_state ${b.final_state} (allowed: ${STOP_FOR_STATE[b.final_state].join(', ')})`);
+  // v0.4: samples are the contiguous prefix the VCU holds (held_count); v0.3: anything below sample_count.
+  const v04 = isV04(b);
+  const limit = v04 ? b.held_count : b.sample_count;
+  const limitName = v04 ? 'held_count' : 'sample_count';
+  if (v04) {
+    if (b.held_count > b.sample_count) add('held_count', 'HELD_COUNT_RANGE', `held_count ${b.held_count} is above sample_count ${b.sample_count}`);
+    if (b.recording_complete && b.held_count !== b.sample_count) add('recording_complete', 'RECORDING_COMPLETE_COUNTS', 'recording_complete=true needs held_count equal to sample_count');
+    if (verdict && !b.recording_complete) add('recording_complete', 'RECORDING_COMPLETE_REQUIRED', `outcome ${b.outcome} needs recording_complete=true`);
+    if (!b.started) {
+      const ok = b.sample_count === 0 && b.held_count === 0 && b.samples.length === 0 && b.started_at === null && b.start_uptime_ms === null
+        && b.final_state === 'ABORTED' && b.stop_reason === 'CONFIG_CANCELLED' && b.outcome === 'INCOMPLETE' && b.recording_complete === true;
+      if (!ok) add('started', 'CANCEL_SHAPE', 'started=false (cancel before START) needs sample_count=0, held_count=0, no samples, started_at=null, start_uptime_ms=null, ABORTED/CONFIG_CANCELLED/INCOMPLETE and recording_complete=true');
+    } else {
+      if (b.stop_reason === 'CONFIG_CANCELLED') add('stop_reason', 'CANCEL_SHAPE', 'CONFIG_CANCELLED is only for a run that never started (started=false)');
+      if (b.start_uptime_ms === null) add('start_uptime_ms', 'START_UPTIME_REQUIRED', 'a started run needs start_uptime_ms');
+    }
+    for (const [t, src] of [['started_at', 'started_at_source'], ['ended_at', 'ended_at_source']]) {
+      if ((b[t] === null) !== (b[src] === null)) add(src, 'TIME_SOURCE', `${src} must be null exactly when ${t} is null`);
+    }
+  }
+  if (b.samples.length > limit) add('samples', 'TOO_MANY_SAMPLES', `${b.samples.length} samples uploaded but ${limitName} is ${limit}`);
+  b.samples.forEach((s, i) => { if (s.sample_seq >= limit) add(`samples[${i}].sample_seq`, 'SEQ_OUT_OF_RANGE', `sample_seq ${s.sample_seq} is not below ${limitName} ${limit}`); });
 
   let samplesDigest = null;
   try {
@@ -141,11 +189,11 @@ function checkConsistency(b) {
   }
 
   if (verdict && samplesDigest) {
-    if (b.samples.length !== b.sample_count) {
+    if (b.samples.length !== limit) {
       const have = new Set(b.samples.map((s) => s.sample_seq));
       const missing = [];
-      for (let k = 0; k < b.sample_count && missing.length < 5; k++) if (!have.has(k)) missing.push(k);
-      add('samples', 'COMPLETE_EVIDENCE_REQUIRED', `outcome ${b.outcome} needs samples 0..sample_count-1 with no gaps (got ${b.samples.length} of ${b.sample_count}${missing.length ? `, missing sample_seq ${missing.join(', ')}` : ''})`);
+      for (let k = 0; k < limit && missing.length < 5; k++) if (!have.has(k)) missing.push(k);
+      add('samples', 'COMPLETE_EVIDENCE_REQUIRED', `outcome ${b.outcome} needs samples 0..${limitName}-1 with no gaps (got ${b.samples.length} of ${limit}${missing.length ? `, missing sample_seq ${missing.join(', ')}` : ''})`);
     } else if (samplesDigest !== b.run_digest) {
       add('run_digest', 'DIGEST_MATCH_REQUIRED', 'outcome PASS/FAIL/INVALID needs run_digest equal to the digest of the uploaded samples');
     }
@@ -153,4 +201,4 @@ function checkConsistency(b) {
   return { violations: v, samplesDigest };
 }
 
-module.exports = { checkSchema, checkConsistency, MAX_SAMPLES };
+module.exports = { checkSchema, checkConsistency, isV04, MAX_SAMPLES, RUN_KINDS, STOP_FOR_STATE };
