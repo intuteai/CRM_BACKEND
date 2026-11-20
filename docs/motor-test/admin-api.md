@@ -79,7 +79,7 @@ Criteria `definition` shape (values come only from the testing head's signed she
     {"id":"I_AT_RPM","type":"checkpoint","signal":"current_a","at_rpm":1500,"rpm_window":50,"method":"window_mean","min":3,"max":6}
   ] }
 ```
-(The numbers above only illustrate the shape.) `rules[].type` ∈ `max | min | range | checkpoint | tracking | reach | bemf_constant`; `signal` ∈ `current_a | voltage_v | rpm_actual | bemf_v`.
+(The numbers above only illustrate the shape.) `rules[].type` ∈ `max | min | range | checkpoint | tracking | reach | bemf_constant` (value rules) or `flag_share | flag_any | flag_exclusion | step_coverage` (status-flag rules, fields `bit` 4–7, `max_fraction`, `max_continuous_ms`, `window_ms`, `applies_to`, `settle_ms`, `min_readings`, `signals`; see [criteria-flag-rules.md](criteria-flag-rules.md)); `signal` ∈ `current_a | voltage_v | rpm_actual | bemf_v`.
 
 ## Operators (pick-list)
 

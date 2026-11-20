@@ -212,3 +212,33 @@ describe('operators, roles, corrections, export, audit', () => {
     expect(audit).toEqual(expect.arrayContaining(['RESULT_STORED', 'CORRECTION_ADDED', 'CORRECTION_DECIDED', 'CSV_EXPORTED']));
   });
 });
+
+describe('status-flag criteria rules (docs/motor-test/criteria-flag-rules.md)', () => {
+  const draft = (rules) => api('post', `/admin/variants/${variant.variant_id}/criteria`, 'head', { definition: { schema: 1, rules } });
+  const valueRule = { id: 'I_MAX', type: 'max', signal: 'current_a', limit: null, on_violation: 'FAIL' };
+  it('accepts flag_share, flag_any and flag_exclusion with the agreed fields', async () => {
+    const r = await draft([valueRule,
+      { id: 'CAN_STALE', type: 'flag_share', bit: 4, max_fraction: 0.5, max_continuous_ms: 1, on_violation: 'INVALID' },
+      { id: 'PROTECTIVE_WARNING', type: 'flag_any', bit: 6, on_violation: 'INVALID' },
+      { id: 'SETTLE', type: 'flag_exclusion', bit: 5, window_ms: 1, applies_to: ['I_MAX'] },
+      { id: 'STEP_COVERAGE', type: 'step_coverage', bit: 5, settle_ms: 1, min_readings: 5, signals: ['rpm_actual', 'current_a'], on_violation: 'INVALID' }]);
+    expect(r.status).toBe(201);
+    ids.entities.push(r.body.criteria_version_id);
+    expect((await api('delete', `/admin/criteria/${r.body.criteria_version_id}`, 'head')).status).toBeLessThan(300); // drafts may be deleted
+  });
+  it.each([
+    ['bit outside 4-7', [{ id: 'A', type: 'flag_any', bit: 2, on_violation: 'INVALID' }], 'definition.rules[0].bit'],
+    ['flag_any without on_violation', [{ id: 'A', type: 'flag_any', bit: 6 }], 'definition.rules[0].on_violation'],
+    ['flag_share without any limit', [{ id: 'A', type: 'flag_share', bit: 4, on_violation: 'INVALID' }], 'definition.rules[0]'],
+    ['flag_share fraction above 1', [{ id: 'A', type: 'flag_share', bit: 4, max_fraction: 2, on_violation: 'INVALID' }], 'definition.rules[0].max_fraction'],
+    ['flag_exclusion without window', [{ id: 'A', type: 'flag_exclusion', bit: 5 }], 'definition.rules[0].window_ms'],
+    ['flag_exclusion with on_violation', [{ id: 'A', type: 'flag_exclusion', bit: 5, window_ms: 1, on_violation: 'FAIL' }], 'definition.rules[0].on_violation'],
+    ['step_coverage without min_readings', [{ id: 'A', type: 'step_coverage', bit: 5, settle_ms: 1, signals: ['rpm_actual'], on_violation: 'INVALID' }], 'definition.rules[0].min_readings'],
+    ['step_coverage with an unknown signal', [{ id: 'A', type: 'step_coverage', bit: 5, settle_ms: 1, min_readings: 5, signals: ['temp'], on_violation: 'INVALID' }], 'definition.rules[0].signals'],
+    ['flag_exclusion naming an unknown rule', [{ id: 'A', type: 'flag_exclusion', bit: 5, window_ms: 1, applies_to: ['NOPE'] }], 'definition.rules[0].applies_to[0]'],
+  ])('rejects %s', async (_name, rules, path) => {
+    const r = await draft(rules);
+    expect(r.status).toBe(400);
+    expect(r.body.fields.map((f) => f.path)).toContain(path);
+  });
+});

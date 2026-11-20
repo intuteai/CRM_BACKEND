@@ -5,7 +5,10 @@ const m = require('../../models/testing/adminModel');
 const { TESTING_ROLES } = require('../../middleware/testingRoles');
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-const RULE_TYPES = ['max', 'min', 'range', 'checkpoint', 'tracking', 'reach', 'bemf_constant'];
+const VALUE_RULE_TYPES = ['max', 'min', 'range', 'checkpoint', 'tracking', 'reach', 'bemf_constant'];
+// Status-flag rules (docs/motor-test/criteria-flag-rules.md): the flags stay as recorded, the criteria decide their meaning.
+const FLAG_RULE_TYPES = ['flag_share', 'flag_any', 'flag_exclusion', 'step_coverage'];
+const RULE_TYPES = [...VALUE_RULE_TYPES, ...FLAG_RULE_TYPES];
 const SIGNALS = ['current_a', 'voltage_v', 'rpm_actual', 'bemf_v'];
 const isObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const isInt = (v, min, max) => Number.isInteger(v) && v >= min && v <= max;
@@ -85,10 +88,42 @@ function criteriaFields(b, partial) {
           else if (ids.has(r.id)) err.push({ path: `${p}.id`, msg: 'duplicate rule id' }); else ids.add(r.id);
           if (!RULE_TYPES.includes(r.type)) err.push({ path: `${p}.type`, msg: `one of ${RULE_TYPES.join(', ')}` });
           if (r.signal !== undefined && r.signal !== null && !SIGNALS.includes(r.signal)) err.push({ path: `${p}.signal`, msg: `one of ${SIGNALS.join(', ')}` });
-          for (const k of ['limit', 'min', 'max', 'at_rpm', 'rpm_window', 'exclude_first_ms', 'max_err_rpm', 'exclude_transient_ms', 'target_rpm', 'tolerance_rpm', 'min_rpm']) {
+          for (const k of ['limit', 'min', 'max', 'at_rpm', 'rpm_window', 'exclude_first_ms', 'max_err_rpm', 'exclude_transient_ms', 'target_rpm', 'tolerance_rpm', 'min_rpm', 'max_fraction', 'max_continuous_ms', 'window_ms', 'settle_ms', 'min_readings']) {
             if (k in r && !isNumOrNull(r[k])) err.push({ path: `${p}.${k}`, msg: 'must be a number or null' });
           }
           if (typeof r.min === 'number' && typeof r.max === 'number' && r.min > r.max) err.push({ path: `${p}.min`, msg: 'must not be above max' });
+          if (FLAG_RULE_TYPES.includes(r.type)) {
+            if (!isInt(r.bit, 4, 7)) err.push({ path: `${p}.bit`, msg: 'is required: status flag bit 4-7 (b4 CAN stale, b5 setpoint changed, b6 protective warning, b7 storage lag)' });
+            if (r.type !== 'flag_exclusion' && !['FAIL', 'INVALID'].includes(r.on_violation)) err.push({ path: `${p}.on_violation`, msg: 'is required: FAIL or INVALID' });
+          }
+          if (r.type === 'flag_share') {
+            const frac = r.max_fraction; const cont = r.max_continuous_ms;
+            if ((frac === undefined || frac === null) && (cont === undefined || cont === null)) err.push({ path: p, msg: 'flag_share needs max_fraction and/or max_continuous_ms' });
+            if (typeof frac === 'number' && (frac < 0 || frac > 1)) err.push({ path: `${p}.max_fraction`, msg: 'must be between 0 and 1' });
+            if (typeof cont === 'number' && cont < 0) err.push({ path: `${p}.max_continuous_ms`, msg: 'must be >= 0' });
+          }
+          if (r.type === 'step_coverage') {
+            if (typeof r.settle_ms !== 'number' || r.settle_ms < 0) err.push({ path: `${p}.settle_ms`, msg: 'is required: a number of ms >= 0' });
+            if (!isInt(r.min_readings, 1, 100000)) err.push({ path: `${p}.min_readings`, msg: 'is required: an integer >= 1' });
+            if (!Array.isArray(r.signals) || !r.signals.length || !r.signals.every((x) => SIGNALS.includes(x)) || new Set(r.signals).size !== r.signals.length) {
+              err.push({ path: `${p}.signals`, msg: `a non-empty list of distinct signals from ${SIGNALS.join(', ')}` });
+            }
+          }
+          if (r.type === 'flag_exclusion') {
+            if (typeof r.window_ms !== 'number' || r.window_ms < 0) err.push({ path: `${p}.window_ms`, msg: 'is required: a number of ms >= 0' });
+            if ('on_violation' in r) err.push({ path: `${p}.on_violation`, msg: 'flag_exclusion never produces a violation; remove on_violation' });
+            if (r.applies_to !== undefined && r.applies_to !== null && !(Array.isArray(r.applies_to) && r.applies_to.every((x) => typeof x === 'string' && /^[A-Z0-9_]{1,40}$/.test(x)))) {
+              err.push({ path: `${p}.applies_to`, msg: 'null (every value rule) or an array of rule ids' });
+            }
+          }
+        });
+      }
+      if (Array.isArray(d.rules)) {
+        const valueIds = new Set(d.rules.filter((r) => isObj(r) && VALUE_RULE_TYPES.includes(r.type)).map((r) => r.id));
+        d.rules.forEach((r, i) => {
+          if (isObj(r) && r.type === 'flag_exclusion' && Array.isArray(r.applies_to)) {
+            r.applies_to.forEach((x, j) => { if (!valueIds.has(x)) err.push({ path: `definition.rules[${i}].applies_to[${j}]`, msg: `${x} is not a value rule in this criteria version` }); });
+          }
         });
       }
       if (JSON.stringify(d).length > 100000) err.push({ path: 'definition', msg: 'is too large (max 100 kB)' });
