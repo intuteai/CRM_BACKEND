@@ -29,14 +29,14 @@ exports.generate = async (req, res) => {
           [it.source === 'inventory' ? Math.round(qtyNum) : qtyNum, it.productId]
         );
         if (updateRes.rowCount) {
-          updatedProducts.push({ product_id: updateRes.rows[0].product_id, returnable_qty: Number(updateRes.rows[0].returnable_qty) });
+          updatedProducts.push({ source: table, product_id: updateRes.rows[0].product_id, returnable_qty: Number(updateRes.rows[0].returnable_qty) });
         } else {
           throw new Error(`${it.source === 'inventory' ? 'Inventory' : 'Raw material'} product not found: ${it.productId}`);
         }
       }
       await client.query('COMMIT');
       try {
-        for (const upd of updatedProducts) req.io.emit('stockUpdate', { product_id: upd.product_id, returnable_qty: upd.returnable_qty, status: 'updated' });
+        for (const upd of updatedProducts) req.io.emit('stockUpdate', { source: upd.source, product_id: upd.product_id, returnable_qty: upd.returnable_qty, status: 'updated' });
       } catch (emitErr) { logger.warn('Failed to emit socket updates for delivery challan:', emitErr); }
 
       const safeName = String(data.challan_no).replace(/[^a-zA-Z0-9]/g, '_');

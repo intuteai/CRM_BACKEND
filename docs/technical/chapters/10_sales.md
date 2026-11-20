@@ -181,26 +181,26 @@ All paths are relative to `CRM_BACKEND/`. Layout: `routes/<domain>/*.js` -> `con
   - `inventory_<limit>_<offset>` and `inventory_availability_<limit>_<offset>`, both TTL 3600 s.
   - Writes delete `inventory_*`; hold changes delete only `inventory_availability_*`.
   - `redis.del('price_list_*')` is a literal-key delete and is ineffective.
-- **Socket:** `stockUpdate { product_id, stock_quantity, returnable_qty }`.
+- **Socket:** `stockUpdate { source: 'inventory', product_id, stock_quantity, returnable_qty }`.
 
-### 2.5 Stock: raw materials (`routes/core/stock.js`, `controllers/core/stock.controller.js`, `models/core/stock.js`)
+### 2.5 Stock: raw materials (`routes/core/stock.js`, `controllers/core/stock.controller.js`, `controllers/core/stock.validation.js`, `models/core/stock.js`)
 
-**Purpose:** raw-material master (`raw_materials` table) with location, required quantity, photo, and an audited adjustment log (`stock_adjustments`).
+**Purpose:** raw-material master (`raw_materials` table) with location, required quantity, returnable quantity, photo, and a stock-change history (`stock_adjustments`).
 
-- **Validation:**
-  - `validateStockInput`: productName (string); productCode is a string of exactly 11 characters; price is a number of 0 or more; stockQuantity and qtyRequired are numbers of 0 or more if present; location and imageUrl are strings. Failures return 400 `INVALID_INPUT`.
-  - `validateAdjustInput`: `quantity` must be a number and may be negative; `reason` must be a string.
-- **Part numbers:** same 4-digit prefix scheme as inventory, against `raw_materials.part_number` (constraints `raw_materials_part_number_unique` and `raw_materials_product_code_key`). Error codes `PART_NUMBER_TAKEN` and `DUPLICATE_CODE`. `GET /check-part-number` is limited by `requireRoles` to admin, sales, production, store and dispatch.
-- **Update:** `COALESCE` keeps the existing stock, image and returnable values when they are omitted, but `qty_required` defaults to 0 and `location` to NULL when omitted.
-- **Photo upload:** `POST /:productId/photo`.
-  - multer memory storage, **8 MB** limit, field `photo`.
-  - Allowed types: JPEG, PNG, WebP, GIF.
-  - Filename `raw_<id>_<timestamp>.<ext>`, uploaded with `uploadBufferToDrive` (public).
-  - `image_url` is set to the Drive `directUrl` and `stockUpdate` is emitted.
-- **Adjust:** `POST /:productId/adjust` runs `stock_quantity += quantity` and inserts into `stock_adjustments (product_id, quantity, reason, created_by, created_at)`.
-  - **Bug:** `BEGIN`/`COMMIT`/`ROLLBACK` are issued with `pool.query`, so each statement may run on a different pooled connection. The adjustment and its log entry are therefore **not actually atomic**.
-- **Delete:** `DELETE /:productId` requires `Stock.can_delete`, has no guards, and returns 204.
-- **Caching:** none. **Socket:** `stockUpdate` (with `location` and `image_url`, or `status: 'deleted'`). Like every `stockUpdate`, it goes to `org:compage` and `customers`.
+**Columns that matter:** `stock_quantity`, `price` and `returnable_qty` are `numeric(10,2)` (`returnable_qty` has a CHECK of 0 or more); `qty_required` is an integer that the `bom_materials` trigger recalculates as the sum of BOM quantities; `part_number` is generated as `left(product_code, 4)` and is unique. The API always answers with numbers (pg returns numeric as strings; the model converts them).
+
+- **Errors:** every failure answers `{ error, code, details? }`. Codes: `INVALID_INPUT`, `NOT_FOUND`, `PART_NUMBER_TAKEN`, `DUPLICATE_CODE`, `IN_USE`, `INSUFFICIENT_STOCK`, `RETURN_EXCEEDS_RETURNABLE`, `SERVER_ERROR`. pg `22003` (number too large) and `23514` (CHECK) become 400; `23503` (still referenced) becomes 409 `IN_USE`.
+- **Validation (`stock.validation.js`):** productName 1 to 100 characters; productCode trimmed and upper-cased, exactly 11 characters matching `^\d{4}[A-Z0-9]{4}\d{3}$`; price required, a number from 0 to 99,999,999.99; stockQuantity and returnableQty the same range (rounded to 2 decimals); qtyRequired a whole number of 0 or more; description up to 5000, location up to 100, stockChangeReason and adjust reason up to 500 characters. Numbers must be real JSON numbers. `:productId` must be a positive whole number on every route (400 otherwise). `GET /` clamps `limit` to 1..10000 (default 10).
+- **Part numbers:** `GET /check-part-number` (admin, sales, production, store, dispatch) is unchanged. On create without `part_number_auto` a used part number is refused (400 `PART_NUMBER_TAKEN`, naming the owner). With `part_number_auto: true` the model reserves the next `product_id` from the sequence first and makes the part number that id (0171, ...), so the number is known before the insert. If the id is over 9999 or that part number is already used, the requested code is kept and the 201 answer carries `partNumberWarning`.
+- **Create / update** run in one transaction on a dedicated client. Update locks the row (`SELECT ... FOR UPDATE`). Name, code and price are always written; every other field that is not sent keeps its stored value (location, description, image, returnable qty, qty required, stock). `null` or `''` clears description or location.
+- **Stock history:** any stock change is written to `stock_adjustments` in the same transaction (`source`: `create` for initial stock, `edit` with `stockChangeReason` or "Edited in stock form", `adjust`, `return`; `purchase_invoice` from the DB trigger once migrated). The write runs under a SAVEPOINT: if the table does not exist yet, it is skipped with a warning and the stock change still commits.
+  - **The table did not exist in production** (found 2026-11-20). `scripts/migrations/2026-11-20-raw-material-stock-adjustments.js` creates it (no FK on `product_id`, so history survives a delete) and must be run before history appears.
+- **Adjust:** `POST /:productId/adjust { quantity (non-zero, signed), reason? }` locks the row and refuses to go below 0 (400 `INSUFFICIENT_STOCK`).
+- **Accept return:** `POST /:productId/accept-return { quantity > 0 }` locks the row; refuses more than `returnable_qty` (400 `RETURN_EXCEEDS_RETURNABLE`); otherwise `stock += q`, `returnable -= q`. Returns the updated item.
+- **History:** `GET /:productId/adjustments?limit` (`Stock.can_read`, default 20, max 100) answers `{ available, data: [{ adjustmentId, productId, quantity, balanceAfter, reason, source, createdBy, createdByName, createdAt }] }`, newest first; `available: false` until the migration has run.
+- **Photo upload:** `POST /:productId/photo`, multer memory storage, **8 MB** limit (a bigger file is a 400), field `photo`, JPEG/PNG/WebP/GIF. The product is checked first (404 before anything is sent to Drive). Filename `raw_<id>_<timestamp>.<ext>`, uploaded with `uploadBufferToDrive` (public).
+- **Delete:** `DELETE /:productId` (`Stock.can_delete`) returns 204. Materials used by `bom_materials`, `work_order_materials` or `process_material_usage` (FK RESTRICT) answer 409 `IN_USE`; `part_drawings_raw` rows cascade and `purchase_invoices.product_id` is set to NULL.
+- **Caching:** none. **Socket:** `stockUpdate { source: 'raw_materials', product_id, stock_quantity, returnable_qty, qty_required, location, image_url }`, or `{ source: 'raw_materials', product_id, status: 'deleted' }`. Finished-goods emitters (inventory, orders) send `source: 'inventory'` and the delivery challan sends the table it changed, so the two stock pages no longer mix up equal product ids. Like every `stockUpdate`, it goes to `org:compage` and `customers`.
 
 ### 2.6 Reports (`routes/core/reports.js`, `controllers/core/reports.controller.js`)
 
@@ -367,7 +367,7 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` and `require
 - **Access:** every route runs `authenticateToken` plus `requireRoles` admin, accounts (matching the `/purchase-invoices` page). There is no `checkPermission`.
 - **Validation:** `validateInvoiceInput` requires supplierCode, supplierName, invoiceNumber and description as strings; `issueDate` must parse as a date; unitPrice and quantity must be numbers of 0 or more (falsy 0 is rejected because of `!unitPrice`); `productId` must be an integer of 1 or more; `linkPdf` is an optional string.
 - **Table:** `purchase_invoices` (invoice_id, sr_no, supplier_code, supplier_name, invoice_number, issue_date, description, unit_price, quantity, link_pdf, product_id, created_at, updated_at).
-- **Stock side effect:** after create, update and delete, the controller reads back `raw_materials.stock_quantity` and logs it. No application code changes stock here, so any automatic stock-in would have to come from a DB trigger that is not in this repo. **The code does not show this; verify in the DB.**
+- **Stock side effect:** the DB trigger `trigger_update_raw_materials_stock` (function `update_raw_materials_stock`) changes `raw_materials.stock_quantity`: insert adds the quantity, delete takes it off, update applies the difference. Before the 2026-11-20 migration, moving an invoice to a different material added only the difference to the new material and never took stock off the old one; the migration fixes this and logs each change in `stock_adjustments` (`source: 'purchase_invoice'`). After create, update and delete the controller reads the affected material(s) back and emits a raw-material `stockUpdate` (for an update, both the old and the new material).
 - **Caching:** key `purchase_invoices_<limit>_<offset>`, TTL 300 s. Writes call `redis.del('purchase_invoices_*')`, a literal key, so **cached pages are not invalidated** until the TTL expires.
 - **Socket:** `invoiceUpdate` (the same event name as customer invoices, with a different payload shape).
 
@@ -396,7 +396,7 @@ All three are `POST /api/<doc>/generate` behind `authenticateToken` and `require
   1. Render the PDF into a buffer (`generateBuffer`).
   2. In a transaction, for each item with `returnable` true, run `UPDATE <inventory|raw_materials> SET returnable_qty = COALESCE(returnable_qty,0) + qty`. Inventory quantities are rounded to integers. A missing product rolls back with a 500.
   3. Commit, emit `stockUpdate { product_id, returnable_qty, status:'updated' }`, and send the PDF with `Content-Length`.
-- **Stock effect:** the challan **does not deduct `stock_quantity`**; only `returnable_qty` increases. Returns are accepted via `POST /api/inventory/:id/accept-return`. There is no raw-material equivalent in these modules.
+- **Stock effect:** the challan **does not deduct `stock_quantity`**; only `returnable_qty` increases. Returns are accepted via `POST /api/inventory/:id/accept-return` (finished goods) or `POST /api/stock/:id/accept-return` (raw materials). The emitted `stockUpdate` carries `source: 'inventory'` or `source: 'raw_materials'`.
 - **PDF layout:** PDFKit A4, margin 24, Roboto.
   - "DELIVERY CHALLAN" title; To / M/s. block with optional party GST.
   - Meta rows: Challan No / Date, Order No / Order Date, Vehicle No.
@@ -475,4 +475,4 @@ All of these go through `req.io.emit()`, so they reach only the acting user's or
 8. `Enquiry.checkOverdue` is never scheduled.
 9. PDF generator routes and purchase-invoice routes use `requireRoles` role guards but no `checkPermission` RBAC, so the `permissions` table does not control them.
 10. The README says JWTs are accepted from a cookie, but `authenticateToken` only reads the `Authorization` header.
-11. DB-side objects referenced but not defined in this repo: `get_next_enquiry_id()`, the order/dispatch status-sync triggers, and any stock trigger on `purchase_invoices`.
+11. DB-side objects referenced but not defined in this repo: `get_next_enquiry_id()`, the order/dispatch status-sync triggers, and the stock trigger on `purchase_invoices` (its fixed version is in `scripts/migrations/2026-11-20-raw-material-stock-adjustments.js`).

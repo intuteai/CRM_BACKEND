@@ -64,6 +64,7 @@ class Inventory {
 
     if (io) {
       io.emit('stockUpdate', {
+        source: 'inventory',
         product_id: product.product_id,
         stock_quantity: product.stock_quantity,
         returnable_qty: product.returnable_qty,
@@ -220,6 +221,7 @@ class Inventory {
     const product = normalizeInventoryRow(rows[0]);
     if (io) {
       io.emit('stockUpdate', {
+        source: 'inventory',
         product_id: product.product_id,
         stock_quantity: 0,
         returnable_qty: 0,

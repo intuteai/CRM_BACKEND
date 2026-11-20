@@ -5,30 +5,30 @@ const { authenticateToken, checkPermission } = require('../../middleware/auth');
 const { ROLES, requireRoles } = require('../../middleware/roles');
 const controller = require('../../controllers/core/stock.controller');
 
+// Body and :productId validation happens in the controller (stock.validation.js),
+// so every route answers a bad request with the same error shape.
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 } });
 
-const validateStockInput = (req, res, next) => {
-  const { productName, description, productCode, price, stockQuantity, qtyRequired, location, imageUrl } = req.body;
-  if (!productName || typeof productName !== 'string' || (description && typeof description !== 'string') || !productCode || typeof productCode !== 'string' || productCode.length !== 11 || (price === undefined || typeof price !== 'number' || price < 0) || (stockQuantity !== undefined && (typeof stockQuantity !== 'number' || stockQuantity < 0)) || (qtyRequired !== undefined && (typeof qtyRequired !== 'number' || qtyRequired < 0)) || (location !== undefined && typeof location !== 'string') || (imageUrl !== undefined && imageUrl !== null && typeof imageUrl !== 'string')) {
-    return res.status(400).json({ error: 'Invalid input data', code: 'INVALID_INPUT' });
-  }
-  next();
-};
-
-const validateAdjustInput = (req, res, next) => {
-  const { quantity, reason } = req.body;
-  if (quantity === undefined || typeof quantity !== 'number' || (reason && typeof reason !== 'string')) {
-    return res.status(400).json({ error: 'Invalid adjustment data', code: 'INVALID_INPUT' });
-  }
-  next();
+// multer's "file too large" would otherwise surface as a 500.
+const uploadPhoto = (req, res, next) => {
+  upload.single('photo')(req, res, (err) => {
+    if (!err) return next();
+    const tooLarge = err.code === 'LIMIT_FILE_SIZE';
+    return res.status(400).json({
+      error: tooLarge ? 'Photo is too large (max 8 MB)' : `Upload failed: ${err.message}`,
+      code: 'INVALID_INPUT',
+    });
+  });
 };
 
 router.get('/check-part-number', authenticateToken, requireRoles(ROLES.ADMIN, ROLES.SALES, ROLES.PRODUCTION, ROLES.STORE, ROLES.DISPATCH), controller.checkPartNumber);
 router.get('/', authenticateToken, checkPermission('Stock', 'can_read'), controller.getAll);
-router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, controller.create);
-router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write'), validateStockInput, controller.update);
-router.post('/:productId/photo', authenticateToken, checkPermission('Stock', 'can_write'), upload.single('photo'), controller.uploadPhoto);
+router.post('/', authenticateToken, checkPermission('Stock', 'can_write'), controller.create);
+router.get('/:productId/adjustments', authenticateToken, checkPermission('Stock', 'can_read'), controller.getAdjustments);
+router.put('/:productId', authenticateToken, checkPermission('Stock', 'can_write'), controller.update);
+router.post('/:productId/photo', authenticateToken, checkPermission('Stock', 'can_write'), uploadPhoto, controller.uploadPhoto);
 router.delete('/:productId', authenticateToken, checkPermission('Stock', 'can_delete'), controller.delete);
-router.post('/:productId/adjust', authenticateToken, checkPermission('Stock', 'can_write'), validateAdjustInput, controller.adjust);
+router.post('/:productId/adjust', authenticateToken, checkPermission('Stock', 'can_write'), controller.adjust);
+router.post('/:productId/accept-return', authenticateToken, checkPermission('Stock', 'can_write'), controller.acceptReturn);
 
 module.exports = router;

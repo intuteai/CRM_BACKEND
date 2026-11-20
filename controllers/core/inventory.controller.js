@@ -175,7 +175,7 @@ exports.update = async (req, res, next) => {
     const updatedProduct = await Inventory.update(productId, updateData, true);
     if (price !== undefined) await Inventory.syncPriceWithPriceList(productId, price);
     if ((stock_quantity !== undefined || returnable_qty !== undefined) && req.io) {
-      req.io.emit('stockUpdate', { product_id: updatedProduct.product_id, stock_quantity: updatedProduct.stock_quantity, returnable_qty: updatedProduct.returnable_qty });
+      req.io.emit('stockUpdate', { source: 'inventory', product_id: updatedProduct.product_id, stock_quantity: updatedProduct.stock_quantity, returnable_qty: updatedProduct.returnable_qty });
     }
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
@@ -265,7 +265,7 @@ exports.acceptReturn = async (req, res, next) => {
       [qtyToAccept, productId]
     );
     const updatedProduct = updatedRows[0];
-    if (req.io) req.io.emit('stockUpdate', { product_id: updatedProduct.product_id, stock_quantity: updatedProduct.stock_quantity, returnable_qty: updatedProduct.returnable_qty });
+    if (req.io) req.io.emit('stockUpdate', { source: 'inventory', product_id: updatedProduct.product_id, stock_quantity: updatedProduct.stock_quantity, returnable_qty: updatedProduct.returnable_qty });
     const keys = await redis.keys('inventory_*');
     if (keys.length > 0) await redis.del(keys);
     res.json({ message: 'Return accepted successfully', product: updatedProduct });

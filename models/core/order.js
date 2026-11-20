@@ -393,7 +393,7 @@ class Order {
 
           if (io) {
             updatedStocks.forEach(({ product_id, stock_quantity }) => {
-              io.emit('stockUpdate', { product_id, stock_quantity });
+              io.emit('stockUpdate', { source: 'inventory', product_id, stock_quantity });
             });
           }
         }
@@ -468,7 +468,7 @@ class Order {
 
           if (io) {
             updatedStocks.forEach(({ product_id, stock_quantity }) => {
-              io.emit('stockUpdate', { product_id, stock_quantity });
+              io.emit('stockUpdate', { source: 'inventory', product_id, stock_quantity });
             });
           }
 
