@@ -47,6 +47,24 @@ function checkAmount(errors, body, field, label, { required = false } = {}) {
   return round2(v);
 }
 
+// Lead date: the expected arrival date of the material. Date only, stored in a
+// DATE column. Only a strict YYYY-MM-DD that is a real calendar day is accepted.
+const LEAD_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const LEAD_DATE_MESSAGE = 'Lead date must be a valid date (YYYY-MM-DD)';
+
+function isValidLeadDate(v) {
+  if (typeof v !== 'string') return false;
+  const m = LEAD_DATE_RE.exec(v);
+  if (!m) return false;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (y < 2000 || y > 2100 || mo < 1 || mo > 12 || d < 1) return false;
+  // Day 0 of the next month is the last day of this month (UTC, so no DST/timezone shift).
+  const daysInMonth = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+  return d <= daysInMonth;
+}
+
 // undefined = not sent (keep), null or '' = clear, otherwise trimmed text.
 function checkOptionalText(errors, body, field, label, max) {
   const v = body[field];
@@ -133,6 +151,16 @@ function validateStockBody(body) {
   const reason = checkOptionalText(errors, body, 'stockChangeReason', 'Reason', LIMITS.reason);
   if (reason !== undefined) value.stockChangeReason = reason;
 
+  if (body.leadDate !== undefined) {
+    if (body.leadDate === null || body.leadDate === '') {
+      value.leadDate = null;
+    } else if (isValidLeadDate(body.leadDate)) {
+      value.leadDate = body.leadDate;
+    } else {
+      errors.push({ field: 'leadDate', message: LEAD_DATE_MESSAGE });
+    }
+  }
+
   if (body.part_number_auto !== undefined && body.part_number_auto !== null && typeof body.part_number_auto !== 'boolean') {
     errors.push({ field: 'part_number_auto', message: 'part_number_auto must be true or false' });
   } else {
@@ -201,6 +229,8 @@ module.exports = {
   INT_MAX,
   LIMITS,
   PRODUCT_CODE_RE,
+  LEAD_DATE_MESSAGE,
+  isValidLeadDate,
   round2,
   validateStockBody,
   validateAdjustBody,

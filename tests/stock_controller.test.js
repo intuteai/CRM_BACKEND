@@ -102,7 +102,27 @@ describe('create', () => {
     await controller.create(req, makeRes());
     expect(req.io.emit).toHaveBeenCalledWith('stockUpdate', {
       source: 'raw_materials', product_id: 7, stock_quantity: 10, returnable_qty: 2, qty_required: 3, location: 'Rack A', image_url: null,
+      lead_date: null,
     });
+  });
+
+  it('passes a valid lead date to the model and puts it in the stockUpdate payload', async () => {
+    Stock.create.mockResolvedValue({ item: item({ leadDate: '2026-12-24' }), partNumberWarning: null });
+    const req = makeReq({ body: validBody({ leadDate: '2026-12-24' }) });
+    const res = makeRes();
+    await controller.create(req, res);
+    expect(Stock.create).toHaveBeenCalledWith(expect.objectContaining({ leadDate: '2026-12-24' }), { userId: 11 });
+    expect(res.statusCode).toBe(201);
+    expect(req.io.emit).toHaveBeenCalledWith('stockUpdate', expect.objectContaining({ lead_date: '2026-12-24' }));
+  });
+
+  it('400 INVALID_INPUT naming leadDate for an impossible date, model not called', async () => {
+    const res = makeRes();
+    await controller.create(makeReq({ body: validBody({ leadDate: '2026-02-30' }) }), res);
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toMatchObject({ code: 'INVALID_INPUT', error: 'Lead date must be a valid date (YYYY-MM-DD)' });
+    expect(res.body.details).toEqual([{ field: 'leadDate', message: 'Lead date must be a valid date (YYYY-MM-DD)' }]);
+    expect(Stock.create).not.toHaveBeenCalled();
   });
 
   it('returns partNumberWarning when the model sets one', async () => {
@@ -156,9 +176,22 @@ describe('update', () => {
     expect(fields).toMatchObject({ stockQuantity: 4, stockChangeReason: 'Recount' });
     expect(fields).not.toHaveProperty('location');
     expect(fields).not.toHaveProperty('returnableQty');
+    expect(fields).not.toHaveProperty('leadDate'); // omitted → model keeps the stored lead date
     expect(opts).toEqual({ userId: 11 });
     expect(res.body).toEqual(item());
     expect(req.io.emit).toHaveBeenCalledWith('stockUpdate', expect.objectContaining({ source: 'raw_materials', product_id: 7 }));
+  });
+
+  it.each([
+    [null, null],
+    ['', null],
+    ['2027-03-01', '2027-03-01'],
+  ])('update leadDate %p is passed to the model as %p', async (sent, expected) => {
+    Stock.update.mockResolvedValue(item({ leadDate: expected }));
+    const req = makeReq({ params: { productId: '7' }, body: validBody({ leadDate: sent }) });
+    await controller.update(req, makeRes());
+    expect(Stock.update.mock.calls[0][1].leadDate).toBe(expected);
+    expect(req.io.emit).toHaveBeenCalledWith('stockUpdate', expect.objectContaining({ lead_date: expected }));
   });
 
   it('404 NOT_FOUND', async () => {

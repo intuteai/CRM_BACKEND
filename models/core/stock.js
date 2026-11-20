@@ -9,9 +9,15 @@
 const pool = require('../../config/db');
 const logger = require('../../utils/logger');
 
+// lead_date is a DATE; to_char keeps it a plain 'YYYY-MM-DD' string so pg never
+// turns it into a JS Date (which would shift the day by the server timezone).
 const COLUMNS = `
   product_id, stock_quantity, price, created_at, product_name, description,
-  product_code, qty_required, location, image_url, returnable_qty`;
+  product_code, qty_required, location, image_url, returnable_qty,
+  to_char(lead_date, 'YYYY-MM-DD') AS lead_date`;
+
+const LEAD_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const leadDateOf = (v) => (typeof v === 'string' && LEAD_DATE_RE.test(v) ? v : null);
 
 /** A business-rule failure the controller turns into a 4xx answer. */
 class StockError extends Error {
@@ -42,6 +48,7 @@ function normalizeStockRow(row) {
   const returnableQty = num(row.returnable_qty ?? row.returnableQty);
   const imageUrl = row.image_url ?? row.imageUrl ?? null;
   const createdAt = row.created_at ?? row.createdAt ?? null;
+  const leadDate = leadDateOf(row.lead_date ?? row.leadDate);
   return {
     product_id: productId,
     product_name: productName,
@@ -54,6 +61,7 @@ function normalizeStockRow(row) {
     location: row.location ?? null,
     image_url: imageUrl,
     created_at: createdAt,
+    lead_date: leadDate,
     productId,
     productName,
     productCode,
@@ -62,6 +70,7 @@ function normalizeStockRow(row) {
     returnableQty,
     imageUrl,
     createdAt,
+    leadDate,
   };
 }
 
@@ -216,20 +225,21 @@ class Stock {
         fields.location ?? null,
         fields.imageUrl ?? null,
         fields.returnableQty ?? 0,
+        fields.leadDate ?? null,
       ];
       let sql;
       if (productId !== null) {
         values.push(productId);
         sql = `INSERT INTO raw_materials
             (product_name, description, product_code, price, stock_quantity, qty_required,
-             location, image_url, returnable_qty, product_id, created_at)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP)
+             location, image_url, returnable_qty, lead_date, product_id, created_at)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::date, $11, CURRENT_TIMESTAMP)
           RETURNING ${COLUMNS}`;
       } else {
         sql = `INSERT INTO raw_materials
             (product_name, description, product_code, price, stock_quantity, qty_required,
-             location, image_url, returnable_qty, created_at)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, CURRENT_TIMESTAMP)
+             location, image_url, returnable_qty, lead_date, created_at)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::date, CURRENT_TIMESTAMP)
           RETURNING ${COLUMNS}`;
       }
       const { rows: [row] } = await client.query(sql, values);
@@ -270,8 +280,8 @@ class Stock {
         `UPDATE raw_materials SET
            product_name = $1, description = $2, product_code = $3, price = $4,
            stock_quantity = $5, qty_required = $6, location = $7, image_url = $8,
-           returnable_qty = $9
-         WHERE product_id = $10
+           returnable_qty = $9, lead_date = $10::date
+         WHERE product_id = $11
          RETURNING ${COLUMNS}`,
         [
           fields.productName,
@@ -283,6 +293,7 @@ class Stock {
           keep('location', 'location'),
           keep('imageUrl', 'image_url'),
           keep('returnableQty', 'returnable_qty'),
+          keep('leadDate', 'lead_date'),
           productId,
         ]
       );

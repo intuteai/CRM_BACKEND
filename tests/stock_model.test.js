@@ -38,6 +38,7 @@ const row = (over = {}) => ({
   location: 'Rack A',
   image_url: 'http://img',
   returnable_qty: '4.00',
+  lead_date: '2026-12-05',
   ...over,
 });
 
@@ -76,6 +77,84 @@ describe('normalizeStockRow', () => {
     expect(n.qtyRequired).toBe(0);
   });
   it('returns null for no row', () => expect(Stock.normalizeStockRow(undefined)).toBeNull());
+
+  it('gives lead date in both spellings as a plain YYYY-MM-DD string', () => {
+    const n = Stock.normalizeStockRow(row());
+    expect(n.lead_date).toBe('2026-12-05');
+    expect(n.leadDate).toBe('2026-12-05');
+  });
+  it('lead date null / missing / non-string → null (never a JS Date)', () => {
+    expect(Stock.normalizeStockRow(row({ lead_date: null })).leadDate).toBeNull();
+    expect(Stock.normalizeStockRow(row({ lead_date: undefined })).leadDate).toBeNull();
+    expect(Stock.normalizeStockRow(row({ lead_date: new Date('2026-12-05') })).leadDate).toBeNull();
+    expect(Stock.normalizeStockRow(row({ lead_date: 'garbage' })).leadDate).toBeNull();
+  });
+});
+
+describe('lead date column', () => {
+  it('every read selects lead_date through to_char so pg never builds a JS Date', async () => {
+    mockState.handler = async (sql) => (/COUNT/.test(sql) ? { rows: [{ count: '1' }] } : { rows: [row()] });
+    await Stock.getAll({ limit: 10, offset: 0 });
+    expect(mockState.poolLog[0].sql).toMatch(/to_char\(lead_date, 'YYYY-MM-DD'\) AS lead_date/);
+  });
+
+  it('create stores a sent lead date (cast to date) and defaults it to null', async () => {
+    mockState.handler = async (sql, params) =>
+      (/^INSERT INTO raw_materials/.test(sql) ? { rows: [row({ stock_quantity: '0', lead_date: params[9] })] } : { rows: [] });
+    const out = await Stock.create(fullFields({ leadDate: '2027-01-15' }));
+    const ins = find(/^INSERT INTO raw_materials/);
+    expect(ins.sql).toMatch(/lead_date/);
+    expect(ins.sql).toMatch(/\$10::date/);
+    expect(ins.params[9]).toBe('2027-01-15');
+    expect(out.item.leadDate).toBe('2027-01-15');
+
+    mockState.clientLog = [];
+    const out2 = await Stock.create(fullFields());
+    expect(find(/^INSERT INTO raw_materials/).params[9]).toBeNull();
+    expect(out2.item.leadDate).toBeNull();
+  });
+
+  it('auto part number create still puts lead date before the reserved id', async () => {
+    mockState.handler = async (sql, params) => {
+      if (/nextval/.test(sql)) return { rows: [{ id: '171' }] };
+      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[10], product_code: params[2], lead_date: params[9] })] };
+      return { rows: [] };
+    };
+    const out = await Stock.create({ ...fullFields({ productCode: '0170L5BR123', leadDate: '2026-11-30' }), partNumberAuto: true });
+    const ins = find(/^INSERT INTO raw_materials/);
+    expect(ins.params[9]).toBe('2026-11-30');
+    expect(ins.params[10]).toBe(171);
+    expect(out.item.leadDate).toBe('2026-11-30');
+  });
+
+  const updHandler = async (sql, params) => {
+    if (/FOR UPDATE$/.test(sql)) return { rows: [row()] };
+    if (/^UPDATE raw_materials SET product_name/.test(sql)) return { rows: [row({ lead_date: params[9] })] };
+    return { rows: [] };
+  };
+
+  it('update omitted lead date keeps the stored one', async () => {
+    mockState.handler = updHandler;
+    const item = await Stock.update(7, fullFields());
+    const upd = find(/^UPDATE raw_materials SET product_name/);
+    expect(upd.sql).toMatch(/lead_date = \$10::date WHERE product_id = \$11/);
+    expect(upd.params[9]).toBe('2026-12-05');
+    expect(item.leadDate).toBe('2026-12-05');
+  });
+
+  it('update with a new lead date writes it', async () => {
+    mockState.handler = updHandler;
+    const item = await Stock.update(7, fullFields({ leadDate: '2027-02-28' }));
+    expect(find(/^UPDATE raw_materials SET product_name/).params[9]).toBe('2027-02-28');
+    expect(item.leadDate).toBe('2027-02-28');
+  });
+
+  it('update with leadDate null clears it', async () => {
+    mockState.handler = updHandler;
+    const item = await Stock.update(7, fullFields({ leadDate: null }));
+    expect(find(/^UPDATE raw_materials SET product_name/).params[9]).toBeNull();
+    expect(item.leadDate).toBeNull();
+  });
 });
 
 describe('getAll', () => {
@@ -120,13 +199,13 @@ describe('create', () => {
   it('auto: reserves the next id and uses it as the part number', async () => {
     mockState.handler = async (sql, params) => {
       if (/nextval/.test(sql)) return { rows: [{ id: '171' }] };
-      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[9], product_code: params[2], stock_quantity: '0' })] };
+      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[10], product_code: params[2], stock_quantity: '0' })] };
       return { rows: [] };
     };
     const out = await Stock.create({ ...fullFields({ productCode: '0170L5BR123' }), partNumberAuto: true });
     const ins = find(/^INSERT INTO raw_materials/);
     expect(ins.params[2]).toBe('0171L5BR123');
-    expect(ins.params[9]).toBe(171);
+    expect(ins.params[10]).toBe(171);
     expect(out.partNumberWarning).toBeNull();
     expect(out.item.productCode).toBe('0171L5BR123');
     expect(find(/INSERT INTO stock_adjustments/)).toBeUndefined(); // no stock → no audit
@@ -135,7 +214,7 @@ describe('create', () => {
   it('auto: id already matches → no extra check needed, code unchanged', async () => {
     mockState.handler = async (sql, params) => {
       if (/nextval/.test(sql)) return { rows: [{ id: 171 }] };
-      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[9], product_code: params[2] })] };
+      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[10], product_code: params[2] })] };
       return { rows: [] };
     };
     await Stock.create({ ...fullFields({ productCode: '0171L5BR123' }), partNumberAuto: true });
@@ -147,7 +226,7 @@ describe('create', () => {
     mockState.handler = async (sql, params) => {
       if (/nextval/.test(sql)) return { rows: [{ id: '171' }] };
       if (/WHERE part_number = \$1$/.test(sql)) return params[0] === '0171' ? { rows: [{ product_id: 5, product_name: 'Nut' }] } : { rows: [] };
-      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[9], product_code: params[2] })] };
+      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[10], product_code: params[2] })] };
       return { rows: [] };
     };
     const out = await Stock.create({ ...fullFields({ productCode: '0170L5BR123' }), partNumberAuto: true });
@@ -169,7 +248,7 @@ describe('create', () => {
   it('auto: id over 9999 → warning, requested code kept', async () => {
     mockState.handler = async (sql, params) => {
       if (/nextval/.test(sql)) return { rows: [{ id: '10000' }] };
-      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[9], product_code: params[2] })] };
+      if (/^INSERT INTO raw_materials/.test(sql)) return { rows: [row({ product_id: params[10], product_code: params[2] })] };
       return { rows: [] };
     };
     const out = await Stock.create({ ...fullFields({ productCode: '0170L5BR123' }), partNumberAuto: true });
@@ -180,7 +259,7 @@ describe('create', () => {
   it('defaults optional fields on insert', async () => {
     mockState.handler = async (sql) => (/^INSERT INTO raw_materials/.test(sql) ? { rows: [row({ stock_quantity: '0' })] } : { rows: [] });
     await Stock.create(fullFields());
-    expect(find(/^INSERT INTO raw_materials/).params).toEqual(['Wire 2', null, '0007L5BR123', 6, 0, 0, null, null, 0]);
+    expect(find(/^INSERT INTO raw_materials/).params).toEqual(['Wire 2', null, '0007L5BR123', 6, 0, 0, null, null, 0, null]);
   });
 
   it('a pg error (unique violation) propagates after rollback', async () => {
@@ -204,7 +283,7 @@ describe('update', () => {
     }
     if (/FOR UPDATE$/.test(sql)) return { rows: [lockedRow] };
     if (/^UPDATE raw_materials SET product_name/.test(sql)) {
-      return { rows: [row({ product_name: params[0], description: params[1], product_code: params[2], price: params[3], stock_quantity: params[4], qty_required: params[5], location: params[6], image_url: params[7], returnable_qty: params[8] })] };
+      return { rows: [row({ product_name: params[0], description: params[1], product_code: params[2], price: params[3], stock_quantity: params[4], qty_required: params[5], location: params[6], image_url: params[7], returnable_qty: params[8], lead_date: params[9] })] };
     }
     return { rows: [] };
   };
@@ -213,7 +292,7 @@ describe('update', () => {
     mockState.handler = standardHandler();
     const item = await Stock.update(7, fullFields(), { userId: 1 });
     const upd = find(/^UPDATE raw_materials SET product_name/);
-    expect(upd.params).toEqual(['Wire 2', 'desc', '0007L5BR123', 6, 10, 3, 'Rack A', 'http://img', '4.00', 7]);
+    expect(upd.params).toEqual(['Wire 2', 'desc', '0007L5BR123', 6, 10, 3, 'Rack A', 'http://img', '4.00', '2026-12-05', 7]);
     expect(item.location).toBe('Rack A');
     expect(find(/INSERT INTO stock_adjustments/)).toBeUndefined(); // stock unchanged
     expect(find(/FOR UPDATE$/).params).toEqual([7]);

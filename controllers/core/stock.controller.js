@@ -64,6 +64,7 @@ function emitItem(req, item) {
     qty_required: item.qtyRequired,
     location: item.location ?? null,
     image_url: item.imageUrl ?? null,
+    lead_date: item.leadDate ?? null,
   });
 }
 

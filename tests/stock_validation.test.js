@@ -93,6 +93,72 @@ describe('validateStockBody', () => {
   });
 });
 
+describe('validateStockBody leadDate', () => {
+  const MSG = 'Lead date must be a valid date (YYYY-MM-DD)';
+  const run = (leadDate) => v.validateStockBody({ ...base(), leadDate });
+
+  it.each([
+    '2026-11-25',
+    '2028-02-29', // leap year
+    '2000-01-01', // lower bound
+    '2100-12-31', // upper bound
+    '2026-04-30',
+  ])('accepts %p unchanged', (d) => {
+    const r = run(d);
+    expect(r.errors).toEqual([]);
+    expect(r.value.leadDate).toBe(d);
+  });
+
+  it.each([
+    '2026-02-29', // not a leap year
+    '2100-02-29', // 2100 is not a leap year
+    '2026-02-30',
+    '2026-04-31',
+    '2026-13-01',
+    '2026-00-10',
+    '2026-01-00',
+    '2026-1-5', // not zero-padded
+    '26-01-05',
+    '05-01-2026',
+    '2026/01/05',
+    '2026-01-05T00:00:00Z',
+    ' 2026-01-05',
+    '1999-12-31', // year below range
+    '2101-01-01', // year above range
+    'tomorrow',
+  ])('rejects %p with a leadDate error', (d) => {
+    const r = run(d);
+    expect(r.errors).toEqual([{ field: 'leadDate', message: MSG }]);
+    expect(r.value).not.toHaveProperty('leadDate');
+  });
+
+  it.each([20261125, true, {}, []])('rejects a non-string %p', (d) => {
+    expect(run(d).errors).toEqual([{ field: 'leadDate', message: MSG }]);
+  });
+
+  it('null clears', () => {
+    const r = run(null);
+    expect(r.errors).toEqual([]);
+    expect(r.value.leadDate).toBeNull();
+  });
+
+  it('"" clears', () => {
+    const r = run('');
+    expect(r.errors).toEqual([]);
+    expect(r.value.leadDate).toBeNull();
+  });
+
+  it('omitted is left out (update keeps the stored value)', () => {
+    expect(v.validateStockBody(base()).value).not.toHaveProperty('leadDate');
+  });
+
+  it('isValidLeadDate is exported and strict', () => {
+    expect(v.isValidLeadDate('2024-02-29')).toBe(true);
+    expect(v.isValidLeadDate('2023-02-29')).toBe(false);
+    expect(v.isValidLeadDate(null)).toBe(false);
+  });
+});
+
 describe('validateAdjustBody', () => {
   it.each([[5, 5], [-2.5, -2.5], [1.004, 1]])('accepts %p', (q, out) => {
     const r = v.validateAdjustBody({ quantity: q, reason: ' Count ' });
