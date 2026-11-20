@@ -2,10 +2,11 @@
 
 ## Purpose and scope
 
-The Intute ERP is a role-based enterprise resource planning and CRM platform. It runs the whole business cycle for two companies that share one installation:
+The Intute ERP is a role-based enterprise resource planning and CRM platform. It serves three organizations that share one installation:
 
 - **Compage**: the manufacturing business. It covers the sales pipeline, design, manufacturing and work orders, stores, dispatch, accounts, service and repair, and HR and attendance for Compage staff.
 - **Intute AI (IA)**: a separate people-and-orders space with its own roles (`ia_employee`, `ia_hr`). It covers IA activities, IA orders, IA invoices and payslips.
+- **Innopack**: a separate organization added 2026-11-20 with one role so far (`innopack_design`). It has its own dashboard and the Parts Roster module (`/api/innopack/parts`, table `innopack_parts`), and it reaches no Compage or Intute AI data.
 
 This document describes the system as implemented in source code and in the live database schema on the date shown on the cover. It covers the backend API, the PostgreSQL data model, the web CRM, the PDI mobile app, the integrations, the background jobs, security, and deployment.
 
@@ -146,14 +147,16 @@ The backend enforces access in three ways:
 
 ## Organization isolation
 
-Compage and Intute AI share one server and one database, and their data must never cross. Two files enforce this:
+Compage, Intute AI and Innopack share one server and one database, and their data must never cross. Two files enforce this:
 
-- **`middleware/roles.js`** is the single source of role ids: `ROLES` (1 admin, 2 customer, 3 sales, 4 design, 5 production, 6 store, 7 dispatch, 8 accounts, 9 employee, 10 hr, 11 ia_employee, 12 ia_hr, 13 service_repair, 15 representative). `orgOf(roleId)` returns `'ia'` for 11 and 12, `'compage'` for every other known role, and `null` for an unknown id (callers must refuse). `requireRoles(...ids)` is the route guard described above; it throws at start-up if given an unknown id.
+- **`middleware/roles.js`** is the single source of role ids: `ROLES` (1 admin, 2 customer, 3 sales, 4 design, 5 production, 6 store, 7 dispatch, 8 accounts, 9 employee, 10 hr, 11 ia_employee, 12 ia_hr, 13 service_repair, 15 representative, 16 innopack_design). `orgOf(roleId)` returns `'ia'` for 11 and 12, `'innopack'` for 16, `'compage'` for every other known role, and `null` for an unknown id (callers must refuse). `COMPAGE_STAFF_ROLE_IDS` lists every Compage role except customer; the motor-testing module uses it, so customers and other organizations never hold testing roles. `requireRoles(...ids)` is the route guard described above; it throws at start-up if given an unknown id.
+- **Adding an organization:** add its role ids to `ROLES` and to an `*_ROLE_IDS` list that `orgOf` checks (otherwise they would count as Compage), give it a socket room in `realtime.js`, insert the role rows with fixed ids (see `scripts/migrations/2026-11-20-add-innopack-design-role.js`), and add the role to `ROLE_MAP` in `auth.controller.js`. Grant no `permissions` rows: every existing route then refuses the new roles, and its own routes add their own `requireRoles` guards.
 - **`config/realtime.js`** keeps live updates inside one organization:
   - `socketAuth` refuses any socket that does not present the API JWT, in the handshake `auth.token` or an `Authorization: Bearer` header. It verifies the token and reads the user's `role_id` from the database.
-  - On connect a socket joins `user:<id>` and `user_<id>` (both spellings are used by emitters), plus `org:ia` (roles 11, 12), `org:compage` (every Compage role except customer), `people:compage` (9, 10) or `customers` (2).
-  - `scopedIo(io, req)` is the `req.io` each request sees. `emit()` sends only to the acting user's organization: for Compage, `activities:*` and `attendanceMarked` go to `people:compage`, `stockUpdate` goes to `org:compage` and `customers`, and everything else goes to `org:compage`; for Intute AI every event goes to `org:ia`; with no or an unknown user it goes nowhere. `to(room)` and `in(room)` pass through for personal-room notifications.
+  - On connect a socket joins `user:<id>` and `user_<id>` (both spellings are used by emitters), plus `org:ia` (roles 11, 12), `org:innopack` (16), `org:compage` (every Compage role except customer), `people:compage` (9, 10) or `customers` (2).
+  - `scopedIo(io, req)` is the `req.io` each request sees. `emit()` sends only to the acting user's organization: for Compage, `activities:*` and `attendanceMarked` go to `people:compage`, `stockUpdate` goes to `org:compage` and `customers`, and everything else goes to `org:compage`; for Intute AI every event goes to `org:ia`, and for Innopack to `org:innopack`; with no or an unknown user it goes nowhere. `to(room)` and `in(room)` pass through for personal-room notifications.
   - `req.io.user` is a getter that always returns this request's `req.user`; assigning to it is ignored. Models that read `io.user.user_id` for `created_by` therefore get the correct user. The old router pattern `req.io = req.app.get('io'); req.io.user = req.user`, which wrote the user onto the shared server object and could be overwritten by a concurrent request, has been removed everywhere.
+- **Innopack API** (`routes/innopack/index.js`, mounted at `/api/innopack`) allows only `innopack_design`. Parts Roster: `GET /parts` (all live parts by `sr_no`), `GET /parts/options` (distinct values per field for suggestions, plus `next_drg_no`), `POST /parts`, `PUT /parts/:id`, `DELETE /parts/:id`. Validation in `controllers/innopack/parts.validation.js` (field limits match the `innopack_parts` columns; `part_name` required; server-owned fields refused; errors `{ error, code: 'INVALID_INPUT', fields: [{ path, msg }] }`). Drawing numbers (`A00001`...) are assigned by the server under an advisory lock and never reused: delete only sets `deleted_at`. Changes emit `innopack_parts:changed` `{ action, id }` to `org:innopack`. Table created by `scripts/migrations/2026-11-20-innopack-parts.js`; the 359-row Excel roster was loaded with `scripts/innopack/import-parts-roster.js` (keeps sr/drg numbers, upper-cases sourcing, skips existing drawing numbers) on production and staging on 2026-11-20.
 - Activities add a record-level check on top (see the Activities section in the operations chapter): another organization's activity answers 404, and assignees must belong to the activity's organization.
 
 The web CRM adds a client-side gate on top: `routeConfig.jsx` gives every route an `allowedRoles` list, and `App.jsx` redirects users to their role dashboard when they open a path their role does not allow. This gate only improves navigation. The API remains the source of truth.
@@ -176,6 +179,7 @@ The web CRM adds a client-side gate on top: `routeConfig.jsx` gives every route 
 | 12 | IA_HR | ia_hr | Intute AI | /ia-hr-dashboard |
 | 13 | service_repair | service_repair | Compage | /service-repair-dashboard |
 | 15 | representative | representative | Compage (field sales) | /representative-dashboard |
+| 16 | innopack_design | innopack_design | Innopack | /innopack-design-dashboard |
 
 ## Other protections
 

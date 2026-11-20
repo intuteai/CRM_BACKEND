@@ -88,7 +88,7 @@ The ERP gives each user exactly one `users.role_id`. Testing roles are kept sepa
 - Roles are loaded once per request and cached on `req.testingRoles`.
 - A caller without a required role gets **403** `TESTING_ROLE_REQUIRED` with `required_role`. This is deliberately not an authentication code, so the tablet never mistakes a missing permission for an expired login. A database failure while loading roles gives 503 `SERVER_UNAVAILABLE`.
 - `requireTestingRole` throws at start-up if it is given an unknown role name.
-- Only Compage staff can hold testing roles: users with `role_id` 2 (customer), 11 or 12 (Intute AI) are excluded from the user list and refused by `PUT .../testing-roles` (404).
+- Only Compage staff can hold testing roles: customers and every other organization's roles (Intute AI 11/12, Innopack 16, and any added later; derived from `COMPAGE_STAFF_ROLE_IDS` in `middleware/roles.js`) are excluded from the user list and refused by `PUT .../testing-roles` (404). `loadTestingRoles` also returns no roles for them even if an `mt_user_role` row exists.
 - A testing admin cannot remove their own `testing_admin` grant (409 `LIFECYCLE_CONFLICT`).
 - Every grant and revoke writes a `ROLE_GRANTED` or `ROLE_REVOKED` audit event.
 

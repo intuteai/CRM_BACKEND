@@ -4,12 +4,16 @@
 // so the tablet never mistakes a missing permission for an expired login.
 'use strict';
 const pool = require('../config/db');
+const { COMPAGE_STAFF_ROLE_IDS } = require('./roles');
 
 const TESTING_ROLES = Object.freeze(['testing_head', 'operator', 'viewer', 'testing_admin']);
 
 const ERP_ADMIN_ROLE_ID = 1; // ERP Admins are treated as testing_admin, so the first testing roles can be granted from the UI
 
 async function loadTestingRoles(userId, erpRoleId) {
+  // Motor testing is Compage's: customers and other organizations never get a
+  // testing role, even if an mt_user_role row exists for them.
+  if (!COMPAGE_STAFF_ROLE_IDS.includes(Number(erpRoleId))) return [];
   const { rows } = await pool.query('SELECT testing_role FROM mt_user_role WHERE user_id = $1 ORDER BY testing_role', [userId]);
   const roles = rows.map((r) => r.testing_role);
   if (Number(erpRoleId) === ERP_ADMIN_ROLE_ID && !roles.includes('testing_admin')) roles.push('testing_admin');

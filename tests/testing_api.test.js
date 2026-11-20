@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const pool = require('../config/db');
 const testingRoutes = require('../routes/testing');
+const { COMPAGE_STAFF_ROLE_IDS } = require('../middleware/roles');
 const { payloadHash, runDigest } = require('../services/testing/digest');
 
 jest.setTimeout(60000);
@@ -68,9 +69,11 @@ beforeAll(async () => {
     ids.operator = (await c.query(`INSERT INTO mt_operator (name, created_by) VALUES ($1, 1) RETURNING operator_ref`, [`Jest Operator ${tag}`])).rows[0].operator_ref;
     // 843 is also the tablet's staging login: remember its real roles and put them back afterwards.
     ids.savedRoles = (await c.query('SELECT * FROM mt_user_role WHERE user_id = $1', [OPERATOR_USER])).rows;
-    // A view-only account: any non-Admin staging user with no testing role yet, given only 'viewer' (removed afterwards).
-    ids.viewer = (await c.query(`SELECT u.user_id FROM users u WHERE u.role_id <> 1 AND u.user_id <> $1
-      AND NOT EXISTS (SELECT 1 FROM mt_user_role r WHERE r.user_id = u.user_id) ORDER BY u.user_id LIMIT 1`, [OPERATOR_USER])).rows[0].user_id;
+    // A view-only account: any non-Admin Compage staff user with no testing role yet, given only 'viewer'
+    // (removed afterwards). Customers and other organizations never get testing roles.
+    const staffNotAdmin = COMPAGE_STAFF_ROLE_IDS.filter((id) => id !== 1);
+    ids.viewer = (await c.query(`SELECT u.user_id FROM users u WHERE u.role_id = ANY($2::int[]) AND u.user_id <> $1
+      AND NOT EXISTS (SELECT 1 FROM mt_user_role r WHERE r.user_id = u.user_id) ORDER BY u.user_id LIMIT 1`, [OPERATOR_USER, staffNotAdmin])).rows[0].user_id;
     await c.query(`INSERT INTO mt_user_role (user_id, testing_role, granted_by) VALUES ($1,'viewer',1)`, [ids.viewer]);
     T.viewer = token(ids.viewer);
     await c.query(`INSERT INTO mt_user_role (user_id, testing_role, granted_by) VALUES ($1,'operator',1), ($1,'viewer',1) ON CONFLICT DO NOTHING`, [OPERATOR_USER]);

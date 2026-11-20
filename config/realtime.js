@@ -3,6 +3,7 @@
 // Every socket must log in (the same JWT the API uses). On connect it joins:
 //   user:<id> and user_<id>  personal rooms (both spellings are used)
 //   org:ia                   Intute AI roles
+//   org:innopack             Innopack roles
 //   org:compage              Compage staff (every Compage role but customer)
 //   people:compage           Compage employee + HR (activities, attendance)
 //   customers                customers
@@ -29,6 +30,7 @@ const isCustomerPayload = (event, payload) =>
 function roomsFor(user, event, payload) {
   const org = orgOf(user?.role_id);
   if (org === 'ia') return ['org:ia'];
+  if (org === 'innopack') return ['org:innopack'];
   if (org !== 'compage') return [];
   if (PEOPLE_EVENT.test(event)) return ['people:compage'];
   return isCustomerPayload(event, payload) ? ['org:compage', 'customers'] : ['org:compage'];
@@ -40,6 +42,7 @@ function roomsForSocketUser(user) {
   const roleId = Number(user.role_id);
   const org = orgOf(roleId);
   if (org === 'ia') rooms.push('org:ia');
+  else if (org === 'innopack') rooms.push('org:innopack');
   else if (roleId === ROLES.CUSTOMER) rooms.push('customers');
   else if (org === 'compage') {
     rooms.push('org:compage');

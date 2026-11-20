@@ -9,6 +9,7 @@ const ROLE_MAP = {
   5: 'production', 6: 'store', 7: 'dispatch', 8: 'accounts',
   9: 'employee', 10: 'hr', 11: 'ia_employee', 12: 'ia_hr',
   13: 'service_repair', 15: 'representative',
+  16: 'innopack_design', // Innopack (separate organization)
 };
 
 // The PDI mobile app is used for long on-site inspections and restores its login

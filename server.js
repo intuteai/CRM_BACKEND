@@ -64,6 +64,9 @@ const serviceRepairRoutes    = require('./routes/service/serviceRepair');
 // ── Motor test automation (HMI <-> ERP) ───────────────────────
 const testingRoutes          = require('./routes/testing');
 
+// ── Innopack (separate organization) ──────────────────────────
+const innopackRoutes         = require('./routes/innopack');
+
 // ── Chatbot routes ────────────────────────────────────────────
 const chatbotOrderRoutes          = require('./chatbot/routes/orderChatbotRoutes');
 const chatbotCustomerInvoiceRoutes= require('./chatbot/routes/customerInvoiceChatbotRoutes');
@@ -210,6 +213,9 @@ app.use('/api/service-repair', serviceRepairRoutes);
 
 // Motor test automation
 app.use('/api/testing', testingRoutes);
+
+// Innopack (innopack_design only)
+app.use('/api/innopack', innopackRoutes);
 
 // Chatbot
 app.use('/api',             chatbotOrderRoutes);

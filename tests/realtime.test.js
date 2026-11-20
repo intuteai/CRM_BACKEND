@@ -44,6 +44,12 @@ describe('roomsFor (where an update made by this user goes)', () => {
     expect(roomsFor({ role_id: 9 }, 'attendanceMarked')).toEqual(['people:compage']);
   });
 
+  it('Innopack users only reach the Innopack room, whatever the event', () => {
+    expect(roomsFor({ role_id: 16 }, 'bom:created')).toEqual(['org:innopack']);
+    expect(roomsFor({ role_id: 16 }, 'stockUpdate', { source: 'inventory' })).toEqual(['org:innopack']);
+    expect(roomsFor({ role_id: 16 }, 'activities:created')).toEqual(['org:innopack']);
+  });
+
   it('no user or unknown role: the update goes nowhere', () => {
     expect(roomsFor(undefined, 'bom:created')).toEqual([]);
     expect(roomsFor({ role_id: 99 }, 'bom:created')).toEqual([]);
@@ -59,6 +65,9 @@ describe('roomsForSocketUser (which rooms a connected browser joins)', () => {
   });
   it('a customer joins only the customer room and their own', () => {
     expect(roomsForSocketUser({ user_id: 7, role_id: 2 }).sort()).toEqual(['customers', 'user:7', 'user_7'].sort());
+  });
+  it('Innopack design joins only Innopack and personal rooms', () => {
+    expect(roomsForSocketUser({ user_id: 9, role_id: 16 }).sort()).toEqual(['org:innopack', 'user:9', 'user_9'].sort());
   });
   it('unknown role joins only its personal rooms', () => {
     expect(roomsForSocketUser({ user_id: 8, role_id: 99 }).sort()).toEqual(['user:8', 'user_8'].sort());

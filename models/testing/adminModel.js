@@ -2,6 +2,7 @@
 // Every change writes an mt_audit_event in the same transaction (ISO/IEC 27001 change logging).
 'use strict';
 const pool = require('../../config/db');
+const { ROLES, COMPAGE_STAFF_ROLE_IDS } = require('../../middleware/roles');
 const { payloadHash } = require('../../services/testing/digest');
 
 const iso = (d) => (d ? new Date(d).toISOString() : null);
@@ -239,7 +240,9 @@ async function updateOperator(ref, f, userId) {
 
 // ------------------------------------------------------------------ users and testing roles
 
-const NON_STAFF_ROLE_IDS = [2, 11, 12]; // customers and Intute AI roles: not Compage testing staff
+// Customers and every other organization's roles (Intute AI, Innopack, any
+// added later): not Compage testing staff.
+const NON_STAFF_ROLE_IDS = Object.values(ROLES).filter((id) => !COMPAGE_STAFF_ROLE_IDS.includes(id));
 
 async function listUsers(q, limit) {
   const params = [NON_STAFF_ROLE_IDS, limit];

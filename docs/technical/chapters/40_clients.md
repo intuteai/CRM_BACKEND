@@ -61,8 +61,9 @@ Scripts: `dev` (vite), `build` (vite build -> `dist/`), `start` (`serve dist -s 
 | employee (Compage) | `/employee-dashboard` | `PeopleDashboard` |
 | ia_hr (Intute AI) | `/ia-hr-dashboard` | `PeopleDashboard` |
 | ia_employee (Intute AI) | `/ia-employee-dashboard` | `PeopleDashboard` |
+| innopack_design (Innopack) | `/innopack-design-dashboard` | `innopack/InnopackDashboard` (sidebar shell via `roleNav.innopack_design`) |
 
-`allowedPathsByRole` is a second, client-side allow-list used by the redirect effect; it must stay in sync with `routeConfig.jsx` (comments warn that each new PDI template slug must be added per role). Observed inconsistency: `/edit-profile` is in `allowedPathsByRole.representative` but `representative` is not in the route's `allowedRoles`, so a representative opening Edit Profile is bounced to `/`.
+`allowedPathsByRole` is a second, client-side allow-list used by the redirect effect; it must stay in sync with `routeConfig.jsx` (comments warn that each new PDI template slug must be added per role). `/edit-profile` allows every role, including representative and innopack_design.
 
 ### 1.4 Navigation configuration
 
@@ -245,6 +246,11 @@ Common to all roles except representative: **Edit Profile** (`/edit-profile`, `p
 
 **ia_employee** — Intute AI
 - Attendance History (`/ia-attendance-history`), Activities (`/activities`), Dispatch Orders (`/ia-orders`), Invoice Generator (`/ia-invoices`).
+
+**innopack_design** — Innopack (files in `src/components/innopack/`; Compage-style sidebar shell from `roleNav.innopack_design`)
+- Dashboard (`/innopack-design-dashboard`, `InnopackDashboard.jsx`): greeting "Design · Innopack", KPI tiles (total, released, TBD / not decided, in-house = sourcing INNOPACK, bought-out = BOP), a per-section table (parts, released share bar, missing info) and a "Needs attention" card linking to the roster with `?filter=missing`. Computed client-side from `GET /api/innopack/parts`.
+- Parts Roster (`/innopack/parts-roster`, `PartsRosterPage.jsx`): the machine parts list the design engineer fills, imported from "INNOPACK PARTS ROSTER 19112026.xlsx". Search, filters (section, sourcing, design status, missing info), group by section, sortable columns; add/edit modal with suggestions from `GET /parts/options` (drawing number shown read-only, assigned by the server); in-page delete confirmation; "Export to Excel" writes the original sheet's 14 columns (`exportRosterXlsx` in `innopackParts.js`). Refetches on the `innopack_parts:changed` socket event. "Missing info" = no part name, no qty or no design status.
+- New Innopack screens: add an item to `roleNav.innopack_design`, a route in `routeConfig.jsx`, the path in `allowedPathsByRole`, and API routes in `routes/innopack/index.js` (already guarded with `requireRoles(ROLES.INNOPACK_DESIGN)`).
 
 ---
 
