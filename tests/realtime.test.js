@@ -29,8 +29,14 @@ describe('roomsFor (where an update made by this user goes)', () => {
     expect(roomsFor({ role_id: 8 }, 'invoiceUpdate')).toEqual(['org:compage']);
   });
 
-  it('stock updates also reach customers, who order from that list', () => {
-    expect(roomsFor({ role_id: 6 }, 'stockUpdate')).toEqual(['org:compage', 'customers']);
+  it('finished-goods stock updates also reach customers, who order from that list', () => {
+    expect(roomsFor({ role_id: 6 }, 'stockUpdate', { source: 'inventory', product_id: 1 })).toEqual(['org:compage', 'customers']);
+  });
+
+  it('raw-material and untagged stock updates never reach customers', () => {
+    expect(roomsFor({ role_id: 6 }, 'stockUpdate', { source: 'raw_materials', product_id: 1 })).toEqual(['org:compage']);
+    expect(roomsFor({ role_id: 6 }, 'stockUpdate', { product_id: 1 })).toEqual(['org:compage']);
+    expect(roomsFor({ role_id: 6 }, 'stockUpdate')).toEqual(['org:compage']);
   });
 
   it('Compage activity and attendance updates reach Compage employee/HR only', () => {

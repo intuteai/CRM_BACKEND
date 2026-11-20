@@ -18,16 +18,20 @@ const { ROLES, orgOf } = require('../middleware/roles');
 const COMPAGE_PEOPLE_ROLES = new Set([ROLES.EMPLOYEE, ROLES.HR]);
 // Activity and attendance updates belong to the HR side only.
 const PEOPLE_EVENT = /^(activities:|attendanceMarked$)/;
-// Customers order from the stock list, so they get its updates too.
+// Customers order from the finished-goods list, so they get its stock updates
+// too. Only payloads tagged source 'inventory' qualify: raw-material stock
+// (source 'raw_materials') and any untagged payload stay internal.
 const CUSTOMER_EVENTS = new Set(['stockUpdate']);
+const isCustomerPayload = (event, payload) =>
+  CUSTOMER_EVENTS.has(event) && payload != null && payload.source === 'inventory';
 
 // Rooms an update made by `user` is sent to.
-function roomsFor(user, event) {
+function roomsFor(user, event, payload) {
   const org = orgOf(user?.role_id);
   if (org === 'ia') return ['org:ia'];
   if (org !== 'compage') return [];
   if (PEOPLE_EVENT.test(event)) return ['people:compage'];
-  return CUSTOMER_EVENTS.has(event) ? ['org:compage', 'customers'] : ['org:compage'];
+  return isCustomerPayload(event, payload) ? ['org:compage', 'customers'] : ['org:compage'];
 }
 
 // Rooms a connected socket for `user` joins.
@@ -52,7 +56,7 @@ function scopedIo(io, req) {
     get user() { return req.user; },
     set user(_ignored) {},
     emit(event, ...args) {
-      const rooms = roomsFor(req.user, event);
+      const rooms = roomsFor(req.user, event, args[0]);
       if (rooms.length) io.to(rooms).emit(event, ...args);
       return true;
     },
