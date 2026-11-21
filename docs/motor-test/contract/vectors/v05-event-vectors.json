@@ -1,0 +1,1759 @@
+{
+  "title": "Contract v0.5 DRAFT R2 examples (warning events, command changes, event digest)",
+  "spec": "docs/motor-test/contract/v05-warning-events.md",
+  "note": "run_context = the stored readings (status_flags: b5 0x20, b6 0x40) the ERP checks links and coverage against.",
+  "cases": [
+    {
+      "id": "E1",
+      "description": "warning raised and cleared during capture, detail code read",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 250,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 290,
+            "phase": "CAPTURE",
+            "kind": "DETAIL",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 133,
+            "status_t_ms": 250,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 2,
+            "t_ms": 420,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 3,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:cb05b7efea8b6b8e147c614af995b41d5e3406fa4f54c465087c4902a0b3a105"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:cb05b7efea8b6b8e147c614af995b41d5e3406fa4f54c465087c4902a0b3a105"
+      }
+    },
+    {
+      "id": "E2",
+      "description": "warning already active at capture start, cleared later",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": -40,
+            "phase": "PRE_START",
+            "kind": "ACTIVE_AT_START",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 150,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:89f529075702e7e7509e33019a1e162abd50c3298eb85482cb417e310135557b"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 103
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:89f529075702e7e7509e33019a1e162abd50c3298eb85482cb417e310135557b"
+      }
+    },
+    {
+      "id": "E3",
+      "description": "status unknown, then known again: no transition; the unknown span counts as active",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 300,
+            "phase": "CAPTURE",
+            "kind": "STATUS_UNKNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 500,
+            "phase": "CAPTURE",
+            "kind": "STATUS_KNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:b0aca373bbc7299a4f7be9f0412bb8ca41d29d99d65ec14fcb86eea413b11870"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 103
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:b0aca373bbc7299a4f7be9f0412bb8ca41d29d99d65ec14fcb86eea413b11870"
+      }
+    },
+    {
+      "id": "E4",
+      "description": "detail reply received after capture closed (POST_CAPTURE)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 880,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 960,
+            "phase": "POST_CAPTURE",
+            "kind": "DETAIL",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 141,
+            "status_t_ms": 880,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:bb0abcb3a368e1d5e8a45443df85e04656d13fdd505fd7841d5120122c23083b"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:bb0abcb3a368e1d5e8a45443df85e04656d13fdd505fd7841d5120122c23083b"
+      }
+    },
+    {
+      "id": "E5",
+      "description": "reply after the 200 ms timeout: DETAIL_UNAVAILABLE TIMEOUT then DETAIL_AMBIGUOUS LATE_REPLY",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 100,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "VCU_LIMIT",
+            "limit_id": "RPM_DEVIATION",
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 300,
+            "phase": "CAPTURE",
+            "kind": "DETAIL_UNAVAILABLE",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": 100,
+            "reason": "TIMEOUT",
+            "detail": null
+          },
+          {
+            "seq": 2,
+            "t_ms": 340,
+            "phase": "CAPTURE",
+            "kind": "DETAIL_AMBIGUOUS",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 138,
+            "status_t_ms": 100,
+            "reason": "LATE_REPLY",
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 3,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:944b04add1d8b393c2d5dceb81d9bd10252c8af13214760d1aaa7ecbd4b9d015"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:944b04add1d8b393c2d5dceb81d9bd10252c8af13214760d1aaa7ecbd4b9d015"
+      }
+    },
+    {
+      "id": "E6",
+      "description": "two changes before one reading: step 1 SUPERSEDED, step 2 owns reading 5",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 450,
+            "rpm_cmd": 800,
+            "link": "SUPERSEDED",
+            "first_sample_seq": null
+          },
+          {
+            "step": 2,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 3,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:cfeea73dfa0394fcf698a89e4ccf3244ad5f3e8d2821adcf48ca0a0946edd201"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:cfeea73dfa0394fcf698a89e4ccf3244ad5f3e8d2821adcf48ca0a0946edd201"
+      }
+    },
+    {
+      "id": "E7",
+      "description": "reading acquired but not retained (held 5 of 10; the step 1 marker reading was lost)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "READING_NOT_RETAINED",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:3b7f588a2896e15b3045022f5f71df8bdaf90874f888b332961178c08f9dbc92"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 5,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:3b7f588a2896e15b3045022f5f71df8bdaf90874f888b332961178c08f9dbc92"
+      }
+    },
+    {
+      "id": "E8",
+      "description": "CANCEL: no events, complete log",
+      "v05_fields": {
+        "capture_end_ms": null,
+        "warnings": [],
+        "command_changes": [],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 0,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:a5100542eec5ca1fc726c8bce64d5b9a5a7408e7793cc1824ea6b2ed4931dc83"
+      },
+      "run_context": {
+        "started": false,
+        "held_count": 0,
+        "samples": []
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:a5100542eec5ca1fc726c8bce64d5b9a5a7408e7793cc1824ea6b2ed4931dc83"
+      }
+    },
+    {
+      "id": "R1",
+      "description": "CLEARED without an open warning",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:3d97dcceff029f07d7d71bb42b52a3052ac122128f80b39563f84a10928a75ab"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "WARNING_PAIRING"
+      }
+    },
+    {
+      "id": "R2",
+      "description": "phase CAPTURE with a negative t_ms",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": -10,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:ce57991246c3f1cf2b7422d41556a6afaf97f5a67909fd70f2f507cbcc4958ef"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "EVENT_PHASE"
+      }
+    },
+    {
+      "id": "R3",
+      "description": "code on a RAISED record",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": 133,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:a37864c4f3034feb361fb5f27ef835583593b0820186c73edf475422c74c78fa"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 400,
+        "rule": "EVENT_FIELDS"
+      }
+    },
+    {
+      "id": "R4",
+      "description": "event_log count differs from the array length",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:2aec7ca32ddd827649c1fe891a2eebe452d902a8d5e14a6b6a5d46898c58bf60"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "EVENT_COUNTS"
+      }
+    },
+    {
+      "id": "R5",
+      "description": "two changes claim the same b5 reading",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:7ec47bcd6e6ad3864c1390b9cc7c26437e47df435e894ab4b2cbd3b424df7dbc"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_LINK"
+      }
+    },
+    {
+      "id": "R6",
+      "description": "gap in warnings seq",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          },
+          {
+            "seq": 2,
+            "t_ms": 300,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:1e1b6423d8534246f4b1d083a98af049e927a2f0bb30d64d3858d09bfeb3f03d"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "EVENT_ORDER"
+      }
+    },
+    {
+      "id": "R7",
+      "description": "event_digest does not match the arrays: stored, receipt event_digest_match = false (no release)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": false,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:2aec7ca32ddd827649c1fe891a2eebe452d902a8d5e14a6b6a5d46898c58bf60"
+      }
+    },
+    {
+      "id": "F1",
+      "description": "reading with b6 outside any warning interval: stored, flagged B6_COVERAGE",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:d5a6e935681f99d6b85cfdf3dde4a93ecdf26ee178770a0f2360d472a52585e9"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": false
+        },
+        "recomputed_event_digest": "sha256:d5a6e935681f99d6b85cfdf3dde4a93ecdf26ee178770a0f2360d472a52585e9"
+      }
+    },
+    {
+      "id": "F2",
+      "description": "incomplete event log (one known lost event): accepted; evaluation decides (S4)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": 1
+        },
+        "event_digest": "sha256:01949e5e5adc12fad42ac4ed0ca869dd842308ca189df8ef8236b84ade71665a"
+      },
+      "run_context": {
+        "started": true,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:01949e5e5adc12fad42ac4ed0ca869dd842308ca189df8ef8236b84ade71665a"
+      }
+    }
+  ]
+}
