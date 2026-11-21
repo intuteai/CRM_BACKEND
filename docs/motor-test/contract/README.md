@@ -10,7 +10,7 @@ sign-off. No key is provisioned in any VCU yet; ACK_ARCHIVED stays disabled.
 **v0.4 (agreed with VCU and HMI 2026-11-18/19):** signed archive receipt (Ed25519) so the VCU can trust
 the ERP's receipt before ACK_ARCHIVED, completeness rule (`held_count`), CANCEL before start, run start without UTC,
 and b0 = 0 (vector V10). See [`receipt-signing.md`](receipt-signing.md) and `vectors/receipt-vectors.json`
-(52 vectors, checked independently by `tools/check_receipt_vectors.py`).
+(54 MTRCPT1 vectors, checked independently by `tools/check_receipt_vectors.py`; v0.5: 41 event cases and 50 MTRCPT2 vectors).
 
 ## v0.4 in the API (`openapi.yaml` 0.4.0-draft, 2026-11-19)
 

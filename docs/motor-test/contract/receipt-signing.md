@@ -14,15 +14,15 @@ implemented and the retention/release agreement is in place.
 | File | What |
 |---|---|
 | `receipt-signing.md` | This specification |
-| `vectors/receipt-vectors.json` | 52 vectors: message bytes, test keys, signatures, VCU manifest, expected decision |
+| `vectors/receipt-vectors.json` | 54 vectors: message bytes, test keys, signatures, VCU manifest, expected decision (52 + 2 appended in R4, section 11) |
 | `vectors/run-digest-vectors.json` | D13 vectors, now with V10 (b0 = 0) |
 | `tools/receipt.js` | Reference implementation, both sides (Node, no dependencies) |
 | `tools/generate-receipt-vectors.js` | Regenerates the receipt vectors |
 | `tools/check_receipt_vectors.py` | Independent check, VCU side: Ed25519 from RFC 8032 in plain Python, no shared code |
 | `tools/receipt_v2.js` | MTRCPT2 (v0.5, DRAFT) reference implementation; reuses `receipt.js` unchanged (section 11) |
 | `tools/generate-receipt-v2-vectors.js` | Regenerates the MTRCPT2 vectors (same test keys A/B/C) |
-| `vectors/receipt-v2-vectors.json` | 42 MTRCPT2 vectors (section 11) |
-| `tools/check_receipt_v2_vectors.py` | Independent MTRCPT2 check, VCU side (own parser/decision; Ed25519 from `check_receipt_vectors.py`); runs the 52 MTRCPT1 checks first |
+| `vectors/receipt-v2-vectors.json` | 50 MTRCPT2 vectors (section 11, draft R4) |
+| `tools/check_receipt_v2_vectors.py` | Independent MTRCPT2 check, VCU side (own parser/decision; Ed25519 from `check_receipt_vectors.py`); runs the 54 MTRCPT1 checks first, then the cross-version checks |
 
 ## 1. Agreed (Mayank, 2026-11-18)
 
@@ -170,6 +170,9 @@ Checks in this order; the first failure is the reason (vectors use these names).
 2. `BAD_VERSION` (magic) / `MALFORMED_MESSAGE` (length, unknown enum code, reserved flag bits, identifier length or characters).
 3. `UNKNOWN_KEY`: key_id not in the VCU's provisioned, non-revoked keys.
 4. `BAD_SIGNATURE`: Ed25519 verification fails (including S ≥ L).
+
+   4a. `RECEIPT_VERSION_MISMATCH` (added in v0.5 draft R4, section 11): the VCU manifest records a `receipt_version`
+   other than 1 (a v0.5 run records 2). A v0.4 manifest without the field, or with 1, keeps this v1 path unchanged.
 5. `FLAGS_INCONSISTENT`: b0 or b1 disagree with the values; b2 set with `held ≠ sample_count` (b2 clear with equal
    counts is allowed: equal counts never prove completeness); `held > sample_count`; `stored > held`; `started = 0`
    but not a zero-sample, recording-complete `ABORTED/CONFIG_CANCELLED/INCOMPLETE`; `CONFIG_CANCELLED` on a started run.
@@ -233,9 +236,13 @@ still test the shortfall, digest and manifest checks (a PASS there is caught ear
 `recording_complete` (VCU-ERP-04-R1): RA9 equal counts but not complete, archivable as INCOMPLETE · RR38 the same with
 PASS · RR39 complete with unequal counts · RR40–RR41 b2 differs from the manifest (both directions) · RR42 CANCEL not
 complete · RR43 CANCEL with PASS. The 45 earlier vectors keep identical bytes, signatures and decisions.
+Appended in v0.5 draft R4 (receipt-version pinning, section 11): RA10 RA1 with a manifest that pins `receipt_version`
+1 (`RELEASE`) · RR44 the RA1 message against the manifest of a v0.5 run (`receipt_version` 2, common fields equal to
+MTRCPT2 R2A1's manifest), decided by this MTRCPT1 decider (`RECEIPT_VERSION_MISMATCH`). The 52 earlier vectors keep
+identical bytes, signatures, manifests and decisions (their manifests carry no `receipt_version`).
 
 Regenerate: `node docs/motor-test/contract/tools/generate-receipt-vectors.js` · Check independently:
-`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 52
+`python docs/motor-test/contract/tools/check_receipt_vectors.py` (checks RFC 8032 test 1 first, then all 54
 decisions, and re-signs every untampered message byte for byte).
 
 ## 10. Open
@@ -253,13 +260,34 @@ decisions, and re-signs every untampered message byte for byte).
 
 ## 11. MTRCPT2 (contract v0.5)
 
-**DRAFT, for review by Mayank.** Not implemented in the ERP service yet; nothing here changes MTRCPT1 (sections 4-10),
-whose 52 vectors keep identical bytes, signatures and decisions. The receipt JSON (section 4), Ed25519 and base64url
+**DRAFT R4 (2026-11-21), after Mayank's R3 review (V05_R3_MTRCPT2_REVIEW); for review by Mayank.** Not implemented in
+the ERP service yet. The MTRCPT1 message bytes are unchanged; its 52 earlier vectors keep identical bytes, signatures,
+manifests and decisions (R4 appends RA10 and RR44, section 9). The receipt JSON (section 4), Ed25519 and base64url
 rules (section 5), keys (section 7) and retries (section 8) are the same for both versions.
 
-**Dispatch by magic.** A v0.4 run gets an MTRCPT1 receipt, a v0.5 run an MTRCPT2 receipt. The VCU reads the first
-8 bytes and applies the matching rules: `MTRCPT1\0` → section 6, `MTRCPT2\0` → the decision below; anything else is
-`BAD_VERSION`. Each decoder rejects the other version's magic as `BAD_VERSION` (vectors RR17 and R2R21).
+**Changes in R4:** receipt-version pinning by the VCU manifest (`RECEIPT_VERSION_MISMATCH`, replaces dispatch by
+magic); two new `FLAGS_INCONSISTENT` rules (a started run with a complete event log needs START step 0; a CANCEL is
+complete, empty event evidence); b6_coverage_ok stated as signed and reported only; verification vs. deletion and
+INVALID evidence clarified (section 11.3); the open questions of R3 closed (section 11.5); 8 new MTRCPT2 vectors.
+
+**Receipt-version pinning (R4; replaces "dispatch by magic").** Selecting the decoder by the received magic would let a
+genuinely signed MTRCPT1 receipt with matching common fields bypass the v0.5 event checks (Mayank's probe
+R3_RECEIPT_MAGIC_DOWNGRADE: v1 decider `RELEASE`). Therefore:
+
+- When the VCU **creates a run**, it persists the required receipt version in its own durable manifest:
+  `receipt_version` = 1 for a v0.4 run, 2 for a v0.5 run (including an empty CANCEL). It is never changed afterwards.
+- The VCU selects the permitted decoder **only** from that manifest value: 2 → MTRCPT2 (section 11.3); otherwise →
+  MTRCPT1 (section 6). The received magic must then match the selected decoder (`BAD_VERSION` otherwise).
+- Both decoders check the manifest right after the signature checks and before the flag checks, with reason
+  `RECEIPT_VERSION_MISMATCH`: the MTRCPT1 decider rejects when `receipt_version` is present and ≠ 1; the MTRCPT2
+  decider rejects when `receipt_version` ≠ 2 (**required** for v2; absent is a mismatch).
+- A v0.5 run rejects a genuinely signed MTRCPT1 receipt even when every common field matches. There is **no fallback**
+  to MTRCPT1 after an MTRCPT2 failure: the first decision is final.
+- An unknown or legacy format never acquires a version by inference and never silently gains archive authority.
+  Existing v0.4 manifests without the field keep their explicit v1 path (all 52 earlier MTRCPT1 vectors).
+- Reference: `decideForRun()` in `tools/receipt_v2.js`. Vectors: RR44 (v1 set, decided by the MTRCPT1 decider),
+  R2R21 (MTRCPT1 bytes to the MTRCPT2 decoder, `BAD_VERSION`), R2R37-R2R39 (v2 set). Both generators and the
+  independent Python check also verify the downgrade probe across the two vector files.
 
 ### 11.1 Signed message (v2), little-endian, 253 to 315 bytes
 
@@ -285,9 +313,14 @@ otherwise); a present value may be 0 (vector R2A5).
 
 ### 11.2 VCU manifest (v2)
 
-The MTRCPT1 manifest fields (test_id, vcu_id, origin_boot_id, started, recording_complete, final_state, stop_reason,
-sample_count, held_count, run_digest) plus: `event_digest`, `warnings_count`, `command_changes_count`,
-`event_log_complete`, `capture_end_ms` (number or null), `start_uptime_ms` (number or null).
+`receipt_version` = 2 (required; persisted when the run is created, see above), the MTRCPT1 manifest fields (test_id,
+vcu_id, origin_boot_id, started, recording_complete, final_state, stop_reason, sample_count, held_count, run_digest)
+plus: `event_digest`, `warnings_count`, `command_changes_count`, `event_log_complete`, `capture_end_ms` (number or
+null), `start_uptime_ms` (number or null).
+
+**b6_coverage_ok is not a manifest field.** It stays signed (event b2) and reported as evaluator evidence, but the VCU
+does **not** compare it, until the VCU has an agreed, independently computed and durable value (an agreed algorithm and
+version, actually implemented). It never authorises local motor safety or enable.
 
 ### 11.3 VCU release decision (v2)
 
@@ -299,8 +332,16 @@ Same order and names as section 6; the first failure is the reason. Release only
    absent capture_end_ms / start_uptime_ms, identifier characters.
 3. `UNKNOWN_KEY`.
 4. `BAD_SIGNATURE` (including S ≥ L).
+
+   4a. `RECEIPT_VERSION_MISMATCH` (R4): the VCU manifest's `receipt_version` is not 2 (absent included).
 5. `FLAGS_INCONSISTENT`: every MTRCPT1 rule (section 6, step 5), plus: event b0 ≠ (events_stored_digest =
-   event_digest); b4 start_uptime_present ≠ started (run flag b3); b3 capture_end_present ≠ started.
+   event_digest); b4 start_uptime_present ≠ started (run flag b3); b3 capture_end_present ≠ started; and, new in R4:
+   - **complete started log needs START step 0:** started = 1 with event_log_complete (event b1) = 1 and
+     command_changes_count = 0. A known-incomplete log (b1 = 0) with a lost step 0 is **not** rejected by this rule;
+     its gap is retained under the agreed ingestion rules (vector R2A7);
+   - **CANCEL = complete, empty event evidence:** started = 0 with warnings_count ≠ 0, command_changes_count ≠ 0 or
+     event_log_complete (b1) = 0. If the system cannot establish that shape, it retains the unresolved evidence
+     instead of producing a receipt-eligible CANCEL.
 6. `LIFECYCLE_INCONSISTENT`: as section 6 (the event flags do not take part).
 7. `TEST_ID_MISMATCH`, `VCU_ID_MISMATCH`, `BOOT_ID_MISMATCH`.
 8. `MANIFEST_MISMATCH`: every MTRCPT1 field (section 6, step 8), plus event_digest, warnings_count,
@@ -312,18 +353,33 @@ Same order and names as section 6; the first failure is the reason. Release only
 
 Release requires the ERP to hold exactly what the VCU holds: the samples (steps 9-10) and the events (step 11, with
 step 8 binding event_digest to the VCU's own journal). Event-log completeness (b1) and b6 coverage (b2) are
-evaluation and retention matters: they are signed and reported, b1 must equal the manifest, but neither blocks
-release (vectors R2A2, R2A6). **The final retention/release agreement is still pending**; these rules may change with it.
+evaluation and retention matters: they are signed and reported, b1 must equal the manifest (and obey the step 5
+shape rules), b6_coverage_ok is reported only and not compared (section 11.2); neither blocks release (vectors R2A2,
+R2A6, R2A7). **The final retention/release agreement is still pending**; these rules may change with it.
 
-### 11.4 Vectors (`vectors/receipt-v2-vectors.json`, 42)
+**Verification is not permission to delete.** A `RELEASE` result only says the ERP holds exactly the VCU's evidence
+(authentic, for this run, equal to the VCU's own manifest). Whether and when data may be deleted is the separate
+retention/release agreement; ACK_ARCHIVED and deletion stay disabled until it exists. A future implementation keeps
+successful signature/evidence comparison separate from permission to release storage.
+
+**INVALID evidence is reported, not hidden; PASS eligibility is separate.** A run whose evidence is incomplete or
+quality-failed (for example an incomplete event log, or b6 coverage not OK) is still archived and verified like any
+other, and its problems are reported. A verdict still needs final_state COMPLETED with complete sample evidence
+(section 6, step 6), and event completeness affects evaluation (section 11.5), not release.
+
+### 11.4 Vectors (`vectors/receipt-v2-vectors.json`, 50)
 
 Same test keys A, B (VCU slots) and C (unknown) as section 9. Event digests are fixed placeholder 32-byte values
-(labelled in the file), not MTEVT computations; the CANCEL vectors use a placeholder labelled "empty event journal".
+(labelled in the file), not MTEVT computations, except the CANCEL vectors, which use the real MTEVT2 digest of the
+complete, empty CANCEL journal (`v05-event-vectors.json` case E8). No vector yet couples a real MTEVT2 transcript to
+an MTRCPT2 receipt end to end. Every manifest carries `receipt_version` 2 unless the vector says otherwise; the 42
+R3 vectors keep identical message bytes, signatures and decisions (their manifests only gained `receipt_version` 2).
 
 Accepted: R2A1 complete run with events · R2A2 known-loss run (FAULT/FAULT, VCU holds 3 of 5, recording and event log
 incomplete, b6 not OK) · R2A3 CANCEL (capture_end / start_uptime absent, zero counts, empty-journal digest) · R2A4 key B
 · R2A5 boundaries (start_uptime_ms present with value 0, capture_end_ms and counts 0xFFFFFFFF, identifiers 1 and 32
-bytes) · R2A6 b6 coverage not OK on a complete run (INVALID).
+bytes) · R2A6 b6 coverage not OK on a complete run (INVALID) · R2A7 (R4) known-loss run, event log incomplete with
+START step 0 lost (command_changes_count 0): the complete-log rule does not apply, release.
 Rejected: R2R1 event_digest ≠ manifest (`MANIFEST_MISMATCH`) · R2R2 stored event digest differs
 (`EVENT_DIGEST_MISMATCH`) · R2R3-R2R4 event b0 inconsistent, both directions · R2R5-R2R6 capture_end / start_uptime
 present on a CANCEL · R2R7-R2R8 start_uptime / capture_end absent on a started run (`FLAGS_INCONSISTENT`) · R2R9-R2R10
@@ -335,13 +391,39 @@ to the v2 decoder (`BAD_VERSION`) · R2R23 sample and event digests both differ 
 R2R24-R2R28 MTRCPT1 rules carried over (`SHORTFALL`, `DIGEST_MISMATCH`, `BOOT_ID_MISMATCH`, `LIFECYCLE_INCONSISTENT`,
 `TEST_ID_MISMATCH`) · R2R29-R2R31 byte flip in the event block, signature byte flip, S + L (`BAD_SIGNATURE`) · R2R32
 key C (`UNKNOWN_KEY`) · R2R33-R2R34 truncated / trailing byte (`MALFORMED_MESSAGE`) · R2R35-R2R36 padding, whitespace
-(`MALFORMED_ENCODING`). The generator also checks that the MTRCPT1 decider answers `BAD_VERSION` for every accepted
-MTRCPT2 message.
+(`MALFORMED_ENCODING`).
+New in R4: R2R37 valid R2A1 message, manifest `receipt_version` 1 · R2R38 valid R2A1 message, manifest without
+`receipt_version` (never inferred) · R2R39 position check: flags inconsistent (as R2R40) **and** manifest
+`receipt_version` 1, the version check comes first (all three `RECEIPT_VERSION_MISMATCH`) · R2R40 Mayank's probe
+R3_STARTED_COMPLETE_EVENT_LOG_WITHOUT_STEP0: started, event b1 = 1, command_changes_count 0 in receipt and manifest ·
+R2R41 CANCEL with warnings_count 1 · R2R42 CANCEL with command_changes_count 1 · R2R43 CANCEL with event b1 = 0 (all
+four `FLAGS_INCONSISTENT`, counts and b1 equal in receipt and manifest, so only the new rules reject them).
+
+Cross-version checks (in the generator and independently in the Python check): every accepted MTRCPT2 vector has
+`receipt_version` 2 in its manifest and the MTRCPT1 decider answers `BAD_VERSION`; the run dispatcher releases it;
+the MTRCPT1 RA1 message against the R2A1 manifest gives `RECEIPT_VERSION_MISMATCH` from the MTRCPT1 decider (vector
+RR44, whose manifest has the same common fields as R2A1's) and `BAD_VERSION` from the MTRCPT2 decider that the
+manifest selects, with no fallback.
 
 Regenerate: `node docs/motor-test/contract/tools/generate-receipt-v2-vectors.js` · Check independently:
-`python docs/motor-test/contract/tools/check_receipt_v2_vectors.py` (runs the 52 MTRCPT1 checks, then all 42 MTRCPT2
-decisions; re-signs every untampered message byte for byte and compares the parsed fields with `decoded_message`).
+`python docs/motor-test/contract/tools/check_receipt_v2_vectors.py` (runs the 54 MTRCPT1 checks, then all 50 MTRCPT2
+decisions and the cross-version checks; re-signs every untampered message byte for byte and compares the parsed
+fields with `decoded_message`).
 
-Open for review (Mayank): whether a CANCEL must also carry zero event counts and event b1 = 1 (not enforced; the CANCEL
-vector uses zero counts, b1 = 1 and b2 = 1); whether b6_coverage_ok should be in the VCU manifest (today it is signed
-and reported only, not compared); whether a verdict (PASS/FAIL/INVALID) should require event b1 (not required).
+### 11.5 Open questions of R3: closed in R4 (Mayank's R3 review)
+
+- **CANCEL event evidence: adopted.** A CANCEL carries zero warning and command-change counts, event_log_complete
+  (b1) = 1, the canonical complete-empty MTEVT2 digest and absent capture_end / start_uptime. Enforced as
+  `FLAGS_INCONSISTENT` (step 5; vectors R2R41-R2R43). Run-origin preflight evidence is excluded, not invented.
+- **b6_coverage_ok: reported only.** Signed and reported as evaluator evidence, not in the VCU manifest and not
+  compared, until the VCU has an agreed independent calculation (section 11.2).
+- **Verdict vs. event completeness:** event completeness affects **evaluation**, not release. The testing head's rule
+  S4 applies: an incomplete event log makes the run INVALID (never PASS). Release only needs exact equality with the
+  VCU's evidence; the receipt does not demand event b1 for every outcome (an INVALID run may need to report an
+  event-evidence problem). Agreed FAIL/INVALID/INCOMPLETE combinations stay with Saatwik and Pratham.
+- **capture_end_ms** stays an opaque u32 for the receipt: presence via b3, value compared with the VCU manifest only
+  (no range or meaning checked by the receipt decision).
+
+Still open (not receipt rules): the final retention/release agreement; the ingestion route for incomplete logs whose
+retained records cannot prove pairing/successor relationships (`v05-warning-events.md`); a coupled MTEVT2-to-MTRCPT2
+end-to-end vector.

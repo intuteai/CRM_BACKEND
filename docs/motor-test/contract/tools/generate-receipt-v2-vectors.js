@@ -42,7 +42,8 @@ const CANCEL = {
 };
 const KNOWN_LOSS = { sample_count: 5, final_state: 'FAULT', stop_reason: 'FAULT', outcome: 'INCOMPLETE', recording_complete: false,
   event_digest: E_LOSS, events_stored_digest: E_LOSS, warnings_count: 4, command_changes_count: 2, event_log_complete: false, b6_coverage_ok: false, capture_end_ms: 40100 };
-const manifestOf = (f) => ({ test_id: f.test_id, vcu_id: f.vcu_id, origin_boot_id: f.origin_boot_id, started: f.started,
+// receipt_version 2: persisted by the VCU in its own manifest when it creates a v0.5 run (R4 pinning).
+const manifestOf = (f) => ({ receipt_version: 2, test_id: f.test_id, vcu_id: f.vcu_id, origin_boot_id: f.origin_boot_id, started: f.started,
   recording_complete: f.recording_complete ?? f.held_count === f.sample_count, final_state: f.final_state,
   stop_reason: f.stop_reason, sample_count: f.sample_count, held_count: f.held_count, run_digest: f.run_digest,
   event_digest: f.event_digest, warnings_count: f.warnings_count, command_changes_count: f.command_changes_count,
@@ -59,6 +60,7 @@ const cases = [
   ['R2A4', 'signed with key B (rotation: B is in the second slot)', { key: 'B' }],
   ['R2A5', 'boundaries: start_uptime_ms present with value 0 (presence by b4, never a sentinel), capture_end_ms 0xFFFFFFFF, max counts, vcu_id 1 byte, origin_boot_id 32 bytes', { start_uptime_ms: 0, capture_end_ms: 0xffffffff, warnings_count: 0xffffffff, command_changes_count: 0xffffffff, vcu_id: 'V', origin_boot_id: 'b'.repeat(32) }],
   ['R2A6', 'complete samples, event log complete but b6 coverage not OK (evaluation matter, reported, not a release blocker), outcome INVALID', { b6_coverage_ok: false, outcome: 'INVALID' }],
+  ['R2A7', 'R4 boundary: known-loss run whose event log is incomplete (b1 = 0) and lost START step 0 (command_changes_count 0, also in the manifest) -> release; the gap is retained, not rejected', { ...KNOWN_LOSS, command_changes_count: 0 }],
   // ---------------------------------------------------------------- event rules (new in MTRCPT2)
   ['R2R1', 'event_digest in the receipt differs from the VCU manifest event_digest (ERP stored what it was sent, but not the VCU journal)', { event_digest: E_OTHER, events_stored_digest: E_OTHER }, { manifest: { event_digest: E_RUN } }, 'MANIFEST_MISMATCH'],
   ['R2R2', 'ERP-stored event digest differs from the uploaded event_digest (b0 clear): ERP does not hold exactly the VCU events', { events_stored_digest: E_OTHER }, {}, 'EVENT_DIGEST_MISMATCH'],
@@ -98,6 +100,16 @@ const cases = [
   ['R2R34', 'one extra trailing byte (signature over the longer bytes)', {}, { append: 1 }, 'MALFORMED_MESSAGE'],
   ['R2R35', 'base64url with "=" padding on the signature', {}, { sigText: (s) => s + '==' }, 'MALFORMED_ENCODING'],
   ['R2R36', 'whitespace inside the message text', {}, { msgText: (s) => s.slice(0, 10) + ' ' + s.slice(10) }, 'MALFORMED_ENCODING'],
+  // ---------------------------------------------------------------- R4 (Mayank's R3 review): receipt-version pinning
+  ['R2R37', 'valid MTRCPT2 message (R2A1 bytes) but the VCU manifest pins receipt_version 1 (a v0.4 run)', {}, { manifest: { receipt_version: 1 } }, 'RECEIPT_VERSION_MISMATCH'],
+  ['R2R38', 'valid MTRCPT2 message (R2A1 bytes) but the VCU manifest has no receipt_version (unknown/legacy format: a version is never inferred)', {}, { dropManifest: ['receipt_version'] }, 'RECEIPT_VERSION_MISMATCH'],
+  ['R2R39', 'position: started run with a complete event log and 0 command changes (flags inconsistent) and manifest receipt_version 1 -> the version check comes first', { command_changes_count: 0 }, { manifest: { receipt_version: 1 } }, 'RECEIPT_VERSION_MISMATCH'],
+  // ---------------------------------------------------------------- R4: complete started log needs START step 0
+  ['R2R40', 'probe R3_STARTED_COMPLETE_EVENT_LOG_WITHOUT_STEP0: started run, event_log_complete (b1 = 1), command_changes_count 0 in receipt and manifest', { command_changes_count: 0 }, {}, 'FLAGS_INCONSISTENT'],
+  // ---------------------------------------------------------------- R4: CANCEL = complete, empty event evidence
+  ['R2R41', 'CANCEL (started=0) with warnings_count 1 (receipt and manifest; event digest left as the empty-journal digest, the count rule rejects first)', { ...CANCEL, warnings_count: 1 }, {}, 'FLAGS_INCONSISTENT'],
+  ['R2R42', 'CANCEL (started=0) with command_changes_count 1 (receipt and manifest)', { ...CANCEL, command_changes_count: 1 }, {}, 'FLAGS_INCONSISTENT'],
+  ['R2R43', 'CANCEL (started=0) with event_log_complete = false (b1 = 0, receipt and manifest)', { ...CANCEL, event_log_complete: false }, {}, 'FLAGS_INCONSISTENT'],
 ];
 
 let failures = 0;
@@ -120,6 +132,7 @@ const vectors = cases.map(([id, description, over, tamper = {}, expectReason = '
   if (tamper.msgText) messageText = tamper.msgText(messageText);
   if (tamper.sigText) signatureText = tamper.sigText(signatureText);
   const manifest = { ...manifestOf({ ...base, ...fieldOver }), ...(tamper.manifest || {}) };
+  for (const k of tamper.dropManifest || []) delete manifest[k];
   const signed = { alg: 'Ed25519', key_id: f.key_id.toString('hex'), message: messageText, signature: signatureText };
 
   const got = R2.decideV2(signed, KEYRING, manifest);
@@ -138,16 +151,33 @@ const r2r21 = vectors.find((v) => v.id === 'R2R21');
 if (ra1.message_hex !== r2r21.message_hex || ra1.signed_receipt.signature !== r2r21.signed_receipt.signature) {
   failures++; console.log('FAIL R2R21 is not byte-identical to MTRCPT1 vector RA1');
 }
-// Dispatch by magic: the MTRCPT1 decider must reject every MTRCPT2 message as BAD_VERSION.
+// Cross-version checks (R4). Every accepted MTRCPT2 vector: manifest pins receipt_version 2, the MTRCPT1 decider
+// rejects the message as BAD_VERSION, and the run dispatcher (selection by manifest) releases it.
 const accepted = vectors.filter((v) => v.expected.release);
 for (const v of accepted) {
+  if (v.vcu_manifest.receipt_version !== 2) { failures++; console.log(`FAIL ${v.id}: accepted manifest without receipt_version 2`); }
   const got = R.decide(v.signed_receipt, KEYRING, v.vcu_manifest);
   if (got.reason !== 'BAD_VERSION') { failures++; console.log(`FAIL ${v.id}: MTRCPT1 decide gave ${got.reason}, expected BAD_VERSION`); }
+  const run = R2.decideForRun(v.signed_receipt, KEYRING, v.vcu_manifest);
+  if (run.reason !== 'RELEASE') { failures++; console.log(`FAIL ${v.id}: decideForRun gave ${run.reason}, expected RELEASE`); }
 }
+// Downgrade probe R3_RECEIPT_MAGIC_DOWNGRADE: the genuinely signed MTRCPT1 RA1 message against the v0.5 run's manifest
+// (R2A1). MTRCPT1 decider -> RECEIPT_VERSION_MISMATCH (MTRCPT1 vector RR44); run dispatcher selects MTRCPT2 by the
+// manifest -> BAD_VERSION, final (no fallback). RR44's manifest must carry the same common fields as R2A1's.
+const r2a1 = vectors.find((v) => v.id === 'R2A1');
+const rr44 = v1Doc.vectors.find((v) => v.id === 'RR44');
+const COMMON = ['test_id', 'vcu_id', 'origin_boot_id', 'started', 'recording_complete', 'final_state', 'stop_reason', 'sample_count', 'held_count', 'run_digest', 'receipt_version'];
+const downgrade = [
+  ['RR44 exists with RA1 bytes, expected RECEIPT_VERSION_MISMATCH', rr44 && rr44.message_hex === ra1.message_hex && rr44.expected.reason === 'RECEIPT_VERSION_MISMATCH'],
+  ['RR44 manifest common fields = R2A1 manifest', rr44 && COMMON.every((k) => rr44.vcu_manifest[k] === r2a1.vcu_manifest[k])],
+  ['MTRCPT1 decide(RA1, R2A1 manifest) = RECEIPT_VERSION_MISMATCH', R.decide(ra1.signed_receipt, KEYRING, r2a1.vcu_manifest).reason === 'RECEIPT_VERSION_MISMATCH'],
+  ['decideForRun(RA1, R2A1 manifest) = BAD_VERSION (no fallback)', R2.decideForRun(ra1.signed_receipt, KEYRING, r2a1.vcu_manifest).reason === 'BAD_VERSION'],
+];
+for (const [what, ok] of downgrade) { if (!ok) failures++; console.log(`${ok ? 'PASS' : 'FAIL'} downgrade: ${what}`); }
 if (failures) { console.error(`${failures} receipt v2 vector(s) did not give the expected decision`); process.exit(1); }
 
 fs.writeFileSync(OUT, JSON.stringify({
-  title: 'Signed archive receipt MTRCPT2 vectors - contract v0.5 DRAFT (not frozen; for review by Mayank)',
+  title: 'Signed archive receipt MTRCPT2 vectors - contract v0.5 DRAFT R4 (not frozen; for review by Mayank)',
   spec: 'docs/motor-test/contract/receipt-signing.md, section "MTRCPT2 (contract v0.5)"',
   warning: 'TEST KEYS ONLY. Seeds are SHA-256 of the labels below and are public; never provision them on a real VCU. Event digests are placeholder 32-byte values, not MTEVT computations.',
   test_keys: Object.fromEntries(Object.entries(KEYS).map(([k, v]) => [k, {
@@ -155,11 +185,11 @@ fs.writeFileSync(OUT, JSON.stringify({
     key_id: v.keyId.toString('hex'), public_key: R.b64urlEncode(v.publicRaw), public_key_hex: v.publicRaw.toString('hex'),
   }])),
   placeholder_digests: {
-    [E_RUN]: 'MTEVT journal of the example run (placeholder)', [E_EMPTY]: 'MTEVT digest of an empty event journal (placeholder)',
+    [E_RUN]: 'MTEVT journal of the example run (placeholder)', [E_EMPTY]: 'real MTEVT2 digest of the CANCEL journal (complete, empty; v05-event-vectors.json case E8), not a placeholder',
     [E_LOSS]: 'MTEVT journal with known loss (placeholder)', [E_OTHER]: 'a different event journal (placeholder)',
   },
   vcu_keyring: KEYRING,
-  decision_order: ['MALFORMED_ENCODING', 'BAD_VERSION / MALFORMED_MESSAGE', 'UNKNOWN_KEY', 'BAD_SIGNATURE', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'EVENT_DIGEST_MISMATCH', 'RELEASE'],
+  decision_order: ['MALFORMED_ENCODING', 'BAD_VERSION / MALFORMED_MESSAGE', 'UNKNOWN_KEY', 'BAD_SIGNATURE', 'RECEIPT_VERSION_MISMATCH', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'EVENT_DIGEST_MISMATCH', 'RELEASE'],
   vectors,
 }, null, 2) + '\n');
 console.log(`wrote ${vectors.length} vectors to ${path.relative(process.cwd(), OUT)}`);

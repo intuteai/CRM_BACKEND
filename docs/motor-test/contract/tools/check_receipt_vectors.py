@@ -4,6 +4,8 @@ Pure Python 3, standard library only: Ed25519 verification and signing written f
 (not a crypto library), strict base64url, strict message parser and the release decision. Shares no code
 with tools/receipt.js. Also re-derives the test keys from their seeds and re-signs every vector whose
 signature was not tampered with (Ed25519 signing is deterministic, so the bytes must be identical).
+R4 (v0.5 draft R4): receipt-version pinning - a manifest with receipt_version present and not 1 is rejected
+RECEIPT_VERSION_MISMATCH right after the signature check (vectors RA10, RR44).
 
     python docs/motor-test/contract/tools/check_receipt_vectors.py
 """
@@ -126,6 +128,9 @@ def decide(signed, keyring, man):
     key = next((k for k in keyring if k['key_id'] == m['key_id']), None)
     if key is None: return 'UNKNOWN_KEY'
     if not verify(b64url_strict(key['public_key']), msg_b, sig): return 'BAD_SIGNATURE'
+    # receipt-version pinning (R4): a manifest that records a receipt version other than 1 never accepts MTRCPT1
+    if 'receipt_version' in man and not (type(man['receipt_version']) is int and man['receipt_version'] == 1):
+        return 'RECEIPT_VERSION_MISMATCH'
     f, started = m['flags'], bool(m['flags'] & 8)
     if (bool(f & 1) != (m['samples_digest'] == m['run_digest']) or bool(f & 2) != (m['stored_sample_count'] == m['held_count'])
             or (f & 4 and m['held_count'] != m['sample_count']) or m['held_count'] > m['sample_count']
@@ -167,7 +172,7 @@ def main():
         ok = got == v['expected']['reason'] and (got == 'RELEASE') == v['expected']['release']
         # Re-sign untampered messages: the signature bytes must be identical (deterministic Ed25519).
         msg = bytes.fromhex(v['message_hex']); sig = b64url_strict(v['signed_receipt']['signature'])
-        if v['expected']['reason'] in ('RELEASE', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT'):
+        if v['expected']['reason'] in ('RELEASE', 'RECEIPT_VERSION_MISMATCH', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT'):
             ok = ok and sig == sign(seeds[msg[8:16].hex()], msg)
         fails += not ok
         print(('PASS' if ok else 'FAIL'), v['id'], got)

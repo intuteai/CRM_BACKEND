@@ -1,5 +1,5 @@
 {
-  "title": "Contract v0.5 DRAFT R3 examples (warning events, command changes, event digest MTEVT2)",
+  "title": "Contract v0.5 DRAFT R4 examples (warning events, command changes, event digest MTEVT2)",
   "spec": "docs/motor-test/contract/v05-warning-events.md",
   "note": "run_context = the run facts the ERP checks against (started, start_uptime_ms, held_count, stored readings with status_flags b5 0x20 / b6 0x40 and rpm_cmd). P01-P13 cover the probes of Mayank's R2 review.",
   "cases": [
@@ -144,7 +144,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:daaffe6cc01addd7cb9741667565a4d2a882917badd0bc715ddcf826608c2b63"
       }
@@ -277,7 +278,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:dbcffe58c7c9147dc26dd93b1ecc5efd56da7f3aa7eeafdc7b5ba0ea9115df3f"
       }
@@ -410,7 +412,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:0610004e4446eff630f3b240d8879fda9606be314144564be969a4060c565ba6"
       }
@@ -543,7 +546,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:3e2befa8f78101fea2d3167a6725409cf10b1718ba2d47f5cd5970ff1323ce14"
       }
@@ -689,7 +693,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:3bc9ecaf8551b00020a5a71201fc3d3e08dcefebf2629834aaaa8dae36153a02"
       }
@@ -802,7 +807,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:9080ef29f1bedb08f7b3720d947602334794517a26d0d7843abc37153f98c2f6"
       }
@@ -878,7 +884,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:322e33c3514459a93c1cb9a27aaa188de5863a870ba72eb8f92e727d8b56e66c"
       }
@@ -908,7 +915,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:84a34b8346df42ef14616ec0cfb1645f949220107cd40b54ac72fa2d13b6a649"
       }
@@ -1067,7 +1075,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:2105e799f6c5e2d4517722071722c33d6078d6a24bf19f8b48c441d7b865ca18"
       }
@@ -1166,7 +1175,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:85ef257bf9976f60a7d3e912d0408361422b814bc87dd199860b4cafe92899c7"
       }
@@ -1299,7 +1309,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:b9e17083b325b7a1e8a5453fb0a83a65928e7025b40c969b510286bd824cb87a"
       }
@@ -1432,7 +1443,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:b9915b55a48dbd40362bb68dd73e3ffe7f0ac78b9c536d6fb47f339075676c4c"
       }
@@ -2253,7 +2265,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": false,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:f1cdfeebc80b6444ca45c2f7dbc92a48998065aee8010ae2b28ec58f70f94359"
       }
@@ -2804,7 +2817,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": false,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:8722ab028aa7719ba20931f7189b163a4ecdf037f6bf0b6e4f5c7d0cb29ba816"
       }
@@ -3408,7 +3422,7 @@
     },
     {
       "id": "P10",
-      "description": "last change claims SUPERSEDED with no later change",
+      "description": "complete log: last change claims SUPERSEDED with no later change",
       "v05_fields": {
         "capture_end_ms": 900,
         "warnings": [],
@@ -3431,10 +3445,10 @@
         "event_log": {
           "warnings_count": 0,
           "command_changes_count": 2,
-          "complete": false,
-          "lost_count": null
+          "complete": true,
+          "lost_count": 0
         },
-        "event_digest": "sha256:96ce472e22960362c216089443ef0b791364eb5bdb65a6c5ec742cd3b3981f09"
+        "event_digest": "sha256:dd8b12114da9b97411f3664e4bc4af3996974e596b536210493e1e8f1420a77d"
       },
       "run_context": {
         "started": true,
@@ -3507,6 +3521,503 @@
         "result": "rejected",
         "status": 422,
         "rule": "COMMAND_LINK"
+      }
+    },
+    {
+      "id": "G1",
+      "description": "incomplete log: RAISED (seq 0) lost, DETAIL and CLEARED retained -> accepted, CLEARED unproven",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 1,
+            "t_ms": 290,
+            "phase": "CAPTURE",
+            "kind": "DETAIL",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 133,
+            "status_t_ms": 250,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 2,
+            "t_ms": 420,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": 1
+        },
+        "event_digest": "sha256:ae87cc6e01942d380edcd7df1395832a979d2a92ef22029d62a9c01c8709f779"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": false,
+          "unproven": [
+            {
+              "seq": 2,
+              "rule": "WARNING_PAIRING",
+              "note": "CLEARED after clear: the preceding event may have been lost"
+            }
+          ]
+        },
+        "recomputed_event_digest": "sha256:ae87cc6e01942d380edcd7df1395832a979d2a92ef22029d62a9c01c8709f779"
+      }
+    },
+    {
+      "id": "G2",
+      "description": "incomplete log: the superseding change was lost, the real SUPERSEDED kept -> accepted, unproven (reading 5 has no owner)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 450,
+            "rpm_cmd": 800,
+            "link": "SUPERSEDED",
+            "first_sample_seq": null
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": 1
+        },
+        "event_digest": "sha256:ab803b96fed6006cf246cb1bd556f4e120086ee3bccd4984c724a278acc98d61"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true,
+          "unproven": [
+            {
+              "step": 1,
+              "rule": "COMMAND_LINK",
+              "note": "SUPERSEDED, but its successor is not in the incomplete log (may have been lost)"
+            }
+          ]
+        },
+        "recomputed_event_digest": "sha256:ab803b96fed6006cf246cb1bd556f4e120086ee3bccd4984c724a278acc98d61"
+      }
+    },
+    {
+      "id": "G3",
+      "description": "incomplete log but no loss before the record (seq 0, contiguous, lost_count 1): CLEARED from clear is impossible -> rejected",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": 1
+        },
+        "event_digest": "sha256:99777ff201a1ad004978a0d7e86f55ab563f25173429ef6df6772be8d28fcc6a"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "WARNING_PAIRING"
+      }
+    },
+    {
+      "id": "G4",
+      "description": "incomplete log: STATUS_UNKNOWN lost, STATUS_KNOWN (restored CLEAR) kept -> accepted, unproven",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 1,
+            "t_ms": 500,
+            "phase": "CAPTURE",
+            "kind": "STATUS_KNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": "CLEAR",
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": null
+        },
+        "event_digest": "sha256:66fddf32ab33899c921b1e46b29f08349ef29f49daf194f6fe0e4a6376fae256"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true,
+          "unproven": [
+            {
+              "seq": 1,
+              "rule": "WARNING_PAIRING",
+              "note": "STATUS_KNOWN after clear: the preceding event may have been lost"
+            }
+          ]
+        },
+        "recomputed_event_digest": "sha256:66fddf32ab33899c921b1e46b29f08349ef29f49daf194f6fe0e4a6376fae256"
       }
     },
     {
@@ -3933,7 +4444,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": false
+          "b6_coverage_ok": false,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:8afca06f4da4c0909f39ca396bd46b346a92b6aa6aa23f9ad5e251efb48f208b"
       }
@@ -4066,7 +4578,8 @@
         "result": "accepted",
         "flags": {
           "event_digest_match": true,
-          "b6_coverage_ok": true
+          "b6_coverage_ok": true,
+          "unproven": []
         },
         "recomputed_event_digest": "sha256:79da3afbc059563d4a513dc895929b7f5f16ce5d2954c0b4b5d492e5f7dc8351"
       }

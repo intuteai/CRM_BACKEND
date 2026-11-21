@@ -4,7 +4,10 @@ Pure Python 3, standard library only. Ed25519 (RFC 8032, plain Python) and stric
 check_receipt_vectors.py in this folder; the MTRCPT2 parser and the release decision are written here and share no
 code with tools/receipt.js or tools/receipt_v2.js. Re-derives the test keys from their seeds and re-signs every
 vector whose message and signature were not tampered with (deterministic Ed25519: the bytes must be identical).
-Runs the MTRCPT1 check (check_receipt_vectors.py, 52 vectors) first.
+Runs the MTRCPT1 check (check_receipt_vectors.py, 54 vectors) first.
+R4: receipt_version 2 is required in the manifest (RECEIPT_VERSION_MISMATCH right after the signature check); a started
+run with a complete event log needs >= 1 command change; a CANCEL has zero counts and a complete event log. Also checks
+the cross-version downgrade (MTRCPT1 RA1 against the v0.5 R2A1 manifest) with the MTRCPT1 checker's own decision.
 
     python docs/motor-test/contract/tools/check_receipt_v2_vectors.py
 """
@@ -66,8 +69,12 @@ def decide_v2(signed, keyring, man):
     key = next((k for k in keyring if k['key_id'] == m['key_id']), None)
     if key is None: return 'UNKNOWN_KEY'
     if not verify(b64url_strict(key['public_key']), msg_b, sig): return 'BAD_SIGNATURE'  # includes S >= L
+    # R4 pinning: the run's own manifest must record receipt version 2 (required, never inferred)
+    rv = man.get('receipt_version')
+    if not (type(rv) is int and rv == 2): return 'RECEIPT_VERSION_MISMATCH'
     f, ef = m['flags'], m['event_flags']
     started = bool(f & 8)
+    log_complete = bool(ef & 2)
     run_flags_bad = (bool(f & 1) != (m['samples_digest'] == m['run_digest'])
                      or bool(f & 2) != (m['stored_sample_count'] == m['held_count'])
                      or (f & 4 and m['held_count'] != m['sample_count']) or m['held_count'] > m['sample_count']
@@ -76,7 +83,12 @@ def decide_v2(signed, keyring, man):
                                           or m['final_state'] != 'ABORTED' or m['outcome'] != 'INCOMPLETE'))
                      or (started and m['stop_reason'] == 'CONFIG_CANCELLED'))
     event_flags_bad = (bool(ef & 1) != (m['events_stored_digest'] == m['event_digest'])
-                       or bool(ef & 0x10) != started or bool(ef & 0x08) != started)
+                       or bool(ef & 0x10) != started or bool(ef & 0x08) != started
+                       # R4: started + complete event log => START step 0 exists (>= 1 command change)
+                       or (started and log_complete and m['command_changes_count'] == 0)
+                       # R4: CANCEL => complete, empty event evidence
+                       or (not started and (m['warnings_count'] != 0 or m['command_changes_count'] != 0
+                                            or not log_complete)))
     if run_flags_bad or event_flags_bad: return 'FLAGS_INCONSISTENT'
     verdict = m['outcome'] != 'INCOMPLETE'
     if m['stop_reason'] not in ALLOWED_STOP[m['final_state']] or (verdict and (m['final_state'] != 'COMPLETED' or f & 7 != 7)):
@@ -89,7 +101,7 @@ def decide_v2(signed, keyring, man):
             or m['final_state'] != man['final_state'] or m['stop_reason'] != man['stop_reason']
             or m['event_digest'] != man['event_digest'] or m['warnings_count'] != man['warnings_count']
             or m['command_changes_count'] != man['command_changes_count']
-            or bool(ef & 2) != man['event_log_complete']
+            or log_complete != man['event_log_complete']
             or m['capture_end_ms'] != man['capture_end_ms'] or m['start_uptime_ms'] != man['start_uptime_ms']):
         return 'MANIFEST_MISMATCH'
     if m['stored_sample_count'] != m['held_count']: return 'SHORTFALL'
@@ -105,6 +117,42 @@ def run_v1():
     except SystemExit as e:
         return e.code or 0
     return 0
+
+
+def cross_version(doc):
+    """R4 cross-version / no-fallback checks, using the MTRCPT1 checker's own decide(). Returns the failure count."""
+    print('--- cross-version (R4 receipt_version pinning)')
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'vectors', 'receipt-vectors.json')
+    v1doc = json.load(open(path, encoding='utf-8'))
+    by_id = {v['id']: v for v in v1doc['vectors']}
+    ra1, rr44 = by_id.get('RA1'), by_id.get('RR44')
+    r2a1 = next(v for v in doc['vectors'] if v['id'] == 'R2A1')
+    ring = doc['vcu_keyring']
+    common = ('test_id', 'vcu_id', 'origin_boot_id', 'started', 'recording_complete', 'final_state', 'stop_reason',
+              'sample_count', 'held_count', 'run_digest', 'receipt_version')
+    checks = []
+    for v in doc['vectors']:
+        if v['expected']['release']:
+            checks.append((f"{v['id']}: manifest receipt_version 2", v['vcu_manifest'].get('receipt_version') == 2))
+            checks.append((f"{v['id']}: MTRCPT1 decide = BAD_VERSION",
+                           v1.decide(v['signed_receipt'], ring, v['vcu_manifest']) == 'BAD_VERSION'))
+    checks += [
+        ('RR44 = RA1 bytes, expected RECEIPT_VERSION_MISMATCH', rr44 is not None and ra1 is not None
+         and rr44['message_hex'] == ra1['message_hex'] and rr44['expected']['reason'] == 'RECEIPT_VERSION_MISMATCH'),
+        ('RR44 manifest common fields = R2A1 manifest',
+         rr44 is not None and all(rr44['vcu_manifest'].get(k) == r2a1['vcu_manifest'].get(k) for k in common)),
+        ('MTRCPT1 decide(RA1, R2A1 manifest) = RECEIPT_VERSION_MISMATCH',
+         v1.decide(ra1['signed_receipt'], ring, r2a1['vcu_manifest']) == 'RECEIPT_VERSION_MISMATCH'),
+        # the run's manifest selects MTRCPT2; its BAD_VERSION is final (no fallback to MTRCPT1)
+        ('MTRCPT2 decide(RA1, R2A1 manifest) = BAD_VERSION (no fallback)',
+         decide_v2(ra1['signed_receipt'], ring, r2a1['vcu_manifest']) == 'BAD_VERSION'),
+    ]
+    bad = 0
+    for what, ok in checks:
+        bad += not ok
+        print(('PASS' if ok else 'FAIL'), what)
+    print(f'{len(checks) - bad}/{len(checks)} cross-version checks agree')
+    return bad
 
 
 def main():
@@ -140,6 +188,7 @@ def main():
         print(('PASS' if ok else 'FAIL'), v['id'], got)
     n = len(doc['vectors'])
     print(f'{n - fails}/{n} MTRCPT2 vectors agree ({resigned} re-signed byte for byte)')
+    fails += cross_version(doc)
     if v1_status: print('MTRCPT1 check FAILED')
     sys.exit(1 if fails or v1_status else 0)
 

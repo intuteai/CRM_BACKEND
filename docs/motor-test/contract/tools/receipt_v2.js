@@ -3,7 +3,10 @@
 // MTRCPT2 = the MTRCPT1 fixed part (offsets 0..167, magic "MTRCPT2\0") + an event block (offsets 168..248) + the two
 // length-prefixed identifiers. MTRCPT1 (tools/receipt.js) is reused unchanged: the common fields are encoded and parsed
 // by receipt.js itself, so both versions share one definition of offsets 0..167 and of the identifier rules.
-// A VCU dispatches by magic: MTRCPT1 -> decide() (v0.4 runs), MTRCPT2 -> decideV2() (v0.5 runs).
+// R4 (after Mayank's R3 review): the VCU does NOT dispatch by the received magic. It selects the permitted decoder from
+// the receipt_version it persisted in its own manifest when it created the run (decideForRun): 2 -> decideV2(), else
+// decide() (which itself rejects any receipt_version other than absent/1). The magic must then match that decoder;
+// there is no fallback to MTRCPT1 after an MTRCPT2 failure.
 'use strict';
 const crypto = require('crypto');
 const R = require('./receipt');
@@ -82,8 +85,9 @@ function decodeMessageV2(b) {
 
 // signed = { message, signature } (base64url strings, exactly as received)
 // keyring = [{ key_id: hex16, public_key: base64url }] - the VCU's provisioned, non-revoked keys
-// manifest = the VCU's own durable record of the run: the MTRCPT1 manifest fields + event_digest, warnings_count,
-//   command_changes_count, event_log_complete, capture_end_ms (number|null), start_uptime_ms (number|null)
+// manifest = the VCU's own durable record of the run: receipt_version (must be 2), the MTRCPT1 manifest fields +
+//   event_digest, warnings_count, command_changes_count, event_log_complete, capture_end_ms (number|null),
+//   start_uptime_ms (number|null). b6_coverage_ok is NOT a manifest field: signed and reported only, never compared.
 // Returns { release: boolean, reason }. Checks run in this order; the first failure is the reason.
 function decideV2(signed, keyring, manifest) {
   const { FLAG } = R;
@@ -97,8 +101,12 @@ function decideV2(signed, keyring, manifest) {
   const s = BigInt('0x' + Buffer.from(signature.subarray(32)).reverse().toString('hex'));
   if (s >= R.ED25519_L) return { release: false, reason: 'BAD_SIGNATURE' }; // non-canonical S (RFC 8032 5.1.7)
   if (!crypto.verify(null, message, publicKeyObject(R.b64urlDecodeStrict(key.public_key)), signature)) return { release: false, reason: 'BAD_SIGNATURE' };
+  // Receipt-version pinning (R4): MTRCPT2 is accepted only for a run whose VCU manifest records receipt_version 2
+  // (required; an absent or other value is a mismatch, never inferred).
+  if (manifest.receipt_version !== 2) return { release: false, reason: 'RECEIPT_VERSION_MISMATCH' };
   const started = (msg.flags & FLAG.STARTED) !== 0;
   const ef = msg.event_flags;
+  const eventLogComplete = (ef & EVENT_FLAG.EVENT_LOG_COMPLETE) !== 0;
   // Signed flags must agree with the signed values: every MTRCPT1 rule, plus the event rules.
   if (((msg.flags & FLAG.RUN_DIGEST_MATCH) !== 0) !== (msg.samples_digest === msg.run_digest)
     || ((msg.flags & FLAG.HELD_COUNT_MATCH) !== 0) !== (msg.stored_sample_count === msg.held_count)
@@ -108,7 +116,12 @@ function decideV2(signed, keyring, manifest) {
     || (started && msg.stop_reason === 'CONFIG_CANCELLED')
     || ((ef & EVENT_FLAG.EVENT_DIGEST_MATCH) !== 0) !== (msg.events_stored_digest === msg.event_digest)
     || ((ef & EVENT_FLAG.START_UPTIME_PRESENT) !== 0) !== started
-    || ((ef & EVENT_FLAG.CAPTURE_END_PRESENT) !== 0) !== started) return { release: false, reason: 'FLAGS_INCONSISTENT' };
+    || ((ef & EVENT_FLAG.CAPTURE_END_PRESENT) !== 0) !== started
+    // R4: a started run claiming a complete event log must contain START step 0 (at least one command change).
+    // A known-incomplete log (b1 = 0) with a lost step 0 is not rejected here.
+    || (started && eventLogComplete && msg.command_changes_count === 0)
+    // R4: a CANCEL (started = 0) is complete, empty event evidence: no warnings, no command changes, b1 = 1.
+    || (!started && (msg.warnings_count !== 0 || msg.command_changes_count !== 0 || !eventLogComplete))) return { release: false, reason: 'FLAGS_INCONSISTENT' };
   const verdict = msg.outcome !== 'INCOMPLETE';
   if (!R.STOP_FOR_STATE[msg.final_state].includes(msg.stop_reason)
     || (verdict && (msg.final_state !== 'COMPLETED' || (msg.flags & 0x07) !== 0x07))) return { release: false, reason: 'LIFECYCLE_INCONSISTENT' };
@@ -121,7 +134,7 @@ function decideV2(signed, keyring, manifest) {
     || msg.final_state !== manifest.final_state || msg.stop_reason !== manifest.stop_reason
     || msg.event_digest !== manifest.event_digest
     || msg.warnings_count !== manifest.warnings_count || msg.command_changes_count !== manifest.command_changes_count
-    || ((ef & EVENT_FLAG.EVENT_LOG_COMPLETE) !== 0) !== manifest.event_log_complete
+    || eventLogComplete !== manifest.event_log_complete
     || msg.capture_end_ms !== manifest.capture_end_ms || msg.start_uptime_ms !== manifest.start_uptime_ms) return { release: false, reason: 'MANIFEST_MISMATCH' };
   if (msg.stored_sample_count !== msg.held_count) return { release: false, reason: 'SHORTFALL' };
   if (msg.samples_digest !== msg.run_digest) return { release: false, reason: 'DIGEST_MISMATCH' };
@@ -129,7 +142,13 @@ function decideV2(signed, keyring, manifest) {
   return { release: true, reason: 'RELEASE' };
 }
 
+// VCU dispatcher (R4): the decoder is selected ONLY by the run's persisted manifest.receipt_version, never by the
+// received magic, and the result is final (no second attempt with the other decoder).
+function decideForRun(signed, keyring, manifest) {
+  return manifest.receipt_version === 2 ? decideV2(signed, keyring, manifest) : R.decide(signed, keyring, manifest);
+}
+
 module.exports = {
   MAGIC_V2, EVENT_FLAG, EVENT_FLAG_RESERVED, V2_FIXED_LEN, MIN_LEN,
-  deriveEventFlags, encodeMessageV2, decodeMessageV2, decideV2,
+  deriveEventFlags, encodeMessageV2, decodeMessageV2, decideV2, decideForRun,
 };

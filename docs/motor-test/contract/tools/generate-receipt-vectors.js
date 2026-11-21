@@ -94,6 +94,10 @@ const cases = [
   ['RR41', 'signed b2 (not complete) differs from the VCU manifest (complete)', { recording_complete: false, outcome: 'INCOMPLETE' }, { manifest: { recording_complete: true } }, 'MANIFEST_MISMATCH'],
   ['RR42', 'CANCEL with recording_complete=false (a cancel holds nothing and must be a complete, empty recording)', { sample_count: 0, held_count: 0, stored_sample_count: 0, final_state: 'ABORTED', outcome: 'INCOMPLETE', stop_reason: 'CONFIG_CANCELLED', started: false, recording_complete: false, run_digest: D_EMPTY, samples_digest: D_EMPTY }, {}, 'FLAGS_INCONSISTENT'],
   ['RR43', 'CANCEL with outcome PASS (a cancel is never an executed test)', { sample_count: 0, held_count: 0, stored_sample_count: 0, final_state: 'ABORTED', outcome: 'PASS', stop_reason: 'CONFIG_CANCELLED', started: false, run_digest: D_EMPTY, samples_digest: D_EMPTY }, {}, 'FLAGS_INCONSISTENT'],
+  // ---------------------------------------------------------------- receipt-version pinning (v0.5 draft R4, Mayank's R3 review). Appended:
+  // the 52 vectors above keep identical bytes, signatures, manifests and decisions (their manifests carry no receipt_version).
+  ['RA10', 'RA1 bytes, VCU manifest pins receipt_version 1 explicitly (a v0.4 run) -> release', {}, { manifest: { receipt_version: 1 } }],
+  ['RR44', 'downgrade probe R3_RECEIPT_MAGIC_DOWNGRADE: the genuinely signed MTRCPT1 RA1 message checked by the MTRCPT1 decider against the manifest of a v0.5 run (receipt_version 2; common fields equal, as the MTRCPT2 R2A1 manifest) -> rejected, no v1 path for a v0.5 run', {}, { manifest: { receipt_version: 2 } }, 'RECEIPT_VERSION_MISMATCH'],
 ];
 
 // 64-byte signature -> 86 base64url chars; the last char carries 4 data bits + 2 unused bits. Set an unused bit.
@@ -144,7 +148,7 @@ fs.writeFileSync(OUT, JSON.stringify({
     key_id: v.keyId.toString('hex'), public_key: R.b64urlEncode(v.publicRaw), public_key_hex: v.publicRaw.toString('hex'),
   }])),
   vcu_keyring: KEYRING,
-  decision_order: ['MALFORMED_ENCODING', 'BAD_VERSION / MALFORMED_MESSAGE', 'UNKNOWN_KEY', 'BAD_SIGNATURE', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'RELEASE'],
+  decision_order: ['MALFORMED_ENCODING', 'BAD_VERSION / MALFORMED_MESSAGE', 'UNKNOWN_KEY', 'BAD_SIGNATURE', 'RECEIPT_VERSION_MISMATCH', 'FLAGS_INCONSISTENT', 'LIFECYCLE_INCONSISTENT', 'TEST_ID_MISMATCH', 'VCU_ID_MISMATCH', 'BOOT_ID_MISMATCH', 'MANIFEST_MISMATCH', 'SHORTFALL', 'DIGEST_MISMATCH', 'RELEASE'],
   vectors,
 }, null, 2) + '\n');
 console.log(`wrote ${vectors.length} vectors to ${path.relative(process.cwd(), OUT)}`);

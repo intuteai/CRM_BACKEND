@@ -2,6 +2,9 @@
 // Spec: docs/motor-test/contract/receipt-signing.md. Vectors: vectors/receipt-vectors.json.
 // The ERP signs; the VCU verifies and decides. This file implements both sides so the vectors can be generated
 // and re-checked; tools/check_receipt_vectors.py is an independent Python implementation of the VCU side.
+// R4 (v0.5 draft R4, after Mayank's R3 review): receipt-version pinning. The VCU-owned manifest may carry
+// receipt_version; this MTRCPT1 decider rejects RECEIPT_VERSION_MISMATCH when it is present and not 1 (a v0.5 run
+// never accepts an MTRCPT1 receipt). v0.4 manifests without the field keep their v1 path. Message bytes unchanged.
 'use strict';
 const crypto = require('crypto');
 
@@ -126,7 +129,7 @@ function signMessage(message, privateKey) { return crypto.sign(null, message, pr
 
 // signed = { message, signature } (base64url strings, exactly as received)
 // keyring = [{ key_id: hex16, public_key: base64url }] - the VCU's provisioned, non-revoked keys
-// manifest = the VCU's own durable record of the run
+// manifest = the VCU's own durable record of the run (receipt_version: absent or 1 for a v0.4 run)
 // Returns { release: boolean, reason }. Checks run in this order; the first failure is the reason.
 function decide(signed, keyring, manifest) {
   const message = b64urlDecodeStrict(signed.message);
@@ -139,6 +142,9 @@ function decide(signed, keyring, manifest) {
   const s = BigInt('0x' + Buffer.from(signature.subarray(32)).reverse().toString('hex'));
   if (s >= ED25519_L) return { release: false, reason: 'BAD_SIGNATURE' }; // non-canonical S (RFC 8032 5.1.7)
   if (!crypto.verify(null, message, publicKeyObject(b64urlDecodeStrict(key.public_key)), signature)) return { release: false, reason: 'BAD_SIGNATURE' };
+  // Receipt-version pinning (R4): the version the VCU persisted when it created the run decides which receipt is
+  // permitted. Present and not 1 (e.g. 2 = a v0.5 run) -> reject, even with a valid signature and matching fields.
+  if (manifest.receipt_version !== undefined && manifest.receipt_version !== 1) return { release: false, reason: 'RECEIPT_VERSION_MISMATCH' };
   // Signed flags must agree with the signed values (never trust one without the other).
   if (((msg.flags & FLAG.RUN_DIGEST_MATCH) !== 0) !== (msg.samples_digest === msg.run_digest)
     || ((msg.flags & FLAG.HELD_COUNT_MATCH) !== 0) !== (msg.stored_sample_count === msg.held_count)

@@ -63,7 +63,12 @@ add('P02', 'CANCEL with capture_end_ms 900', CANCEL_RUN, ev(CANCEL_RUN, [], [], 
 { const r = run(); add('P07', 'detail status_t_ms (10000) after the reply time (290)', r, ev(r, [W(0, 250, 'RAISED', 'STATUS_BIT6'), W(1, 290, 'DETAIL', 'SDO_2031_11', { code: 133, status_t_ms: 10000 })]), { status: 422, rule: 'EVENT_CAUSALITY' }); }
 { const r = run(); add('P08', 'CLEARED at 100 after RAISED at 250 (time goes backwards in seq order)', r, ev(r, [W(0, 250, 'RAISED', 'STATUS_BIT6'), W(1, 100, 'CLEARED', 'STATUS_BIT6')]), { status: 422, rule: 'EVENT_ORDER' }); }
 { const r = run(); add('P09', 'crossed ownership: step 0 owns reading 5, step 1 owns reading 0', r, ev(r, [], [{ step: 0, t_ms: 0, rpm_cmd: 1000, link: 'OWNS_READING', first_sample_seq: 5 }, { step: 1, t_ms: 0, rpm_cmd: 500, link: 'OWNS_READING', first_sample_seq: 0 }]), { status: 422, rule: 'COMMAND_LINK' }); }
-{ const r = run(); add('P10', 'last change claims SUPERSEDED with no later change', r, ev(r, [], [cmds()[0], { step: 1, t_ms: 480, rpm_cmd: 1000, link: 'SUPERSEDED', first_sample_seq: null }], { event_log: { complete: false, lost_count: null } }), { status: 422, rule: 'COMMAND_LINK' }); }
+{ const r = run(); add('P10', 'complete log: last change claims SUPERSEDED with no later change', r, ev(r, [], [cmds()[0], { step: 1, t_ms: 480, rpm_cmd: 1000, link: 'SUPERSEDED', first_sample_seq: null }]), { status: 422, rule: 'COMMAND_LINK' }); }
+// ---- R4 (Mayank R3 review): incomplete logs keep true records whose partner was lost, reported as unproven
+{ const r = b6([3, 4])(run()); add('G1', 'incomplete log: RAISED (seq 0) lost, DETAIL and CLEARED retained -> accepted, CLEARED unproven', r, ev(r, [W(1, 290, 'DETAIL', 'SDO_2031_11', { code: 133, status_t_ms: 250 }), W(2, 420, 'CLEARED', 'STATUS_BIT6')], cmds(), { event_log: { complete: false, lost_count: 1 } }), { accept: true, unproven: 1 }); }
+{ const r = run(); add('G2', 'incomplete log: the superseding change was lost, the real SUPERSEDED kept -> accepted, unproven (reading 5 has no owner)', r, ev(r, [], [cmds()[0], { step: 1, t_ms: 450, rpm_cmd: 800, link: 'SUPERSEDED', first_sample_seq: null }], { event_log: { complete: false, lost_count: 1 } }), { accept: true, unproven: 1 }); }
+{ const r = run(); add('G3', 'incomplete log but no loss before the record (seq 0, contiguous, lost_count 1): CLEARED from clear is impossible -> rejected', r, ev(r, [W(0, 200, 'CLEARED', 'STATUS_BIT6')], cmds(), { event_log: { complete: false, lost_count: 1 } }), { status: 422, rule: 'WARNING_PAIRING' }); }
+{ const r = run(); add('G4', 'incomplete log: STATUS_UNKNOWN lost, STATUS_KNOWN (restored CLEAR) kept -> accepted, unproven', r, ev(r, [W(1, 500, 'STATUS_KNOWN', 'STATUS_BIT6', { restored_state: 'CLEAR' })], cmds(), { event_log: { complete: false, lost_count: null } }), { accept: true, unproven: 1 }); }
 { const r = run(); add('P11', 'command change after capture closed', r, ev(r, [], [...cmds(), { step: 2, t_ms: 950, rpm_cmd: 0, link: 'NO_READING', first_sample_seq: null }]), { status: 422, rule: 'COMMAND_WINDOW' }); }
 { const r = run(); add('P12', 'owned reading carries a different rpm_cmd than the change', r, ev(r, [], [cmds()[0], { step: 1, t_ms: 480, rpm_cmd: 1200, link: 'OWNS_READING', first_sample_seq: 5 }]), { status: 422, rule: 'COMMAND_LINK' }); }
 { const r = run(); add('P13', 'NO_READING on a change that is not the last', r, ev(r, [], [cmds()[0], { step: 1, t_ms: 480, rpm_cmd: 800, link: 'NO_READING', first_sample_seq: null }, { step: 2, t_ms: 490, rpm_cmd: 1000, link: 'OWNS_READING', first_sample_seq: 5 }]), { status: 422, rule: 'COMMAND_LINK' }); }
@@ -74,7 +79,7 @@ let failures = 0;
 const out = cases.map(([id, description, events, runCtx, expect]) => {
   const got = validate(events, runCtx);
   let ok;
-  if (expect.accept) ok = got.ok && Object.entries(expect.flags || {}).every(([k, v]) => got.flags[k] === v) && (expect.flags?.event_digest_match === false || got.flags.event_digest_match);
+  if (expect.accept) ok = got.ok && (expect.unproven === undefined || got.flags.unproven.length === expect.unproven) && Object.entries(expect.flags || {}).every(([k, v]) => got.flags[k] === v) && (expect.flags?.event_digest_match === false || got.flags.event_digest_match);
   else ok = !got.ok && got.status === expect.status && got.rule === expect.rule;
   if (!ok) failures++;
   console.log(`${ok ? 'PASS' : 'FAIL'} ${id} ${description}: ${got.ok ? 'accepted ' + JSON.stringify(got.flags) : got.status + ' ' + got.rule + ' (' + got.msg + ')'}`);
@@ -83,7 +88,7 @@ const out = cases.map(([id, description, events, runCtx, expect]) => {
 });
 if (failures) { console.error(`${failures} case(s) unexpected`); process.exit(1); }
 const file = path.join(__dirname, '..', 'vectors', 'v05-event-vectors.json');
-fs.writeFileSync(file, JSON.stringify({ title: 'Contract v0.5 DRAFT R3 examples (warning events, command changes, event digest MTEVT2)',
+fs.writeFileSync(file, JSON.stringify({ title: 'Contract v0.5 DRAFT R4 examples (warning events, command changes, event digest MTEVT2)',
   spec: 'docs/motor-test/contract/v05-warning-events.md',
   note: 'run_context = the run facts the ERP checks against (started, start_uptime_ms, held_count, stored readings with status_flags b5 0x20 / b6 0x40 and rpm_cmd). P01-P13 cover the probes of Mayank\'s R2 review.', cases: out }, null, 2) + '\n');
 console.log(`wrote ${out.length} cases`);

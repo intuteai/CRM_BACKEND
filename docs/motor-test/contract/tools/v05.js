@@ -80,11 +80,19 @@ function validate(ev, run) {
     if (w.status_t_ms !== null && w.status_t_ms > w.t_ms) return fail(422, 'EVENT_CAUSALITY', `warnings seq ${w.seq}: status observation after the detail reply`);
   }
   // ---- pairing per source+limit (states clear / active / unknown)
+  // R4 (Mayank R3 review): with an INCOMPLETE log a relationship that a lost event can explain is kept as recorded and
+  // reported as unproven (never repaired, never renumbered). It is only possible if events may have been lost BEFORE
+  // the record: a seq gap at or before it (including a first seq > 0) or an unknown loss count. Complete logs stay strict.
+  const unproven = [];
+  const lossBefore = (idx) => L.lost_count === null || W[0].seq > 0 || W.slice(1, idx + 1).some((w, j) => w.seq - W[j].seq > 1);
   const state = new Map();
   for (const w of W.filter((x) => TRANSITION_KINDS.includes(x.kind))) {
     const k = `${w.source}/${w.limit_id}`; const s = state.get(k) || 'clear';
     const ok = { ACTIVE_AT_START: s === 'clear', RAISED: s === 'clear', CLEARED: s === 'active', STATUS_UNKNOWN: true, STATUS_KNOWN: s === 'unknown' }[w.kind];
-    if (!ok) return fail(422, 'WARNING_PAIRING', `warnings seq ${w.seq}: ${w.kind} not allowed when ${k} is ${s}`);
+    if (!ok) {
+      if (L.complete || !lossBefore(W.indexOf(w))) return fail(422, 'WARNING_PAIRING', `warnings seq ${w.seq}: ${w.kind} not allowed when ${k} is ${s}${L.complete ? '' : ' (no loss before it can explain this)'}`);
+      unproven.push({ seq: w.seq, rule: 'WARNING_PAIRING', note: `${w.kind} after ${s}: the preceding event may have been lost` });
+    }
     state.set(k, w.kind === 'STATUS_KNOWN' ? (w.restored_state === 'ACTIVE' ? 'active' : 'clear')
       : { ACTIVE_AT_START: 'active', RAISED: 'active', CLEARED: 'clear', STATUS_UNKNOWN: 'unknown' }[w.kind]);
   }
@@ -105,7 +113,10 @@ function validate(ev, run) {
       if (c.first_sample_seq <= lastLinkedSeq) return fail(422, 'COMMAND_LINK', `step ${c.step}: linked readings must increase with the step (acquisition order)`);
       lastLinkedSeq = c.first_sample_seq;
     }
-    if (c.link === 'SUPERSEDED' && !next) return fail(422, 'COMMAND_LINK', `step ${c.step}: SUPERSEDED needs a later change`);
+    if (c.link === 'SUPERSEDED' && !next) {
+      if (L.complete) return fail(422, 'COMMAND_LINK', `step ${c.step}: SUPERSEDED needs a later change`);
+      unproven.push({ step: c.step, rule: 'COMMAND_LINK', note: 'SUPERSEDED, but its successor is not in the incomplete log (may have been lost)' });
+    }
     if (c.link === 'NO_READING' && next) return fail(422, 'COMMAND_LINK', `step ${c.step}: NO_READING only for the last change (capture ended)`);
   }
   if (L.complete && run.samples.some((s) => (s.status_flags & 0x20) && !owners.has(s.sample_seq))) return fail(422, 'COMMAND_LINK', 'complete log: every stored b5 reading must be owned by exactly one change');
@@ -120,7 +131,7 @@ function validate(ev, run) {
   for (const start of open.values()) intervals.push([start, Infinity]);
   const b6CoverageOk = run.samples.every((s) => !(s.status_flags & 0x40) || intervals.some(([a, b]) => s.t_ms >= a && s.t_ms <= b));
   const digest = eventDigest(ev, run);
-  return { ok: true, flags: { event_digest_match: digest === ev.event_digest, b6_coverage_ok: b6CoverageOk }, digest };
+  return { ok: true, flags: { event_digest_match: digest === ev.event_digest, b6_coverage_ok: b6CoverageOk, unproven }, digest };
 }
 
 // MTEVT2: binds capture bounds and the sample origin too (Mayank R2 finding D).

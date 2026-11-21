@@ -259,7 +259,7 @@ The agreed design:
 | Start time | The VCU keeps boot-scoped uptime, not UTC. `started_at` comes from the tablet clock. `started_at_source` is `HMI` (tablet time when the accepted START ACK arrived), `HMI_DERIVED` (rebuilt from the VCU's recorded start uptime, only when no `HMI` stamp exists and every listed check holds) or `null` when the time is unknown. The ERP never computes results from these times. |
 | b0 = 0 | D13 vector V10 (section 5.2): raw `rpm_actual` kept, digest unchanged, value treated as unavailable. |
 
-Vectors: `vectors/receipt-vectors.json` holds 52 receipt vectors (9 accepted, 43 rejected, including lifecycle combinations and manifest binding of final_state / stop_reason added after review) with test-only keys. `tools/receipt.js` is the reference implementation and `tools/generate-receipt-vectors.js` regenerates the vectors. `tools/check_receipt_vectors.py` is an independent Python implementation (Ed25519 from RFC 8032, no shared code); it checks RFC 8032 test 1 first, agrees on all 52 decisions and re-signs every untampered message byte for byte.
+Vectors: `vectors/receipt-vectors.json` holds 54 receipt vectors (10 accepted, 44 rejected, including the receipt-version pin, including lifecycle combinations and manifest binding of final_state / stop_reason added after review) with test-only keys. `tools/receipt.js` is the reference implementation and `tools/generate-receipt-vectors.js` regenerates the vectors. `tools/check_receipt_vectors.py` is an independent Python implementation (Ed25519 from RFC 8032, no shared code); it checks RFC 8032 test 1 first, agrees on all 54 decisions and re-signs every untampered message byte for byte.
 
 ```
 node docs/motor-test/contract/tools/generate-receipt-vectors.js
@@ -272,7 +272,7 @@ After agreement the ERP needs a migration (`CONFIG_CANCELLED`, `started`, `held_
 
 ### 5.5 Contract v0.5 draft R3 and receipt MTRCPT2 (not implemented)
 
-`docs/motor-test/contract/v05-warning-events.md` (R3, 2026-11-21, after two VCU reviews) adds, behind
+`docs/motor-test/contract/v05-warning-events.md` (R4, 2026-11-21, after three VCU reviews; incomplete logs keep unproven records instead of rejecting them) adds, behind
 `contract_version: "0.5"`:
 
 - `warnings[]`: timestamped warning transitions and detail-code reads from the approved AC310 `0x2031:11` polling, on
@@ -285,14 +285,13 @@ After agreement the ERP needs a migration (`CONFIG_CANCELLED`, `started`, `held_
   `capture_end_ms` and `start_uptime_ms`; optional values carry a presence tag, never a sentinel.
 
 The signed receipt for v0.5 runs is **MTRCPT2** (`receipt-signing.md` section 11): the MTRCPT1 fields plus both event
-digests, the event counts, event flags and capture bounds; a VCU dispatches by magic (MTRCPT1 stays for v0.4 runs).
+digests, the event counts, event flags and capture bounds. The receipt version is pinned in the VCU-owned manifest when the run is created (1 for v0.4 runs, 2 for v0.5 runs); a v0.5 run rejects an MTRCPT1 receipt even if it is validly signed (`RECEIPT_VERSION_MISMATCH`), with no fallback. A started run claiming a complete event log must contain step 0; a CANCEL carries complete, empty event evidence.
 Release still requires the ERP to hold exactly what the VCU holds, readings and events.
 
-Reference code and vectors: `tools/v05.js` (37 cases in `vectors/v05-event-vectors.json`, digests re-checked by
-`tools/check_v05_vectors.py`), `tools/receipt_v2.js` (42 cases in `vectors/receipt-v2-vectors.json`, checked by the
+Reference code and vectors: `tools/v05.js` (41 cases in `vectors/v05-event-vectors.json`, digests re-checked by
+`tools/check_v05_vectors.py`), `tools/receipt_v2.js` (50 cases in `vectors/receipt-v2-vectors.json`, checked by the
 independent `tools/check_receipt_v2_vectors.py`). The settle boundary is shared with the criteria rules: a reading at
-exactly `t_b5 + X` is still settling. Pending: Mayank's review of R3 and MTRCPT2, the testing head's decisions S1–S6 and
-the boundary confirmation, the versioned warning-code table; then migration 005 and the upload path.
+exactly `t_b5 + X` is still settling. Pending: Mayank's final review of R4, the settle-boundary confirmation (the testing head decided S1–S5 INVALID and S6 versioned on 2026-11-21) and, the versioned warning-code table; then migration 005 and the upload path.
 
 ## 6. Governance API (web CRM)
 

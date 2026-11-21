@@ -40,6 +40,7 @@
     "BAD_VERSION / MALFORMED_MESSAGE",
     "UNKNOWN_KEY",
     "BAD_SIGNATURE",
+    "RECEIPT_VERSION_MISMATCH",
     "FLAGS_INCONSISTENT",
     "LIFECYCLE_INCONSISTENT",
     "TEST_ID_MISMATCH",
@@ -2236,6 +2237,98 @@
       "expected": {
         "release": false,
         "reason": "FLAGS_INCONSISTENT"
+      }
+    },
+    {
+      "id": "RA10",
+      "description": "RA1 bytes, VCU manifest pins receipt_version 1 explicitly (a v0.4 run) -> release",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "recording_complete": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "receipt_version": 1
+      },
+      "expected": {
+        "release": true,
+        "reason": "RELEASE"
+      }
+    },
+    {
+      "id": "RR44",
+      "description": "downgrade probe R3_RECEIPT_MAGIC_DOWNGRADE: the genuinely signed MTRCPT1 RA1 message checked by the MTRCPT1 decider against the manifest of a v0.5 run (receipt_version 2; common fields equal, as the MTRCPT2 R2A1 manifest) -> rejected, no v1 path for a v0.5 run",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMQAUBQcyJNTWCXsdPgpcH0t-ng4qnywdTlXh8qO0xdZOf4qbDB0uP0pbdNXjMKIBAAADAAAAAwAAAAMAAAABAQEPvqfNWxVKHLqYTwWURty5BSGk9AKwZvjHRlDzwA6gDPa-p81bFUocuphPBZRG3LkFIaT0ArBm-MdGUPPADqAM9uorXxG2BYtDKajnGu6lwNP5z-m0gTBaO2zZQG3anXv-BlZDVS0wMQliMDB0LTAwNDI",
+        "signature": "ctOjpcudpiHV2m6_GRlnVDITECzi4seHfmrzuEDv-zakJAtgTLkNZm6Pez9nZrS2zE93zF0D8q94--t758LHDA"
+      },
+      "message_hex": "4d545243505431001405073224d4d6097b1d3e0a5c1f4b7e9e0e2a9f2c1d4e55e1f2a3b4c5d64e7f8a9b0c1d2e3f4a5b74d5e330a20100000300000003000000030000000101010fbea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe065643552d303109623030742d30303432",
+      "decoded_message": {
+        "key_id": "1405073224d4d609",
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "receipt_id": "e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b",
+        "stored_at": "2026-12-01T09:16:07.412Z",
+        "sample_count": 3,
+        "held_count": 3,
+        "stored_sample_count": 3,
+        "final_state": "COMPLETED",
+        "outcome": "PASS",
+        "stop_reason": "RAMP_COMPLETE",
+        "flags": 15,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "samples_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "payload_hash": "sha256:ea2b5f11b6058b4329a8e71aeea5c0d3f9cfe9b481305a3b6cd9406dda9d7bfe",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042"
+      },
+      "vcu_manifest": {
+        "test_id": "7b1d3e0a-5c1f-4b7e-9e0e-2a9f2c1d4e55",
+        "vcu_id": "VCU-01",
+        "origin_boot_id": "b00t-0042",
+        "started": true,
+        "recording_complete": true,
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
+        "sample_count": 3,
+        "held_count": 3,
+        "run_digest": "sha256:bea7cd5b154a1cba984f059446dcb90521a4f402b066f8c74650f3c00ea00cf6",
+        "receipt_version": 2
+      },
+      "expected": {
+        "release": false,
+        "reason": "RECEIPT_VERSION_MISMATCH"
       }
     }
   ]
