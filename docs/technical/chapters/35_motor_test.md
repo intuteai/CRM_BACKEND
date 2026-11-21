@@ -241,9 +241,9 @@ Frozen when a version is approved (`adminModel.sha256Of`), using the same canoni
 
 The tablet caches the published profile and criteria with their `sha256` and sends both hashes with every upload; the ERP refuses an upload whose hashes do not match the versions it names. Vectors: `profile-criteria-hash-vectors.json`.
 
-### 5.4 Contract v0.4: signed archive receipt (implemented on staging, 2026-11-19)
+### 5.4 Contract v0.4: signed archive receipt (live on staging and production, 2026-11-19)
 
-Implementation: `services/testing/validateRun.js` (v0.4 schema and rules CANCEL_SHAPE, START_UPTIME_REQUIRED, HELD_COUNT_RANGE, RECORDING_COMPLETE_COUNTS, RECORDING_COMPLETE_REQUIRED, TIME_SOURCE, and LIFECYCLE_STOP_REASON for every upload), `services/testing/receiptSigner.js` (message encoder and Ed25519 signing from `RECEIPT_SIGNING_SEED`), `models/testing/testingModel.js` (new columns; the receipt is signed inside the upload transaction and stored, so a retry returns the byte-identical signature), `controllers/testing/testing.controller.js` (`run_kind` gate: 422 `RUN_KIND_NOT_ALLOWED`; staging accepts `bench`, `host_simulation`, `synthetic`, production only `bench`), migration `004_contract_v04.sql` (columns, lifecycle and v0.4 CHECKs, `mt_receipt_key` registry with retire/revoke-once guard, stored signatures that can never change). Tests: `tests/testing_v04_api.test.js` (22, signs with the published test key A and checks every receipt with the reference VCU decision); `check_rules.js` now proves 38 database rules. Fixtures 60–68 in the contract folder.
+Implementation: `services/testing/validateRun.js` (v0.4 schema and rules CANCEL_SHAPE, START_UPTIME_REQUIRED, HELD_COUNT_RANGE, RECORDING_COMPLETE_COUNTS, RECORDING_COMPLETE_REQUIRED, TIME_SOURCE, and LIFECYCLE_STOP_REASON for every upload), `services/testing/receiptSigner.js` (message encoder and Ed25519 signing from `RECEIPT_SIGNING_SEED`), `models/testing/testingModel.js` (new columns; the receipt is signed inside the upload transaction and stored, so a retry returns the byte-identical signature), `controllers/testing/testing.controller.js` (`run_kind` gate: 422 `RUN_KIND_NOT_ALLOWED`; staging accepts `bench`, `host_simulation`, `synthetic`, production only `bench`), migration `004_contract_v04.sql` (columns, lifecycle and v0.4 CHECKs, `mt_receipt_key` registry with retire/revoke-once guard, stored signatures that can never change). Tests: `tests/testing_v04_api.test.js` (22, signs with the published test key A and checks every receipt with the reference VCU decision); `check_rules.js` now proves 38 database rules. Fixtures 60–68 in the contract folder. Migration 004 runs on `erp_staging` and on production (`erp_migrated`, 2026-11-19, after a snapshot). Signing keys: staging `70e57bbf84ae97cc` (active); production `61322efab675c04c`, generated on the server and kept only in the production container's env file, loaded and signing from the first real `bench` upload (which needs the published pilot criteria, T046).
 
 The agreed design:
 
@@ -269,6 +269,17 @@ python docs/motor-test/contract/tools/check_receipt_vectors.py
 After agreement the ERP needs a migration (`CONFIG_CANCELLED`, `started`, `held_count`, origin boot and start-time fields, the key registry, stored signatures) and a signing key kept outside the image.
 
 ---
+
+### 5.5 Contract v0.5 draft R2: warning events (not implemented)
+
+`docs/motor-test/contract/v05-warning-events.md` (2026-11-20, after Mayank's review) adds, behind `contract_version: "0.5"`:
+`warnings[]` (timestamped warning transitions and detail-code reads from the approved AC310 `0x2031:11` polling, on the
+same run-relative time base as the readings, with explicit phase, `ACTIVE_AT_START` and `STATUS_UNKNOWN`/`KNOWN`),
+`command_changes[]` (step identity and the reading that carries b5), `event_log` completeness (separate from
+`recording_complete`) and a VCU-computed `event_digest` over fixed binary records, which a future receipt message
+`MTRCPT2` will sign. Reference: `tools/v05.js`; 17 examples in `vectors/v05-event-vectors.json`, digests re-checked by
+`tools/check_v05_vectors.py`. Pending: Mayank's review of R2 and the testing head's decisions S1–S6 (which evidence gaps
+make a run INVALID; the versioned warning-code table); then migration 005 and the upload path.
 
 ## 6. Governance API (web CRM)
 
@@ -318,7 +329,7 @@ A variant holds the test-specific data for one motor model and links to `invento
 
 **Profile fields:** `max_rpm` (1 to 100,000, at most the variant limit), `step_rpm` (1 to 10,000), `duration_s` (1 to 3,600), `sample_hz` (5 to 1,000), with `duration_s x sample_hz` at most 36,000 readings so a run always fits one upload.
 
-**Criteria fields:** `definition` (object, at most 100 kB) and `source_document` (reference of the signed sheet, up to 300 characters). `definition.rules[]` is validated: `id` is UPPER_CASE (1 to 40 characters) and unique; `type` is one of `max, min, range, checkpoint, tracking, reach, bemf_constant`; `signal` is one of `current_a, voltage_v, rpm_actual, bemf_v`; numeric parameters (`limit, min, max, at_rpm, rpm_window, exclude_first_ms, max_err_rpm, exclude_transient_ms, target_rpm, tolerance_rpm, min_rpm`) are numbers or null; `min` may not exceed `max`. Limit values come only from the testing head's signed sheet (D5); the ERP does not evaluate the rules, the tablet does.
+**Criteria fields:** `definition` (object, at most 100 kB) and `source_document` (reference of the signed sheet, up to 300 characters). `definition.rules[]` is validated: `id` is UPPER_CASE (1 to 40 characters) and unique; `type` is a value rule (`max, min, range, checkpoint, tracking, reach, bemf_constant`) or a status-flag rule (`flag_share, flag_any, flag_exclusion, step_coverage`; spec `docs/motor-test/criteria-flag-rules.md`, agreed with the testing head 2026-11-19/20); `signal` is one of `current_a, voltage_v, rpm_actual, bemf_v`; numeric parameters (`limit, min, max, at_rpm, rpm_window, exclude_first_ms, max_err_rpm, exclude_transient_ms, target_rpm, tolerance_rpm, min_rpm, max_fraction, max_continuous_ms, window_ms, settle_ms, min_readings`) are numbers or null; `min` may not exceed `max`. Flag rules need `bit` 4–7 (b4 CAN stale, b5 setpoint changed, b6 protective warning, b7 storage lag) and their own fields: `flag_share` at least one of `max_fraction` (0–1) / `max_continuous_ms`; `flag_exclusion` a `window_ms` and no `on_violation`, `applies_to` naming existing value rules; `step_coverage` `settle_ms`, `min_readings` ≥ 1 and a list of `signals`. The flags themselves stay exactly as the VCU recorded them per reading; the rules decide what they mean (e.g. any b6 reading makes the run INVALID). Limit values come only from the testing head's signed sheet (D5); the ERP does not evaluate the rules, the tablet does.
 
 **Lifecycle:**
 
@@ -521,7 +532,7 @@ The two database suites set `DB_NAME=erp_staging` before loading `config/db` and
 npx jest --runInBand tests/testing_digest.test.js tests/testing_validate.test.js tests/testing_api.test.js tests/testing_admin_api.test.js
 ```
 
-`*.test.js` files are gitignored but tracked, so a new test file must be added with `git add -f`. The contract fixtures and vectors are regenerated with `node docs/motor-test/contract/tools/generate-fixtures.js`. T011 records 79 automated tests and 24 database rule checks passing on staging before deployment. Since then the view-only upload test and vector V10 were added, so the four suites now hold 81 tests (45 in the two suites without a database, 23 in `testing_api.test.js`, 13 in `testing_admin_api.test.js`).
+`*.test.js` files are gitignored but tracked, so a new test file must be added with `git add -f`. The contract fixtures and vectors are regenerated with `node docs/motor-test/contract/tools/generate-fixtures.js`. T011 records 79 automated tests and 24 database rule checks passing on staging before deployment. Since then the view-only upload test and vector V10 were added, so the five suites now hold 113 tests (45 in the two suites without a database, 23 in `testing_api.test.js`, 23 in `testing_admin_api.test.js` including the status-flag rule checks, 22 in `testing_v04_api.test.js`). `check_rules.js` proves 38 database rules.
 
 ### 9.3 Acceptance tests on staging
 
@@ -572,12 +583,12 @@ Results of the ERP acceptance tests run against the staging backend, 2026-11-12 
 | D11: COMPLETED run with unrecoverable gaps (proposed: accepted as INCOMPLETE, as the code does now) | Testing head |
 | `max_rpm` and criteria limits: example values are not approved (D4, D5, D9) | Testing head |
 | 8-year long-term backup copy (35-day RDS backups do not cover the retention period) | Saatwik |
-| Deploy the lost-connection fix (`config/db.js`, commit `a5fbbd57`) to production | Rahul |
-| ERP-T11 restore drill on a restored RDS instance, compared with `evidence_check.js` | Rahul / Saatwik |
-| Grant the first testing roles (operator account, testing head, viewers) | Rahul (ERP Admin) |
-| Change the shared operator password | Saatwik / Rahul |
-| Certificate pinning and renewal process for the tablet | Pratham and IT |
-| Contract v0.4 draft review: 52 receipt vectors, `held_count`, `origin_boot_id` in the VCU manifest, VCU verify-time measurements; then the ERP migration and key registry (section 5.4) | Mayank, Pratham, Rahul |
+| Testing roles for viewers and the second criteria approver (the production operator account has `operator` since 2026-11-19) | Testing head → Rahul |
+| Certificate pinning: standard HTTPS validation for Phase 1 (Pratham's recommendation); pinning only with an agreed renewal and backup plan | Pratham and Saatwik |
+| Device receipt verification (Ed25519 on the ESP32-C3), key provisioning per environment, storage power-cut results | Mayank |
+| Final b4 / b7 thresholds after the onsite CAN trace and the VCU storage benchmark | Mayank → testing head |
+| Contract v0.5 draft R2 review and decisions S1–S6; then migration 005, upload path and receipt `MTRCPT2` (section 5.5) | Mayank, Pratham, testing head, Rahul |
+| Tablet evaluator for the four status-flag rule types | Pratham |
 | Contract sign-off: draft v0.3 (with the agreed v0.4 parts) becomes Interface Contract v1 at T012 | Mayank, Pratham, Rahul |
 
 **Technical limits:**

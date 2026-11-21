@@ -208,6 +208,14 @@
   "perm": "Stock:write"
  },
  {
+  "method": "GET",
+  "path": "/api/stock/:productId/adjustments",
+  "file": "routes/core/stock.js",
+  "handler": "getAdjustments",
+  "auth": "JWT",
+  "perm": "Stock:read"
+ },
+ {
   "method": "PUT",
   "path": "/api/stock/:productId",
   "file": "routes/core/stock.js",
@@ -221,7 +229,7 @@
   "file": "routes/core/stock.js",
   "handler": "uploadPhoto",
   "auth": "JWT",
-  "perm": "Stock:write, multipart upload"
+  "perm": "Stock:write"
  },
  {
   "method": "DELETE",
@@ -236,6 +244,14 @@
   "path": "/api/stock/:productId/adjust",
   "file": "routes/core/stock.js",
   "handler": "adjust",
+  "auth": "JWT",
+  "perm": "Stock:write"
+ },
+ {
+  "method": "POST",
+  "path": "/api/stock/:productId/accept-return",
+  "file": "routes/core/stock.js",
+  "handler": "acceptReturn",
   "auth": "JWT",
   "perm": "Stock:write"
  },
@@ -1934,6 +1950,46 @@
   "handler": "listAudit",
   "auth": "JWT",
   "perm": "testing roles: testing_head, testing_admin"
+ },
+ {
+  "method": "GET",
+  "path": "/api/innopack/parts",
+  "file": "routes/innopack/index.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: innopack_design"
+ },
+ {
+  "method": "GET",
+  "path": "/api/innopack/parts/options",
+  "file": "routes/innopack/index.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: innopack_design"
+ },
+ {
+  "method": "POST",
+  "path": "/api/innopack/parts",
+  "file": "routes/innopack/index.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: innopack_design"
+ },
+ {
+  "method": "PUT",
+  "path": "/api/innopack/parts/:id",
+  "file": "routes/innopack/index.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: innopack_design"
+ },
+ {
+  "method": "DELETE",
+  "path": "/api/innopack/parts/:id",
+  "file": "routes/innopack/index.js",
+  "handler": "inline handler",
+  "auth": "JWT",
+  "perm": "roles: innopack_design"
  },
  {
   "method": "POST",
