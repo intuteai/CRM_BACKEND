@@ -270,16 +270,29 @@ After agreement the ERP needs a migration (`CONFIG_CANCELLED`, `started`, `held_
 
 ---
 
-### 5.5 Contract v0.5 draft R2: warning events (not implemented)
+### 5.5 Contract v0.5 draft R3 and receipt MTRCPT2 (not implemented)
 
-`docs/motor-test/contract/v05-warning-events.md` (2026-11-20, after Mayank's review) adds, behind `contract_version: "0.5"`:
-`warnings[]` (timestamped warning transitions and detail-code reads from the approved AC310 `0x2031:11` polling, on the
-same run-relative time base as the readings, with explicit phase, `ACTIVE_AT_START` and `STATUS_UNKNOWN`/`KNOWN`),
-`command_changes[]` (step identity and the reading that carries b5), `event_log` completeness (separate from
-`recording_complete`) and a VCU-computed `event_digest` over fixed binary records, which a future receipt message
-`MTRCPT2` will sign. Reference: `tools/v05.js`; 17 examples in `vectors/v05-event-vectors.json`, digests re-checked by
-`tools/check_v05_vectors.py`. Pending: Mayank's review of R2 and the testing head's decisions S1–S6 (which evidence gaps
-make a run INVALID; the versioned warning-code table); then migration 005 and the upload path.
+`docs/motor-test/contract/v05-warning-events.md` (R3, 2026-11-21, after two VCU reviews) adds, behind
+`contract_version: "0.5"`:
+
+- `warnings[]`: timestamped warning transitions and detail-code reads from the approved AC310 `0x2031:11` polling, on
+  the same run-relative time base as the readings, with explicit phase; `ACTIVE_AT_START` and
+  `STATUS_UNKNOWN` / `STATUS_KNOWN` (with the restored state) are not transitions; detail times are causal.
+- `command_changes[]`: step identity (step 0 always recorded) and how each change relates to a reading
+  (`OWNS_READING`, `SUPERSEDED`, `NO_READING`, `READING_NOT_RETAINED`); lost changes leave gaps and are never renumbered.
+- `event_log` completeness, separate from `recording_complete`, and a CANCEL shape with no events.
+- `event_digest` **MTEVT2**: a VCU-computed SHA-256 over fixed binary records that also binds `started`,
+  `capture_end_ms` and `start_uptime_ms`; optional values carry a presence tag, never a sentinel.
+
+The signed receipt for v0.5 runs is **MTRCPT2** (`receipt-signing.md` section 11): the MTRCPT1 fields plus both event
+digests, the event counts, event flags and capture bounds; a VCU dispatches by magic (MTRCPT1 stays for v0.4 runs).
+Release still requires the ERP to hold exactly what the VCU holds, readings and events.
+
+Reference code and vectors: `tools/v05.js` (37 cases in `vectors/v05-event-vectors.json`, digests re-checked by
+`tools/check_v05_vectors.py`), `tools/receipt_v2.js` (42 cases in `vectors/receipt-v2-vectors.json`, checked by the
+independent `tools/check_receipt_v2_vectors.py`). The settle boundary is shared with the criteria rules: a reading at
+exactly `t_b5 + X` is still settling. Pending: Mayank's review of R3 and MTRCPT2, the testing head's decisions S1–S6 and
+the boundary confirmation, the versioned warning-code table; then migration 005 and the upload path.
 
 ## 6. Governance API (web CRM)
 
@@ -587,7 +600,7 @@ Results of the ERP acceptance tests run against the staging backend, 2026-11-12 
 | Certificate pinning: standard HTTPS validation for Phase 1 (Pratham's recommendation); pinning only with an agreed renewal and backup plan | Pratham and Saatwik |
 | Device receipt verification (Ed25519 on the ESP32-C3), key provisioning per environment, storage power-cut results | Mayank |
 | Final b4 / b7 thresholds after the onsite CAN trace and the VCU storage benchmark | Mayank → testing head |
-| Contract v0.5 draft R2 review and decisions S1–S6; then migration 005, upload path and receipt `MTRCPT2` (section 5.5) | Mayank, Pratham, testing head, Rahul |
+| Contract v0.5 draft R3 and MTRCPT2 review, decisions S1–S6 and the settle boundary; then migration 005, upload path and MTRCPT2 signing (section 5.5) | Mayank, Pratham, testing head, Rahul |
 | Tablet evaluator for the four status-flag rule types | Pratham |
 | Contract sign-off: draft v0.3 (with the agreed v0.4 parts) becomes Interface Contract v1 at T012 | Mayank, Pratham, Rahul |
 
