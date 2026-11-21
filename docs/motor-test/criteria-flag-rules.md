@@ -70,7 +70,7 @@ every reading would carry b5).
 |---|---|---|
 | `id`, `type` | `"step_coverage"` | |
 | `bit` | integer 4–7 | flag that starts a step (5, setpoint changed) |
-| `settle_ms` | number ≥ 0 | readings with `t_ms` < step start + settle_ms do not count (usually the same X as the `flag_exclusion` window) |
+| `settle_ms` | number ≥ 0 | only readings with `t_ms` **>** step start + settle_ms count; a reading at exactly start + settle_ms is still settling (same inclusive boundary as `flag_exclusion`; usually the same X). Example X = 1500, step start 1000 ms: 2499 and 2500 ms not counted, 2501 ms counted |
 | `min_readings` | integer ≥ 1 | violation if **any** step has fewer fresh, valid readings after its settle window |
 | `signals` | non-empty array of signals | which validity bits a reading needs to count (e.g. `["rpm_actual","current_a","voltage_v"]`) |
 | `on_violation` | `"FAIL"` | `"INVALID"` | |

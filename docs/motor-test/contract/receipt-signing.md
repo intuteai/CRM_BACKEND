@@ -19,6 +19,10 @@ implemented and the retention/release agreement is in place.
 | `tools/receipt.js` | Reference implementation, both sides (Node, no dependencies) |
 | `tools/generate-receipt-vectors.js` | Regenerates the receipt vectors |
 | `tools/check_receipt_vectors.py` | Independent check, VCU side: Ed25519 from RFC 8032 in plain Python, no shared code |
+| `tools/receipt_v2.js` | MTRCPT2 (v0.5, DRAFT) reference implementation; reuses `receipt.js` unchanged (section 11) |
+| `tools/generate-receipt-v2-vectors.js` | Regenerates the MTRCPT2 vectors (same test keys A/B/C) |
+| `vectors/receipt-v2-vectors.json` | 42 MTRCPT2 vectors (section 11) |
+| `tools/check_receipt_v2_vectors.py` | Independent MTRCPT2 check, VCU side (own parser/decision; Ed25519 from `check_receipt_vectors.py`); runs the 52 MTRCPT1 checks first |
 
 ## 1. Agreed (Mayank, 2026-11-18)
 
@@ -246,3 +250,98 @@ decisions, and re-signs every untampered message byte for byte).
   (Ed25519 verify libraries need roughly 10–20 KB of flash; 299 KB free); b4–b7 definitions.
 - ERP (after agreement): migration for `CONFIG_CANCELLED`, `started`, `held_count`, origin boot and start fields, the
   key registry and stored signatures; signing key kept outside the image.
+
+## 11. MTRCPT2 (contract v0.5)
+
+**DRAFT, for review by Mayank.** Not implemented in the ERP service yet; nothing here changes MTRCPT1 (sections 4-10),
+whose 52 vectors keep identical bytes, signatures and decisions. The receipt JSON (section 4), Ed25519 and base64url
+rules (section 5), keys (section 7) and retries (section 8) are the same for both versions.
+
+**Dispatch by magic.** A v0.4 run gets an MTRCPT1 receipt, a v0.5 run an MTRCPT2 receipt. The VCU reads the first
+8 bytes and applies the matching rules: `MTRCPT1\0` → section 6, `MTRCPT2\0` → the decision below; anything else is
+`BAD_VERSION`. Each decoder rejects the other version's magic as `BAD_VERSION` (vectors RR17 and R2R21).
+
+### 11.1 Signed message (v2), little-endian, 253 to 315 bytes
+
+Offsets 0-167 are exactly the MTRCPT1 layout (section 5) except the magic. The event block is inserted **before** the
+two length-prefixed identifiers.
+
+| Offset | Size | Field | Encoding |
+|---|---|---|---|
+| 0 | 8 | magic | ASCII `MTRCPT2` + 0x00 (version 2) |
+| 8 | 160 | key_id … payload_hash | as MTRCPT1 offsets 8-167 (incl. run flags at 71: b0-b3, b4-b7 = 0) |
+| 168 | 32 | event_digest | raw SHA-256, as uploaded (the VCU's MTEVT digest, `v05-warning-events.md` section 6) |
+| 200 | 32 | events_stored_digest | raw SHA-256, recomputed by the ERP from the stored arrays |
+| 232 | 4 | warnings_count | u32 |
+| 236 | 4 | command_changes_count | u32 |
+| 240 | 1 | event_flags | b0 event_digest_match (events_stored_digest = event_digest), b1 event_log_complete, b2 b6_coverage_ok, b3 capture_end_present, b4 start_uptime_present; b5-b7 = 0 |
+| 241 | 4 | capture_end_ms | u32; 0 when absent. Presence **only** via b3, never a sentinel |
+| 245 | 4 | start_uptime_ms | u32; 0 when absent. Presence **only** via b4 |
+| 249 | 1+n | vcu_id | u8 length n (1-32) + ASCII `[A-Za-z0-9._-]` |
+| 250+n | 1+m | origin_boot_id | u8 length m (1-32) + same rules |
+
+Total 251+n+m bytes. No trailing bytes. The value bytes of an absent field must be exactly 0 (`MALFORMED_MESSAGE`
+otherwise); a present value may be 0 (vector R2A5).
+
+### 11.2 VCU manifest (v2)
+
+The MTRCPT1 manifest fields (test_id, vcu_id, origin_boot_id, started, recording_complete, final_state, stop_reason,
+sample_count, held_count, run_digest) plus: `event_digest`, `warnings_count`, `command_changes_count`,
+`event_log_complete`, `capture_end_ms` (number or null), `start_uptime_ms` (number or null).
+
+### 11.3 VCU release decision (v2)
+
+Same order and names as section 6; the first failure is the reason. Release only on `RELEASE`.
+
+1. `MALFORMED_ENCODING`: as section 6.
+2. `BAD_VERSION` (magic is not `MTRCPT2\0`) / `MALFORMED_MESSAGE`: length (shorter than 253, identifier lengths, trailing
+   bytes), unknown enum code, reserved bits in **either** flags byte (run b4-b7, event b5-b7), non-zero bytes in an
+   absent capture_end_ms / start_uptime_ms, identifier characters.
+3. `UNKNOWN_KEY`.
+4. `BAD_SIGNATURE` (including S ≥ L).
+5. `FLAGS_INCONSISTENT`: every MTRCPT1 rule (section 6, step 5), plus: event b0 ≠ (events_stored_digest =
+   event_digest); b4 start_uptime_present ≠ started (run flag b3); b3 capture_end_present ≠ started.
+6. `LIFECYCLE_INCONSISTENT`: as section 6 (the event flags do not take part).
+7. `TEST_ID_MISMATCH`, `VCU_ID_MISMATCH`, `BOOT_ID_MISMATCH`.
+8. `MANIFEST_MISMATCH`: every MTRCPT1 field (section 6, step 8), plus event_digest, warnings_count,
+   command_changes_count, event_log_complete (event b1), capture_end_ms and start_uptime_ms (presence and value).
+9. `SHORTFALL`: stored_sample_count ≠ held_count.
+10. `DIGEST_MISMATCH`: samples_digest ≠ run_digest.
+11. `EVENT_DIGEST_MISMATCH`: event b0 clear (the ERP did not store exactly the VCU's events).
+12. `RELEASE`.
+
+Release requires the ERP to hold exactly what the VCU holds: the samples (steps 9-10) and the events (step 11, with
+step 8 binding event_digest to the VCU's own journal). Event-log completeness (b1) and b6 coverage (b2) are
+evaluation and retention matters: they are signed and reported, b1 must equal the manifest, but neither blocks
+release (vectors R2A2, R2A6). **The final retention/release agreement is still pending**; these rules may change with it.
+
+### 11.4 Vectors (`vectors/receipt-v2-vectors.json`, 42)
+
+Same test keys A, B (VCU slots) and C (unknown) as section 9. Event digests are fixed placeholder 32-byte values
+(labelled in the file), not MTEVT computations; the CANCEL vectors use a placeholder labelled "empty event journal".
+
+Accepted: R2A1 complete run with events · R2A2 known-loss run (FAULT/FAULT, VCU holds 3 of 5, recording and event log
+incomplete, b6 not OK) · R2A3 CANCEL (capture_end / start_uptime absent, zero counts, empty-journal digest) · R2A4 key B
+· R2A5 boundaries (start_uptime_ms present with value 0, capture_end_ms and counts 0xFFFFFFFF, identifiers 1 and 32
+bytes) · R2A6 b6 coverage not OK on a complete run (INVALID).
+Rejected: R2R1 event_digest ≠ manifest (`MANIFEST_MISMATCH`) · R2R2 stored event digest differs
+(`EVENT_DIGEST_MISMATCH`) · R2R3-R2R4 event b0 inconsistent, both directions · R2R5-R2R6 capture_end / start_uptime
+present on a CANCEL · R2R7-R2R8 start_uptime / capture_end absent on a started run (`FLAGS_INCONSISTENT`) · R2R9-R2R10
+capture_end / start_uptime value ≠ manifest · R2R11-R2R12 start_uptime / capture_end presence ≠ manifest · R2R13-R2R14
+warnings / command_changes count ≠ manifest · R2R15 event_log_complete ≠ manifest (`MANIFEST_MISMATCH`) · R2R16-R2R17
+non-zero bytes in an absent field · R2R18-R2R19 reserved event flag b5 / b7 · R2R20 reserved run flag b4 · R2R22
+`MTRCPT2` magic on an MTRCPT1-layout body (`MALFORMED_MESSAGE`) · R2R21 the MTRCPT1 RA1 message, byte-identical, given
+to the v2 decoder (`BAD_VERSION`) · R2R23 sample and event digests both differ (`DIGEST_MISMATCH` comes first) ·
+R2R24-R2R28 MTRCPT1 rules carried over (`SHORTFALL`, `DIGEST_MISMATCH`, `BOOT_ID_MISMATCH`, `LIFECYCLE_INCONSISTENT`,
+`TEST_ID_MISMATCH`) · R2R29-R2R31 byte flip in the event block, signature byte flip, S + L (`BAD_SIGNATURE`) · R2R32
+key C (`UNKNOWN_KEY`) · R2R33-R2R34 truncated / trailing byte (`MALFORMED_MESSAGE`) · R2R35-R2R36 padding, whitespace
+(`MALFORMED_ENCODING`). The generator also checks that the MTRCPT1 decider answers `BAD_VERSION` for every accepted
+MTRCPT2 message.
+
+Regenerate: `node docs/motor-test/contract/tools/generate-receipt-v2-vectors.js` · Check independently:
+`python docs/motor-test/contract/tools/check_receipt_v2_vectors.py` (runs the 52 MTRCPT1 checks, then all 42 MTRCPT2
+decisions; re-signs every untampered message byte for byte and compares the parsed fields with `decoded_message`).
+
+Open for review (Mayank): whether a CANCEL must also carry zero event counts and event b1 = 1 (not enforced; the CANCEL
+vector uses zero counts, b1 = 1 and b2 = 1); whether b6_coverage_ok should be in the VCU manifest (today it is signed
+and reported only, not compared); whether a verdict (PASS/FAIL/INVALID) should require event b1 (not required).

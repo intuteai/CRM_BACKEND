@@ -1,7 +1,7 @@
 {
-  "title": "Contract v0.5 DRAFT R2 examples (warning events, command changes, event digest)",
+  "title": "Contract v0.5 DRAFT R3 examples (warning events, command changes, event digest MTEVT2)",
   "spec": "docs/motor-test/contract/v05-warning-events.md",
-  "note": "run_context = the stored readings (status_flags: b5 0x20, b6 0x40) the ERP checks links and coverage against.",
+  "note": "run_context = the run facts the ERP checks against (started, start_uptime_ms, held_count, stored readings with status_flags b5 0x20 / b6 0x40 and rpm_cmd). P01-P13 cover the probes of Mayank's R2 review.",
   "cases": [
     {
       "id": "E1",
@@ -19,6 +19,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -31,6 +32,7 @@
             "code": 133,
             "status_t_ms": 250,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -43,6 +45,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -68,60 +71,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:cb05b7efea8b6b8e147c614af995b41d5e3406fa4f54c465087c4902a0b3a105"
+        "event_digest": "sha256:daaffe6cc01addd7cb9741667565a4d2a882917badd0bc715ddcf826608c2b63"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 71
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 71
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -132,7 +146,7 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:cb05b7efea8b6b8e147c614af995b41d5e3406fa4f54c465087c4902a0b3a105"
+        "recomputed_event_digest": "sha256:daaffe6cc01addd7cb9741667565a4d2a882917badd0bc715ddcf826608c2b63"
       }
     },
     {
@@ -151,6 +165,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -163,6 +178,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -188,60 +204,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:89f529075702e7e7509e33019a1e162abd50c3298eb85482cb417e310135557b"
+        "event_digest": "sha256:dbcffe58c7c9147dc26dd93b1ecc5efd56da7f3aa7eeafdc7b5ba0ea9115df3f"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 103
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 71
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -252,12 +279,12 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:89f529075702e7e7509e33019a1e162abd50c3298eb85482cb417e310135557b"
+        "recomputed_event_digest": "sha256:dbcffe58c7c9147dc26dd93b1ecc5efd56da7f3aa7eeafdc7b5ba0ea9115df3f"
       }
     },
     {
       "id": "E3",
-      "description": "status unknown, then known again: no transition; the unknown span counts as active",
+      "description": "status unknown, then known again as CLEAR (no transition); the unknown span counts as active",
       "v05_fields": {
         "capture_end_ms": 900,
         "warnings": [
@@ -271,6 +298,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -283,6 +311,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": "CLEAR",
             "detail": null
           }
         ],
@@ -308,60 +337,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:b0aca373bbc7299a4f7be9f0412bb8ca41d29d99d65ec14fcb86eea413b11870"
+        "event_digest": "sha256:0610004e4446eff630f3b240d8879fda9606be314144564be969a4060c565ba6"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 71
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 71
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 103
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -372,7 +412,7 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:b0aca373bbc7299a4f7be9f0412bb8ca41d29d99d65ec14fcb86eea413b11870"
+        "recomputed_event_digest": "sha256:0610004e4446eff630f3b240d8879fda9606be314144564be969a4060c565ba6"
       }
     },
     {
@@ -391,6 +431,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -403,6 +444,7 @@
             "code": 141,
             "status_t_ms": 880,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -428,60 +470,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:bb0abcb3a368e1d5e8a45443df85e04656d13fdd505fd7841d5120122c23083b"
+        "event_digest": "sha256:3e2befa8f78101fea2d3167a6725409cf10b1718ba2d47f5cd5970ff1323ce14"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -492,12 +545,12 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:bb0abcb3a368e1d5e8a45443df85e04656d13fdd505fd7841d5120122c23083b"
+        "recomputed_event_digest": "sha256:3e2befa8f78101fea2d3167a6725409cf10b1718ba2d47f5cd5970ff1323ce14"
       }
     },
     {
       "id": "E5",
-      "description": "reply after the 200 ms timeout: DETAIL_UNAVAILABLE TIMEOUT then DETAIL_AMBIGUOUS LATE_REPLY",
+      "description": "reply after the timeout: DETAIL_UNAVAILABLE TIMEOUT then DETAIL_AMBIGUOUS LATE_REPLY",
       "v05_fields": {
         "capture_end_ms": 900,
         "warnings": [
@@ -511,6 +564,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -523,6 +577,7 @@
             "code": null,
             "status_t_ms": 100,
             "reason": "TIMEOUT",
+            "restored_state": null,
             "detail": null
           },
           {
@@ -535,6 +590,7 @@
             "code": 138,
             "status_t_ms": 100,
             "reason": "LATE_REPLY",
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -560,60 +616,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:944b04add1d8b393c2d5dceb81d9bd10252c8af13214760d1aaa7ecbd4b9d015"
+        "event_digest": "sha256:3bc9ecaf8551b00020a5a71201fc3d3e08dcefebf2629834aaaa8dae36153a02"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -624,7 +691,7 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:944b04add1d8b393c2d5dceb81d9bd10252c8af13214760d1aaa7ecbd4b9d015"
+        "recomputed_event_digest": "sha256:3bc9ecaf8551b00020a5a71201fc3d3e08dcefebf2629834aaaa8dae36153a02"
       }
     },
     {
@@ -662,60 +729,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:cfeea73dfa0394fcf698a89e4ccf3244ad5f3e8d2821adcf48ca0a0946edd201"
+        "event_digest": "sha256:9080ef29f1bedb08f7b3720d947602334794517a26d0d7843abc37153f98c2f6"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -726,7 +804,7 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:cfeea73dfa0394fcf698a89e4ccf3244ad5f3e8d2821adcf48ca0a0946edd201"
+        "recomputed_event_digest": "sha256:9080ef29f1bedb08f7b3720d947602334794517a26d0d7843abc37153f98c2f6"
       }
     },
     {
@@ -757,35 +835,41 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:3b7f588a2896e15b3045022f5f71df8bdaf90874f888b332961178c08f9dbc92"
+        "event_digest": "sha256:322e33c3514459a93c1cb9a27aaa188de5863a870ba72eb8f92e727d8b56e66c"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 5,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           }
         ]
@@ -796,12 +880,12 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:3b7f588a2896e15b3045022f5f71df8bdaf90874f888b332961178c08f9dbc92"
+        "recomputed_event_digest": "sha256:322e33c3514459a93c1cb9a27aaa188de5863a870ba72eb8f92e727d8b56e66c"
       }
     },
     {
       "id": "E8",
-      "description": "CANCEL: no events, complete log",
+      "description": "CANCEL: no events, no commands, capture_end_ms null, complete log",
       "v05_fields": {
         "capture_end_ms": null,
         "warnings": [],
@@ -812,10 +896,11 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:a5100542eec5ca1fc726c8bce64d5b9a5a7408e7793cc1824ea6b2ed4931dc83"
+        "event_digest": "sha256:84a34b8346df42ef14616ec0cfb1645f949220107cd40b54ac72fa2d13b6a649"
       },
       "run_context": {
         "started": false,
+        "start_uptime_ms": null,
         "held_count": 0,
         "samples": []
       },
@@ -825,7 +910,531 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:a5100542eec5ca1fc726c8bce64d5b9a5a7408e7793cc1824ea6b2ed4931dc83"
+        "recomputed_event_digest": "sha256:84a34b8346df42ef14616ec0cfb1645f949220107cd40b54ac72fa2d13b6a649"
+      }
+    },
+    {
+      "id": "E9",
+      "description": "P03 fixed: RAISED, STATUS_UNKNOWN, STATUS_KNOWN restored ACTIVE, then a genuine CLEARED",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 250,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 400,
+            "phase": "CAPTURE",
+            "kind": "STATUS_UNKNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 2,
+            "t_ms": 520,
+            "phase": "CAPTURE",
+            "kind": "STATUS_KNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": "ACTIVE",
+            "detail": null
+          },
+          {
+            "seq": 3,
+            "t_ms": 680,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 4,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:2105e799f6c5e2d4517722071722c33d6078d6a24bf19f8b48c441d7b865ca18"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 103
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:2105e799f6c5e2d4517722071722c33d6078d6a24bf19f8b48c441d7b865ca18"
+      }
+    },
+    {
+      "id": "E10",
+      "description": "P04 fixed: incomplete log, step 0 lost, real step 1 retained with its identity (no renumbering)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 1,
+          "complete": false,
+          "lost_count": 1
+        },
+        "event_digest": "sha256:85ef257bf9976f60a7d3e912d0408361422b814bc87dd199860b4cafe92899c7"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:85ef257bf9976f60a7d3e912d0408361422b814bc87dd199860b4cafe92899c7"
+      }
+    },
+    {
+      "id": "E11",
+      "description": "incomplete log with an unknown number of lost events (lost_count null) and a seq gap",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 3,
+            "t_ms": 600,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": null
+        },
+        "event_digest": "sha256:b9e17083b325b7a1e8a5453fb0a83a65928e7025b40c969b510286bd824cb87a"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:b9e17083b325b7a1e8a5453fb0a83a65928e7025b40c969b510286bd824cb87a"
+      }
+    },
+    {
+      "id": "E12",
+      "description": "equal timestamps are allowed; order is seq",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 300,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 300,
+            "phase": "CAPTURE",
+            "kind": "DETAIL",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 133,
+            "status_t_ms": 300,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:b9915b55a48dbd40362bb68dd73e3ffe7f0ac78b9c536d6fb47f339075676c4c"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": true,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:b9915b55a48dbd40362bb68dd73e3ffe7f0ac78b9c536d6fb47f339075676c4c"
       }
     },
     {
@@ -844,6 +1453,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -869,60 +1479,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:3d97dcceff029f07d7d71bb42b52a3052ac122128f80b39563f84a10928a75ab"
+        "event_digest": "sha256:80d82659d17004b80ffe3a55ddcdf9597653a22e68276845b3a7d6c932853bd1"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -949,6 +1570,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -974,60 +1596,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:ce57991246c3f1cf2b7422d41556a6afaf97f5a67909fd70f2f507cbcc4958ef"
+        "event_digest": "sha256:29db590836583fac7dc8ee474294f4471cd406aa1e7d8b388a1fe43858ad2c2d"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1054,6 +1687,7 @@
             "code": 133,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -1079,60 +1713,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:a37864c4f3034feb361fb5f27ef835583593b0820186c73edf475422c74c78fa"
+        "event_digest": "sha256:1a7739785c4f8d3d1adb5de90268f5cf9c6addcdfcd6addc8cb11fa74203389c"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1159,6 +1804,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -1184,60 +1830,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:2aec7ca32ddd827649c1fe891a2eebe452d902a8d5e14a6b6a5d46898c58bf60"
+        "event_digest": "sha256:f1cdfeebc80b6444ca45c2f7dbc92a48998065aee8010ae2b28ec58f70f94359"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1265,7 +1922,7 @@
           {
             "step": 1,
             "t_ms": 480,
-            "rpm_cmd": 1000,
+            "rpm_cmd": 500,
             "link": "OWNS_READING",
             "first_sample_seq": 0
           }
@@ -1276,60 +1933,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:7ec47bcd6e6ad3864c1390b9cc7c26437e47df435e894ab4b2cbd3b424df7dbc"
+        "event_digest": "sha256:ce2f96b151fd5c2b2d1e82a1f9a2f5c829640e4571c6bf23d65af23782cf3181"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1342,7 +2010,7 @@
     },
     {
       "id": "R6",
-      "description": "gap in warnings seq",
+      "description": "gap in warnings seq with a complete log",
       "v05_fields": {
         "capture_end_ms": 900,
         "warnings": [
@@ -1356,6 +2024,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           },
           {
@@ -1368,6 +2037,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -1393,60 +2063,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:1e1b6423d8534246f4b1d083a98af049e927a2f0bb30d64d3858d09bfeb3f03d"
+        "event_digest": "sha256:b1e07f29b58d75e0a428dec79dc54b83c2e2a820a43e6e3472ad188c8e31cb44"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1459,7 +2140,7 @@
     },
     {
       "id": "R7",
-      "description": "event_digest does not match the arrays: stored, receipt event_digest_match = false (no release)",
+      "description": "event_digest does not match the arrays: stored, event_digest_match = false (no release)",
       "v05_fields": {
         "capture_end_ms": 900,
         "warnings": [
@@ -1473,6 +2154,7 @@
             "code": null,
             "status_t_ms": null,
             "reason": null,
+            "restored_state": null,
             "detail": null
           }
         ],
@@ -1502,56 +2184,67 @@
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1562,7 +2255,1581 @@
           "event_digest_match": false,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:2aec7ca32ddd827649c1fe891a2eebe452d902a8d5e14a6b6a5d46898c58bf60"
+        "recomputed_event_digest": "sha256:f1cdfeebc80b6444ca45c2f7dbc92a48998065aee8010ae2b28ec58f70f94359"
+      }
+    },
+    {
+      "id": "P01",
+      "description": "started run, complete log, no command changes (step 0 missing)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 0,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:9445030a2a2ddda2bc0ae1fcced6c1d12b0c4b77e06ebee0899e433f76bca98d"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 0,
+        "samples": []
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_MISSING_STEP0"
+      }
+    },
+    {
+      "id": "P02",
+      "description": "CANCEL with capture_end_ms 900",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 0,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:ea27d6e7bf5f7ac823e131397d01c3707ba0eb0a236a17d5f4164f8fe2ec6cdb"
+      },
+      "run_context": {
+        "started": false,
+        "start_uptime_ms": null,
+        "held_count": 0,
+        "samples": []
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "CANCEL_SHAPE"
+      }
+    },
+    {
+      "id": "P02b",
+      "description": "CANCEL with a command change",
+      "v05_fields": {
+        "capture_end_ms": null,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 1,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:6ab820fec1f73e506d01cfa40d7c9af205d55c43e6647c83b0d8b83d25b564c6"
+      },
+      "run_context": {
+        "started": false,
+        "start_uptime_ms": null,
+        "held_count": 0,
+        "samples": []
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "CANCEL_SHAPE"
+      }
+    },
+    {
+      "id": "P03b",
+      "description": "STATUS_KNOWN without restored_state",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 300,
+            "phase": "CAPTURE",
+            "kind": "STATUS_UNKNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 500,
+            "phase": "CAPTURE",
+            "kind": "STATUS_KNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:bd93b53410c950c62e82a76fa7c48e870f30912a5379db2edb7284d7955fc29f"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 400,
+        "rule": "EVENT_FIELDS"
+      }
+    },
+    {
+      "id": "P04b",
+      "description": "complete log that starts at step 1 (step 0 missing but claimed complete)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 1,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:4b09970efc049a8efc440a820e6d2550999e1e80cc77ee06c064905942764e19"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_ORDER"
+      }
+    },
+    {
+      "id": "C1",
+      "description": "lost_count 4294967295 (reserved, never a valid count)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": 4294967295
+        },
+        "event_digest": "sha256:ec322ae32dbe190482eda99f9e081fbdbf34e3592836ae1b155cdbf931591fd2"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 400,
+        "rule": "EVENT_FIELDS"
+      }
+    },
+    {
+      "id": "D1",
+      "description": "capture_end_ms changed 900 -> 901 after the VCU digest was taken: digest no longer matches",
+      "v05_fields": {
+        "capture_end_ms": 901,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 250,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 420,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:72f2bb0ab7cdcfdbf63ae53c4991caf799bc7b05533ba51a686e4360d2db13f6"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "accepted",
+        "flags": {
+          "event_digest_match": false,
+          "b6_coverage_ok": true
+        },
+        "recomputed_event_digest": "sha256:8722ab028aa7719ba20931f7189b163a4ecdf037f6bf0b6e4f5c7d0cb29ba816"
+      }
+    },
+    {
+      "id": "P05",
+      "description": "kind \"toString\" (prototype name) is not an enum value",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "toString",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:19b1907f9387c628a5bdc0749540b066c55b83cbb85e0346c103d76030206923"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 400,
+        "rule": "EVENT_FIELDS"
+      }
+    },
+    {
+      "id": "P06",
+      "description": "source \"constructor\" is not an enum value",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 200,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "constructor",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 1,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:38f87cffe6247917a04012a6e6fc311e3646962bdbf8d2713db9b0b3ba3b28f9"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 400,
+        "rule": "EVENT_FIELDS"
+      }
+    },
+    {
+      "id": "P07",
+      "description": "detail status_t_ms (10000) after the reply time (290)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 250,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 290,
+            "phase": "CAPTURE",
+            "kind": "DETAIL",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 133,
+            "status_t_ms": 10000,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:d262f8370f5075b907a596e9c0b6011c083f918abe9594f6c8388aff4aa1b864"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "EVENT_CAUSALITY"
+      }
+    },
+    {
+      "id": "P08",
+      "description": "CLEARED at 100 after RAISED at 250 (time goes backwards in seq order)",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 250,
+            "phase": "CAPTURE",
+            "kind": "RAISED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 100,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:1a205f55dcfe430541398956fc8f1868ec60c6a2afde5255c339c39fe55fa5d7"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "EVENT_ORDER"
+      }
+    },
+    {
+      "id": "P09",
+      "description": "crossed ownership: step 0 owns reading 5, step 1 owns reading 0",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          },
+          {
+            "step": 1,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:f2845a2c38b2523d4f5dc61624b33b7882835d7d07e06ffb92605fbbebd816d0"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_LINK"
+      }
+    },
+    {
+      "id": "P10",
+      "description": "last change claims SUPERSEDED with no later change",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "SUPERSEDED",
+            "first_sample_seq": null
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": null
+        },
+        "event_digest": "sha256:96ce472e22960362c216089443ef0b791364eb5bdb65a6c5ec742cd3b3981f09"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_LINK"
+      }
+    },
+    {
+      "id": "P11",
+      "description": "command change after capture closed",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          },
+          {
+            "step": 2,
+            "t_ms": 950,
+            "rpm_cmd": 0,
+            "link": "NO_READING",
+            "first_sample_seq": null
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 3,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:88881026c650da5613ac309f64013b66d5cdec0d2464779bbf2ef325154f9f97"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_WINDOW"
+      }
+    },
+    {
+      "id": "P12",
+      "description": "owned reading carries a different rpm_cmd than the change",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1200,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 2,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:b62e53a4795c1f62314fdb1e16e8d93762d13bf7e16deba1a2d89a52e3721f78"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_LINK"
+      }
+    },
+    {
+      "id": "P13",
+      "description": "NO_READING on a change that is not the last",
+      "v05_fields": {
+        "capture_end_ms": 900,
+        "warnings": [],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 800,
+            "link": "NO_READING",
+            "first_sample_seq": null
+          },
+          {
+            "step": 2,
+            "t_ms": 490,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "event_log": {
+          "warnings_count": 0,
+          "command_changes_count": 3,
+          "complete": true,
+          "lost_count": 0
+        },
+        "event_digest": "sha256:a575b9b40a3640e1371ed0e979322e2cfd50f210c37566b0fb575369ed64060d"
+      },
+      "run_context": {
+        "started": true,
+        "start_uptime_ms": 5000,
+        "held_count": 10,
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "status_flags": 7
+          }
+        ]
+      },
+      "expected": {
+        "result": "rejected",
+        "status": 422,
+        "rule": "COMMAND_LINK"
       }
     },
     {
@@ -1593,60 +3860,71 @@
           "complete": true,
           "lost_count": 0
         },
-        "event_digest": "sha256:d5a6e935681f99d6b85cfdf3dde4a93ecdf26ee178770a0f2360d472a52585e9"
+        "event_digest": "sha256:8afca06f4da4c0909f39ca396bd46b346a92b6aa6aa23f9ad5e251efb48f208b"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
+            "rpm_cmd": 1000,
             "status_flags": 71
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1657,15 +3935,42 @@
           "event_digest_match": true,
           "b6_coverage_ok": false
         },
-        "recomputed_event_digest": "sha256:d5a6e935681f99d6b85cfdf3dde4a93ecdf26ee178770a0f2360d472a52585e9"
+        "recomputed_event_digest": "sha256:8afca06f4da4c0909f39ca396bd46b346a92b6aa6aa23f9ad5e251efb48f208b"
       }
     },
     {
       "id": "F2",
-      "description": "incomplete event log (one known lost event): accepted; evaluation decides (S4)",
+      "description": "STATUS_KNOWN restored ACTIVE keeps coverage after the known time (reading 7 at 700 ms is covered)",
       "v05_fields": {
         "capture_end_ms": 900,
-        "warnings": [],
+        "warnings": [
+          {
+            "seq": 0,
+            "t_ms": 550,
+            "phase": "CAPTURE",
+            "kind": "STATUS_UNKNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 1,
+            "t_ms": 650,
+            "phase": "CAPTURE",
+            "kind": "STATUS_KNOWN",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": "ACTIVE",
+            "detail": null
+          }
+        ],
         "command_changes": [
           {
             "step": 0,
@@ -1683,65 +3988,76 @@
           }
         ],
         "event_log": {
-          "warnings_count": 0,
+          "warnings_count": 2,
           "command_changes_count": 2,
-          "complete": false,
-          "lost_count": 1
+          "complete": true,
+          "lost_count": 0
         },
-        "event_digest": "sha256:01949e5e5adc12fad42ac4ed0ca869dd842308ca189df8ef8236b84ade71665a"
+        "event_digest": "sha256:79da3afbc059563d4a513dc895929b7f5f16ce5d2954c0b4b5d492e5f7dc8351"
       },
       "run_context": {
         "started": true,
+        "start_uptime_ms": 5000,
         "held_count": 10,
         "samples": [
           {
             "sample_seq": 0,
             "t_ms": 0,
+            "rpm_cmd": 500,
             "status_flags": 39
           },
           {
             "sample_seq": 1,
             "t_ms": 100,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 2,
             "t_ms": 200,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 3,
             "t_ms": 300,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 4,
             "t_ms": 400,
+            "rpm_cmd": 500,
             "status_flags": 7
           },
           {
             "sample_seq": 5,
             "t_ms": 500,
+            "rpm_cmd": 1000,
             "status_flags": 39
           },
           {
             "sample_seq": 6,
             "t_ms": 600,
-            "status_flags": 7
+            "rpm_cmd": 1000,
+            "status_flags": 71
           },
           {
             "sample_seq": 7,
             "t_ms": 700,
-            "status_flags": 7
+            "rpm_cmd": 1000,
+            "status_flags": 71
           },
           {
             "sample_seq": 8,
             "t_ms": 800,
+            "rpm_cmd": 1000,
             "status_flags": 7
           },
           {
             "sample_seq": 9,
             "t_ms": 900,
+            "rpm_cmd": 1000,
             "status_flags": 7
           }
         ]
@@ -1752,7 +4068,7 @@
           "event_digest_match": true,
           "b6_coverage_ok": true
         },
-        "recomputed_event_digest": "sha256:01949e5e5adc12fad42ac4ed0ca869dd842308ca189df8ef8236b84ade71665a"
+        "recomputed_event_digest": "sha256:79da3afbc059563d4a513dc895929b7f5f16ce5d2954c0b4b5d492e5f7dc8351"
       }
     }
   ]
