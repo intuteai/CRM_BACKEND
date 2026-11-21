@@ -610,6 +610,254 @@ put('68-error-v03-aborted-power-loss.json', {
   responses: { 422: { error: 'The run is internally inconsistent', code: 'INCONSISTENT_RUN', violations: [{ path: 'stop_reason', rule: 'LIFECYCLE_STOP_REASON', msg: 'final_state ABORTED permits stop_reason OPERATOR_STOP, HB_LOSS or CONFIG_CANCELLED (got POWER_LOSS)' }] } },
 });
 
+// ---------------------------------------------------------------- v0.5 (opt-in: contract_version "0.5")
+// Spec: v05-warning-events.md (R4) sections 1-6 and 10; receipt: receipt-signing.md section 11 (MTRCPT2, receipt_version
+// pinned per run). v0.5 = the v0.4 body + capture_end_ms, event_log, warnings, command_changes, event_digest.
+// The event parts are taken unchanged from vectors/v05-event-vectors.json (cases E1, G1, E8, R1, P05, P01) together with
+// their run context (started, start_uptime_ms, held_count, sample flags), so every event_digest below is the vector's
+// MTEVT2 digest, recomputed here with tools/v05.js eventDigest and asserted equal. Each accepted fixture is validated
+// with the reference validator (tools/v05.js validate, flags asserted equal to the vector), signed as MTRCPT2 with TEST
+// key A (tools/receipt_v2.js encodeMessageV2) and must give RELEASE from decideV2 / decideForRun with a receipt_version-2
+// manifest; each rejected fixture must give the vector's status and rule.
+
+const R2 = require('./receipt_v2');
+const V5 = require('./v05');
+const EVENT_VECTORS = JSON.parse(fs.readFileSync(path.join(VEC, 'v05-event-vectors.json'), 'utf8'));
+const vecCase = (id) => {
+  const c = EVENT_VECTORS.cases.find((x) => x.id === id);
+  if (!c) throw new Error(`v05-event-vectors.json has no case ${id}`);
+  return JSON.parse(JSON.stringify(c));
+};
+const V5IDS = {
+  test: '5a7c9e1b-3d5f-4a7b-9c1d-3e5f7a9b1c70', receipt: '7e9a1c3d-5f7b-4c9d-8e1f-3a5c7e9b1d70',
+  testIncomplete: '2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871', receiptIncomplete: '8b0d2f4a-6c8e-4a0b-b2d4-f6a8c0e2a471',
+  testCancel: '4e6a8c0d-2f4b-4d6f-8a0c-2e4a6c8e0a72', receiptCancel: '0d2f4b6c-8e0a-4c2d-9f4b-6a8c0e2d4f72',
+  testPairing: '6a8c0e2f-4b6d-4f8a-b0c2-4e6a8c0e2f73', testFields: '9c1e3a5b-7d9f-4b1c-8e3a-5c7e9b1d3f74',
+  testStep0: '1e3a5c7d-9f1b-4d3e-a5c7-e9b1d3f5a775',
+};
+const V5_SERIAL = 'EXAMPLE-SERIAL-0005';
+
+// Full readings from a vector's run context (sample_seq, t_ms, rpm_cmd, status_flags as in the vector; the analogue
+// values are illustrative). Flags 7 / 39 (b5) / 71 (b6): rpm, current and voltage valid, BEMF invalid (null).
+const samplesFromCtx = (ctx) => ctx.samples.map((s) => ({
+  sample_seq: s.sample_seq, t_ms: s.t_ms, rpm_cmd: s.rpm_cmd, rpm_actual: s.t_ms === 0 ? 0 : s.rpm_cmd - 8,
+  current_a: f32(0.4 + s.sample_seq * 0.15), voltage_v: f32(48.1 - s.sample_seq * 0.05), bemf_v: null, status_flags: s.status_flags,
+}));
+const evOf = (b) => ({ capture_end_ms: b.capture_end_ms, event_log: b.event_log, warnings: b.warnings, command_changes: b.command_changes, event_digest: b.event_digest });
+const runCtxOf = (b) => ({ started: b.started, start_uptime_ms: b.start_uptime_ms, held_count: b.held_count,
+  samples: b.samples.map((s) => ({ sample_seq: s.sample_seq, t_ms: s.t_ms, status_flags: s.status_flags, rpm_cmd: s.rpm_cmd })) });
+
+// v0.5 body = runBodyV04 with the vector's run context, then the vector's event parts and the recomputed MTEVT2 digest.
+function runBodyV05(vecId, opts) {
+  const c = vecCase(vecId);
+  const ctx = c.run_context;
+  const samples = samplesFromCtx(ctx);
+  const sampleCount = opts.sampleCount ?? ctx.held_count;
+  const b4 = runBodyV04({ ...opts, started: ctx.started, startUptimeMs: ctx.start_uptime_ms, samples, sampleCount, heldCount: ctx.held_count });
+  const { run_digest: runDigestV, events, samples: s, ...head } = b4;
+  const f = c.v05_fields;
+  const ev = { capture_end_ms: f.capture_end_ms, event_log: f.event_log, warnings: f.warnings, command_changes: f.command_changes };
+  const eventDigestV = V5.eventDigest(ev, { started: b4.started, start_uptime_ms: b4.start_uptime_ms });
+  if (eventDigestV !== f.event_digest) throw new Error(`v0.5 fixture from ${vecId}: event_digest ${eventDigestV} differs from the vector's ${f.event_digest}`);
+  const body = { ...head, contract_version: '0.5', motor_serial: V5_SERIAL, run_digest: runDigestV, ...ev, event_digest: eventDigestV, events, samples: s };
+  // The reference validator must give exactly the vector's expected result for the full body.
+  const got = V5.validate(evOf(body), runCtxOf(body));
+  const exp = c.expected;
+  const same = exp.result === 'accepted'
+    ? got.ok && JSON.stringify(got.flags) === JSON.stringify(exp.flags) && got.digest === exp.recomputed_event_digest
+    : !got.ok && got.status === exp.status && got.rule === exp.rule;
+  if (!same) throw new Error(`v0.5 fixture from ${vecId}: validator gave ${JSON.stringify(got)}, vector expects ${JSON.stringify(exp)}`);
+  console.log(`PASS v0.5 body from vector ${vecId}: ${got.ok ? `accepted, event_digest ${eventDigestV}` : `${got.status} ${got.rule}`}`);
+  return { body, check: got };
+}
+
+// The VCU's durable manifest for a v0.5 run: receipt_version 2 (persisted when the run was created) + the MTRCPT1
+// manifest fields + the event fields (receipt-signing.md 11.2; b6_coverage_ok is not a manifest field).
+const vcuManifestV2Of = (b) => ({
+  receipt_version: 2, ...vcuManifestOf(b),
+  event_digest: b.event_digest, warnings_count: b.warnings.length, command_changes_count: b.command_changes.length,
+  event_log_complete: b.event_log.complete, capture_end_ms: b.capture_end_ms, start_uptime_ms: b.started ? b.start_uptime_ms : null,
+});
+
+function receiptV05(body, check, receiptId, storedAt) {
+  const r = receipt(body, receiptId, storedAt);
+  const message = R2.encodeMessageV2({
+    key_id: TEST_KEY_A.keyId, test_id: r.test_id, receipt_id: r.receipt_id, stored_at: r.stored_at,
+    sample_count: body.sample_count, held_count: body.held_count, stored_sample_count: r.stored_sample_count,
+    final_state: body.final_state, outcome: body.outcome, stop_reason: body.stop_reason,
+    started: body.started, recording_complete: body.recording_complete,
+    run_digest: body.run_digest, samples_digest: r.samples_digest, payload_hash: r.payload_hash,
+    vcu_id: body.vcu.vcu_id, origin_boot_id: body.vcu.origin_boot_id,
+    // event block: uploaded digest, the ERP's recomputed digest, counts, flags and capture bounds
+    event_digest: body.event_digest, events_stored_digest: check.digest,
+    warnings_count: body.warnings.length, command_changes_count: body.command_changes.length,
+    event_log_complete: body.event_log.complete, b6_coverage_ok: check.flags.b6_coverage_ok,
+    capture_end_ms: body.capture_end_ms, start_uptime_ms: body.started ? body.start_uptime_ms : null,
+  });
+  if (message.length < 253 || message.length > 315) throw new Error(`MTRCPT2 message length ${message.length} outside 253-315`);
+  r.signed_receipt = {
+    alg: 'Ed25519', key_id: TEST_KEY_A.keyId.toString('hex'),
+    message: R.b64urlEncode(message), signature: R.b64urlEncode(R.signMessage(message, TEST_KEY_A.privateKey)),
+  };
+  const manifest = vcuManifestV2Of(body);
+  const got = R2.decideV2(r.signed_receipt, KEYRING_A, manifest);
+  const viaRun = R2.decideForRun(r.signed_receipt, KEYRING_A, manifest);
+  if (!got.release || !viaRun.release) throw new Error(`v0.5 fixture ${body.test_id}: MTRCPT2 receipt fails the VCU decision (${got.reason} / ${viaRun.reason})`);
+  // Receipt-version pinning: the same receipt never passes the MTRCPT1 decider, and a v1 manifest rejects it.
+  const v1 = R.decide(r.signed_receipt, KEYRING_A, vcuManifestOf(body));
+  const pinned = R2.decideV2(r.signed_receipt, KEYRING_A, { ...manifest, receipt_version: 1 });
+  if (v1.release || v1.reason !== 'BAD_VERSION' || pinned.reason !== 'RECEIPT_VERSION_MISMATCH') {
+    throw new Error(`v0.5 fixture ${body.test_id}: receipt-version pinning not shown (${v1.reason} / ${pinned.reason})`);
+  }
+  console.log(`PASS v0.5 MTRCPT2 receipt ${body.test_id}: ${got.reason} (${message.length} bytes; MTRCPT1 decider ${v1.reason}, v1 manifest ${pinned.reason})`);
+  return r;
+}
+
+const signingNoteV2 = 'signed_receipt is an MTRCPT2 message (receipt-signing.md section 11) signed with TEST key A from vectors/receipt-vectors.json '
+  + '(public seed; never on a real VCU). A real server signs with its own key, so key_id and signature differ; signed_receipt is null when the server has no signing key configured.';
+const verifyWithV2 = (body) => ({ vcu_keyring: KEYRING_A, vcu_manifest: vcuManifestV2Of(body), expected_decision: 'RELEASE', decider: 'decideV2 (selected by vcu_manifest.receipt_version = 2, never by the magic)' });
+const v5Status = 'v0.5 is implemented in the ERP and tested against staging; staging after the next backend deploy, production after Mayank\'s final review.';
+
+// 70: complete log with a raised / cleared warning (detail code 133) and two command changes (vector E1).
+const v5Valid = runBodyV05('E1', {
+  testId: V5IDS.test, startedAt: '2026-12-02T10:00:03Z', endedAt: '2026-12-02T10:00:05Z',
+  finalState: 'COMPLETED', stopReason: 'RAMP_COMPLETE', faultCode: null, outcome: 'FAIL', recordingComplete: true,
+  reasons: [{ criterion: null, reason: 'PROTECTIVE_WARNING', detail: 'warning code 133 active 250-420 ms (example; the per-code FAIL / INVALID table is versioned with the criteria, S6)' }],
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }, { t_ms: 900, type: 'STATE', code: 'STOPPING', detail: 'RAMP_COMPLETE' }, { t_ms: 1100, type: 'STATE', code: 'COMPLETED', detail: null }],
+});
+const v5ValidReceipt = receiptV05(v5Valid.body, v5Valid.check, V5IDS.receipt, '2026-12-02T10:00:07Z');
+
+// 71: incomplete event log (vector G1): RAISED seq 0 lost, DETAIL and CLEARED kept; CLEARED is unproven, b6 not covered.
+const v5Incomplete = runBodyV05('G1', {
+  testId: V5IDS.testIncomplete, startedAt: '2026-12-02T10:20:03Z', endedAt: '2026-12-02T10:20:05Z',
+  finalState: 'COMPLETED', stopReason: 'RAMP_COMPLETE', faultCode: null, outcome: 'INVALID', recordingComplete: true,
+  reasons: [
+    { criterion: null, reason: 'EVENT_LOG_INCOMPLETE', detail: '1 warning event lost (S4)' },
+    { criterion: null, reason: 'B6_COVERAGE', detail: 'b6 readings 3 and 4 outside every warning interval (S5)' },
+  ],
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }, { t_ms: 900, type: 'STATE', code: 'STOPPING', detail: 'RAMP_COMPLETE' }, { t_ms: 1100, type: 'STATE', code: 'COMPLETED', detail: null }],
+});
+const v5IncompleteStoredAt = '2026-12-02T10:20:07Z';
+const v5IncompleteReceipt = receiptV05(v5Incomplete.body, v5Incomplete.check, V5IDS.receiptIncomplete, v5IncompleteStoredAt);
+
+// 72: CANCEL before start (vector E8): complete, empty event evidence, capture_end_ms null.
+const v5Cancel = runBodyV05('E8', {
+  testId: V5IDS.testCancel, startedAt: null, endedAt: '2026-12-02T10:40:11Z',
+  finalState: 'ABORTED', stopReason: 'CONFIG_CANCELLED', faultCode: null, outcome: 'INCOMPLETE', recordingComplete: true,
+  reasons: [{ criterion: null, reason: 'CONFIG_CANCELLED', detail: 'Cancelled by operator before START' }],
+  events: [{ t_ms: 0, type: 'STATE', code: 'ABORTED', detail: 'CONFIG_CANCELLED' }],
+});
+const v5CancelReceipt = receiptV05(v5Cancel.body, v5Cancel.check, V5IDS.receiptCancel, '2026-12-02T10:40:13Z');
+
+put('70-v05-result-valid-completed.json', {
+  note: `v0.5 complete run: contract_version "0.5", complete event log (vector E1) with a warning RAISED / DETAIL code 133 / CLEARED and command steps 0 and 1 owning readings 0 and 5. Expected: 201 with an MTRCPT2 signed_receipt; an identical retry gets 200 with the byte-identical receipt. outcome FAIL is an example only. ${signingNoteV2} ${v5Status}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V5IDS.test), body: v5Valid.body },
+  responses: { 201: v5ValidReceipt, 200: v5ValidReceipt },
+  verify: verifyWithV2(v5Valid.body),
+});
+
+// Run detail as GET /api/testing/results/{test_id} returns it (models/testing/testingModel.js getRun, same key order).
+function runDetailV05(b, rc, check, storedAt) {
+  return {
+    test_id: b.test_id, motor_serial: b.motor_serial, variant_id: b.variant_id, variant_code: 'B-125-M-5D-ES11-E04',
+    profile_id: b.profile_id, criteria_version_id: b.criteria_version_id,
+    operator_id: b.operator_id, operator_ref: b.operator_ref, operator_name: b.operator_name, uploaded_by: 843,
+    vcu: b.vcu, hmi_version: b.hmi_version,
+    contract_version: b.contract_version, run_kind: b.run_kind, started: b.started, start_uptime_ms: b.start_uptime_ms,
+    started_at_source: b.started_at_source, ended_at_source: b.ended_at_source, hmi_auto_time: b.hmi_auto_time,
+    held_count: b.held_count, recording_complete: b.recording_complete, config_hash: b.config_hash,
+    origin_boot_id: b.vcu.origin_boot_id, receipt_version: 2,
+    capture_end_ms: b.capture_end_ms,
+    event_log: { ...b.event_log },
+    event_digest: b.event_digest, events_stored_digest: check.digest, event_digest_match: check.flags.event_digest_match,
+    b6_coverage_ok: check.flags.b6_coverage_ok, unproven: check.flags.unproven,
+    warnings: b.warnings, command_changes: b.command_changes,
+    started_at: b.started_at, ended_at: b.ended_at, final_state: b.final_state, stop_reason: b.stop_reason, fault_code: b.fault_code,
+    outcome: b.outcome, outcome_reasons: b.outcome_reasons, sample_count: b.sample_count, run_digest: b.run_digest, received_at: storedAt,
+    receipt: rc,
+    profile: { profile_id: IDS.profile, ...profileDefinition, sha256: profileSha, status: 'PUBLISHED', published_at: '2026-12-01T08:00:00Z' },
+    criteria: { criteria_version_id: IDS.criteria, variant_id: IDS.variant, version: 1, sha256: criteriaSha, status: 'PUBLISHED', published_at: '2026-12-01T08:00:00Z', definition: criteriaDefinition },
+    events: b.events,
+    samples: b.samples,
+    samples_page: { offset: 0, limit: 2000, returned: b.samples.length, total: b.samples.length },
+  };
+}
+
+put('71-v05-result-incomplete-event-log.json', {
+  note: `v0.5 run whose event log is known to be incomplete (vector G1): event_log.complete=false, lost_count 1, warning seq 0 (the RAISED) lost, DETAIL seq 1 and CLEARED seq 2 kept as recorded. The CLEARED cannot prove its pairing, so it is stored unchanged and reported in unproven[] (never repaired or renumbered); b6 readings 3 and 4 are outside every interval, so b6_coverage_ok=false. The upload is accepted (201) and the VCU may release; the run is INVALID for evaluation (S4, S5). The second request is the run detail (GET), showing the v0.5 fields. ${signingNoteV2} ${v5Status}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V5IDS.testIncomplete), body: v5Incomplete.body },
+  responses: { 201: v5IncompleteReceipt },
+  verify: verifyWithV2(v5Incomplete.body),
+  run_detail: {
+    request: { method: 'GET', path: `/api/testing/results/${V5IDS.testIncomplete}`, headers: { Authorization: 'Bearer <token>', 'X-App-Version': '1.1.0', 'X-Staging-Key': '<staging key>' } },
+    responses: { 200: runDetailV05(v5Incomplete.body, v5IncompleteReceipt, v5Incomplete.check, v5IncompleteStoredAt) },
+  },
+});
+
+put('72-v05-result-cancel.json', {
+  note: `v0.5 CANCEL before start (vector E8): started=false, capture_end_ms null, no warnings, no command changes, event_log complete with zero counts and lost_count 0; event_digest is the MTEVT2 digest of that empty journal. The MTRCPT2 receipt has capture_end / start_uptime absent (event flags b3 / b4 clear). Expected: 201. ${signingNoteV2} ${v5Status}`,
+  server: STAGING,
+  request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(V5IDS.testCancel), body: v5Cancel.body },
+  responses: { 201: v5CancelReceipt },
+  verify: verifyWithV2(v5Cancel.body),
+});
+
+// Rejections: the event check result maps to 400 VALIDATION_ERROR (fields, path "events", msg "<RULE>: <message>") or
+// 422 INCONSISTENT_RUN (violations, path "events", rule, msg), exactly as services/testing/validateRun.js does.
+function eventErrorResponse(check) {
+  if (check.status === 400) return { error: 'Request body failed validation', code: 'VALIDATION_ERROR', fields: [{ path: 'events', msg: `${check.rule}: ${check.msg}` }] };
+  return { error: 'The run is internally inconsistent', code: 'INCONSISTENT_RUN', violations: [{ path: 'events', rule: check.rule, msg: check.msg }] };
+}
+const v5Pairing = runBodyV05('R1', {
+  testId: V5IDS.testPairing, startedAt: '2026-12-02T11:00:03Z', endedAt: '2026-12-02T11:00:05Z',
+  finalState: 'COMPLETED', stopReason: 'RAMP_COMPLETE', faultCode: null, outcome: 'PASS', recordingComplete: true, reasons: [],
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }, { t_ms: 1100, type: 'STATE', code: 'COMPLETED', detail: null }],
+});
+const v5Fields = runBodyV05('P05', {
+  testId: V5IDS.testFields, startedAt: '2026-12-02T11:10:03Z', endedAt: '2026-12-02T11:10:05Z',
+  finalState: 'COMPLETED', stopReason: 'RAMP_COMPLETE', faultCode: null, outcome: 'PASS', recordingComplete: true, reasons: [],
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }, { t_ms: 1100, type: 'STATE', code: 'COMPLETED', detail: null }],
+});
+const v5Step0 = runBodyV05('P01', {
+  testId: V5IDS.testStep0, startedAt: '2026-12-02T11:20:03Z', endedAt: '2026-12-02T11:20:04Z',
+  finalState: 'FAULT', stopReason: 'FAULT', faultCode: 'F_OVERCURRENT', outcome: 'INCOMPLETE', recordingComplete: true,
+  reasons: [{ criterion: null, reason: 'FAULT_BEFORE_FIRST_SAMPLE', detail: 'F_OVERCURRENT from CONTROLLER' }],
+  events: [{ t_ms: 0, type: 'STATE', code: 'RUNNING', detail: null }, { t_ms: 900, type: 'FAULT', code: 'F_OVERCURRENT', detail: 'source=CONTROLLER latched=true' }],
+});
+const v5ErrorCases = [
+  ['73-v05-error-warning-pairing.json', 'v0.5 complete event log whose first warning is a CLEARED with no open warning (vector R1). With a complete log pairing is strict.', v5Pairing],
+  ['74-v05-error-event-fields.json', 'v0.5 warning with kind "toString" (vector P05): enum values must be exact own values, never Object.prototype names. Event field errors are 400 VALIDATION_ERROR with path "events" and the rule EVENT_FIELDS at the start of msg.', v5Fields],
+  ['75-v05-error-command-missing-step0.json', 'v0.5 started run (fault before the first reading) with a complete event log but no command changes (vector P01): step 0, the command applied by START, is always recorded when the log is complete.', v5Step0],
+];
+for (const [name, note, { body, check }] of v5ErrorCases) {
+  put(name, {
+    note: `${note} Nothing is stored; no signed_receipt on any error. ${v5Status}`,
+    server: STAGING,
+    request: { method: 'POST', path: '/api/testing/results', headers: stagingHeaders(body.test_id), body },
+    responses: { [check.status]: eventErrorResponse(check) },
+  });
+}
+
+put('76-v05-results-by-serial.json', {
+  note: `Serial lookup with v0.5 runs (fixtures 70-72), newest started_at first, runs without started_at (CANCEL) last. event_log_complete and unproven_count are null for v0.3 / v0.4 runs. ${v5Status}`,
+  server: STAGING,
+  request: { method: 'GET', path: `/api/testing/results?serial=${V5_SERIAL}` },
+  responses: {
+    200: {
+      motor_serial: V5_SERIAL,
+      runs: [[v5Incomplete, v5IncompleteReceipt], [v5Valid, v5ValidReceipt], [v5Cancel, v5CancelReceipt]].map(([{ body: b, check }, rc]) => ({
+        test_id: b.test_id, started_at: b.started_at, ended_at: b.ended_at, final_state: b.final_state, outcome: b.outcome,
+        operator_id: b.operator_id, operator_ref: b.operator_ref, operator_name: b.operator_name, uploaded_by: 843, variant_code: 'B-125-M-5D-ES11-E04',
+        profile_version: 1, criteria_version: 1, sample_count: b.sample_count, stored_sample_count: b.samples.length, received_at: rc.stored_at,
+        stop_reason: b.stop_reason, contract_version: b.contract_version, run_kind: b.run_kind, held_count: b.held_count, recording_complete: b.recording_complete,
+        event_log_complete: b.event_log.complete, unproven_count: check.flags.unproven.length,
+      })),
+    },
+  },
+});
+
 fs.mkdirSync(FIX, { recursive: true });
 fs.mkdirSync(VEC, { recursive: true });
 for (const [name, obj] of Object.entries(files)) fs.writeFileSync(path.join(FIX, name), JSON.stringify(obj, null, 2) + '\n');

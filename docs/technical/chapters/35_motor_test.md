@@ -270,7 +270,7 @@ After agreement the ERP needs a migration (`CONFIG_CANCELLED`, `started`, `held_
 
 ---
 
-### 5.5 Contract v0.5 draft R3 and receipt MTRCPT2 (not implemented)
+### 5.5 Contract v0.5 R4 and receipt MTRCPT2 (built on staging)
 
 `docs/motor-test/contract/v05-warning-events.md` (R4, 2026-11-21, after three VCU reviews; incomplete logs keep unproven records instead of rejecting them) adds, behind
 `contract_version: "0.5"`:
@@ -291,7 +291,20 @@ Release still requires the ERP to hold exactly what the VCU holds, readings and 
 Reference code and vectors: `tools/v05.js` (41 cases in `vectors/v05-event-vectors.json`, digests re-checked by
 `tools/check_v05_vectors.py`), `tools/receipt_v2.js` (50 cases in `vectors/receipt-v2-vectors.json`, checked by the
 independent `tools/check_receipt_v2_vectors.py`). The settle boundary is shared with the criteria rules: a reading at
-exactly `t_b5 + X` is still settling. Pending: Mayank's final review of R4, the settle-boundary confirmation (the testing head decided S1–S5 INVALID and S6 versioned on 2026-11-21) and, the versioned warning-code table; then migration 005 and the upload path.
+exactly `t_b5 + X` is still settling. The testing head decided S1–S5 INVALID and S6 a versioned warning-code table on 2026-11-21.
+
+**Built on staging (2026-11-21).** Migration `005_contract_v05.sql` (applied to `erp_staging` only) widens
+`contract_version` to 0.5, adds the run columns `receipt_version`, `capture_end_ms`, `event_log_complete`,
+`event_lost_count`, `warnings_count`, `command_changes_count`, `event_digest`, `events_stored_digest`,
+`event_digest_match`, `b6_coverage_ok` and `unproven` (with a NOT VALID check `mt_test_run_v05_check`), and two
+write-once tables `mt_test_warning_event` (key test_id, seq) and `mt_test_command_change` (key test_id, step). The
+upload path validates events with `services/testing/v05Events.js` (a copy of the reference `tools/v05.js`; field errors
+are 400 with path `events`, rule breaks are 422 violations), stores them in one transaction with the readings, and signs
+MTRCPT2 (`receiptSigner.buildMessageV2`, byte-equal to the reference vectors). v0.4 uploads still get MTRCPT1. Run detail
+returns the events, both digests, `unproven` and the receipt version; serial lookup adds `event_log_complete` and
+`unproven_count`. Proof: `check_rules.js` 45/45 on staging (8 new v0.5 rules), 200 motor-test API and unit tests
+(41 validator cases equal the vectors; every v0.5 vector uploaded through the real route with MTRCPT2 accepted by
+`decideV2`). Production needs Mayank's final review of R4, then migration 005 after a snapshot.
 
 ## 6. Governance API (web CRM)
 
@@ -599,7 +612,7 @@ Results of the ERP acceptance tests run against the staging backend, 2026-11-12 
 | Certificate pinning: standard HTTPS validation for Phase 1 (Pratham's recommendation); pinning only with an agreed renewal and backup plan | Pratham and Saatwik |
 | Device receipt verification (Ed25519 on the ESP32-C3), key provisioning per environment, storage power-cut results | Mayank |
 | Final b4 / b7 thresholds after the onsite CAN trace and the VCU storage benchmark | Mayank → testing head |
-| Contract v0.5 draft R3 and MTRCPT2 review, decisions S1–S6 and the settle boundary; then migration 005, upload path and MTRCPT2 signing (section 5.5) | Mayank, Pratham, testing head, Rahul |
+| Contract v0.5 R4: Mayank's final review; HMI support (Pratham); then migration 005 on production after a snapshot (built and tested on staging, section 5.5) | Mayank, Pratham, Saatwik, Rahul |
 | Tablet evaluator for the four status-flag rule types | Pratham |
 | Contract sign-off: draft v0.3 (with the agreed v0.4 parts) becomes Interface Contract v1 at T012 | Mayank, Pratham, Rahul |
 

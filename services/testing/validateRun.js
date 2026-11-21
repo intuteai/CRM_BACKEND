@@ -3,6 +3,7 @@
 //  checkConsistency(body) -> {violations, samplesDigest}    (422 INCONSISTENT_RUN; reserved bits -> 400)
 'use strict';
 const { runDigest, ContractViolation } = require('./digest');
+const v05Events = require('./v05Events');
 
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const UUID_ANY = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -24,6 +25,9 @@ const TIME_SOURCES = ['HMI', 'HMI_DERIVED'];
 const RECEIPT_ID = /^[A-Za-z0-9._-]{1,32}$/; // identifiers that go into the signed receipt
 const V04_FIELDS = ['contract_version', 'run_kind', 'started', 'start_uptime_ms', 'started_at_source', 'ended_at_source',
   'hmi_auto_time', 'held_count', 'recording_complete', 'config_hash'];
+// v0.5 = v0.4 + warning events, command changes, event log and the MTEVT2 event digest (v05-warning-events.md R4).
+const V05_FIELDS = ['capture_end_ms', 'event_log', 'warnings', 'command_changes', 'event_digest'];
+const CONTRACT_VERSIONS = ['0.4', '0.5'];
 const OUTCOMES = ['PASS', 'FAIL', 'INCOMPLETE', 'INVALID'];
 const EVENT_TYPES = ['STATE', 'FAULT', 'COMMAND', 'INFO'];
 const TOP_FIELDS = ['test_id', 'motor_serial', 'variant_id', 'profile_id', 'profile_sha256', 'criteria_version_id', 'criteria_sha256',
@@ -61,18 +65,22 @@ function safeJson(v, depth = 0) {
   return false;
 }
 
-const isV04 = (b) => isObj(b) && b.contract_version === '0.4';
+// v0.4 rules apply to v0.4 AND v0.5 uploads (v0.5 is a superset).
+const isV04 = (b) => isObj(b) && CONTRACT_VERSIONS.includes(b.contract_version);
+const isV05 = (b) => isObj(b) && b.contract_version === '0.5';
 
 function checkSchema(b) {
   const f = [];
   const add = (path, msg) => f.push({ path, msg });
   if (!isObj(b)) return [{ path: '', msg: 'body must be a JSON object' }];
-  if ('contract_version' in b && b.contract_version !== '0.4') add('contract_version', 'must be "0.4" (omit it for a v0.3 upload)');
+  if ('contract_version' in b && !CONTRACT_VERSIONS.includes(b.contract_version)) add('contract_version', 'must be "0.4" or "0.5" (omit it for a v0.3 upload)');
   const v04 = isV04(b);
-  const fields = v04 ? [...TOP_FIELDS, ...V04_FIELDS] : TOP_FIELDS;
+  const fields = isV05(b) ? [...TOP_FIELDS, ...V04_FIELDS, ...V05_FIELDS] : v04 ? [...TOP_FIELDS, ...V04_FIELDS] : TOP_FIELDS;
 
   for (const k of Object.keys(b)) {
-    if (!fields.includes(k) && !(k === 'contract_version' && !v04)) add(k, v04 || !V04_FIELDS.includes(k) ? 'is not an allowed field' : 'is a v0.4 field: send contract_version "0.4"');
+    if (!fields.includes(k) && !(k === 'contract_version' && !v04)) {
+      add(k, V05_FIELDS.includes(k) ? 'is a v0.5 field: send contract_version "0.5"' : (v04 || !V04_FIELDS.includes(k) ? 'is not an allowed field' : 'is a v0.4 field: send contract_version "0.4"'));
+    }
   }
   for (const k of fields) if (!(k in b)) add(k, 'is required');
 
@@ -97,6 +105,7 @@ function checkSchema(b) {
     need('held_count', (v) => isInt(v, 0, I32), 'must be an integer 0..2147483647');
     need('config_hash', (v) => v === null || isStr(v, 1, 128), 'must be null or 1-128 characters');
   }
+  if (isV05(b)) need('event_digest', (v) => typeof v === 'string' && DIGEST.test(v), 'must be "sha256:" + 64 lowercase hex');
   need('fault_code', (v) => v === null || isStr(v, 1, 64), 'must be null or 1-64 characters');
   need('outcome', (v) => OUTCOMES.includes(v), `must be one of ${OUTCOMES.join(', ')}`);
   need('outcome_reasons', (v) => Array.isArray(v) && v.length <= 200 && v.every((x) => isObj(x) && safeJson(x) && JSON.stringify(x).length <= 2000),
@@ -198,7 +207,18 @@ function checkConsistency(b) {
       add('run_digest', 'DIGEST_MATCH_REQUIRED', 'outcome PASS/FAIL/INVALID needs run_digest equal to the digest of the uploaded samples');
     }
   }
-  return { violations: v, samplesDigest };
+  // v0.5: warning events, command changes, event log and MTEVT2 (production copy of the reference validator).
+  let events = null;
+  if (isV05(b)) {
+    const runCtx = { started: b.started, start_uptime_ms: b.start_uptime_ms, held_count: b.held_count,
+      samples: b.samples.map((s) => ({ sample_seq: s.sample_seq, t_ms: s.t_ms, status_flags: s.status_flags, rpm_cmd: s.rpm_cmd })) };
+    const ev = { capture_end_ms: b.capture_end_ms, event_log: b.event_log, warnings: b.warnings, command_changes: b.command_changes, event_digest: b.event_digest };
+    const r = v05Events.validate(ev, runCtx);
+    if (!r.ok && r.status === 400) return { badRequest: [{ path: 'events', msg: `${r.rule}: ${r.msg}` }] };
+    if (!r.ok) add('events', r.rule, r.msg);
+    else events = { digest: r.digest, flags: r.flags };
+  }
+  return { violations: v, samplesDigest, events };
 }
 
-module.exports = { checkSchema, checkConsistency, isV04, MAX_SAMPLES, RUN_KINDS, STOP_FOR_STATE };
+module.exports = { checkSchema, checkConsistency, isV04, isV05, MAX_SAMPLES, RUN_KINDS, STOP_FOR_STATE };

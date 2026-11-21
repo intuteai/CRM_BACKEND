@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Proves the database-level safety rules of the motor-test migrations (001-004) on a NON-production database.
+// Proves the database-level safety rules of the motor-test migrations (001-005) on a NON-production database.
 // Everything runs in one transaction that is rolled back: nothing is left behind.
 //   node scripts/migrations/motor-test/check_rules.js --db erp_staging
 
@@ -95,8 +95,8 @@ const D = (c) => 'sha256:' + c.repeat(64);
     const v04 = (id, o) => q(`INSERT INTO mt_test_run (test_id, motor_serial, variant_id, profile_id, criteria_version_id, operator_id, operator_ref, operator_name,
         uploaded_by, vcu_id, vcu_fw_version, vcu_boot_id, hmi_version, final_state, stop_reason, fault_code, outcome, sample_count, stored_sample_count,
         run_digest, samples_digest, run_digest_match, contract_version, run_kind, started, start_uptime_ms, held_count, recording_complete)
-      VALUES ($1,'CHECK-SN4',$2,$3,$4,843,$5,'Check Operator',843,'VCU-01','1.0.3','b1','1.0.0',$6,$7,$8,$9,$10,$11,$12,$12,$13,'0.4','synthetic',$14,$15,$16,$17)`,
-      [id, v, prof, crit, op, o.state, o.stop, o.fault ?? null, o.outcome, o.count, o.stored ?? o.held, o.rd ?? D('b'), o.match ?? true, o.started ?? true, o.started === false ? null : 1000, o.held, o.complete]);
+      VALUES ($1,'CHECK-SN4',$2,$3,$4,843,$5,'Check Operator',843,'VCU-01','1.0.3','b1','1.0.0',$6,$7,$8,$9,$10,$11,$12,$12,$13,$18,'synthetic',$14,$15,$16,$17)`,
+      [id, v, prof, crit, op, o.state, o.stop, o.fault ?? null, o.outcome, o.count, o.stored ?? o.held, o.rd ?? D('b'), o.match ?? true, o.started ?? true, o.started === false ? null : 1000, o.held, o.complete, o.v05 ? '0.5' : '0.4']);
     const tryV04 = async (name, id, o, shouldFail, pattern) => {
       await q('SAVEPOINT t');
       try { await v04(id, o); await q('RELEASE SAVEPOINT t'); if (shouldFail) { fail++; console.log(`FAIL ${name}: was allowed`); } else { pass++; console.log(`PASS ${name}`); } }
@@ -115,6 +115,16 @@ const D = (c) => 'sha256:' + c.repeat(64);
     await expect('receipt key public key cannot change', true, `UPDATE mt_receipt_key SET public_key = $1 WHERE key_id = '00112233445566aa'`, [Buffer.alloc(32, 8)], /MT_IMMUTABLE/);
     await expect('receipt key cannot be deleted', true, `DELETE FROM mt_receipt_key WHERE key_id = '00112233445566aa'`, [], /MT_IMMUTABLE/);
     await expect('receipt signature cannot be added later', true, `UPDATE mt_upload_receipt SET signing_key_id='00112233445566aa', signed_message=$2, signature=$3 WHERE test_id=$1`, [T1, Buffer.alloc(180), Buffer.alloc(64)], /MT_IMMUTABLE/);
+    // ---- 005: v0.5 events
+    await tryV04('v0.5 run without its event facts is refused', 'a0000000-0000-4000-8000-000000000007', { state: 'FAULT', stop: 'FAULT', fault: 'X', outcome: 'INCOMPLETE', count: 3, held: 3, complete: true, v05: true }, true, /v05_check/);
+    await q(`INSERT INTO mt_test_warning_event (test_id, seq, t_ms, phase, kind, source) VALUES ($1, 0, 100, 'CAPTURE', 'RAISED', 'STATUS_BIT6')`, [T1]);
+    await expect('warning event cannot be edited', true, `UPDATE mt_test_warning_event SET kind = 'CLEARED' WHERE test_id = $1`, [T1], /MT_IMMUTABLE/);
+    await expect('warning event cannot be deleted', true, `DELETE FROM mt_test_warning_event WHERE test_id = $1`, [T1], /MT_IMMUTABLE/);
+    await expect('detail status time after the reply is refused', true, `INSERT INTO mt_test_warning_event (test_id, seq, t_ms, phase, kind, source, code, status_t_ms) VALUES ($1, 1, 200, 'CAPTURE', 'DETAIL', 'SDO_2031_11', 133, 900)`, [T1], /check constraint/);
+    await expect('STATUS_KNOWN without restored_state is refused', true, `INSERT INTO mt_test_warning_event (test_id, seq, t_ms, phase, kind, source) VALUES ($1, 2, 300, 'CAPTURE', 'STATUS_KNOWN', 'STATUS_BIT6')`, [T1], /check constraint/);
+    await q(`INSERT INTO mt_test_command_change (test_id, step, t_ms, rpm_cmd, link, first_sample_seq) VALUES ($1, 0, 0, 500, 'OWNS_READING', 0)`, [T1]);
+    await expect('command change cannot be edited', true, `UPDATE mt_test_command_change SET rpm_cmd = 0 WHERE test_id = $1`, [T1], /MT_IMMUTABLE/);
+    await expect('SUPERSEDED with a reading link is refused', true, `INSERT INTO mt_test_command_change (test_id, step, t_ms, rpm_cmd, link, first_sample_seq) VALUES ($1, 1, 10, 800, 'SUPERSEDED', 1)`, [T1], /check constraint/);
     await expect('receipt with a partial signature is refused', true, `INSERT INTO mt_upload_receipt (test_id, payload_hash, signing_key_id) VALUES ('a0000000-0000-4000-8000-000000000001', $1, '00112233445566aa')`, [D('c')], /check constraint/);
   } finally {
     await q('ROLLBACK');

@@ -1,0 +1,603 @@
+{
+  "note": "v0.5 run whose event log is known to be incomplete (vector G1): event_log.complete=false, lost_count 1, warning seq 0 (the RAISED) lost, DETAIL seq 1 and CLEARED seq 2 kept as recorded. The CLEARED cannot prove its pairing, so it is stored unchanged and reported in unproven[] (never repaired or renumbered); b6 readings 3 and 4 are outside every interval, so b6_coverage_ok=false. The upload is accepted (201) and the VCU may release; the run is INVALID for evaluation (S4, S5). The second request is the run detail (GET), showing the v0.5 fields. signed_receipt is an MTRCPT2 message (receipt-signing.md section 11) signed with TEST key A from vectors/receipt-vectors.json (public seed; never on a real VCU). A real server signs with its own key, so key_id and signature differ; signed_receipt is null when the server has no signing key configured. v0.5 is implemented in the ERP and tested against staging; staging after the next backend deploy, production after Mayank's final review.",
+  "server": "https://api.intute.biz/staging",
+  "request": {
+    "method": "POST",
+    "path": "/api/testing/results",
+    "headers": {
+      "Authorization": "Bearer <token>",
+      "Content-Type": "application/json",
+      "X-App-Version": "1.0.0",
+      "Idempotency-Key": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+      "X-Staging-Key": "<staging key>"
+    },
+    "body": {
+      "contract_version": "0.5",
+      "test_id": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+      "motor_serial": "EXAMPLE-SERIAL-0005",
+      "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+      "profile_id": "9a1c3e5f-7b2d-4f6a-8e0c-2b4d6f8a0c1e",
+      "profile_sha256": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+      "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+      "criteria_sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6",
+      "operator_id": 843,
+      "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+      "operator_name": "Example Operator A",
+      "vcu": {
+        "vcu_id": "esp32c3-001122334455",
+        "fw_version": "1.0.3",
+        "origin_boot_id": "1122334455667788"
+      },
+      "hmi_version": "1.1.0",
+      "run_kind": "bench",
+      "started": true,
+      "start_uptime_ms": 5000,
+      "started_at": "2026-12-02T10:20:03Z",
+      "started_at_source": "HMI",
+      "ended_at": "2026-12-02T10:20:05Z",
+      "ended_at_source": "HMI",
+      "hmi_auto_time": true,
+      "final_state": "COMPLETED",
+      "stop_reason": "RAMP_COMPLETE",
+      "fault_code": null,
+      "outcome": "INVALID",
+      "outcome_reasons": [
+        {
+          "criterion": null,
+          "reason": "EVENT_LOG_INCOMPLETE",
+          "detail": "1 warning event lost (S4)"
+        },
+        {
+          "criterion": null,
+          "reason": "B6_COVERAGE",
+          "detail": "b6 readings 3 and 4 outside every warning interval (S5)"
+        }
+      ],
+      "sample_count": 10,
+      "held_count": 10,
+      "recording_complete": true,
+      "config_hash": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+      "run_digest": "sha256:1e0a148b3644e455990df61e3f08e36c800bf7139cde301d49fb245087aeff4a",
+      "capture_end_ms": 900,
+      "event_log": {
+        "warnings_count": 2,
+        "command_changes_count": 2,
+        "complete": false,
+        "lost_count": 1
+      },
+      "warnings": [
+        {
+          "seq": 1,
+          "t_ms": 290,
+          "phase": "CAPTURE",
+          "kind": "DETAIL",
+          "source": "SDO_2031_11",
+          "limit_id": null,
+          "code": 133,
+          "status_t_ms": 250,
+          "reason": null,
+          "restored_state": null,
+          "detail": null
+        },
+        {
+          "seq": 2,
+          "t_ms": 420,
+          "phase": "CAPTURE",
+          "kind": "CLEARED",
+          "source": "STATUS_BIT6",
+          "limit_id": null,
+          "code": null,
+          "status_t_ms": null,
+          "reason": null,
+          "restored_state": null,
+          "detail": null
+        }
+      ],
+      "command_changes": [
+        {
+          "step": 0,
+          "t_ms": 0,
+          "rpm_cmd": 500,
+          "link": "OWNS_READING",
+          "first_sample_seq": 0
+        },
+        {
+          "step": 1,
+          "t_ms": 480,
+          "rpm_cmd": 1000,
+          "link": "OWNS_READING",
+          "first_sample_seq": 5
+        }
+      ],
+      "event_digest": "sha256:ae87cc6e01942d380edcd7df1395832a979d2a92ef22029d62a9c01c8709f779",
+      "events": [
+        {
+          "t_ms": 0,
+          "type": "STATE",
+          "code": "RUNNING",
+          "detail": null
+        },
+        {
+          "t_ms": 900,
+          "type": "STATE",
+          "code": "STOPPING",
+          "detail": "RAMP_COMPLETE"
+        },
+        {
+          "t_ms": 1100,
+          "type": "STATE",
+          "code": "COMPLETED",
+          "detail": null
+        }
+      ],
+      "samples": [
+        {
+          "sample_seq": 0,
+          "t_ms": 0,
+          "rpm_cmd": 500,
+          "rpm_actual": 0,
+          "current_a": 0.4,
+          "voltage_v": 48.1,
+          "bemf_v": null,
+          "status_flags": 39
+        },
+        {
+          "sample_seq": 1,
+          "t_ms": 100,
+          "rpm_cmd": 500,
+          "rpm_actual": 492,
+          "current_a": 0.55,
+          "voltage_v": 48.05,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 2,
+          "t_ms": 200,
+          "rpm_cmd": 500,
+          "rpm_actual": 492,
+          "current_a": 0.7,
+          "voltage_v": 48,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 3,
+          "t_ms": 300,
+          "rpm_cmd": 500,
+          "rpm_actual": 492,
+          "current_a": 0.85,
+          "voltage_v": 47.95,
+          "bemf_v": null,
+          "status_flags": 71
+        },
+        {
+          "sample_seq": 4,
+          "t_ms": 400,
+          "rpm_cmd": 500,
+          "rpm_actual": 492,
+          "current_a": 1,
+          "voltage_v": 47.9,
+          "bemf_v": null,
+          "status_flags": 71
+        },
+        {
+          "sample_seq": 5,
+          "t_ms": 500,
+          "rpm_cmd": 1000,
+          "rpm_actual": 992,
+          "current_a": 1.15,
+          "voltage_v": 47.85,
+          "bemf_v": null,
+          "status_flags": 39
+        },
+        {
+          "sample_seq": 6,
+          "t_ms": 600,
+          "rpm_cmd": 1000,
+          "rpm_actual": 992,
+          "current_a": 1.3,
+          "voltage_v": 47.8,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 7,
+          "t_ms": 700,
+          "rpm_cmd": 1000,
+          "rpm_actual": 992,
+          "current_a": 1.45,
+          "voltage_v": 47.75,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 8,
+          "t_ms": 800,
+          "rpm_cmd": 1000,
+          "rpm_actual": 992,
+          "current_a": 1.6,
+          "voltage_v": 47.7,
+          "bemf_v": null,
+          "status_flags": 7
+        },
+        {
+          "sample_seq": 9,
+          "t_ms": 900,
+          "rpm_cmd": 1000,
+          "rpm_actual": 992,
+          "current_a": 1.75,
+          "voltage_v": 47.65,
+          "bemf_v": null,
+          "status_flags": 7
+        }
+      ]
+    }
+  },
+  "responses": {
+    "201": {
+      "receipt_id": "8b0d2f4a-6c8e-4a0b-b2d4-f6a8c0e2a471",
+      "test_id": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+      "stored_sample_count": 10,
+      "payload_hash": "sha256:a57b279ea47afabfd9ebde03cad738e9996cc53ef87ee7a02332f6b387b0a3d3",
+      "samples_digest": "sha256:1e0a148b3644e455990df61e3f08e36c800bf7139cde301d49fb245087aeff4a",
+      "run_digest_match": true,
+      "stored_at": "2026-12-02T10:20:07Z",
+      "signed_receipt": {
+        "alg": "Ed25519",
+        "key_id": "1405073224d4d609",
+        "message": "TVRSQ1BUMgAUBQcyJNTWCSxOaosNL0tNpsjgosTmqHGLDS9KbI5KC7LU9qjA4qRx2MdENqIBAAAKAAAACgAAAAoAAAABBAEPHgoUizZE5FWZDfYePwjjbIAL9xOc3jAdSfskUIeu_0oeChSLNkTkVZkN9h4_CONsgAv3E5zeMB1J-yRQh67_SqV7J56kevq_2eveA8rXOOmZbMU--H7noCMy9rOHsKPTrofMbgGULTgO3NffE5WDKpedKpLvIgKdYqnAHIcJ93muh8xuAZQtOA7c198TlYMql50qku8iAp1iqcAchwn3eQIAAAACAAAAGYQDAACIEwAAFGVzcDMyYzMtMDAxMTIyMzM0NDU1EDExMjIzMzQ0NTU2Njc3ODg",
+        "signature": "sHuRbZeEO1-5oLB6Ttg3MddkKxpttqRuZmDFWfniTC08WGLU1e8DJ4qEj7flUnkwL6UrRKjfde5RrDCWHP8-DA"
+      }
+    }
+  },
+  "verify": {
+    "vcu_keyring": [
+      {
+        "key_id": "1405073224d4d609",
+        "public_key": "PwNsJsNYxtgU6LzEmWez4yhLFIWJAmKFUEmBQMQn2A8"
+      }
+    ],
+    "vcu_manifest": {
+      "receipt_version": 2,
+      "test_id": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+      "vcu_id": "esp32c3-001122334455",
+      "origin_boot_id": "1122334455667788",
+      "started": true,
+      "recording_complete": true,
+      "final_state": "COMPLETED",
+      "stop_reason": "RAMP_COMPLETE",
+      "sample_count": 10,
+      "held_count": 10,
+      "run_digest": "sha256:1e0a148b3644e455990df61e3f08e36c800bf7139cde301d49fb245087aeff4a",
+      "event_digest": "sha256:ae87cc6e01942d380edcd7df1395832a979d2a92ef22029d62a9c01c8709f779",
+      "warnings_count": 2,
+      "command_changes_count": 2,
+      "event_log_complete": false,
+      "capture_end_ms": 900,
+      "start_uptime_ms": 5000
+    },
+    "expected_decision": "RELEASE",
+    "decider": "decideV2 (selected by vcu_manifest.receipt_version = 2, never by the magic)"
+  },
+  "run_detail": {
+    "request": {
+      "method": "GET",
+      "path": "/api/testing/results/2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+      "headers": {
+        "Authorization": "Bearer <token>",
+        "X-App-Version": "1.1.0",
+        "X-Staging-Key": "<staging key>"
+      }
+    },
+    "responses": {
+      "200": {
+        "test_id": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+        "motor_serial": "EXAMPLE-SERIAL-0005",
+        "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+        "variant_code": "B-125-M-5D-ES11-E04",
+        "profile_id": "9a1c3e5f-7b2d-4f6a-8e0c-2b4d6f8a0c1e",
+        "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+        "operator_id": 843,
+        "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+        "operator_name": "Example Operator A",
+        "uploaded_by": 843,
+        "vcu": {
+          "vcu_id": "esp32c3-001122334455",
+          "fw_version": "1.0.3",
+          "origin_boot_id": "1122334455667788"
+        },
+        "hmi_version": "1.1.0",
+        "contract_version": "0.5",
+        "run_kind": "bench",
+        "started": true,
+        "start_uptime_ms": 5000,
+        "started_at_source": "HMI",
+        "ended_at_source": "HMI",
+        "hmi_auto_time": true,
+        "held_count": 10,
+        "recording_complete": true,
+        "config_hash": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+        "origin_boot_id": "1122334455667788",
+        "receipt_version": 2,
+        "capture_end_ms": 900,
+        "event_log": {
+          "warnings_count": 2,
+          "command_changes_count": 2,
+          "complete": false,
+          "lost_count": 1
+        },
+        "event_digest": "sha256:ae87cc6e01942d380edcd7df1395832a979d2a92ef22029d62a9c01c8709f779",
+        "events_stored_digest": "sha256:ae87cc6e01942d380edcd7df1395832a979d2a92ef22029d62a9c01c8709f779",
+        "event_digest_match": true,
+        "b6_coverage_ok": false,
+        "unproven": [
+          {
+            "seq": 2,
+            "rule": "WARNING_PAIRING",
+            "note": "CLEARED after clear: the preceding event may have been lost"
+          }
+        ],
+        "warnings": [
+          {
+            "seq": 1,
+            "t_ms": 290,
+            "phase": "CAPTURE",
+            "kind": "DETAIL",
+            "source": "SDO_2031_11",
+            "limit_id": null,
+            "code": 133,
+            "status_t_ms": 250,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          },
+          {
+            "seq": 2,
+            "t_ms": 420,
+            "phase": "CAPTURE",
+            "kind": "CLEARED",
+            "source": "STATUS_BIT6",
+            "limit_id": null,
+            "code": null,
+            "status_t_ms": null,
+            "reason": null,
+            "restored_state": null,
+            "detail": null
+          }
+        ],
+        "command_changes": [
+          {
+            "step": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "link": "OWNS_READING",
+            "first_sample_seq": 0
+          },
+          {
+            "step": 1,
+            "t_ms": 480,
+            "rpm_cmd": 1000,
+            "link": "OWNS_READING",
+            "first_sample_seq": 5
+          }
+        ],
+        "started_at": "2026-12-02T10:20:03Z",
+        "ended_at": "2026-12-02T10:20:05Z",
+        "final_state": "COMPLETED",
+        "stop_reason": "RAMP_COMPLETE",
+        "fault_code": null,
+        "outcome": "INVALID",
+        "outcome_reasons": [
+          {
+            "criterion": null,
+            "reason": "EVENT_LOG_INCOMPLETE",
+            "detail": "1 warning event lost (S4)"
+          },
+          {
+            "criterion": null,
+            "reason": "B6_COVERAGE",
+            "detail": "b6 readings 3 and 4 outside every warning interval (S5)"
+          }
+        ],
+        "sample_count": 10,
+        "run_digest": "sha256:1e0a148b3644e455990df61e3f08e36c800bf7139cde301d49fb245087aeff4a",
+        "received_at": "2026-12-02T10:20:07Z",
+        "receipt": {
+          "receipt_id": "8b0d2f4a-6c8e-4a0b-b2d4-f6a8c0e2a471",
+          "test_id": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+          "stored_sample_count": 10,
+          "payload_hash": "sha256:a57b279ea47afabfd9ebde03cad738e9996cc53ef87ee7a02332f6b387b0a3d3",
+          "samples_digest": "sha256:1e0a148b3644e455990df61e3f08e36c800bf7139cde301d49fb245087aeff4a",
+          "run_digest_match": true,
+          "stored_at": "2026-12-02T10:20:07Z",
+          "signed_receipt": {
+            "alg": "Ed25519",
+            "key_id": "1405073224d4d609",
+            "message": "TVRSQ1BUMgAUBQcyJNTWCSxOaosNL0tNpsjgosTmqHGLDS9KbI5KC7LU9qjA4qRx2MdENqIBAAAKAAAACgAAAAoAAAABBAEPHgoUizZE5FWZDfYePwjjbIAL9xOc3jAdSfskUIeu_0oeChSLNkTkVZkN9h4_CONsgAv3E5zeMB1J-yRQh67_SqV7J56kevq_2eveA8rXOOmZbMU--H7noCMy9rOHsKPTrofMbgGULTgO3NffE5WDKpedKpLvIgKdYqnAHIcJ93muh8xuAZQtOA7c198TlYMql50qku8iAp1iqcAchwn3eQIAAAACAAAAGYQDAACIEwAAFGVzcDMyYzMtMDAxMTIyMzM0NDU1EDExMjIzMzQ0NTU2Njc3ODg",
+            "signature": "sHuRbZeEO1-5oLB6Ttg3MddkKxpttqRuZmDFWfniTC08WGLU1e8DJ4qEj7flUnkwL6UrRKjfde5RrDCWHP8-DA"
+          }
+        },
+        "profile": {
+          "profile_id": "9a1c3e5f-7b2d-4f6a-8e0c-2b4d6f8a0c1e",
+          "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+          "version": 1,
+          "max_rpm": 3000,
+          "step_rpm": 10,
+          "duration_s": 120,
+          "sample_hz": 10,
+          "sha256": "sha256:1eda244a20fa166d2d6539a215a489d2c43604464fb378681f20bed45c99484e",
+          "status": "PUBLISHED",
+          "published_at": "2026-12-01T08:00:00Z"
+        },
+        "criteria": {
+          "criteria_version_id": "4d6f8a0c-2e4a-4c6e-a8b0-c2e4a6c8e0b2",
+          "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+          "version": 1,
+          "sha256": "sha256:e4ddb7690eab00ea8bebd9c805f8bfc119f99e6530c2ab02c0d0155ad01b3df6",
+          "status": "PUBLISHED",
+          "published_at": "2026-12-01T08:00:00Z",
+          "definition": {
+            "schema": 1,
+            "variant_id": "0f3b6a9c-2d5e-4a8b-b1c4-d7e0f3a6b9c2",
+            "version": 1,
+            "units": {
+              "current": "A",
+              "voltage": "V",
+              "speed": "rpm"
+            },
+            "rules": [
+              {
+                "id": "I_MAX",
+                "type": "max",
+                "signal": "current_a",
+                "limit": null,
+                "filter": {
+                  "kind": "none",
+                  "window_ms": null
+                },
+                "exclude_first_ms": null
+              },
+              {
+                "id": "V_SUPPLY",
+                "type": "range",
+                "signal": "voltage_v",
+                "min": null,
+                "max": null,
+                "on_violation": "INVALID"
+              }
+            ]
+          }
+        },
+        "events": [
+          {
+            "t_ms": 0,
+            "type": "STATE",
+            "code": "RUNNING",
+            "detail": null
+          },
+          {
+            "t_ms": 900,
+            "type": "STATE",
+            "code": "STOPPING",
+            "detail": "RAMP_COMPLETE"
+          },
+          {
+            "t_ms": 1100,
+            "type": "STATE",
+            "code": "COMPLETED",
+            "detail": null
+          }
+        ],
+        "samples": [
+          {
+            "sample_seq": 0,
+            "t_ms": 0,
+            "rpm_cmd": 500,
+            "rpm_actual": 0,
+            "current_a": 0.4,
+            "voltage_v": 48.1,
+            "bemf_v": null,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 1,
+            "t_ms": 100,
+            "rpm_cmd": 500,
+            "rpm_actual": 492,
+            "current_a": 0.55,
+            "voltage_v": 48.05,
+            "bemf_v": null,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 2,
+            "t_ms": 200,
+            "rpm_cmd": 500,
+            "rpm_actual": 492,
+            "current_a": 0.7,
+            "voltage_v": 48,
+            "bemf_v": null,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 3,
+            "t_ms": 300,
+            "rpm_cmd": 500,
+            "rpm_actual": 492,
+            "current_a": 0.85,
+            "voltage_v": 47.95,
+            "bemf_v": null,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 4,
+            "t_ms": 400,
+            "rpm_cmd": 500,
+            "rpm_actual": 492,
+            "current_a": 1,
+            "voltage_v": 47.9,
+            "bemf_v": null,
+            "status_flags": 71
+          },
+          {
+            "sample_seq": 5,
+            "t_ms": 500,
+            "rpm_cmd": 1000,
+            "rpm_actual": 992,
+            "current_a": 1.15,
+            "voltage_v": 47.85,
+            "bemf_v": null,
+            "status_flags": 39
+          },
+          {
+            "sample_seq": 6,
+            "t_ms": 600,
+            "rpm_cmd": 1000,
+            "rpm_actual": 992,
+            "current_a": 1.3,
+            "voltage_v": 47.8,
+            "bemf_v": null,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 7,
+            "t_ms": 700,
+            "rpm_cmd": 1000,
+            "rpm_actual": 992,
+            "current_a": 1.45,
+            "voltage_v": 47.75,
+            "bemf_v": null,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 8,
+            "t_ms": 800,
+            "rpm_cmd": 1000,
+            "rpm_actual": 992,
+            "current_a": 1.6,
+            "voltage_v": 47.7,
+            "bemf_v": null,
+            "status_flags": 7
+          },
+          {
+            "sample_seq": 9,
+            "t_ms": 900,
+            "rpm_cmd": 1000,
+            "rpm_actual": 992,
+            "current_a": 1.75,
+            "voltage_v": 47.65,
+            "bemf_v": null,
+            "status_flags": 7
+          }
+        ],
+        "samples_page": {
+          "offset": 0,
+          "limit": 2000,
+          "returned": 10,
+          "total": 10
+        }
+      }
+    }
+  }
+}

@@ -62,11 +62,34 @@ function buildMessage(f) {
   return b;
 }
 
-// Returns { key_id, signed_message, signature } or null when no key is configured.
-function signReceipt(fields) {
+// MTRCPT2 (contract v0.5, receipt-signing.md section 11): the MTRCPT1 fields with magic "MTRCPT2\0", plus an event block
+// before the identifiers. Optional values are 0 with a presence flag, never a sentinel.
+const MAGIC2 = Buffer.from('MTRCPT2\0', 'latin1');
+const EVENT_FLAG = { EVENT_DIGEST_MATCH: 1, EVENT_LOG_COMPLETE: 2, B6_COVERAGE_OK: 4, CAPTURE_END_PRESENT: 8, START_UPTIME_PRESENT: 16 };
+// f: the MTRCPT1 fields + { event_digest, events_stored_digest, warnings_count, command_changes_count, event_log_complete,
+//     b6_coverage_ok, capture_end_ms (number|null), start_uptime_ms (number|null) }
+function buildMessageV2(f) {
+  const v1 = buildMessage(f);
+  const block = Buffer.alloc(81);
+  digestBytes(f.event_digest).copy(block, 0);
+  digestBytes(f.events_stored_digest).copy(block, 32);
+  block.writeUInt32LE(f.warnings_count, 64);
+  block.writeUInt32LE(f.command_changes_count, 68);
+  block.writeUInt8((f.events_stored_digest === f.event_digest ? EVENT_FLAG.EVENT_DIGEST_MATCH : 0)
+    | (f.event_log_complete ? EVENT_FLAG.EVENT_LOG_COMPLETE : 0)
+    | (f.b6_coverage_ok ? EVENT_FLAG.B6_COVERAGE_OK : 0)
+    | (f.capture_end_ms !== null ? EVENT_FLAG.CAPTURE_END_PRESENT : 0)
+    | (f.start_uptime_ms !== null ? EVENT_FLAG.START_UPTIME_PRESENT : 0), 72);
+  block.writeUInt32LE(f.capture_end_ms ?? 0, 73);
+  block.writeUInt32LE(f.start_uptime_ms ?? 0, 77);
+  return Buffer.concat([MAGIC2, v1.subarray(8, 168), block, v1.subarray(168)]);
+}
+
+// Returns { key_id, signed_message, signature } or null when no key is configured. version 2 = MTRCPT2.
+function signReceipt(fields, version = 1) {
   const key = loadKey();
   if (!key) return null;
-  const message = buildMessage({ ...fields, key_id: key.keyId });
+  const message = version === 2 ? buildMessageV2({ ...fields, key_id: key.keyId }) : buildMessage({ ...fields, key_id: key.keyId });
   return { key_id: key.keyId, public_key: key.publicRaw, signed_message: message, signature: crypto.sign(null, message, key.privateKey) };
 }
 
@@ -74,4 +97,4 @@ const signedReceiptJson = (r) => (r && r.signing_key_id
   ? { alg: 'Ed25519', key_id: r.signing_key_id, message: Buffer.from(r.signed_message).toString('base64url'), signature: Buffer.from(r.signature).toString('base64url') }
   : null);
 
-module.exports = { loadKey, resetKeyCache, buildMessage, signReceipt, signedReceiptJson };
+module.exports = { loadKey, resetKeyCache, buildMessage, buildMessageV2, signReceipt, signedReceiptJson };

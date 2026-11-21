@@ -85,7 +85,7 @@ exports.postResult = async (req, res) => {
   try {
     const out = await model.storeRun({
       body: b, payloadHash: hash, samplesDigest: consistency.samplesDigest,
-      violations: consistency.violations, uploadedBy: req.user.user_id,
+      violations: consistency.violations, uploadedBy: req.user.user_id, events: consistency.events,
     });
     if (out.status === 201) logger.info(`motor test stored ${b.test_id} serial ${b.motor_serial} ${b.final_state}/${b.outcome} samples ${b.samples.length} by user ${req.user.user_id}`);
     if (out.status === 409) logger.warn(`motor test upload conflict ${b.test_id} by user ${req.user.user_id}`);

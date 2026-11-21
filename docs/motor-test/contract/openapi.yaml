@@ -1,8 +1,24 @@
 openapi: 3.0.3
 info:
   title: Motor Test ERP API (HMI <-> ERP)
-  version: 0.4.0-draft
+  version: 0.5.0-draft
   description: |
+    v0.5 (DRAFT R4, 2026-11-21): implemented in the ERP backend and tested against staging, NOT deployed yet. It goes to
+    staging with the next backend deploy and to production after Mayank's final review. Spec: v05-warning-events.md (R4)
+    and receipt-signing.md section 11 (MTRCPT2).
+    - Opt-in per upload with `contract_version: "0.5"` (schema RunUploadV05). v0.5 is a superset of v0.4: the v0.4
+      body plus capture_end_ms, event_log, warnings[] (WarningEvent), command_changes[] (CommandChange) and
+      event_digest (MTEVT2, computed by the VCU). v0.3 (no contract_version) and v0.4 uploads stay accepted unchanged.
+    - New rejections: 400 VALIDATION_ERROR with fields [{path: "events", msg: "EVENT_FIELDS: <message>"}]; 422
+      INCONSISTENT_RUN violations with path "events" and the rules EVENT_ORDER, EVENT_PHASE, EVENT_CAUSALITY, EVENT_COUNTS,
+      WARNING_PAIRING, COMMAND_ORDER, COMMAND_LINK, COMMAND_WINDOW, COMMAND_MISSING_STEP0 and CANCEL_SHAPE.
+    - Receipt version pinned per run: a v0.4 run gets an MTRCPT1 signed_receipt, a v0.5 run an MTRCPT2 one (event block
+      with event_digest, the ERP's recomputed events_stored_digest, counts, event flags and capture bounds). The ERP
+      stores receipt_version (1 or 2) with the run; the VCU selects the decoder from its own manifest, never by the magic.
+    - Run detail returns receipt_version and (v0.5 runs) the stored event facts, including unproven[] records of an
+      incomplete log; the serial lookup adds event_log_complete and unproven_count.
+    v0.5 example JSON: fixtures 70-76.
+
     v0.4 (2026-11-19): live on staging and production (commit 69aacd0c). Receipts signed on staging (key 70e57bbf84ae97cc); production key 61322efab675c04c loaded, signing from the first real bench upload. Contract text is a draft until T012.
 
     What changed in v0.4 (spec: receipt-signing.md, sections 2-6):
@@ -225,6 +241,32 @@ paths:
         Receipt: a v0.4 201/200 receipt also has `signed_receipt` (or null when the server has no signing key configured).
         A 200 identical retry returns the byte-identical receipt, signed_receipt included. 409 and every 4xx/5xx never carry it.
         OPEN (D11, testing head): COMPLETED run with unrecoverable gaps -> proposed: accepted as INCOMPLETE.
+
+        v0.5 (`contract_version: "0.5"`, RunUploadV05; DRAFT R4, not deployed yet; v05-warning-events.md). Every v0.4 rule
+        above applies too. The event section (capture_end_ms, event_log, warnings, command_changes, event_digest) is checked
+        after the v0.4 rules; the first event failure is reported (at most one event error per response):
+        - 400 VALIDATION_ERROR, fields [{path: "events", msg: "EVENT_FIELDS: <message>"}] (fixture 74): a wrong type, range
+          or enum (enum values must be exact own values: "toString" is rejected), or a field combination not allowed by
+          WarningEvent / CommandChange / EventLog. This 400 replaces any v0.4 422 violations of the same body.
+        - 422 INCONSISTENT_RUN, violations [{path: "events", rule, msg}] (fixtures 73, 75), next to any v0.4 violations:
+          CANCEL_SHAPE (started run without capture_end_ms or start_uptime_ms; CANCEL with capture_end_ms, warnings or
+          command changes) · EVENT_COUNTS (event_log counts differ from the array lengths) · EVENT_ORDER (complete log:
+          seq 0..n-1; incomplete: strictly increasing; t_ms never decreasing in seq order) · COMMAND_ORDER (same for step
+          and command t_ms) · COMMAND_MISSING_STEP0 (started run with a complete log and no command change) ·
+          COMMAND_WINDOW (a change after capture_end_ms) · EVENT_PHASE (phase does not match t_ms; ACTIVE_AT_START with
+          t_ms > 0) · EVENT_CAUSALITY (status_t_ms after t_ms) · WARNING_PAIRING (per source + limit_id: ACTIVE_AT_START /
+          RAISED only from clear, CLEARED only from active, STATUS_KNOWN only from unknown) · COMMAND_LINK (owned reading
+          not stored / no b5 / earlier than the change / other rpm_cmd / owned twice; READING_NOT_RETAINED below held_count;
+          linked readings not increasing; SUPERSEDED without a later change; NO_READING not last; complete log with an
+          unowned stored b5 reading).
+        - Incomplete log (event_log.complete = false): a CLEARED / STATUS_KNOWN whose opening event, or a SUPERSEDED whose
+          successor, may have been lost is accepted unchanged and listed in the run's unproven[] (fixture 71), but only
+          when a loss before it is possible (seq gap at or before it, first seq > 0, or lost_count null); otherwise
+          WARNING_PAIRING / COMMAND_LINK as for a complete log.
+        - Stored, never rejected: event_digest_match (the ERP recomputes MTEVT2 from the stored arrays plus started,
+          capture_end_ms and start_uptime_ms) and b6_coverage_ok (a stored b6 reading outside every active / unknown
+          warning interval makes it false).
+        - Receipt: an MTRCPT2 signed_receipt (receipt_version 2, pinned with the run), fixtures 70-72.
       parameters:
         - $ref: '#/components/parameters/AppVersion'
         - name: Idempotency-Key
@@ -237,27 +279,33 @@ paths:
         content:
           application/json:
             schema:
-              description: 'v0.3 (no contract_version) or v0.4 (contract_version "0.4"). The two schemas are exclusive: only RunUploadV04 has contract_version.'
+              description: |
+                v0.3 (no contract_version), v0.4 (contract_version "0.4") or v0.5 (contract_version "0.5"). The three schemas
+                are exclusive and contract_version selects the schema: RunUpload has no contract_version, RunUploadV04 only
+                allows "0.4" and RunUploadV05 only "0.5" (OpenAPI 3.0 has no const, so each uses a one-value enum; a
+                discriminator is not used because the v0.3 schema has no contract_version). Any other contract_version
+                is 400 VALIDATION_ERROR; a v0.5 field in a v0.4 body is 400 ("is a v0.5 field: send contract_version 0.5").
               oneOf:
                 - $ref: '#/components/schemas/RunUpload'
                 - $ref: '#/components/schemas/RunUploadV04'
+                - $ref: '#/components/schemas/RunUploadV05'
       responses:
         '201':
-          description: Stored. Fixtures 10, 13, 14 (v0.3); 60, 61, 62, 63 (v0.4, with signed_receipt).
+          description: Stored. Fixtures 10, 13, 14 (v0.3); 60, 61, 62, 63 (v0.4, MTRCPT1 signed_receipt); 70, 71, 72 (v0.5, MTRCPT2 signed_receipt).
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Receipt' }
         '200':
-          description: Identical retry; original receipt, byte-identical (v0.4 signed_receipt included). Fixtures 11, 60.
+          description: Identical retry; original receipt, byte-identical (v0.4 / v0.5 signed_receipt included). Fixtures 11, 60, 70.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Receipt' }
-        '400': { description: 'VALIDATION_ERROR (fields[]) or UNKNOWN_REFERENCE. Fixtures 20, 21, 22, 28, 31, 67.', $ref: '#/components/responses/Error' }
+        '400': { description: 'VALIDATION_ERROR (fields[]) or UNKNOWN_REFERENCE. Fixtures 20, 21, 22, 28, 31, 67; v0.5 EVENT_FIELDS (path "events", msg "EVENT_FIELDS: ...") fixture 74.', $ref: '#/components/responses/Error' }
         '401': { $ref: '#/components/responses/Error' }
         '403': { description: 'AUTH_INVALID_TOKEN (re-login) or TESTING_ROLE_REQUIRED (NEEDS_REVIEW). Fixture 03.', $ref: '#/components/responses/Error' }
         '409': { description: 'PAYLOAD_CONFLICT. Fixture 12.', $ref: '#/components/responses/Error' }
         '413': { description: 'PAYLOAD_TOO_LARGE (limit 5 MB). Fixture 29.', $ref: '#/components/responses/Error' }
-        '422': { description: 'INCONSISTENT_RUN (violations[]). Fixtures 23-27, 65, 66, 68. RUN_KIND_NOT_ALLOWED (v0.4). Fixture 64.', $ref: '#/components/responses/Error' }
+        '422': { description: 'INCONSISTENT_RUN (violations[]). Fixtures 23-27, 65, 66, 68; v0.5 event rules fixtures 73 (WARNING_PAIRING), 75 (COMMAND_MISSING_STEP0). RUN_KIND_NOT_ALLOWED (v0.4 / v0.5). Fixture 64.', $ref: '#/components/responses/Error' }
         '429': { $ref: '#/components/responses/Error' }
         '503': { description: 'SERVER_UNAVAILABLE / AUTH_UNAVAILABLE - nothing committed, retry same body with backoff. Fixture 30.', $ref: '#/components/responses/Error' }
     get:
@@ -267,7 +315,7 @@ paths:
         - { name: serial, in: query, required: true, schema: { type: string } }
       responses:
         '200':
-          description: Fixture 40-results-by-serial.json.
+          description: Fixture 40-results-by-serial.json; v0.5 runs fixture 76 (event_log_complete, unproven_count).
           content:
             application/json:
               schema:
@@ -341,22 +389,19 @@ paths:
       responses:
         '200':
           description: |
-            The stored upload fields (RunUpload / RunUploadV04) plus uploaded_by, received_at, receipt, profile and
-            criteria snapshots, and (v0.4) the run fields listed below. For v0.3 runs those fields are null, except
-            contract_version "0.3".
+            The stored upload fields (RunUpload / RunUploadV04 / RunUploadV05; profile_sha256 and criteria_sha256 are
+            not repeated, see profile and criteria) plus variant_code, uploaded_by, received_at, receipt, profile and
+            criteria snapshots, a page of samples (samples_offset / samples_limit, default 2000, max 5000), and the run
+            fields listed in RunDetailV04Fields (null for v0.3 runs, except contract_version "0.3") and
+            RunDetailV05Fields (receipt_version on every run; the event fields only on v0.5 runs). Fixture 71
+            (run_detail) shows a v0.5 run with an incomplete event log.
           content:
             application/json:
               schema:
                 allOf:
-                  - $ref: '#/components/schemas/RunUpload'
-                  - type: object
-                    properties:
-                      uploaded_by: { type: integer }
-                      received_at: { type: string, format: date-time }
-                      receipt: { $ref: '#/components/schemas/Receipt' }
-                      profile: { $ref: '#/components/schemas/Profile' }
-                      criteria: { $ref: '#/components/schemas/CriteriaVersion' }
+                  - $ref: '#/components/schemas/RunDetailBase'
                   - $ref: '#/components/schemas/RunDetailV04Fields'
+                  - $ref: '#/components/schemas/RunDetailV05Fields'
         '401': { $ref: '#/components/responses/Error' }
         '403': { $ref: '#/components/responses/Error' }
         '404': { $ref: '#/components/responses/Error' }
@@ -394,7 +439,10 @@ components:
           description: 'RUN_KIND_NOT_ALLOWED (v0.4, 422): run_kind not accepted by this server (production accepts only bench).'
         fields:
           type: array
-          description: VALIDATION_ERROR / UNKNOWN_REFERENCE
+          description: |
+            VALIDATION_ERROR / UNKNOWN_REFERENCE. v0.5 event field errors come back as one entry
+            {path: "events", msg: "EVENT_FIELDS: <message>"} (fixture 74); path "events" names the v0.5 event section
+            (warnings, command_changes, event_log, capture_end_ms), not the v0.3 events[] array.
           items: { type: object, properties: { path: { type: string }, msg: { type: string } } }
         violations:
           type: array
@@ -402,7 +450,9 @@ components:
             INCONSISTENT_RUN. rule is one of PASS_REQUIRES_COMPLETED, COMPLETE_EVIDENCE_REQUIRED, DIGEST_MATCH_REQUIRED,
             VALIDITY_FLAG_MISMATCH, LIFECYCLE_STOP_REASON (v0.3 and v0.4); RECORDING_COMPLETE_REQUIRED,
             RECORDING_COMPLETE_COUNTS, CANCEL_SHAPE, START_UPTIME_REQUIRED, HELD_COUNT_RANGE, TOO_MANY_SAMPLES,
-            SEQ_OUT_OF_RANGE, TIME_SOURCE (v0.4). See POST /api/testing/results.
+            SEQ_OUT_OF_RANGE, TIME_SOURCE (v0.4 and v0.5); with path "events" (v0.5, at most one): EVENT_ORDER, EVENT_PHASE,
+            EVENT_CAUSALITY, EVENT_COUNTS, WARNING_PAIRING, COMMAND_ORDER, COMMAND_LINK, COMMAND_WINDOW,
+            COMMAND_MISSING_STEP0, CANCEL_SHAPE (fixtures 73, 75). See POST /api/testing/results.
           items: { type: object, properties: { path: { type: string }, rule: { type: string }, msg: { type: string } } }
         test_id: { type: string, format: uuid }
         existing_payload_hash: { $ref: '#/components/schemas/Digest' }
@@ -538,7 +588,8 @@ components:
           allOf:
             - $ref: '#/components/schemas/SignedReceipt'
           description: |
-            v0.4 receipts only (absent from v0.3 receipts). null when the server has no signing key configured.
+            v0.4 and v0.5 receipts only (absent from v0.3 receipts). null when the server has no signing key configured.
+            v0.4 runs: MTRCPT1 message; v0.5 runs: MTRCPT2 message (the run's receipt_version, pinned when stored).
             Built and signed once at the original commit; a 200 identical retry returns it byte-identical.
             Never in a 409 or any other 4xx/5xx.
     SignedReceipt:
@@ -546,15 +597,20 @@ components:
       additionalProperties: false
       required: [alg, key_id, message, signature]
       description: |
-        receipt-signing.md sections 4-5. The VCU decides only from the signed message bytes (section 6); the tablet
-        forwards message and signature to the VCU unchanged. Message v1 (172-234 bytes) signs, among others,
-        sample_count, held_count, stored_sample_count, final_state, outcome, stop_reason, flags (b0 run_digest_match,
-        b1 held_count_match, b2 = the uploaded recording_complete, b3 = started), run_digest, samples_digest,
-        payload_hash, vcu_id and origin_boot_id.
+        receipt-signing.md sections 4-5 and 11. The VCU decides only from the signed message bytes (section 6 / 11.3);
+        the tablet forwards message and signature to the VCU unchanged. The message format follows the run's
+        receipt_version: MTRCPT1 (172-234 bytes, v0.4 runs) or MTRCPT2 (253-315 bytes, v0.5 runs). The VCU selects
+        the decoder from the receipt_version in its own run manifest, never from the received magic (no fallback).
+        MTRCPT1 signs, among others, sample_count, held_count, stored_sample_count, final_state, outcome, stop_reason,
+        flags (b0 run_digest_match, b1 held_count_match, b2 = the uploaded recording_complete, b3 = started),
+        run_digest, samples_digest, payload_hash, vcu_id and origin_boot_id. MTRCPT2 = the same fields with magic
+        "MTRCPT2\0" plus an event block: event_digest (as uploaded), events_stored_digest (recomputed by the ERP),
+        warnings_count, command_changes_count, event flags (b0 event_digest_match, b1 event_log_complete,
+        b2 b6_coverage_ok, b3 capture_end present, b4 start_uptime present), capture_end_ms and start_uptime_ms.
       properties:
         alg: { type: string, enum: [Ed25519], description: 'Pure Ed25519 (RFC 8032 5.1), no prehash, no context' }
         key_id: { type: string, pattern: '^[0-9a-f]{16}$', description: First 8 bytes of SHA-256(public key), lowercase hex }
-        message: { type: string, pattern: '^[A-Za-z0-9_-]+$', minLength: 230, maxLength: 312, description: 'Strict base64url (RFC 4648 section 5, no padding) of the signed message bytes' }
+        message: { type: string, pattern: '^[A-Za-z0-9_-]+$', minLength: 230, maxLength: 420, description: 'Strict base64url (RFC 4648 section 5, no padding) of the signed message bytes: 230-312 characters for MTRCPT1 (172-234 bytes), 338-420 for MTRCPT2 (253-315 bytes)' }
         signature: { type: string, pattern: '^[A-Za-z0-9_-]{86}$', description: Strict base64url of the 64-byte signature (R||S) }
     RunUploadV04:
       description: |
@@ -610,6 +666,149 @@ components:
         run_digest: { $ref: '#/components/schemas/Digest' }
         events: { type: array, items: { $ref: '#/components/schemas/Event' } }
         samples: { type: array, maxItems: 40000, items: { $ref: '#/components/schemas/Sample' } }
+    RunUploadV05:
+      description: |
+        v0.5 upload (opt-in with contract_version "0.5"; DRAFT R4, implemented, not deployed yet). Exactly the v0.4
+        fields and rules (RunUploadV04) plus capture_end_ms, event_log, warnings, command_changes and event_digest
+        (v05-warning-events.md sections 1-6). The response receipt carries an MTRCPT2 signed_receipt.
+        Shapes (422 CANCEL_SHAPE): a started run has capture_end_ms and start_uptime_ms; a CANCEL (started = false)
+        has capture_end_ms null, no warnings and no command changes. Event times are run-relative ms on the same origin
+        as samples[].t_ms. Fixtures 70-75.
+      type: object
+      additionalProperties: false
+      required: [contract_version, test_id, motor_serial, variant_id, profile_id, profile_sha256, criteria_version_id, criteria_sha256,
+                 operator_id, operator_ref, operator_name, vcu, hmi_version, run_kind, started, start_uptime_ms,
+                 started_at, started_at_source, ended_at, ended_at_source, hmi_auto_time, final_state, stop_reason, fault_code,
+                 outcome, outcome_reasons, sample_count, held_count, recording_complete, config_hash, run_digest, events, samples,
+                 capture_end_ms, event_log, warnings, command_changes, event_digest]
+      properties:
+        contract_version: { type: string, enum: ['0.5'] }
+        test_id: { type: string, format: uuid, description: UUID v4 created once by the HMI; retest = new UUID }
+        motor_serial: { type: string, minLength: 1, maxLength: 64 }
+        variant_id: { type: string, format: uuid }
+        profile_id: { type: string, format: uuid }
+        profile_sha256: { $ref: '#/components/schemas/Digest' }
+        criteria_version_id: { type: string, format: uuid }
+        criteria_sha256: { $ref: '#/components/schemas/Digest' }
+        operator_id: { type: integer }
+        operator_ref: { type: string, format: uuid }
+        operator_name: { type: string, minLength: 1, maxLength: 100 }
+        vcu:
+          type: object
+          additionalProperties: false
+          required: [vcu_id, fw_version, origin_boot_id]
+          properties:
+            vcu_id: { type: string, minLength: 1, maxLength: 32, pattern: '^[A-Za-z0-9._-]{1,32}$', example: esp32c3-001122334455 }
+            fw_version: { type: string, minLength: 1, maxLength: 64 }
+            origin_boot_id: { type: string, minLength: 1, maxLength: 32, pattern: '^[A-Za-z0-9._-]{1,32}$', example: '1122334455667788', description: 'The VCU boot the run started in; signed in MTRCPT2 (not part of the MTEVT2 digest)' }
+        hmi_version: { type: string }
+        run_kind: { type: string, enum: [bench, host_simulation, synthetic], description: 'Production accepts only bench; staging accepts all three. Else 422 RUN_KIND_NOT_ALLOWED.' }
+        started: { type: boolean }
+        start_uptime_ms: { type: integer, minimum: 0, maximum: 4294967295, nullable: true, description: 'null exactly when started = false; bound into the MTEVT2 event digest' }
+        started_at: { type: string, format: date-time, nullable: true }
+        started_at_source: { type: string, enum: [HMI, HMI_DERIVED, null], nullable: true }
+        ended_at: { type: string, format: date-time, nullable: true }
+        ended_at_source: { type: string, enum: [HMI, HMI_DERIVED, null], nullable: true }
+        hmi_auto_time: { type: boolean, nullable: true }
+        final_state: { type: string, enum: [COMPLETED, ABORTED, FAULT] }
+        stop_reason: { type: string, enum: [RAMP_COMPLETE, OPERATOR_STOP, HB_LOSS, FAULT, POWER_LOSS, CONFIG_CANCELLED] }
+        fault_code: { type: string, nullable: true }
+        outcome: { type: string, enum: [PASS, FAIL, INCOMPLETE, INVALID] }
+        outcome_reasons: { type: array, items: { $ref: '#/components/schemas/OutcomeReason' } }
+        sample_count: { type: integer, minimum: 0, maximum: 4294967295 }
+        held_count: { type: integer, minimum: 0, maximum: 4294967295 }
+        recording_complete: { type: boolean }
+        config_hash: { type: string, minLength: 1, maxLength: 128, nullable: true }
+        run_digest: { $ref: '#/components/schemas/Digest' }
+        events: { type: array, items: { $ref: '#/components/schemas/Event' }, description: 'v0.3 state/fault event list, unchanged; the v0.5 warning journal is warnings[]' }
+        samples: { type: array, maxItems: 40000, items: { $ref: '#/components/schemas/Sample' } }
+        capture_end_ms: { type: integer, minimum: 0, maximum: 4294967295, nullable: true, description: 'Run-relative time capture closed; null exactly for a CANCEL (started = false). Bound into MTEVT2; signed in MTRCPT2.' }
+        event_log: { $ref: '#/components/schemas/EventLog' }
+        warnings: { type: array, maxItems: 10000, items: { $ref: '#/components/schemas/WarningEvent' }, description: 'Warning journal in seq order. Empty with a complete log = no warnings; with an incomplete log it proves nothing.' }
+        command_changes: { type: array, maxItems: 10000, items: { $ref: '#/components/schemas/CommandChange' }, description: 'Effective command changes in step order; step 0 (applied by START) is always recorded' }
+        event_digest:
+          allOf: [{ $ref: '#/components/schemas/Digest' }]
+          description: |
+            MTEVT2 digest computed by the VCU (v05-warning-events.md section 6): SHA-256 over little-endian bytes of
+            started, capture_end_ms, start_uptime_ms, every warning (detail text excluded), every command change and the
+            event_log completeness / lost_count, optional values as presence byte + value. The ERP recomputes it
+            (events_stored_digest) and stores event_digest_match; a mismatch is stored and signed, never rejected.
+    WarningEvent:
+      type: object
+      additionalProperties: false
+      required: [seq, t_ms, phase, kind, source, limit_id, code, status_t_ms, reason, restored_state, detail]
+      description: |
+        One warning journal record (v05-warning-events.md section 3). Every field is sent, null when not applicable.
+        Enum values must match exactly (own values; "toString", "constructor" etc. are 400 EVENT_FIELDS). Field
+        combinations (400 EVENT_FIELDS):
+        - kinds ACTIVE_AT_START, RAISED, CLEARED, STATUS_UNKNOWN, STATUS_KNOWN only with source STATUS_BIT6 or VCU_LIMIT;
+          DETAIL, DETAIL_UNAVAILABLE, DETAIL_AMBIGUOUS only with source SDO_2031_11;
+        - limit_id only and always with source VCU_LIMIT;
+        - code only and always on DETAIL and DETAIL_AMBIGUOUS;
+        - status_t_ms only and always on the detail kinds (and <= t_ms, else 422 EVENT_CAUSALITY);
+        - reason only and always on DETAIL_UNAVAILABLE (TIMEOUT, ABORT or MALFORMED) and DETAIL_AMBIGUOUS (LATE_REPLY);
+        - restored_state only and always on STATUS_KNOWN;
+        - detail: free text, never part of the digest.
+        Order and pairing rules (422): EVENT_ORDER, EVENT_PHASE, WARNING_PAIRING; see POST /api/testing/results.
+      properties:
+        seq: { type: integer, minimum: 0, maximum: 4294967295, description: 'Journal order: 0..n-1 when the log is complete; strictly increasing with gaps (lost events) when not' }
+        t_ms: { type: integer, minimum: -2147483648, maximum: 2147483647, description: 'Signed run-relative ms (receive time for detail records); never decreasing in seq order (equal allowed)' }
+        phase: { type: string, enum: [PRE_START, CAPTURE, POST_CAPTURE], description: 'Must match t_ms: < 0 PRE_START, 0..capture_end_ms CAPTURE, > capture_end_ms POST_CAPTURE (422 EVENT_PHASE)' }
+        kind:
+          type: string
+          enum: [ACTIVE_AT_START, RAISED, CLEARED, STATUS_UNKNOWN, STATUS_KNOWN, DETAIL, DETAIL_UNAVAILABLE, DETAIL_AMBIGUOUS]
+          description: 'ACTIVE_AT_START needs t_ms <= 0 (422 EVENT_PHASE). STATUS_UNKNOWN / STATUS_KNOWN are not transitions; the unknown span counts as warning-active for evaluation.'
+        source: { type: string, enum: [STATUS_BIT6, VCU_LIMIT, SDO_2031_11] }
+        limit_id: { type: string, pattern: '^[A-Z0-9_]{1,40}$', nullable: true, description: 'Only and always with source VCU_LIMIT' }
+        code: { type: integer, minimum: 0, maximum: 65535, nullable: true, description: 'Raw detail code, only on DETAIL and DETAIL_AMBIGUOUS; unknown codes stay numbers' }
+        status_t_ms: { type: integer, minimum: -2147483648, maximum: 2147483647, nullable: true, description: 'Detail kinds only: time of the triggering status observation; must be <= t_ms (422 EVENT_CAUSALITY)' }
+        reason: { type: string, enum: [TIMEOUT, ABORT, MALFORMED, LATE_REPLY, null], nullable: true, description: 'DETAIL_UNAVAILABLE: TIMEOUT, ABORT or MALFORMED; DETAIL_AMBIGUOUS: LATE_REPLY only; else null' }
+        restored_state: { type: string, enum: [ACTIVE, CLEAR, null], nullable: true, description: 'Only and always on STATUS_KNOWN: the warning state observed when status became known again' }
+        detail: { type: string, maxLength: 200, nullable: true, description: Free diagnostic text; not part of the digest }
+    CommandChange:
+      type: object
+      additionalProperties: false
+      required: [step, t_ms, rpm_cmd, link, first_sample_seq]
+      description: |
+        One effective command change (v05-warning-events.md section 4). first_sample_seq is set exactly for links
+        OWNS_READING and READING_NOT_RETAINED, else null (400 EVENT_FIELDS). Link rules (422 COMMAND_LINK):
+        OWNS_READING = the stored reading carrying its b5 marker, not earlier than the change, with the same rpm_cmd,
+        owned once; SUPERSEDED = a later change exists in the array; NO_READING = only the last change (capture ended
+        before a reading); READING_NOT_RETAINED = sample_seq >= held_count (acquired but lost). Linked readings increase
+        with the step. Complete log: a started run must contain step 0 (422 COMMAND_MISSING_STEP0) and every stored b5
+        reading must be owned. Incomplete log: lost changes leave gaps in step (never renumbered).
+      properties:
+        step: { type: integer, minimum: 0, maximum: 4294967295, description: '0 = the first effective command applied by START (always recorded); 0..n-1 when the log is complete; strictly increasing with gaps when not' }
+        t_ms: { type: integer, minimum: 0, maximum: 2147483647, description: 'VCU time the change took effect; 0 <= t_ms <= capture_end_ms (422 COMMAND_WINDOW); never decreasing (422 COMMAND_ORDER)' }
+        rpm_cmd: { type: integer, minimum: -2147483648, maximum: 2147483647, description: The new effective command }
+        link: { type: string, enum: [OWNS_READING, SUPERSEDED, NO_READING, READING_NOT_RETAINED] }
+        first_sample_seq: { type: integer, minimum: 0, maximum: 4294967295, nullable: true }
+    EventLog:
+      type: object
+      additionalProperties: false
+      required: [warnings_count, command_changes_count, complete, lost_count]
+      description: |
+        Completeness of the event journal, separate from recording_complete (v05-warning-events.md section 5). The counts
+        must equal the array lengths (422 EVENT_COUNTS). lost_count is 0 when complete; when not complete null (unknown)
+        or 1..4294967294 (4294967295 is never valid); anything else is 400 EVENT_FIELDS. An incomplete log makes the run
+        INVALID for evaluation (S4) but is stored and can be released.
+      properties:
+        warnings_count: { type: integer, minimum: 0, maximum: 4294967295 }
+        command_changes_count: { type: integer, minimum: 0, maximum: 4294967295 }
+        complete: { type: boolean }
+        lost_count: { type: integer, minimum: 0, maximum: 4294967294, nullable: true }
+    UnprovenRecord:
+      type: object
+      description: |
+        A record of an incomplete event log that was kept as recorded although a relationship could not be proven
+        because its partner may have been lost: a warning (seq, rule WARNING_PAIRING) or a SUPERSEDED command change
+        (step, rule COMMAND_LINK). Evidence-quality fact for evaluation, never a repair.
+      required: [rule, note]
+      properties:
+        seq: { type: integer, minimum: 0, maximum: 4294967295, description: Warning seq (WARNING_PAIRING) }
+        step: { type: integer, minimum: 0, maximum: 4294967295, description: Command step (COMMAND_LINK) }
+        rule: { type: string, enum: [WARNING_PAIRING, COMMAND_LINK] }
+        note: { type: string }
     OutcomeReason:
       type: object
       properties:
@@ -625,7 +824,7 @@ components:
       type: object
       description: Returned for every run by GET /api/testing/results/{test_id}. For v0.3 runs all are null except contract_version "0.3".
       properties:
-        contract_version: { type: string, enum: ['0.3', '0.4'] }
+        contract_version: { type: string, enum: ['0.3', '0.4', '0.5'] }
         run_kind: { type: string, enum: [bench, host_simulation, synthetic, null], nullable: true }
         started: { type: boolean, nullable: true }
         start_uptime_ms: { type: integer, nullable: true }
@@ -636,6 +835,71 @@ components:
         recording_complete: { type: boolean, nullable: true }
         config_hash: { type: string, nullable: true }
         origin_boot_id: { type: string, nullable: true }
+    RunDetailBase:
+      type: object
+      description: The common run detail fields of GET /api/testing/results/{test_id} (every contract version).
+      properties:
+        test_id: { type: string, format: uuid }
+        motor_serial: { type: string }
+        variant_id: { type: string, format: uuid }
+        variant_code: { type: string }
+        profile_id: { type: string, format: uuid }
+        criteria_version_id: { type: string, format: uuid }
+        operator_id: { type: integer }
+        operator_ref: { type: string, format: uuid }
+        operator_name: { type: string }
+        uploaded_by: { type: integer }
+        vcu:
+          type: object
+          description: '{vcu_id, fw_version, boot_id} for v0.3 runs; {vcu_id, fw_version, origin_boot_id} for v0.4 / v0.5 runs'
+          properties:
+            vcu_id: { type: string }
+            fw_version: { type: string }
+            boot_id: { type: string }
+            origin_boot_id: { type: string }
+        hmi_version: { type: string }
+        started_at: { type: string, format: date-time, nullable: true }
+        ended_at: { type: string, format: date-time, nullable: true }
+        final_state: { type: string, enum: [COMPLETED, ABORTED, FAULT] }
+        stop_reason: { type: string, enum: [RAMP_COMPLETE, OPERATOR_STOP, HB_LOSS, FAULT, POWER_LOSS, CONFIG_CANCELLED] }
+        fault_code: { type: string, nullable: true }
+        outcome: { type: string, enum: [PASS, FAIL, INCOMPLETE, INVALID] }
+        outcome_reasons: { type: array, items: { $ref: '#/components/schemas/OutcomeReason' } }
+        sample_count: { type: integer }
+        run_digest: { $ref: '#/components/schemas/Digest' }
+        received_at: { type: string, format: date-time }
+        receipt: { $ref: '#/components/schemas/Receipt' }
+        profile: { $ref: '#/components/schemas/Profile' }
+        criteria: { $ref: '#/components/schemas/CriteriaVersion' }
+        events: { type: array, items: { $ref: '#/components/schemas/Event' } }
+        samples: { type: array, items: { $ref: '#/components/schemas/Sample' } }
+        samples_page:
+          type: object
+          properties:
+            offset: { type: integer }
+            limit: { type: integer }
+            returned: { type: integer }
+            total: { type: integer, description: stored_sample_count }
+    RunDetailV05Fields:
+      type: object
+      description: |
+        receipt_version is returned for every run (null for v0.3, 1 for v0.4, 2 for v0.5). The other fields are
+        returned only for v0.5 runs (absent otherwise): the stored event section and the facts the ERP derived from it.
+      properties:
+        receipt_version: { type: integer, enum: [1, 2, null], nullable: true, description: 'Signed receipt format pinned when the run was stored: 1 = MTRCPT1 (v0.4), 2 = MTRCPT2 (v0.5), null for v0.3' }
+        capture_end_ms: { type: integer, nullable: true, description: null for a CANCEL }
+        event_log:
+          allOf: [{ $ref: '#/components/schemas/EventLog' }]
+          description: As uploaded (lost_count 0 when complete)
+        event_digest: { $ref: '#/components/schemas/Digest' }
+        events_stored_digest:
+          allOf: [{ $ref: '#/components/schemas/Digest' }]
+          description: MTEVT2 recomputed by the ERP from the stored arrays and the run's started, capture_end_ms and start_uptime_ms
+        event_digest_match: { type: boolean, description: events_stored_digest equals event_digest (MTRCPT2 event flag b0) }
+        b6_coverage_ok: { type: boolean, description: 'false when a stored b6 reading lies outside every active / unknown warning interval (signed as MTRCPT2 event flag b2, reported only)' }
+        unproven: { type: array, items: { $ref: '#/components/schemas/UnprovenRecord' }, description: 'Records of an incomplete log kept although their relationship could not be proven; empty for a complete log' }
+        warnings: { type: array, items: { $ref: '#/components/schemas/WarningEvent' }, description: In seq order }
+        command_changes: { type: array, items: { $ref: '#/components/schemas/CommandChange' }, description: In step order }
     Correction:
       type: object
       properties:
@@ -671,3 +935,10 @@ components:
         sample_count: { type: integer }
         stored_sample_count: { type: integer }
         received_at: { type: string, format: date-time }
+        stop_reason: { type: string }
+        contract_version: { type: string, enum: ['0.3', '0.4', '0.5'] }
+        run_kind: { type: string, enum: [bench, host_simulation, synthetic, null], nullable: true, description: null for v0.3 runs }
+        held_count: { type: integer, nullable: true, description: null for v0.3 runs }
+        recording_complete: { type: boolean, nullable: true, description: null for v0.3 runs }
+        event_log_complete: { type: boolean, nullable: true, description: 'v0.5: event_log.complete; null for v0.3 / v0.4 runs' }
+        unproven_count: { type: integer, nullable: true, description: 'v0.5: number of unproven records (0 for a complete log); null for v0.3 / v0.4 runs' }

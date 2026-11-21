@@ -1,0 +1,87 @@
+{
+  "note": "Serial lookup with v0.5 runs (fixtures 70-72), newest started_at first, runs without started_at (CANCEL) last. event_log_complete and unproven_count are null for v0.3 / v0.4 runs. v0.5 is implemented in the ERP and tested against staging; staging after the next backend deploy, production after Mayank's final review.",
+  "server": "https://api.intute.biz/staging",
+  "request": {
+    "method": "GET",
+    "path": "/api/testing/results?serial=EXAMPLE-SERIAL-0005"
+  },
+  "responses": {
+    "200": {
+      "motor_serial": "EXAMPLE-SERIAL-0005",
+      "runs": [
+        {
+          "test_id": "2c4e6a8b-0d2f-4b4d-a6c8-e0a2c4e6a871",
+          "started_at": "2026-12-02T10:20:03Z",
+          "ended_at": "2026-12-02T10:20:05Z",
+          "final_state": "COMPLETED",
+          "outcome": "INVALID",
+          "operator_id": 843,
+          "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "operator_name": "Example Operator A",
+          "uploaded_by": 843,
+          "variant_code": "B-125-M-5D-ES11-E04",
+          "profile_version": 1,
+          "criteria_version": 1,
+          "sample_count": 10,
+          "stored_sample_count": 10,
+          "received_at": "2026-12-02T10:20:07Z",
+          "stop_reason": "RAMP_COMPLETE",
+          "contract_version": "0.5",
+          "run_kind": "bench",
+          "held_count": 10,
+          "recording_complete": true,
+          "event_log_complete": false,
+          "unproven_count": 1
+        },
+        {
+          "test_id": "5a7c9e1b-3d5f-4a7b-9c1d-3e5f7a9b1c70",
+          "started_at": "2026-12-02T10:00:03Z",
+          "ended_at": "2026-12-02T10:00:05Z",
+          "final_state": "COMPLETED",
+          "outcome": "FAIL",
+          "operator_id": 843,
+          "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "operator_name": "Example Operator A",
+          "uploaded_by": 843,
+          "variant_code": "B-125-M-5D-ES11-E04",
+          "profile_version": 1,
+          "criteria_version": 1,
+          "sample_count": 10,
+          "stored_sample_count": 10,
+          "received_at": "2026-12-02T10:00:07Z",
+          "stop_reason": "RAMP_COMPLETE",
+          "contract_version": "0.5",
+          "run_kind": "bench",
+          "held_count": 10,
+          "recording_complete": true,
+          "event_log_complete": true,
+          "unproven_count": 0
+        },
+        {
+          "test_id": "4e6a8c0d-2f4b-4d6f-8a0c-2e4a6c8e0a72",
+          "started_at": null,
+          "ended_at": "2026-12-02T10:40:11Z",
+          "final_state": "ABORTED",
+          "outcome": "INCOMPLETE",
+          "operator_id": 843,
+          "operator_ref": "6c8e0a2b-4d6f-4a8c-9e0b-2d4f6a8c0e1a",
+          "operator_name": "Example Operator A",
+          "uploaded_by": 843,
+          "variant_code": "B-125-M-5D-ES11-E04",
+          "profile_version": 1,
+          "criteria_version": 1,
+          "sample_count": 0,
+          "stored_sample_count": 0,
+          "received_at": "2026-12-02T10:40:13Z",
+          "stop_reason": "CONFIG_CANCELLED",
+          "contract_version": "0.5",
+          "run_kind": "bench",
+          "held_count": 0,
+          "recording_complete": true,
+          "event_log_complete": true,
+          "unproven_count": 0
+        }
+      ]
+    }
+  }
+}

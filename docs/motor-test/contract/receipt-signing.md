@@ -260,8 +260,8 @@ decisions, and re-signs every untampered message byte for byte).
 
 ## 11. MTRCPT2 (contract v0.5)
 
-**DRAFT R4 (2026-11-21), after Mayank's R3 review (V05_R3_MTRCPT2_REVIEW); for review by Mayank.** Not implemented in
-the ERP service yet. The MTRCPT1 message bytes are unchanged; its 52 earlier vectors keep identical bytes, signatures,
+**DRAFT R4 (2026-11-21), after Mayank's R3 review (V05_R3_MTRCPT2_REVIEW); for review by Mayank.** Implemented in
+the ERP service on staging (2026-11-21); production after Mayank's final review. The MTRCPT1 message bytes are unchanged; its 52 earlier vectors keep identical bytes, signatures,
 manifests and decisions (R4 appends RA10 and RR44, section 9). The receipt JSON (section 4), Ed25519 and base64url
 rules (section 5), keys (section 7) and retries (section 8) are the same for both versions.
 

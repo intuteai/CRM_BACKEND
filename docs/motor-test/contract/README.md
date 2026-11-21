@@ -1,4 +1,4 @@
-# Motor Test ERP API — contract v0.4 (draft text; live in the ERP)
+# Motor Test ERP API — contract v0.4 (draft text; live in the ERP) and v0.5 (draft R4; implemented, not deployed)
 
 **Deployment status (2026-11-19, authoritative):** v0.4 is **live on staging and production** (backend commit 69aacd0c,
 migration 004 on both databases). Uploads opt in with `contract_version: "0.4"`; v0.3 uploads stay accepted.
@@ -11,6 +11,33 @@ sign-off. No key is provisioned in any VCU yet; ACK_ARCHIVED stays disabled.
 the ERP's receipt before ACK_ARCHIVED, completeness rule (`held_count`), CANCEL before start, run start without UTC,
 and b0 = 0 (vector V10). See [`receipt-signing.md`](receipt-signing.md) and `vectors/receipt-vectors.json`
 (54 MTRCPT1 vectors, checked independently by `tools/check_receipt_vectors.py`; v0.5: 41 event cases and 50 MTRCPT2 vectors).
+
+## v0.5 in the API (`openapi.yaml` 0.5.0-draft, DRAFT R4, 2026-11-21)
+
+**Status:** implemented in the ERP backend and tested against staging, **not deployed yet**: staging after the next
+backend deploy, production after Mayank's final review. Spec: [`v05-warning-events.md`](v05-warning-events.md) (R4) and
+[`receipt-signing.md`](receipt-signing.md) section 11 (MTRCPT2).
+
+- **Opt-in per upload:** `contract_version: "0.5"` (schema `RunUploadV05`) = the v0.4 body plus `capture_end_ms`,
+  `event_log` `{warnings_count, command_changes_count, complete, lost_count}`, `warnings[]` (`WarningEvent`),
+  `command_changes[]` (`CommandChange`) and `event_digest` (MTEVT2, computed by the VCU). v0.3 and v0.4 uploads are
+  unchanged.
+- **Rejections:** 400 `VALIDATION_ERROR` with `fields: [{path: "events", msg: "EVENT_FIELDS: …"}]` (fixture 74);
+  422 `INCONSISTENT_RUN` with `violations: [{path: "events", rule, msg}]` for EVENT_ORDER, EVENT_PHASE, EVENT_CAUSALITY,
+  EVENT_COUNTS, WARNING_PAIRING, COMMAND_ORDER, COMMAND_LINK, COMMAND_WINDOW, COMMAND_MISSING_STEP0, CANCEL_SHAPE
+  (fixtures 73, 75). An incomplete log keeps records it cannot prove and reports them in `unproven[]` (fixture 71).
+- **Receipt version pinned per run:** a v0.4 run gets an MTRCPT1 `signed_receipt` (172–234 bytes), a v0.5 run an
+  MTRCPT2 one (253–315 bytes, with the event block). The VCU picks the decoder from `receipt_version` in its own
+  manifest, never from the magic.
+- **Run detail** adds `receipt_version` (every run) and, for v0.5 runs, `capture_end_ms`, `event_log`, `event_digest`,
+  `events_stored_digest`, `event_digest_match`, `b6_coverage_ok`, `unproven[]`, `warnings[]`, `command_changes[]`.
+  **Serial lookup** adds `event_log_complete` and `unproven_count`.
+- **Fixtures 70–76:** 70 complete log with a warning and two command changes (201 + identical 200) · 71 incomplete
+  log with an unproven CLEARED, plus the run detail · 72 CANCEL · 73 WARNING_PAIRING (422) · 74 EVENT_FIELDS, kind
+  `"toString"` (400) · 75 COMMAND_MISSING_STEP0 (422) · 76 serial lookup. The event parts are vector cases E1, G1, E8,
+  R1, P05, P01 of `vectors/v05-event-vectors.json` (digests recomputed and asserted equal). Signed receipts in 70–72 use
+  **TEST key A**; each has a `verify` block with a `receipt_version` 2 manifest and the generator asserts `RELEASE`
+  (and that the MTRCPT1 decider and a version-1 manifest reject it).
 
 ## v0.4 in the API (`openapi.yaml` 0.4.0-draft, 2026-11-19)
 
@@ -46,7 +73,7 @@ For Pratham (HMI) and Mayank (VCU). **Not frozen**: becomes Interface Contract v
 
 | File | What |
 |---|---|
-| `openapi.yaml` | OpenAPI 3 spec (0.4.0-draft): login, `/api/testing/me`, variants, criteria, results |
+| `openapi.yaml` | OpenAPI 3 spec (0.5.0-draft): login, `/api/testing/me`, variants, criteria, results |
 | `fixtures/` | Request + response JSON for every case (valid, retry, conflict, zero-sample fault, aborted, every error) |
 | `vectors/run-digest-vectors.json` | D13 run digest V1–V9 (Mayank's rule), each checked in Python and JavaScript |
 | `vectors/payload-hash-vectors.json` | Upload `payload_hash` P1–P5 |
